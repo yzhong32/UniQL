@@ -4,9 +4,11 @@ from semantic_kernel.connectors.ai.open_ai import OpenAIChatCompletion, AzureCha
 
 kernel = sk.Kernel()
 
+plugins_directory = "./plugins"
+
 # Prepare OpenAI service using credentials stored in the `.env` file
 api_key, org_id = sk.openai_settings_from_dot_env()
-service_id="chat-gpt"
+service_id="default"
 kernel.add_service(
     OpenAIChatCompletion(
         service_id=service_id,
@@ -16,52 +18,15 @@ kernel.add_service(
     )
 )
 
-# Alternative using Azure:
-# deployment, api_key, endpoint = sk.azure_openai_settings_from_dot_env()
-# kernel.add_service(
-#   AzureChatCompletion(
-#       service_id="dv",
-#       deployment_name=deployment,
-#       base_url=endpoint,
-#       api_key=api_key
-#   )
-# )
+translateFunctions = kernel.import_plugin_from_prompt_directory(plugins_directory, "TranslatePlugin")
 
-# Define the request settings
-req_settings = kernel.get_service(service_id).get_prompt_execution_settings_class()(service_id=service_id)
-req_settings.max_tokens = 2000
-req_settings.temperature = 0.7
-req_settings.top_p = 0.8
+mongoFunction = translateFunctions["MongoDB"]
 
-prompt = """
-1) A robot may not injure a human being or, through inaction,
-allow a human being to come to harm.
-
-2) A robot must obey orders given it by human beings except where
-such orders would conflict with the First Law.
-
-3) A robot must protect its own existence as long as such protection
-does not conflict with the First or Second Law.
-
-Give me the TLDR in exactly 5 words."""
-
-prompt_template_config = sk.PromptTemplateConfig(
-    template=prompt,
-    name="tldr",
-    template_format="semantic-kernel",
-    execution_settings=req_settings,
-)
-
-function = kernel.create_function_from_prompt(
-    prompt_template_config=prompt_template_config,
-    function_name = "function",
-    plugin_name = "plugin"
-)
 
 # Run your prompt
 # Note: functions are run asynchronously
 async def main():
-    result = await kernel.invoke(function)
+    result = await kernel.invoke(mongoFunction, sk.KernelArguments(sql="select * from Students where weight > 100"))
     print(result) # => Robots must not harm humans.
 
 if __name__ == "__main__":

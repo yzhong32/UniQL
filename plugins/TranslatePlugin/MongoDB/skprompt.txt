@@ -1,0 +1,10 @@
+Translate the following query SQL query to MongoDB Query. Such MongoDB query should act as parameter in "db.users.find()". 
+
+For example:
+SQL: select * from Students where age >= 25
+MongoDB Query: { "age": { "$gt": 25 } }
+
++++++++++
+SQL: {{$sql}}
+MongoDB Query:
+
