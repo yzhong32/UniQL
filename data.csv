@@ -1,0 +1,2 @@
+table,query
+bike_1, SELECT * FROM weather

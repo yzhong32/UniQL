@@ -1,7 +1,7 @@
 import json
 from pymongo import MongoClient
 
-from executor import SQLExecutor
+from .executor import SQLExecutor
 
 class MongoDBExecutor(SQLExecutor):
     def __init__(self):
