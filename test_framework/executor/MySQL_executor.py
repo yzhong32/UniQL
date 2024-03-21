@@ -1,7 +1,7 @@
 import json
 import pymysql
 
-from .executor import SQLExecutor
+from base import SQLExecutor
 
 class MySQLExecutor(SQLExecutor):
     def __init__(self):
