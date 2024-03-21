@@ -2,3 +2,4 @@
 .idea
 pythonProject1
 */__pycache__
+.venv
