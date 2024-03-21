@@ -20,5 +20,10 @@ class MongoDBExecutor(SQLExecutor):
         
         self.db = self.client[database]
         collection = self.db[json_object['collection']]
-        result = collection.find(json_object['find'])
+        # Check if 'limit' is specified in the query
+        if 'limit' in json_object:
+            result = collection.find(json_object['find']).limit(json_object['limit'])
+        else:
+            result = collection.find(json_object['find'])
+        
         return str(list(result))
