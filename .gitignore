@@ -1,5 +1,5 @@
 .env
 .idea
 pythonProject1
-*/__pycache__
+**/__pycache__/
 .venv
