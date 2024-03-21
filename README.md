@@ -11,6 +11,20 @@
 - user: -u root -p 123456 / -u cs511 -p cs511password
 - split queries: https://drive.google.com/file/d/1Bc-j40KcviE-NSM-7FRupGlyKa6j_U6c/view?usp=sharing
 
+## virtual environment activation:
+```
+python -m venv .venv
+```
+```
+# windows
+.venv\Scripts\activate
+# mac
+. .venv/bin/activate (Try windows version first. If that works, skip this. Otherwise, try this.)
+```
+```
+pip install -r requirements.txt
+```
+
 ## currently using db & tables: 
 mysql: bike_1, academic
 - Tables_in_bike_1 
