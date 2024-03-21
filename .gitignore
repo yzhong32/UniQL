@@ -1,3 +1,4 @@
 .env
 .idea
 pythonProject1
+*/__pycache__
