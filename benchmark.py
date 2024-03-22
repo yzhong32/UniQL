@@ -27,11 +27,11 @@ def converter_mongo(table, query):
 
 
 mysql_executor = MySQLExecutor()
-mysql_executor.init('./executor/mysql_config.json')
+mysql_executor.init('./test_framework/config/mysql_config.json')
 mysql_executor = mysql_executor.execute_query
 
 mongodb_executor = MongoDBExecutor()
-mongodb_executor.init('./executor/mongodb_config.json')
+mongodb_executor.init('./test_framework/config/mongodb_config.json')
 mongodb_executor = mongodb_executor.execute_query
 
 converter_executor_pairs = [(converter_mongo, mongodb_executor)]
