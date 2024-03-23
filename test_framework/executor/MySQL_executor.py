@@ -13,8 +13,8 @@ class MySQLExecutor(SQLExecutor):
             self.config = json.load(config_file)
             
 
-    def execute_query(self, query, database):
-        if self.connection == None or self.connection.db != database:
+    def execute_query(self, query, database, schema):
+        if self.connection is None or self.connection.db != database:
             self.connection = pymysql.connect(
                 host=self.config['host'],
                 user=self.config['user'],
@@ -24,7 +24,13 @@ class MySQLExecutor(SQLExecutor):
         with self.connection.cursor() as cursor:
             cursor.execute(query)
             result = cursor.fetchall()
-            return str(result)
+            field_names = [desc[0] for desc in cursor.description]
+            results = []
+            for row in result:
+                row_json = {field: row[field_names.index(field)] for field in schema if field in field_names}
+                results.append(row_json)
+            return results
+
         
     def load_schema(self, query, database):
         if self.connection == None or self.connection.db != database:
