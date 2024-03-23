@@ -27,6 +27,6 @@ class MongoDBExecutor(SQLExecutor):
         results = []
         for doc in result_cursor:
             doc_json = {field: doc.get(field, None) for field in schema}
-            results.append(doc_json)
+            results.append(json.dumps(doc_json))
         
         return results
