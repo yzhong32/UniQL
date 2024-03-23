@@ -14,16 +14,19 @@ class MongoDBExecutor(SQLExecutor):
             config = json.load(config_file)
         self.client = MongoClient(config['host'], config.get('port', 27017))
 
-    def execute_query(self, query, database):
-        # Assuming 'query' is a dictionary containing the collection name and actual query
+    def execute_query(self, query, database, schema):
         json_object = json.loads(query)
-        
         self.db = self.client[database]
         collection = self.db[json_object['collection']]
-        # Check if 'limit' is specified in the query
-        if 'limit' in json_object:
-            result = collection.find(json_object['find']).limit(json_object['limit'])
-        else:
-            result = collection.find(json_object['find'])
         
-        return str(list(result))
+        if 'limit' in json_object:
+            result_cursor = collection.find(json_object['find']).limit(json_object['limit'])
+        else:
+            result_cursor = collection.find(json_object['find'])
+        
+        results = []
+        for doc in result_cursor:
+            doc_json = {field: doc.get(field, None) for field in schema}
+            results.append(json.dumps(doc_json))
+        
+        return results
