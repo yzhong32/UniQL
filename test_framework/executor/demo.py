@@ -7,13 +7,13 @@ if __name__ == '__main__':
     mysql_executor = MySQLExecutor()
     mysql_executor.init('../config/mysql_config.json')
 
-    schema = mysql_executor.load_schema('SELECT * FROM weather LIMIT 10', 'bike_1')
+    schema = mysql_executor.load_schema('SELECT max_humidity FROM weather WHERE max_humidity >= 90 LIMIT 10', 'bike_1')
 
-    mysql_result = mysql_executor.execute_query('SELECT * FROM weather', 'bike_1', schema)
+    mysql_result = mysql_executor.execute_query('SELECT max_humidity FROM weather WHERE max_humidity >= 90 LIMIT 10', 'bike_1', schema)
 
     mongodb_executor = MongoDBExecutor()
     mongodb_executor.init('../config/mongodb_config.json')
-    mongo_result = mongodb_executor.execute_query('{"collection": "weather", "find": {}}', "bike_1", schema)
+    mongo_result = mongodb_executor.execute_query('db.weather.find({ "max_humidity": { "$gte": 90 } },{ "max_humidity": 1, "_id": 0 }).limit(10)', "bike_1", schema)
 
     mysql_hash = set((idx, hash(row)) for idx, row in enumerate(mysql_result))
     mongo_hash = set((idx, hash(row)) for idx, row in enumerate(mongo_result))
