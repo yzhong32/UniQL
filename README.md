@@ -10,6 +10,7 @@
 - sudo sqlite3mysql -f ~/spider/database/bike_1/bike_1.sqlite -d bike_1 -u cs511 --mysql-password cs511password
 - user: -u root -p 123456 / -u cs511 -p cs511password
 - split queries: https://drive.google.com/file/d/1Bc-j40KcviE-NSM-7FRupGlyKa6j_U6c/view?usp=sharing
+- mongodb migrator mongo URI:mongodb://34.70.54.136:27017 without username/password
 
 ## virtual environment activation:
 ```
