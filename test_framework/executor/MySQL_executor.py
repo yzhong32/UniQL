@@ -3,6 +3,7 @@ import pymysql
 
 from base import SQLExecutor
 
+
 # this is not an implementation of Executor
 class MySQLExecutor(SQLExecutor):
     def __init__(self):
@@ -11,7 +12,6 @@ class MySQLExecutor(SQLExecutor):
     def init(self, config_path):
         with open(config_path) as config_file:
             self.config = json.load(config_file)
-            
 
     def execute_query(self, query, database, schema):
         if self.connection is None or self.connection.db != database:
@@ -31,7 +31,6 @@ class MySQLExecutor(SQLExecutor):
                 results.append(json.dumps(row_json))
             return results
 
-        
     def load_schema(self, query, database):
         if self.connection == None or self.connection.db != database:
             self.connection = pymysql.connect(

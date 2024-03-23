@@ -2,6 +2,7 @@ import abc
 import json
 import os
 
+
 class SQLExecutor(abc.ABC):
     @abc.abstractmethod
     def init(self, config_path):

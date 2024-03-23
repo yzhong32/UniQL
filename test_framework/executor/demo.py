@@ -13,11 +13,10 @@ if __name__ == '__main__':
 
     mongodb_executor = MongoDBExecutor()
     mongodb_executor.init('../config/mongodb_config.json')
-    mongo_result = mongodb_executor.execute_query("{\"collection\": \"weather\", \"find\": {}}", "bike_1", schema)
+    mongo_result = mongodb_executor.execute_query('{"collection": "weather", "find": {}}', "bike_1", schema)
 
     mysql_hash = set((idx, hash(row)) for idx, row in enumerate(mysql_result))
     mongo_hash = set((idx, hash(row)) for idx, row in enumerate(mongo_result))
-
 
     if len(mysql_hash) != len(mongo_hash):
         print("row number mismatch")
@@ -31,7 +30,6 @@ if __name__ == '__main__':
         else:
             unmatched_row.append(idx)
             print("hash value not found for index:{idx} in mysql result ".format(idx=idx))
-
 
     print(sorted(matched_row))
     print(sorted(unmatched_row))
