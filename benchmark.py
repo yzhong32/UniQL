@@ -16,14 +16,21 @@ async def benchmark():
     query_fetcher = QueryFetcher()
     comparator = HashComparator()
 
+    executed = set()
+    count = 0
+    success = 0
     for (database, query) in query_fetcher.fetch_query("./query", "bike_1.json"):
+    # for (database, query) in [('bike_1', 'SELECT avg(longitude) FROM station WHERE city  =  "San Jose"')]:
+        if query in executed:
+            continue
+        executed.add(query)
+        count += 1
         print(f"**********************SQL Query: {query}**************************")
         schema = mysql_executor.load_schema(query, database)
 
         mysql_result = mysql_executor.execute_query(query, database, schema)
 
         mongo_query = await convertor.convert(query)
-        # mongo_query = 'db.weather.find({ "max_humidity": { "$gte": 90 } },{ "max_humidity": 1, "_id": 0 }).limit(10)'
         print(f"**********************MongoDB Query: {mongo_query}**************************")
         mongo_result = mongodb_executor.execute_query(mongo_query, database, schema)
 
@@ -38,6 +45,12 @@ async def benchmark():
 
         print()
         print()
+
+        if len(unmatched_row) == 0:
+            success += 1
+
+    print('Success: {}'.format(success))
+    print('Total: {}'.format(count))
 
 if __name__ == '__main__':
     asyncio.run(benchmark())

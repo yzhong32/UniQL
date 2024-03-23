@@ -1,8 +1,12 @@
-Translate the following query SQL query to MongoDB Query. Such MongoDB query should act as parameter in "db.users.find()". 
+Translate the following query SQL query to MongoDB Query. Such MongoDB query should act as parameter in "db.users.find()". You should keep the query returned in one line.
 
 For example:
 SQL: SELECT max_humidity FROM weather WHERE max_humidity >= 90 LIMIT 10
 MongoDB Query: db.weather.find({ "max_humidity": { "$gte": 90 } },{ "max_humidity": 1, "_id": 0 }).limit(10)
+
+example 2:
+SQL: SELECT avg(longitude) FROM station WHERE city  =  "San Jose"
+MongoDB Query: db.station.aggregate([ { $match: { city: "San Jose" } }, { $group: { _id: null, avg(longitude): { $avg: "$longitude" } } }] )
 
 +++++++++
 SQL: {{$sql}}

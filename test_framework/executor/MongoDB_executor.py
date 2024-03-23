@@ -1,4 +1,5 @@
 import json
+import simplejson
 
 from pymongo import MongoClient
 
@@ -30,7 +31,7 @@ class MongoDBExecutor(SQLExecutor):
             results = []
             for doc in records:
                 doc_json = {field: doc.get(field, None) for field in schema}
-                results.append(json.dumps(doc_json))
+                results.append(simplejson.dumps(doc_json))
 
             return results
 

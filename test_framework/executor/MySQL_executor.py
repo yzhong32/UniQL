@@ -1,5 +1,6 @@
 import json
 import pymysql
+import simplejson
 from .base import SQLExecutor
 
 
@@ -27,7 +28,7 @@ class MySQLExecutor(SQLExecutor):
             results = []
             for row in result:
                 row_json = {field: row[field_names.index(field)] for field in schema if field in field_names}
-                results.append(json.dumps(row_json))
+                results.append(simplejson.dumps(row_json))
             return results
 
     def load_schema(self, query, database):
