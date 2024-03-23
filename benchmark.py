@@ -1,42 +1,38 @@
-import csv
-from executor.MongoDB_executor import MongoDBExecutor
-from executor.MySQL_executor import MySQLExecutor
+import asyncio
+from test_framework.executor.MySQL_executor import * 
+from test_framework.executor.MongoDB_executor import * 
+from test_framework.fetch.base import * 
+from test_framework.comparator.hash import * 
+from converter.convert import QueryConverter
 
+async def benchmark():
+    mysql_executor = MySQLExecutor()
+    mysql_executor.init('./test_framework/config/mysql_config.json')
 
-def process_sql_queries(file_path, executor_base, converter_executor_pairs):
-    results = []
-    with open(file_path, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            table, query = row['table'], row['query']
-            is_successful = []
-            base = executor_base(query, table)
-            for converter, executor in converter_executor_pairs:
-                converted_query = converter(table, query)
-                execution_result = executor(converted_query, table)
-                is_successful.append(base == execution_result)
-            results.append(is_successful)
+    mongodb_executor = MongoDBExecutor()
+    mongodb_executor.init('./test_framework/config/mongodb_config.json')
 
-        return results
+    convertor = QueryConverter("./converter/plugins")
+    query_fetcher = QueryFetcher()
+    comparator = HashComparator()
 
+    queries = [("SELECT max_humidity FROM weather WHERE max_humidity >= 90 LIMIT 10", "bike_1")]
+    for (database, query) in query_fetcher.fetch_query("./query", "bike_1.json"):
+        print(f"**********************SQL Query: {query}**************************")
+        schema = mysql_executor.load_schema(query, database)
 
-def converter_mongo(table, query):
-    # if table == '3':
-    #     return '1'
-    return "{\"collection\": \"weather\", \"find\": {}}"
+        mysql_result = mysql_executor.execute_query(query, database, schema)
 
+        mongo_query = await convertor.convert(query)
+        # mongo_query = 'db.weather.find({ "max_humidity": { "$gte": 90 } },{ "max_humidity": 1, "_id": 0 }).limit(10)'
+        print(f"***MongoDB Query: {mongo_query}***")
+        mongo_result = mongodb_executor.execute_query(mongo_query, database, schema)
 
-mysql_executor = MySQLExecutor()
-mysql_executor.init('./test_framework/config/mysql_config.json')
-mysql_executor = mysql_executor.execute_query
+        matched_row, unmatched_row, e = comparator.compare(mysql_result, mongo_result)
 
-mongodb_executor = MongoDBExecutor()
-mongodb_executor.init('./test_framework/config/mongodb_config.json')
-mongodb_executor = mongodb_executor.execute_query
+        print(sorted(matched_row))
+        print(sorted(unmatched_row))
 
-converter_executor_pairs = [(converter_mongo, mongodb_executor)]
+if __name__ == '__main__':
+    asyncio.run(benchmark())
 
-file_path = './data.csv'
-res = process_sql_queries(file_path, mysql_executor, converter_executor_pairs)
-
-print(res)

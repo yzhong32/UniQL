@@ -1,7 +1,6 @@
 import json
 import pymysql
-
-from base import SQLExecutor
+from .base import SQLExecutor
 
 
 # this is not an implementation of Executor
