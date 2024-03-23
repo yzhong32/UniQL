@@ -11,7 +11,6 @@ class HashComparator(BaseComparator):
         target_hash = set((idx, hash(row)) for idx, row in enumerate(target))
 
         if len(mysql_hash) != len(target_hash):
-            print("row number mismatch")
             return None, None, Exception("row number mismatch")
 
         matched_row = []
