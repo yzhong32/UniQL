@@ -3,6 +3,7 @@ import pymysql
 
 from base import SQLExecutor
 
+# this is not an implementation of Executor
 class MySQLExecutor(SQLExecutor):
     def __init__(self):
         self.connection = None
@@ -24,3 +25,16 @@ class MySQLExecutor(SQLExecutor):
             cursor.execute(query)
             result = cursor.fetchall()
             return str(result)
+        
+    def load_schema(self, query, database):
+        if self.connection == None or self.connection.db != database:
+            self.connection = pymysql.connect(
+                host=self.config['host'],
+                user=self.config['user'],
+                password=self.config['password'],
+                database=database
+            )
+        with self.connection.cursor() as cursor:
+            cursor.execute(query)
+            field_names = [i[0] for i in cursor.description]
+            return field_names

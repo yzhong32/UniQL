@@ -8,5 +8,5 @@ class SQLExecutor(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def execute_query(self, query, database):
+    def execute_query(self, query, database, schema):
         pass
