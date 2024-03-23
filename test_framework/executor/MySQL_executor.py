@@ -29,7 +29,7 @@ class MySQLExecutor(SQLExecutor):
             for row in result:
                 row_json = {field: row[field_names.index(field)] for field in schema if field in field_names}
                 results.append(simplejson.dumps(row_json))
-            return results
+            return results, None
 
     def load_schema(self, query, database):
         if self.connection == None or self.connection.db != database:

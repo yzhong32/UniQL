@@ -4,7 +4,7 @@ from test_framework.executor.MySQL_executor import MySQLExecutor
 from test_framework.comparator.hash import HashComparator
 if __name__ == '__main__':
     sql_query = 'SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  "San Jose"'
-    mongo_query = 'db.station.aggregate([{ "$group": { "_id": "$city", "max_lat": { "$max": "$lat" } } }'
+    mongo_query = 'db.station.aggregate([ { $match: { city: "San Jose" } }, { $group: { _id: null, avgLongitude: { $avg: "$longitude" } } }] )'
 
     mysql_executor = MySQLExecutor()
     mysql_executor.init('./test_framework/config/mysql_config.json')
@@ -15,8 +15,8 @@ if __name__ == '__main__':
 
     mongodb_executor = MongoDBExecutor()
     mongodb_executor.init('./test_framework/config/mongodb_config.json')
-    mongo_result = mongodb_executor.execute_query(mongo_query, "bike_1", schema)
-
+    mongo_result, e = mongodb_executor.execute_query(mongo_query, "bike_1", schema)
+    print(e)
     print(mysql_result)
     print(mongo_result)
 

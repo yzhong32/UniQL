@@ -1,6 +1,4 @@
 import abc
-import json
-import os
 
 
 class SQLExecutor(abc.ABC):
