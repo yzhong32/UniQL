@@ -27,12 +27,15 @@ async def benchmark():
         count += 1
         print(f"**********************SQL Query: {query}**************************")
         schema = mysql_executor.load_schema(query, database)
+        # print(schema)
 
         mysql_result = mysql_executor.execute_query(query, database, schema)
+        # print(mysql_result)
 
         mongo_query = await convertor.convert(query)
         print(f"**********************MongoDB Query: {mongo_query}**************************")
         mongo_result = mongodb_executor.execute_query(mongo_query, database, schema)
+        # print(mongo_result)
 
         matched_row, unmatched_row, e = comparator.compare(mysql_result, mongo_result)
 

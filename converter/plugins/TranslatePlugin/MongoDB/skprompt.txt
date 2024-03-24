@@ -6,7 +6,7 @@ MongoDB Query: db.weather.find({ "max_humidity": { "$gte": 90 } },{ "max_humidit
 
 example 2:
 SQL: SELECT avg(longitude) FROM station WHERE city  =  "San Jose"
-MongoDB Query: db.station.aggregate([ { $match: { city: "San Jose" } }, { $group: { _id: null, avg(longitude): { $avg: "$longitude" } } }] )
+MongoDB Query: db.station.aggregate([{"$match": {"city": "San Jose"}}, {"$group": {"_id": None, "avg_longitude": {"$avg": "$longitude"}}}])
 
 +++++++++
 SQL: {{$sql}}

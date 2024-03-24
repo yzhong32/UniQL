@@ -2,6 +2,7 @@ import json
 import pymysql
 import simplejson
 from .base import SQLExecutor
+from .utils import *
 
 
 # this is not an implementation of Executor
@@ -24,7 +25,7 @@ class MySQLExecutor(SQLExecutor):
         with self.connection.cursor() as cursor:
             cursor.execute(query)
             result = cursor.fetchall()
-            field_names = [desc[0] for desc in cursor.description]
+            field_names = [convert_field_to_no_brace(desc[0]) for desc in cursor.description]
             results = []
             for row in result:
                 row_json = {field: row[field_names.index(field)] for field in schema if field in field_names}
@@ -41,5 +42,5 @@ class MySQLExecutor(SQLExecutor):
             )
         with self.connection.cursor() as cursor:
             cursor.execute(query)
-            field_names = [i[0] for i in cursor.description]
+            field_names = [convert_field_to_no_brace(i[0]) for i in cursor.description]
             return field_names
