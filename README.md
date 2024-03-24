@@ -67,9 +67,6 @@ mongodb: admin
 *  activity_1
 *  allergy_1
 *  apartment_rentals
-*  activity_1
-*  allergy_1
-*  apartment_rentals
 *  assets_maintenance
 *  battle_death
 *  behavior_monitoring
