@@ -33,8 +33,8 @@ class MongoDBExecutor(SQLExecutor):
                 doc_json = {field: doc.get(field, None) for field in schema}
                 results.append(simplejson.dumps(doc_json))
 
-            return results
+            return results, None
 
         except Exception as e:
-            return []
+            return None, e
         

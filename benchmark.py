@@ -1,9 +1,10 @@
 import asyncio
-from test_framework.executor.MySQL_executor import * 
-from test_framework.executor.MongoDB_executor import * 
-from test_framework.fetch.base import * 
-from test_framework.comparator.hash import * 
+from test_framework.executor.MySQL_executor import *
+from test_framework.executor.MongoDB_executor import *
+from test_framework.fetch.base import *
+from test_framework.comparator.hash import *
 from converter.convert import QueryConverter
+
 
 async def benchmark():
     mysql_executor = MySQLExecutor()
@@ -19,8 +20,8 @@ async def benchmark():
     executed = set()
     count = 0
     success = 0
-    for (database, query) in query_fetcher.fetch_query("./query", "bike_1.json"):
-    # for (database, query) in [('bike_1', 'SELECT avg(longitude) FROM station WHERE city  =  "San Jose"')]:
+    # for (database, query) in query_fetcher.fetch_query("./query", "bike_1.json"):
+    for (database, query) in [('bike_1', 'SELECT * FROM station WHERE city  =  "San Jose"')]:
         if query in executed:
             continue
         executed.add(query)
@@ -29,13 +30,17 @@ async def benchmark():
         schema = mysql_executor.load_schema(query, database)
         # print(schema)
 
-        mysql_result = mysql_executor.execute_query(query, database, schema)
-        # print(mysql_result)
+        mysql_result, e = mysql_executor.execute_query(query, database, schema)
+        if e is not None:
+            print('execute mysql query error:{}'.format(e))
+            continue
 
         mongo_query = await convertor.convert(query)
         print(f"**********************MongoDB Query: {mongo_query}**************************")
-        mongo_result = mongodb_executor.execute_query(mongo_query, database, schema)
-        # print(mongo_result)
+        mongo_result, e = mongodb_executor.execute_query(mongo_query, database, schema)
+        if e is not None:
+            print('execute mongo query error:{}'.format(e))
+            continue
 
         matched_row, unmatched_row, e = comparator.compare(mysql_result, mongo_result)
 
@@ -46,15 +51,12 @@ async def benchmark():
         print('Matched: {}'.format(matched_row))
         print('Unmatched: {}'.format(unmatched_row))
 
-        print()
-        print()
-
         if len(unmatched_row) == 0:
             success += 1
 
     print('Success: {}'.format(success))
     print('Total: {}'.format(count))
 
+
 if __name__ == '__main__':
     asyncio.run(benchmark())
-
