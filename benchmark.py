@@ -5,7 +5,14 @@ from test_framework.fetch.base import *
 from test_framework.comparator.hash import *
 from converter.convert import QueryConverter
 from contextlib import redirect_stdout, redirect_stderr
+from datetime import datetime
 
+def get_bench_id():
+    current_time = datetime.now()
+    return 'benchmark-{time}'.format(time=current_time.strftime("%Y-%m-%d#%H:%M:%S"))
+
+def get_output_file_path():
+    return './logs/{id}.log'.format(id=get_bench_id())
 
 async def benchmark():
     mysql_executor = MySQLExecutor()
@@ -22,7 +29,9 @@ async def benchmark():
     count = 0
     success = 0
 
-    with open('benchmark.log', 'w') as f:
+    output_file_path = get_output_file_path()
+
+    with open(output_file_path, 'w') as f:
         with redirect_stdout(f), redirect_stderr(f):
             for (database, query) in query_fetcher.fetch_query("./query", "bike_1.json"):
             # for (database, query) in [('bike_1', 'SELECT * FROM station WHERE city  =  "San Jose"')]:
