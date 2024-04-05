@@ -33,8 +33,8 @@ async def benchmark():
 
     with open(output_file_path, 'w') as f:
         with redirect_stdout(f), redirect_stderr(f):
-            for (database, query) in query_fetcher.fetch_query("./query", "bike_1.json"):
-            # for (database, query) in [('bike_1', 'SELECT * FROM station WHERE city  =  "San Jose"')]:
+            # for (database, query) in query_fetcher.fetch_query("./query", "bike_1.json"):
+            for (database, query) in [('bike_1', 'SELECT city ,  max(lat) FROM station GROUP BY city')]:
                 if query in executed:
                     continue
                 executed.add(query)
