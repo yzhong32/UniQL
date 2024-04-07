@@ -24,7 +24,6 @@ class MongoDBExecutor(SQLExecutor):
 
         try:
             adjusted_query = f'result = {query}'
-
             exec(adjusted_query, exec_env)
             records = exec_env.get("result")
 
