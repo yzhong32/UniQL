@@ -6,8 +6,7 @@ Neo4j: MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date
 
 Example 2:
 SQL: SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10
-Neo4j: MATCH (w:Weather) WITH w.zipCode AS zip_code, AVG(w.meanVisibilityMiles) AS avgVisibility WHERE avgVisibility < 10 RETURN zip_code;
-
+Neo4j: MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avgVisibility WHERE avgVisibility < 10 RETURN zip_code
 +++++++++
 SQL: {{$sql}}
 Neo4j Query:
