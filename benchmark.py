@@ -42,6 +42,7 @@ async def benchmark():
                     continue
                 executed.add(query)
 
+                print()
                 print("--------------------------{}-----------------".format(count))
 
                 print(f"**********************SQL Query: {query}**************************")
@@ -53,6 +54,8 @@ async def benchmark():
                     print('execute mysql query error:{}'.format(e))
                     continue
 
+                count += 1
+
                 mongo_query = await convertor.convert(query)
                 print(f"**********************MongoDB Query: {mongo_query}**************************")
 
@@ -60,8 +63,6 @@ async def benchmark():
                 if e is not None:
                     print('execute mongo query error:{}'.format(e))
                     continue
-
-                count += 1
 
                 match, unmatched_row, e = comparator.compare(mysql_result, mongo_result)
                 if e is not None:
