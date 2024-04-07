@@ -23,12 +23,12 @@ class QueryConverter:
         
         # Import the required plugin
         self.translateFunctions = self.kernel.import_plugin_from_prompt_directory(plugins_directory, "TranslatePlugin")
-        self.mongoFunction = self.translateFunctions["MongoDB"]
-        self.neo4jFunction = self.translateFunctions["Neo4j"]
+        # self.mongoFunction = self.translateFunctions["MongoDB"]
+        # self.neo4jFunction = self.translateFunctions["Neo4j"]
 
-    async def convert(self, sql_query):
+    async def convert(self, sql_query, target_query_type):
         # Invoke the MongoDB function from the plugin
-        result = await self.kernel.invoke(self.mongoFunction, sk.KernelArguments(sql=sql_query))
+        result = await self.kernel.invoke(self.mongoFunction[target_query_type], sk.KernelArguments(sql=sql_query))
         return result
 
 # Usage example
