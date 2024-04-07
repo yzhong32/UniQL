@@ -1,0 +1,5 @@
+{
+    "uri": "bolt://34.123.192.199:7687",
+    "user": "neo4j",
+    "password": "cs511password"
+}
