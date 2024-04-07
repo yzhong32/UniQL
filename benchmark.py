@@ -29,8 +29,9 @@ async def benchmark():
     comparator = HashComparator()
 
     executed = set()
-    count = 0
+    valid_query_count = 0
     success = 0
+    idx = 1
 
     output_file_path = get_output_file_path()
 
@@ -43,7 +44,8 @@ async def benchmark():
                 executed.add(query)
 
                 print()
-                print("--------------------------{}-----------------".format(count))
+                print("--------------------------{}-----------------".format(idx))
+                idx += 1
 
                 print(f"**********************SQL Query: {query}**************************")
                 schema = mysql_executor.load_schema(query, database)
@@ -54,7 +56,7 @@ async def benchmark():
                     print('execute mysql query error:{}'.format(e))
                     continue
 
-                count += 1
+                valid_query_count += 1
 
                 mongo_query = await convertor.convert(query)
                 print(f"**********************MongoDB Query: {mongo_query}**************************")
@@ -78,7 +80,7 @@ async def benchmark():
                     success += 1
 
             print('Success: {}'.format(success))
-            print('Total: {}'.format(count))
+            print('Total: {}'.format(valid_query_count))
 
 
 if __name__ == '__main__':
