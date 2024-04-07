@@ -1,7 +1,0 @@
-**********************SQL Query: SELECT * FROM station WHERE city  =  "San Jose"**************************
-['id', 'name', 'lat', 'longitude', 'dock_count', 'city', 'installation_date']
-**********************MongoDB Query: db.station.find({ "city": "San Jose" })**************************
-Matched: [5, 6, 13, 11, 14, 3, 2, 0, 12, 1, 4, 9, 8, 15, 10, 7]
-Unmatched: []
-Success: 1
-Total: 1

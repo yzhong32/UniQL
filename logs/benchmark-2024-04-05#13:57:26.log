@@ -1,5 +1,0 @@
-**********************SQL Query: SELECT * FROM station WHERE city  =  "San Jose"**************************
-(None, OperationalError(2003, "Can't connect to MySQL server on '34.71.75.11' (timed out)"))
-execute mysql query error:(2003, "Can't connect to MySQL server on '34.71.75.11' (timed out)")
-Success: 0
-Total: 1
