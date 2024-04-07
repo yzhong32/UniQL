@@ -5,10 +5,23 @@ from test_framework.executor.Neo4j_executor import Neo4jExecutor
 from test_framework.comparator.hash import HashComparator
 
 if __name__ == '__main__':
-    sql_query = 'SELECT avg(longitude) FROM station WHERE city  =  "San Jose"'
+    sql_query = 'SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10'
     mongo_query = 'db.station.aggregate([ { $match: { city: "San Jose" } }, { $group: { _id: null, avgLongitude: { $avg: "$longitude" } } }] )'
+    # neo4j_query = '''
+    # MATCH (s:Station {city: "San Jose"}) RETURN avg(s.longitude) AS averageLongit
+    # '''
+    # neo4j_query = '''
+    # MATCH (w:Weather)
+    #          WITH w.zipCode AS zip_code, AVG(w.meanVisibilityMiles) AS avgVisibility
+    #          WHERE avgVisibility < 10
+    #          RETURN zip_code;
+    # '''
+
     neo4j_query = '''
-    MATCH (s:Station {city: "San Jose"}) RETURN avg(s.longitude) AS averageLongit
+    MATCH (w:Weather)
+    WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avgVisibility
+    WHERE avgVisibility < 10
+    RETURN zip_code
     '''
 
     mysql_executor = MySQLExecutor()
