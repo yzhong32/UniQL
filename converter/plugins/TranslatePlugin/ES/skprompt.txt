@@ -1,12 +1,25 @@
 Translate SQL Query to ES DSL Query with Matching Attribute Names.
 
 Example 1:
-SQL: SELECT date FROM weather WHERE max_temperature_f  >  85
-Neo4j: MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date
+SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
+ES Query: 
+{
+    "query": {
+    "bool": {
+        "filter": [
+        {
+            "range": {
+            "mean_visibility_miles": {
+                "lt": 10
+            }
+            }
+        }
+        ]
+    }
+    },
+    "_source": ["zip_code"]
+}
 
-Example 2:
-SQL: SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10
-Neo4j: MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avgVisibility WHERE avgVisibility < 10 RETURN zip_code
 +++++++++
 SQL: {{$sql}}
 Neo4j Query:

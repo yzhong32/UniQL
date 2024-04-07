@@ -1,6 +1,6 @@
 {
     "schema": 1,
-    "description": "Translate SQL query into Neo4j query",
+    "description": "Translate SQL query into ES query",
     "execution_settings": {
       "default": {
         "max_tokens": 1000,
