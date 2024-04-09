@@ -53,17 +53,28 @@ if __name__ == '__main__':
     executor = ElasticsearchExecutor()
 
     # Define a test index name - replace 'your_index' with a real index from your Elasticsearch
-    test_index = 'bike_1_trip'
+    test_index = 'bike_1_weather'
 
     # Define a test query - this example matches all documents, but you should replace it with your actual query
     test_query = {
         "query": {
-            "match_all": {}
-        }
+            "bool": {
+            "filter": [
+                {
+                "range": {
+                    "mean_visibility_miles": {
+                    "lt": 10
+                    }
+                }
+                }
+            ]
+            }
+        },
+        "_source": ["zip_code"]
     }
 
     # Define a schema for the documents you expect back - replace these fields with those relevant to your data
-    test_schema = ['duration', 'start_date']
+    test_schema = ['zip_code']
 
     # Execute the query
     results, error = executor.execute_query(test_query, test_index, test_schema)
