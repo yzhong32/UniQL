@@ -21,6 +21,8 @@ class Neo4jExecutor(QueryExecutor):
     def execute_query(self, query, database=None, schema=None):
         session = self.driver.session(database=database) if database else self.driver.session()
         try:
+            print(str(query))
+            query = str(query)
             results = session.run(query)
             formatted_results = []
             for record in results:
