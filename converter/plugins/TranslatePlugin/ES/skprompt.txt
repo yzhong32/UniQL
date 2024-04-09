@@ -1,0 +1,25 @@
+Translate SQL Query to ES DSL Query with Matching Attribute Names.
+
+Example 1:
+SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
+ES Query: 
+{
+    "query": {
+    "bool": {
+        "filter": [
+        {
+            "range": {
+            "mean_visibility_miles": {
+                "lt": 10
+            }
+            }
+        }
+        ]
+    }
+    },
+    "_source": ["zip_code"]
+}
+
++++++++++
+SQL: {{$sql}}
+Neo4j Query:
