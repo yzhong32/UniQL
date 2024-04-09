@@ -58,7 +58,7 @@ def get_database_executor(target: DBName) -> (QueryExecutor, QueryExecutor, Exce
 
 
 async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: QueryExecutor,
-                           converter: QueryConverter, comparator: QueryComparator, queries: List[Tuple[str, str]]):
+                           converter: QueryConverter, comparator: QueryComparator, target_db: DBName, queries: List[Tuple[str, str]]):
     executed_queries = set()
     valid_query_count = 0
     success_query_count = 0
@@ -87,7 +87,7 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         valid_query_count += 1
 
         # execute target query
-        target_query = await converter.convert(sql_query)
+        target_query = await converter.convert(sql_query, target_db.value)
         print("---------------------------Execute Target Query:{}-----------------".format(target_query))
         target_result, e = target_executor.execute_query(target_query, database, schema)
         if e is not None:
@@ -120,7 +120,7 @@ async def benchmark(input_file: str, target_db: DBName):
     output_file_path = get_output_file_path(input_file, target_db.value)
     with open(output_file_path, 'w') as f:
         with redirect_stdout(f), redirect_stderr(f):
-            await single_benchmark(mysql_executor, target_executor, convertor, comparator, queries)
+            await single_benchmark(mysql_executor, target_executor, convertor, comparator, target_db, queries)
 
 
 if __name__ == '__main__':
