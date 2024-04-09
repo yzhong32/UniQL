@@ -1,4 +1,6 @@
 Translate SQL Query to Neo4j Cypher Query with Matching Attribute Names.
+Requirement:
+1. For SQL aggregation functions, link the operation and field with an underscore. For instance, convert max(score) in SQL to max_score.
 
 Example 1:
 SQL: SELECT date FROM weather WHERE max_temperature_f  >  85

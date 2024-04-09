@@ -93,8 +93,11 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         # execute target query
         target_query = await converter.convert(sql_query, target_db.value)
         print("---------------------------Execute Target Query:{}-----------------".format(target_query))
-        # target_result, e = target_executor.execute_query(target_query, database, schema)
-        target_result, e = target_executor.execute_query(target_query)
+        if target_db.value == "neo4j":
+            target_result, e = target_executor.execute_query(target_query)
+        else:
+            target_result, e = target_executor.execute_query(target_query, database, schema)
+
         if e is not None:
             print('execute target query error:{}'.format(e))
             continue
