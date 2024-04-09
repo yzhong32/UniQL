@@ -1,4 +1,5 @@
 Translate SQL Query to ES DSL Query with Matching Attribute Names.
+You should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.
 
 Example 1:
 SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
@@ -17,7 +18,8 @@ ES Query:
         ]
     }
     },
-    "_source": ["zip_code"]
+    "_source": ["zip_code"],
+    "inner_index": "weather"
 }
 
 +++++++++
