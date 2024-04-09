@@ -1,12 +1,12 @@
 import json
 import pymysql
 import simplejson
-from .base import SQLExecutor
+from .base import QueryExecutor
 from .utils import *
 
 
 # this is not an implementation of Executor
-class MySQLExecutor(SQLExecutor):
+class MySQLExecutor(QueryExecutor):
     def __init__(self):
         self.connection = None
 

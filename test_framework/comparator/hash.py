@@ -1,8 +1,8 @@
 from typing import List
-from test_framework.comparator.base import BaseComparator
+from test_framework.comparator.base import QueryComparator
 
 
-class HashComparator(BaseComparator):
+class HashComparator(QueryComparator):
     def __init__(self):
         super().__init__()
 

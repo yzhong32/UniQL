@@ -1,7 +1,7 @@
 import abc
 
 
-class SQLExecutor(abc.ABC):
+class QueryExecutor(abc.ABC):
     @abc.abstractmethod
     def init(self, config_path):
         pass

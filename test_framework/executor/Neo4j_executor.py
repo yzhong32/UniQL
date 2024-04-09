@@ -1,8 +1,8 @@
 import json
 from neo4j import GraphDatabase
-from .base import SQLExecutor
+from .base import QueryExecutor
 
-class Neo4jExecutor(SQLExecutor):
+class Neo4jExecutor(QueryExecutor):
     def __init__(self):
         self.driver = None
 

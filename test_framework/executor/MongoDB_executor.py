@@ -3,9 +3,9 @@ import simplejson
 
 from pymongo import MongoClient
 
-from .base import SQLExecutor
+from .base import QueryExecutor
 
-class MongoDBExecutor(SQLExecutor):
+class MongoDBExecutor(QueryExecutor):
     def __init__(self):
         self.client = None
         self.db = None

@@ -12,9 +12,9 @@ from elasticsearch import Elasticsearch
 #     response = es.search(index=index_name, body={"query": {"match_all": {}}})
 #     return response
 
-from .base import BaseExecutor  # Assuming there is a BaseExecutor to inherit from
+from .base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
 
-class ElasticsearchExecutor(BaseExecutor):
+class ElasticsearchExecutor(QueryExecutor):
     def __init__(self):
         self.client = self.get_elasticsearch_conn()
         self.index = None
