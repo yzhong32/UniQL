@@ -1,6 +1,7 @@
 Translate SQL Query to Neo4j Cypher Query with Matching Attribute Names.
 Requirement:
 1. For SQL aggregation functions, link the operation and field with an underscore. For instance, convert max(score) in SQL to max_score.
+2. For SQL queries with join, Do not write multiple queries with dash lines and use relationships such as A -[:r]-> B. Just write one query with where to represent the relatinoship instead (see example 3).
 
 Example 1:
 SQL: SELECT date FROM weather WHERE max_temperature_f  >  85
@@ -9,6 +10,12 @@ Neo4j: MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date
 Example 2:
 SQL: SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10
 Neo4j: MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avgVisibility WHERE avgVisibility < 10 RETURN zip_code
+
+Example 3:
+SQL: SELECT count(*) FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id WHERE T2.city !=  "San Francisco"
+Neo4j: 
+    Instead of doing MATCH (t:Trip)-[:ENDS_AT]->(s:Station) WHERE s.city <> "San Francisco" RETURN count(*) AS count;----------------- MATCH (t:Trip)-[:ENDS_AT]->(s:Station) WHERE s.city <> "San Francisco" RETURN count(*) AS count;
+    Try doing this: MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;
 +++++++++
 SQL: {{$sql}}
 Neo4j Query:
