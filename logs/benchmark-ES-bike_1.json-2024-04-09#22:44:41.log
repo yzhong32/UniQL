@@ -1,0 +1,22 @@
+
+--------------------------1-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE max_temperature_f  >  85-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+    "bool": {
+        "filter": [
+        {
+            "range": {
+            "max_temperature_f": {
+                "gt": 85
+            }
+            }
+        }
+        ]
+    }
+    },
+    "_source": ["date"],
+    "inner_index": "weather"
+}-----------------
