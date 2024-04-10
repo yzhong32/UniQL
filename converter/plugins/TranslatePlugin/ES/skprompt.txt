@@ -1,6 +1,7 @@
 Translate SQL Query to ES DSL Query with Matching Attribute Names.
 You should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.
 Notice, in ES syntax, if there are aggregation functions, then you need to set "size" to 0 to neglect original documents and only return aggregation results. Show as Example 2.
+IMPORTANT! Only return the json, but not other words!
 
 Example 1:
 SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
@@ -27,7 +28,6 @@ Example 2:
 SQL: SELECT city ,  max(lat) FROM station GROUP BY city
 ES query:
 query = {
-  "size": 0,
   "aggs": {
     "group_by_city": {
       "terms": {
@@ -41,10 +41,11 @@ query = {
         }
       }
     }
-  }
+  },
+  "size":0
 }
 
 
 +++++++++
 SQL: {{$sql}}
-Neo4j Query:
+ES Query:

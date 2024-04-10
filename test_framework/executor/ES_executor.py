@@ -38,6 +38,8 @@ class ElasticsearchExecutor(QueryExecutor):
             table = query.pop("inner_index")
             if "size" not in query:
                 query["size"] = 10000
+            print("**************************************************")
+            print(query)
             self.index = database+'_'+table
         except Exception as e:
             return None, e
