@@ -17,5 +17,309 @@ Neo4j:
     Instead of doing MATCH (t:Trip)-[:ENDS_AT]->(s:Station) WHERE s.city <> "San Francisco" RETURN count(*) AS count;----------------- MATCH (t:Trip)-[:ENDS_AT]->(s:Station) WHERE s.city <> "San Francisco" RETURN count(*) AS count;
     Try doing this: MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;
 +++++++++
+References:
+{\rtf1\ansi\ansicpg1252\cocoartf2759
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww16420\viewh12520\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Basic queries This page contains information about how to create, query, and delete a graph database using Cypher. For more advanced queries, see the section on Subqueries. The examples below uses the publicly available Neo4j movie database. Creating a data model Before creating a property graph database, it is important to develop an appropriate data model. This will provide structure to the data, and allow users of the graph to efficiently retrieve the information they are looking for. The following data model is used for the Neo4j data model: It includes two types of node labels: \'95 Person nodes, which have the following properties: name and born. \'95 Movie nodes, which have the following properties: title, released, and tagline. The data model also contains five different relationship types between the Person and Movie nodes: ACTED_IN, DIRECTED, PRODUCED, WROTE, and REVIEWED. Two of the relationship types have properties: \'95 The ACTED_IN relationship type, which has the roles property. \'95 The REVIEWED relationship type, which has a summary property and a rating property. To learn more about data modelling for graph databases, enroll in the free Graph Data Modelling Fundamentals course offered by GraphAcademy. Creating a property graph database The complete Cypher query to create the Neo4j movie database, can be found here. To create the full graph, run the full query against an empty Neo4j database. Finding nodes The MATCH clause is used to find a specific pattern in the graph, such as a specific node. The RETURN clause specifies what of the found graph pattern to return. For example, this query will find the nodes with Person label and the name Keanu Reeves, and return the name and born properties of the found nodes: Query MATCH (keanu:Person \{name:'Keanu Reeves'\}) RETURN keanu.name AS name, keanu.born AS born Table 1. Result name born "Keanu Reeves" 1964 Rows: 1 It is also possible to query a graph for several nodes. This query matches all nodes with the Person label, and limits the results to only include five rows. Query MATCH (people:Person) RETURN people LIMIT 5 Table 2. Result people \{"born":1964,"name":"Keanu Reeves"\} \{"born":1967,"name":"Carrie-Anne Moss"\} \{"born":1961,"name":"Laurence Fishburne"\} \{"born":1960,"name":"Hugo Weaving"\} \{"born":1967,"name":"Lilly Wachowski"\} Rows: 5 Note on clause composition Similar to SQL, Cypher queries are constructed using various clauses which are chained together to feed intermediate results between each other. Each clause has as input the state of the graph and a table of intermediate results consisting of the referenced variables. The first clause takes as input the state of the graph before the query and an empty table of intermediate results. The output of a clause is a new state of the graph and a new table of intermediate results, serving as input to the next clause. The output of the last clause is the result of the query. Note that if one of the clauses returns an empty table of intermediate results, there is nothing to pass on to subsequent clauses, thus ending the query.w (There are ways to circumvent this behaviour. For example, by replacing a MATCH clause with OPTIONAL MATCH.) In the below example, the first MATCH clause finds all nodes with the Person label. The second clause will then filter those nodes to find all Person nodes who were born in the 1980s. The final clause returns the result in a descending chronological order. Query MATCH (bornInEighties:Person) WHERE bornInEighties.born >= 1980 AND bornInEighties.born < 1990 RETURN bornInEighties.name as name, bornInEighties.born as born ORDER BY born DESC Table 3. Result name born "Emile Hirsch" 1985 "Rain" 1982 "Natalie Portman" 1981 "Christina Ricci" 1980 Rows: 4 For more details, see the section on Clause composition. Finding connected nodes To discover how nodes are connected to one another, relationships must be added to queries. Queries can specify relationship types, properties, and direction, as well as the start and end nodes of the pattern. For example, the following query matches the graph for the director of the movie the Matrix, and returns the name property of its directors. Query MATCH (m:Movie \{title: 'The Matrix'\})<-[d:DIRECTED]-(p:Person) RETURN p.name as director Table 4. Result director "Lilly Wachowski" "Lana Wachowski" Rows: 2 It also possible to look for the type of relationships that connect nodes to one another. The below query searches the graph for outgoing relationships from the Tom Hanks node to any Movie nodes, and returns the relationships and the titles of the movies connected to him. Query MATCH (tom:Person \{name:'Tom Hanks'\})-[r]->(m:Movie) RETURN type(r) AS type, m.title AS movie The result shows that he has 13 outgoing relationships connected to 12 different Movie nodes (12 have the ACTED_IN type and one has the DIRECTED type). It is possible to further modify Cypher queries by adding label expressions to the clauses. For example, the below query uses a NOT label expression (!) to return all relationships connected to Tom Hanks that are not of type ACTED_IN. Query MATCH (:Person \{name:'Tom Hanks'\})-[r:!ACTED_IN]->(m:Movie) Return type(r) AS type, m.title AS movies Table 6. Result type movie "DIRECTED" "That Thing You Do" Rows: 1 For more information about the different label expressions supported by Cypher, see the section on label expressions. Finding paths There are several ways in which Cypher can be used to search a graph for paths between nodes. To search for patterns of a fixed length, specify the distance (hops) between the nodes in the pattern by using a quantifier (\{n\}). For example, the following query matches all Person nodes exactly 2 hops away from Tom Hanks and returns the first five rows. The DISTINCT operator ensures that the result contain no duplicate values. Query MATCH (tom:Person \{name:'Tom Hanks'\})--\{2\}(colleagues:Person) RETURN DISTINCT colleagues.name AS name, colleagues.born AS bornIn ORDER BY bornIn LIMIT 5 Table 7. Result name bornIn "Mike Nichols" 1931 "Ian McKellen" 1939 "James Cromwell" 1940 "Nora Ephron" 1941 "Penny Marshall" 1943 Rows: 5 It is also possible to match a graph for patterns of a variable length. The below query matches all Person nodes between 1 and 4 hops away from Tom Hanks and returns the first five rows. Query MATCH (p:Person \{name:'Tom Hanks'\})--\{1,4\}(colleagues:Person) RETURN DISTINCT colleagues.name AS name, colleagues.born AS bornIn ORDER BY bornIn, name LIMIT 5 Table 8. Result name bornIn "Max von Sydow" 1929 "Clint Eastwood" 1930 "Gene Hackman" 1930 "Richard Harris" 1930 "Mike Nichols" 1931 Rows: 5}
+
+Cypher by example
+Nodes and properties
+A Neo4j database contains nodes and directed binary relationships between nodes. Nodes can have multiple labels that act to classify nodes into different, perhaps overlapping, classes. Each node or relationship is associated with a set of properties. We will start by using Cypher to explore the contents of the database.
+
+Here is a Cypher query the explores what kinds of node exist in our database:
+
+match (n)
+return labels(n) as labels, keys(n) as properties, count(*) as total
+order by total desc;
+The keyword match is followed by the pattern (n) that matches any node and assigns it to the variable n. The function call labels(n) returns a list of all labels associated with the node. The function call keys(n) returns a list of all of the names associated with properties — these act much like column names in SQL. (The term key here simply means the name of a node property, not a key that uniquely identifies the node.) The rest of the query looks very much like SQL, except for the fact that a group by construct is implicit in Cypher: count() is an aggregate function, so the query implicitly groups by labels and properties. The query returns:
+
++----------------------------------------------------------------------------------------------------+
+| labels     | properties                                                                    | total |
++----------------------------------------------------------------------------------------------------+
+| ["Person"] | ["person_id", "name", "birthYear"]                                            | 3659  |
+| ["Person"] | ["person_id", "name"]                                                         | 2260  |
+| ["Movie"]  | ["movie_id", "title", "year", "type", "minutes", "rating", "votes", "genres"] | 1236  |
+| ["Person"] | ["person_id", "name", "birthYear", "deathYear"]                               | 357   |
+| ["Person"] | ["person_id", "name", "deathYear"]                                            | 8     |
++----------------------------------------------------------------------------------------------------+
+
+5 rows available after 136 ms, consumed after another 0 ms
+In our case, each node has exactly one label, either Movie or Person. There are several listings for the Person label because the properties differ. In Neo4j, the null value is not represented explicitly. Instead it is represented by the absence of a property.
+
+Let's take a look at a particular movie:
+
+match (m: Movie {title : 'Silver Linings Playbook'}) return m;
+The query returns:
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| m                                                                                                                                                                                             |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| (:Movie {year: 2012, minutes: 122, genres: ["Comedy", "Drama", "Romance"], rating: 7.699999809265137, votes: 625643, movie_id: "tt1045658", title: "Silver Linings Playbook", type: "movie"}) |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+1 row available after 30 ms, consumed after another 10 ms
+Note that objects are self describing in that each property name is present along with the associated value. Contrast that with the column-oriented way of displaying tables in a relational database. Note that the genres property is associated with a list of genres. An alternative implementation could represent each genre as a node with a has genre relationship between movies and genres (as was done in the relational database). This is simply a design decision. But is it a good one? Discuss!
+
+Let's take a look at a particular person:
+
+match (p: Person {name : 'Jennifer Lawrence'}) return p;
+The query returns:
+
++--------------------------------------------------------------------------------+
+| p                                                                              |
++--------------------------------------------------------------------------------+
+| (:Person {birthYear: 1990, name: "Jennifer Lawrence", person_id: "nm2225369"}) |
++--------------------------------------------------------------------------------+
+
+1 row available after 19 ms, consumed after another 22 ms
+No surprises here.
+
+A few SQL-like queries
+The Cypher language has been influenced by SQL and contains many SQL-like constructs. For example, in our relational system we counted the number of movies with this query:
+
+select count(*) from people;
+With Cypher, we can do something very similar:
+
+match (:Movie) return count(*);
+The query returns:
+
++----------+
+| count(*) |
++----------+
+| 1236     |
++----------+
+
+1 row available after 10 ms, consumed after another 0 ms
+We can also do order by and something similar to group by. In SQL we wrote this query to count movies in each year in reverse chronological order:
+
+select year, count(*) as total
+from movies
+group by year
+order by year desc;
+With Cypher, we can do this as follows.
+
+match (m:Movie)
+return m.year as year, count(*) as total
+order by year desc;
+This query returns:
+
++--------------+
+| year | total |
++--------------+
+| 2019 | 20    |
+| 2018 | 41    |
+| 2017 | 58    |
+| 2016 | 70    |
+| 2015 | 60    |
+| 2014 | 65    |
+| 2013 | 71    |
+| 2012 | 63    |
+| 2011 | 71    |
+| 2010 | 68    |
+| 2009 | 74    |
+| 2008 | 67    |
+| 2007 | 88    |
+| 2006 | 70    |
+| 2005 | 58    |
+| 2004 | 72    |
+| 2003 | 63    |
+| 2002 | 54    |
+| 2001 | 52    |
+| 2000 | 51    |
++--------------+
+
+20 rows available after 34 ms, consumed after another 0 ms
+Note how the order by construct looks exactly like the SQL, but the group by is implicit any time we use an aggregate function like count. So, for example, our SQL query
+
+select type,
+       count(*) as movie_count,
+       min(votes) as min_votes,
+       max(votes) as max_votes,
+       sum(votes) as sum_of_votes,
+       avg(votes) as averge_votes
+from movies
+group by type;
+can be expressed in Cypher as
+
+match (m:Movie)
+return m.type,
+       count(*) as movie_count,
+       min(m.votes) as min_votes,
+       max(m.votes) as max_votes,
+       sum(m.votes) as sum_of_votes,
+       avg(m.votes) as averge_votes;
+The query returns:
+
++-------------------------------------------------------------------------------------+
+| m.type    | movie_count | min_votes | max_votes | sum_of_votes | averge_votes       |
++-------------------------------------------------------------------------------------+
+| "movie"   | 947         | 50210     | 2093718   | 242717815    | 256301.8109820486  |
+| "tvMovie" | 289         | 1011      | 31496     | 1131873      | 3916.5155709342557 |
++-------------------------------------------------------------------------------------+
+
+2 rows available after 89 ms, consumed after another 0 ms
+Relationships and properties
+We can also extract information about the relationships in the database:
+
+match (m)-[r]->(n)
+return labels(m), type(r), labels(n), count(*) as total
+order by total desc;
+The pattern (m)-[r]->(n) matches two nodes (m and n) and a relationship (r) from m to n (all relationships in Neo4j have a direction). You can read it like an arrow m --> n where the relationship r is enclosed in square brackets. The function type(r) returns the type of the relationship r. The query returns:
+
++---------------------------------------------+
+| labels(m)  | type(r)    | labels(n) | total |
++---------------------------------------------+
+| ["Person"] | "ACTED_IN" | ["Movie"] | 4898  |
+| ["Person"] | "PRODUCED" | ["Movie"] | 2149  |
+| ["Person"] | "WROTE"    | ["Movie"] | 2114  |
+| ["Person"] | "DIRECTED" | ["Movie"] | 1324  |
++---------------------------------------------+
+
+4 rows available after 118 ms, consumed after another 0 ms
+This tells us that there are four types of relationships between people and movies.
+
+Each relationship between two nodes can also have a set of properties. The following query uses the pattern () that matches any node:
+
+match ()-[r]->()
+return type(r) as type, keys(r) as keys, count(*) as total
+order by type;
+The query returns:
+
++--------------------------------+
+| type       | keys      | total |
++--------------------------------+
+| "ACTED_IN" | ["roles"] | 4898  |
+| "DIRECTED" | []        | 1324  |
+| "PRODUCED" | []        | 2149  |
+| "WROTE"    | []        | 2114  |
++--------------------------------+
+
+4 rows available after 146 ms, consumed after another 0 ms
+Joins are EASY!
+Only the ACTED_IN relationship has a property, roles. Let's take a closer look. With SQL, if we want to see the roles that Scarlrett Johansson played in The Avengers we might write the following query.
+
+select role
+from people as p
+join plays_role as r on r.person_id = p.person_id
+join movies as m on m.movie_id = r.movie_id
+where title = 'The Avengers' and name = 'Scarlett Johansson';
+The output:
+
+Black Widow
+Natasha Romanoff
+Note that in our relational database plays_role is a ternary relationship. However, Neo4j allows us to implement binary relationships only. That is why roles is made a property of the ACTED_IN relationship.
+
+Consider the following Cypher query to see how this works.
+
+match (:Person {name : 'Scarlett Johansson'})
+      -[r:ACTED_IN]->
+      (:Movie {title : 'The Avengers'})
+return r.roles;
+The query returns:
+
++-------------------------------------+
+| r.roles                             |
++-------------------------------------+
+| ["Natasha Romanoff", "Black Widow"] |
++-------------------------------------+
+
+1 row available after 35 ms, consumed after another 3 ms
+Note how simply "joins" are expressed Cypher -- we just write a pattern that represents a path in the graph! Notice that the property roles associated with the relationship is a list of roles played by Scarlett Johansson in The Avengers. This seems like a very natural way to implement this relationship, since roles typically do not exist independently from a movie, unlike genres. (In fact, some relational systems support list-valued attributes, so this limitation is not inherent in the relational approach.)
+
+Bacon Numbers
+The coactors relationship was discussed in lecture. The following query returns name1, name2, total where the names correspond to two coactors and the total is the number of movies they act in together.
+
+match (p1:Person) -[:ACTED_IN]-> (m:Movie),
+      (p2:Person) -[:ACTED_IN]-> (m:Movie)
+where p1.person_id <> p2.person_id
+return p1.name as name1, p2.name as name2, count(*) as total
+order by total desc, name1, name2
+limit 10;
+The output:
+
++-------------------------------------------------+
+| name1              | name2              | total |
++-------------------------------------------------+
+| "Daniel Radcliffe" | "Rupert Grint"     | 8     |
+| "Kohl Sudduth"     | "Tom Selleck"      | 8     |
+| "Rupert Grint"     | "Daniel Radcliffe" | 8     |
+| "Tom Selleck"      | "Kohl Sudduth"     | 8     |
+| "Daniel Radcliffe" | "Emma Watson"      | 7     |
+| "Emma Watson"      | "Daniel Radcliffe" | 7     |
+| "Emma Watson"      | "Rupert Grint"     | 7     |
+| "Rupert Grint"     | "Emma Watson"      | 7     |
+| "Catherine Bell"   | "Chris Potter"     | 6     |
+| "Chris Potter"     | "Catherine Bell"   | 6     |
++-------------------------------------------------+
+
+10 rows available after 118 ms, consumed after another 1 ms
+Notice that the above query a pattern that contained two paths that shared a the same movie m. We can combine these into a single pattern as follows.
+
+match (p1:Person) -[:ACTED_IN]-> (m:Movie) <-[:ACTED_IN]- (p2:Person)
+where p1.person_id <> p2.person_id
+return p1.name as name1, p2.name as name2, count(*) as total
+order by total desc, name1, name2
+limit 10;
+The query can be further simplified by eliminating the movie node and giving the number of ACTED_IN links in the path:
+
+match (p1:Person) -[:ACTED_IN*2]- (p2:Person)
+where p1.person_id <> p2.person_id
+return p1.name as name1, p2.name as name2, count(*) as total
+order by total desc, name1, name2
+limit 10;
+Notice that the arrow heads have been dropped. The notation -[:ACTED_IN*2]- denotes two arcs in either direction.
+
+Suppose we want to see how many hops of the coactor relationship exist between two actors, say Jennifer Lawrence and Daniel Radcliff. We can try the following query, first with -[:ACTED_IN*2]-, where we get nothing, then with -[:ACTED_IN*4]-, again nothing. But with -[:ACTED_IN*6]- we get a result.
+
+match path=(m:Person {name : 'Jennifer Lawrence'} )
+                            -[:ACTED_IN*6]-
+                            (n:Person {name : 'Daniel Radcliffe'})
+return path;
+Note that the query is actually returning all paths in the graph between the two actors. The text-based output is not so easy to read.
+
+path
+(:Person {birthYear: 1990, name: "Jennifer Lawrence", person_id: "nm2225369"})-[:ACTED_IN {roles: ["Raven", "Mystique"]}]->(:Movie {year: 2011, minutes: 131, genres: ["Action", "Adventure", "Sci-Fi"], rating: 7.699999809265137, votes: 615767, movie_id: "tt1270798", title: "X-Men: First Class", type: "movie"})<-[:ACTED_IN {roles: ["Erik Lensherr"]}]-(:Person {birthYear: 1977, name: "Michael Fassbender", person_id: "nm1055413"})-[:ACTED_IN {roles: ["Brandon"]}]->(:Movie {year: 2011, minutes: 101, genres: ["Drama"], rating: 7.199999809265137, votes: 172694, movie_id: "tt1723811", title: "Shame", type: "movie"})<-[:ACTED_IN {roles: ["Sissy"]}]-(:Person {birthYear: 1985, name: "Carey Mulligan", person_id: "nm1659547"})-[:ACTED_IN {roles: ["Elsie Kipling"]}]->(:Movie {year: 2007, minutes: 95, genres: ["Biography", "Drama", "History"], rating: 7.099999904632568, votes: 4951, movie_id: "tt0851430", title: "My Boy Jack", type: "tvMovie"})<-[:ACTED_IN {roles: ["John Kipling"]}]-(:Person {birthYear: 1989, name: "Daniel Radcliffe", person_id: "nm0705356"}) (:Person {birthYear: 1990, name: "Jennifer Lawrence", person_id: "nm2225369"})-[:ACTED_IN {roles: ["Katniss Everdeen"]}]->(:Movie {year: 2013, minutes: 146, genres: ["Action", "Adventure", "Sci-Fi"], rating: 7.5, votes: 580366, movie_id: "tt1951264", title: "The Hunger Games: Catching Fire", type: "movie"})<-[:ACTED_IN {roles: ["Plutarch Heavensbee"]}]-(:Person {birthYear: 1967, deathYear: 2014, name: "Philip Seymour Hoffman", person_id: "nm0000450"})-[:ACTED_IN {roles: ["The Count"]}]->(:Movie {year: 2009, minutes: 135, genres: ["Comedy", "Drama", "Music"], rating: 7.400000095367432, votes: 102941, movie_id: "tt1131729", title: "Pirate Radio", type: "movie"})<-[:ACTED_IN {roles: ["Quentin"]}]-(:Person {birthYear: 1949, name: "Bill Nighy", person_id: "nm0631490"})-[:ACTED_IN {roles: ["Minister Rufus Scrimgeour"]}]->(:Movie {year: 2010, minutes: 146, genres: ["Adventure", "Fantasy", "Mystery"], rating: 7.699999809265137, votes: 431839, movie_id: "tt0926084", title: "Harry Potter and the Deathly Hallows: Part 1", type: "movie"})<-[:ACTED_IN {roles: ["Harry Potter"]}]-(:Person {birthYear: 1989, name: "Daniel Radcliffe", person_id: "nm0705356"})
+2 rows available after 8 ms, consumed after another 22 ms
+
+However, the graphical output (using a web browser) is is very clear. Try it!
+
+This technique of trying different values (2, 4, 6, ...) until we get a result is rather tedious. Instead we can use -[:ACTED_IN*]- together with Neo4j's function allshortestpaths to get the same result:
+
+match path=allshortestpaths((m:Person {name : 'Jennifer Lawrence'} )
+                            -[:ACTED_IN*]-
+                            (n:Person {name : 'Daniel Radcliffe'}))
+return path;
+The following query returns bacon_number, total for each bacon number associated with people in our database and the total with that bacon number.
+
+match path=allshortestpaths(
+          (m:Person {name : "Kevin Bacon"} ) -[:ACTED_IN*]- (n:Person))
+     where n.person_id <> m.person_id
+     return length(path)/2 as bacon_number,
+            count(distinct n.person_id) as total
+order by bacon_number;
+The output:
+
++----------------------+
+| bacon_number | total |
++----------------------+
+| 1            | 12    |
+| 2            | 99    |
+| 3            | 533   |
+| 4            | 823   |
+| 5            | 292   |
+| 6            | 84    |
+| 7            | 23    |
++----------------------+
+
+7 rows available after 314 ms, consumed after another 0 ms
+
++++++++++
 SQL: {{$sql}}
 Neo4j Query:

@@ -67,7 +67,6 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
     success_query_count = 0
     idx = 1
 
-    
     for (database, sql_query) in queries:
         # filter duplicate query
         if sql_query in executed_queries:

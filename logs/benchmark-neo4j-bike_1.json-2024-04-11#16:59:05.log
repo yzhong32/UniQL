@@ -1,0 +1,151 @@
+
+--------------------------1-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE max_temperature_f  >  85-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:Cypher Query:
++++++++++
+MATCH (w:Weather)
+WHERE w.max_temperature_f > 85
+RETURN w.date as date
++++++++++-----------------
+Cypher Query:
++++++++++
+MATCH (w:Weather)
+WHERE w.max_temperature_f > 85
+RETURN w.date as date
++++++++++
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'Query': expected
+  "ALTER"
+  "CALL"
+  "CREATE"
+  "DEALLOCATE"
+  "DELETE"
+  "DENY"
+  "DETACH"
+  "DROP"
+  "DRYRUN"
+  "ENABLE"
+  "FOREACH"
+  "GRANT"
+  "INSERT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "REALLOCATE"
+  "REMOVE"
+  "RENAME"
+  "RETURN"
+  "REVOKE"
+  "SET"
+  "SHOW"
+  "START"
+  "STOP"
+  "TERMINATE"
+  "UNWIND"
+  "USE"
+  "USING"
+  "WITH" (line 1, column 8 (offset: 7))
+"Cypher Query:"
+        ^}
+
+--------------------------2-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT name FROM station WHERE lat  <  37.5-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:Cypher Query:
++++++++++
+SQL: SELECT name FROM station WHERE lat  <  37.5
+Neo4j Query: MATCH (s:Station) WHERE s.lat < 37.5 RETURN s.name as name-----------------
+Cypher Query:
++++++++++
+SQL: SELECT name FROM station WHERE lat  <  37.5
+Neo4j Query: MATCH (s:Station) WHERE s.lat < 37.5 RETURN s.name as name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'Query': expected
+  "ALTER"
+  "CALL"
+  "CREATE"
+  "DEALLOCATE"
+  "DELETE"
+  "DENY"
+  "DETACH"
+  "DROP"
+  "DRYRUN"
+  "ENABLE"
+  "FOREACH"
+  "GRANT"
+  "INSERT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "REALLOCATE"
+  "REMOVE"
+  "RENAME"
+  "RETURN"
+  "REVOKE"
+  "SET"
+  "SHOW"
+  "START"
+  "STOP"
+  "TERMINATE"
+  "UNWIND"
+  "USE"
+  "USING"
+  "WITH" (line 1, column 8 (offset: 7))
+"Cypher Query:"
+        ^}
+
+--------------------------3-----------------
+schema:['city', 'max_lat']
+---------------------------Execute SQL Query:SELECT city ,  max(lat) FROM station GROUP BY city-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:Cypher Query:
++++++++++
+SQL: SELECT city ,  max(lat) FROM station GROUP BY city
+Neo4j Query: MATCH (s:Station) RETURN s.city AS city, MAX(s.lat) AS max_lat GROUP BY s.city-----------------
+Cypher Query:
++++++++++
+SQL: SELECT city ,  max(lat) FROM station GROUP BY city
+Neo4j Query: MATCH (s:Station) RETURN s.city AS city, MAX(s.lat) AS max_lat GROUP BY s.city
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'Query': expected
+  "ALTER"
+  "CALL"
+  "CREATE"
+  "DEALLOCATE"
+  "DELETE"
+  "DENY"
+  "DETACH"
+  "DROP"
+  "DRYRUN"
+  "ENABLE"
+  "FOREACH"
+  "GRANT"
+  "INSERT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "REALLOCATE"
+  "REMOVE"
+  "RENAME"
+  "RETURN"
+  "REVOKE"
+  "SET"
+  "SHOW"
+  "START"
+  "STOP"
+  "TERMINATE"
+  "UNWIND"
+  "USE"
+  "USING"
+  "WITH" (line 1, column 8 (offset: 7))
+"Cypher Query:"
+        ^}
+success_query_count: 0
+valid_count: 3
+accuracy: 0.0
