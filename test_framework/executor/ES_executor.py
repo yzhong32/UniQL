@@ -14,6 +14,7 @@ from elasticsearch import Elasticsearch
 
 from .base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
 
+
 class ElasticsearchExecutor(QueryExecutor):
     def __init__(self):
         self.client = self.get_elasticsearch_conn()
@@ -46,6 +47,7 @@ class ElasticsearchExecutor(QueryExecutor):
         except Exception as e:
             return None, e
 
+
 import json
 
 if __name__ == '__main__':
@@ -59,15 +61,15 @@ if __name__ == '__main__':
     test_query = {
         "query": {
             "bool": {
-            "filter": [
-                {
-                "range": {
-                    "mean_visibility_miles": {
-                    "lt": 10
+                "filter": [
+                    {
+                        "range": {
+                            "mean_visibility_miles": {
+                                "lt": 10
+                            }
+                        }
                     }
-                }
-                }
-            ]
+                ]
             }
         },
         "_source": ["zip_code"]
@@ -88,21 +90,18 @@ if __name__ == '__main__':
         for doc in results:
             print(json.loads(doc))
 
-
-
-
 # if __name__ == '__main__':
 #     es = get_elasticsearch_conn()
-    
+
 #     # Define the index to query
 #     index_name = 'bike_1_trip'
-    
+
 #     # Define a simple query. In this example, it retrieves all documents
 #     query = es.search(index=index_name, body={"query": {"match_all": {}}})
-    
+
 #     # Execute the query
 #     response = simple_es_query(es, index_name, query)
-    
+
 #     # Process and print out the results
 #     for hit in response['hits']['hits']:
 #         print(hit['_source'])
