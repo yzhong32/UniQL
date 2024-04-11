@@ -1,0 +1,823 @@
+--------
+
+--------------------------1-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE max_temperature_f  >  85-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bef3310>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date-----------------
+MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date
+translate SELECT date FROM weather WHERE max_temperature_f  >  85 success
+
+--------------------------2-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT name FROM station WHERE lat  <  37.5-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be1b100>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.lat < 37.5 RETURN s.name as name-----------------
+MATCH (s:Station) WHERE s.lat < 37.5 RETURN s.name as name
+translate SELECT name FROM station WHERE lat  <  37.5 success
+
+--------------------------3-----------------
+schema:['city', 'max_lat']
+---------------------------Execute SQL Query:SELECT city ,  max(lat) FROM station GROUP BY city-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bdc8ac0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)
+WITH s.city AS city, MAX(s.lat) AS max_lat
+RETURN city, max_lat-----------------
+MATCH (s:Station)
+WITH s.city AS city, MAX(s.lat) AS max_lat
+RETURN city, max_lat
+translate SELECT city ,  max(lat) FROM station GROUP BY city success
+
+--------------------------4-----------------
+schema:['start_station_name', 'end_station_name']
+---------------------------Execute SQL Query:SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be9acb0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip)-[:STARTS_AT]->(start:Station), (t)-[:ENDS_AT]->(end:Station) RETURN start.station_name AS start_station_name, end.station_name AS end_station_name ORDER BY t.id LIMIT 3-----------------
+MATCH (t:Trip)-[:STARTS_AT]->(start:Station), (t)-[:ENDS_AT]->(end:Station) RETURN start.station_name AS start_station_name, end.station_name AS end_station_name ORDER BY t.id LIMIT 3
+Exception raised during comparison: Row number mismatch
+
+--------------------------5-----------------
+schema:['avg_lat', 'avg_longitude']
+---------------------------Execute SQL Query:SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  "San Jose"-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bdc8f70>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.city = "San Jose" RETURN AVG(s.lat) AS avg_lat, AVG(s.longitude) AS avg_longitude-----------------
+MATCH (s:Station) WHERE s.city = "San Jose" RETURN AVG(s.lat) AS avg_lat, AVG(s.longitude) AS avg_longitude
+mismatch between MySQL and target
+mysql res: ['{"avg_lat": 37.0000, "avg_longitude": -122.0000}']
+target res: ['{"avg_lat": 37.0, "avg_longitude": -122.0}']
+
+--------------------------6-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM trip ORDER BY duration LIMIT 1-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be19ea0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) RETURN t.id AS id ORDER BY t.duration LIMIT 1-----------------
+MATCH (t:Trip) RETURN t.id AS id ORDER BY t.duration LIMIT 1
+translate SELECT id FROM trip ORDER BY duration LIMIT 1 success
+
+--------------------------7-----------------
+schema:['sum_duration', 'max_duration']
+---------------------------Execute SQL Query:SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b34ddc0d0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) WHERE t.bike_id = 636 
+RETURN SUM(t.duration) AS sum_duration, MAX(t.duration) AS max_duration-----------------
+MATCH (t:Trip) WHERE t.bike_id = 636 
+RETURN SUM(t.duration) AS sum_duration, MAX(t.duration) AS max_duration
+translate SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636 success
+
+--------------------------8-----------------
+schema:['zip_code', 'avg_mean_temperature_f']
+---------------------------Execute SQL Query:SELECT zip_code  ,  avg(mean_temperature_f) FROM weather WHERE date LIKE "8/%" GROUP BY zip_code-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be9acb0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather)
+WHERE w.date =~ "8/.*"
+WITH w.zip_code AS zip_code, AVG(w.mean_temperature_f) AS avg_mean_temperature_f
+RETURN zip_code, avg_mean_temperature_f-----------------
+MATCH (w:Weather)
+WHERE w.date =~ "8/.*"
+WITH w.zip_code AS zip_code, AVG(w.mean_temperature_f) AS avg_mean_temperature_f
+RETURN zip_code, avg_mean_temperature_f
+mismatch between MySQL and target
+mysql res: ['{"zip_code": 94107, "avg_mean_temperature_f": 67.8923}', '{"zip_code": 94063, "avg_mean_temperature_f": 69.1538}', '{"zip_code": 94301, "avg_mean_temperature_f": 69.0308}', '{"zip_code": 94041, "avg_mean_temperature_f": 69.9231}', '{"zip_code": 95113, "avg_mean_temperature_f": 70.7385}']
+target res: ['{"zip_code": 94107, "avg_mean_temperature_f": 67.89230769230772}', '{"zip_code": 94063, "avg_mean_temperature_f": 69.15384615384615}', '{"zip_code": 94301, "avg_mean_temperature_f": 69.03076923076924}', '{"zip_code": 94041, "avg_mean_temperature_f": 69.92307692307692}', '{"zip_code": 95113, "avg_mean_temperature_f": 70.73846153846152}']
+
+--------------------------9-----------------
+schema:['count_DISTINCT bike_id']
+---------------------------Execute SQL Query:SELECT count(DISTINCT bike_id) FROM trip-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b34ddc0d0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip)
+RETURN count(DISTINCT t.bike_id) AS countDistinctBikeId-----------------
+MATCH (t:Trip)
+RETURN count(DISTINCT t.bike_id) AS countDistinctBikeId
+mismatch between MySQL and target
+mysql res: ['{"count_DISTINCT bike_id": 530}']
+target res: ['{"countDistinctBikeId": 530}']
+
+--------------------------10-----------------
+schema:['count_DISTINCT city']
+---------------------------Execute SQL Query:SELECT count(DISTINCT city) FROM station-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bef3d30>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) RETURN count(DISTINCT s.city) AS count_city-----------------
+MATCH (s:Station) RETURN count(DISTINCT s.city) AS count_city
+mismatch between MySQL and target
+mysql res: ['{"count_DISTINCT city": 5}']
+target res: ['{"count_city": 5}']
+
+--------------------------11-----------------
+schema:['COUNT_*']
+---------------------------Execute SQL Query:SELECT COUNT(*) FROM station WHERE city  =  "Mountain View"-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be1bbe0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.city = "Mountain View" RETURN count(*) AS count-----------------
+MATCH (s:Station) WHERE s.city = "Mountain View" RETURN count(*) AS count
+mismatch between MySQL and target
+mysql res: ['{"COUNT_*": 7}']
+target res: ['{"count": 7}']
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT DISTINCT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  =  7-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bdcbee0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)-[:HAS_STATUS]->(st:Status)
+WHERE st.bikes_available = 7
+RETURN DISTINCT s.name as name-----------------
+MATCH (s:Station)-[:HAS_STATUS]->(st:Status)
+WHERE st.bikes_available = 7
+RETURN DISTINCT s.name as name
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:(None, OperationalError(1055, "Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT start_station_name ,  start_station_id FROM trip WHERE start_date LIKE "8/%" GROUP BY start_station_name ORDER BY COUNT(*) DESC LIMIT 1-----------------
+execute mysql query error:(1055, "Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------14-----------------
+schema:['bike_id']
+---------------------------Execute SQL Query:SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b29474640>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) WHERE t.zip_code = 94002
+WITH t.bike_id AS bike_id, COUNT(*) AS tripCount
+RETURN bike_id
+ORDER BY tripCount DESC
+LIMIT 1-----------------
+MATCH (t:Trip) WHERE t.zip_code = 94002
+WITH t.bike_id AS bike_id, COUNT(*) AS tripCount
+RETURN bike_id
+ORDER BY tripCount DESC
+LIMIT 1
+translate SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1 success
+
+--------------------------15-----------------
+schema:['COUNT_*']
+---------------------------Execute SQL Query:SELECT COUNT(*) FROM weather WHERE mean_humidity  >  50 AND mean_visibility_miles  >  8-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2947aa70>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.mean_humidity > 50 AND w.mean_visibility_miles > 8 RETURN count(*) AS count-----------------
+MATCH (w:Weather) WHERE w.mean_humidity > 50 AND w.mean_visibility_miles > 8 RETURN count(*) AS count
+mismatch between MySQL and target
+mysql res: ['{"COUNT_*": 2974}']
+target res: ['{"count": 2974}']
+
+--------------------------16-----------------
+schema:['lat', 'longitude', 'city']
+---------------------------Execute SQL Query:SELECT T1.lat ,  T1.longitude ,  T1.city FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id ORDER BY T2.duration LIMIT 1-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be9acb0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (t:Trip) 
+WHERE s.id = t.start_station_id 
+RETURN s.lat AS lat, s.longitude AS longitude, s.city AS city 
+ORDER BY t.duration 
+LIMIT 1-----------------
+MATCH (s:Station), (t:Trip) 
+WHERE s.id = t.start_station_id 
+RETURN s.lat AS lat, s.longitude AS longitude, s.city AS city 
+ORDER BY t.duration 
+LIMIT 1
+translate SELECT T1.lat ,  T1.longitude ,  T1.city FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id ORDER BY T2.duration LIMIT 1 success
+
+--------------------------17-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM station WHERE city  =  "San Francisco" INTERSECT SELECT station_id FROM status GROUP BY station_id HAVING avg(bikes_available)  >  10-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bdcb0a0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.city = "San Francisco"
+WITH s
+MATCH (st:Status)
+WHERE st.station_id = s.id
+WITH st.station_id AS station_id, AVG(st.bikes_available) AS avgBikesAvailable
+WHERE avgBikesAvailable > 10
+RETURN station_id as id-----------------
+MATCH (s:Station) WHERE s.city = "San Francisco"
+WITH s
+MATCH (st:Status)
+WHERE st.station_id = s.id
+WITH st.station_id AS station_id, AVG(st.bikes_available) AS avgBikesAvailable
+WHERE avgBikesAvailable > 10
+RETURN station_id as id
+Exception raised during comparison: Row number mismatch
+
+--------------------------18-----------------
+schema:['name', 'id']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.id FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id GROUP BY T2.station_id HAVING avg(T2.bikes_available)  >  14 UNION SELECT name ,  id FROM station WHERE installation_date LIKE "12/%"-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bef3d30>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)-[:HAS_STATUS]->(st:Status)
+WHERE avg(st.bikes_available) > 14
+RETURN s.name AS name, s.id AS id
+UNION
+MATCH (s:Station)
+WHERE s.installation_date STARTS WITH "12/"
+RETURN s.name AS name, s.id AS id-----------------
+MATCH (s:Station)-[:HAS_STATUS]->(st:Status)
+WHERE avg(st.bikes_available) > 14
+RETURN s.name AS name, s.id AS id
+UNION
+MATCH (s:Station)
+WHERE s.installation_date STARTS WITH "12/"
+RETURN s.name AS name, s.id AS id
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid use of aggregating function avg(...) in this context (line 2, column 7 (offset: 51))
+"WHERE avg(st.bikes_available) > 14"
+       ^}
+
+--------------------------19-----------------
+schema:(None, ProgrammingError(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*) DESC LIMIT 3' at line 1"))
+---------------------------Execute SQL Query:SELECT cloud_cover FROM weather WHERE zip_code  =  94107 GROUP BY cloud_cover ORDER BY COUNT (*) DESC LIMIT 3-----------------
+execute mysql query error:(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*) DESC LIMIT 3' at line 1")
+
+--------------------------20-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code ORDER BY avg(mean_sea_level_pressure_inches) LIMIT 1-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be9acb0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather)
+WITH w.zip_code AS zip_code, AVG(w.mean_sea_level_pressure_inches) AS avgSeaLevelPressure
+RETURN zip_code
+ORDER BY avgSeaLevelPressure
+LIMIT 1-----------------
+MATCH (w:Weather)
+WITH w.zip_code AS zip_code, AVG(w.mean_sea_level_pressure_inches) AS avgSeaLevelPressure
+RETURN zip_code
+ORDER BY avgSeaLevelPressure
+LIMIT 1
+translate SELECT zip_code FROM weather GROUP BY zip_code ORDER BY avg(mean_sea_level_pressure_inches) LIMIT 1 success
+
+--------------------------21-----------------
+schema:['avg_bikes_available']
+---------------------------Execute SQL Query:SELECT avg(bikes_available) FROM status WHERE station_id NOT IN (SELECT id FROM station WHERE city  =  "Palo Alto")-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be18d90>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Status) WHERE NOT s.station_id IN (MATCH (s2:Station) WHERE s2.city = "Palo Alto" RETURN s2.id) RETURN AVG(s.bikes_available) AS avg_bikes_available-----------------
+MATCH (s:Status) WHERE NOT s.station_id IN (MATCH (s2:Station) WHERE s2.city = "Palo Alto" RETURN s2.id) RETURN AVG(s.bikes_available) AS avg_bikes_available
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 64 (offset: 63))
+"MATCH (s:Status) WHERE NOT s.station_id IN (MATCH (s2:Station) WHERE s2.city = "Palo Alto" RETURN s2.id) RETURN AVG(s.bikes_available) AS avg_bikes_available"
+                                                                ^}
+
+--------------------------22-----------------
+schema:['avg_longitude']
+---------------------------Execute SQL Query:SELECT avg(longitude) FROM station WHERE id NOT IN (SELECT station_id FROM status GROUP BY station_id HAVING max(bikes_available)  >  10)-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be190c0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)
+WHERE NOT s.id IN (MATCH (st:Status) WHERE st.bikes_available > 10 RETURN st.station_id)
+RETURN AVG(s.longitude) AS avg_longitude-----------------
+MATCH (s:Station)
+WHERE NOT s.id IN (MATCH (st:Status) WHERE st.bikes_available > 10 RETURN st.station_id)
+RETURN AVG(s.longitude) AS avg_longitude
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 2, column 38 (offset: 55))
+"WHERE NOT s.id IN (MATCH (st:Status) WHERE st.bikes_available > 10 RETURN st.station_id)"
+                                      ^}
+
+--------------------------23-----------------
+schema:['date', 'zip_code']
+---------------------------Execute SQL Query:SELECT date ,  zip_code FROM weather WHERE max_temperature_f  >=  80-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2947f880>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.max_temperature_f >= 80 RETURN w.date as date, w.zip_code as zip_code-----------------
+MATCH (w:Weather) WHERE w.max_temperature_f >= 80 RETURN w.date as date, w.zip_code as zip_code
+translate SELECT date ,  zip_code FROM weather WHERE max_temperature_f  >=  80 success
+
+--------------------------24-----------------
+schema:(None, OperationalError(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.T1.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT T1.id FROM trip AS T1 JOIN weather AS T2 ON T1.zip_code  =  T2.zip_code GROUP BY T2.zip_code HAVING avg(T2.mean_temperature_f)  >  60-----------------
+execute mysql query error:(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.T1.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------25-----------------
+schema:['zip_code', 'count_*']
+---------------------------Execute SQL Query:SELECT zip_code , count(*) FROM weather WHERE max_wind_Speed_mph  >=  25 GROUP BY zip_code-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2947f3a0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather)
+WHERE w.max_wind_Speed_mph >= 25
+WITH w.zip_code AS zip_code, COUNT(*) AS count
+RETURN zip_code, count-----------------
+MATCH (w:Weather)
+WHERE w.max_wind_Speed_mph >= 25
+WITH w.zip_code AS zip_code, COUNT(*) AS count
+RETURN zip_code, count
+mismatch between MySQL and target
+mysql res: ['{"zip_code": 94107, "count_*": 88}', '{"zip_code": 94063, "count_*": 18}', '{"zip_code": 94301, "count_*": 16}', '{"zip_code": 94041, "count_*": 27}', '{"zip_code": 95113, "count_*": 21}']
+target res: ['{"zip_code": 94107, "count": 88}', '{"zip_code": 94063, "count": 18}', '{"zip_code": 94301, "count": 16}', '{"zip_code": 94041, "count": 27}', '{"zip_code": 95113, "count": 21}']
+
+--------------------------26-----------------
+schema:['date', 'zip_code']
+---------------------------Execute SQL Query:SELECT date ,  zip_code FROM weather WHERE min_dew_point_f  <  (SELECT min(min_dew_point_f) FROM weather WHERE zip_code  =  94107)-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be1aef0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w1:Weather) WHERE w1.min_dew_point_f < (MATCH (w2:Weather) WHERE w2.zip_code = 94107 RETURN MIN(w2.min_dew_point_f)) RETURN w1.date AS date, w1.zip_code as zip_code-----------------
+MATCH (w1:Weather) WHERE w1.min_dew_point_f < (MATCH (w2:Weather) WHERE w2.zip_code = 94107 RETURN MIN(w2.min_dew_point_f)) RETURN w1.date AS date, w1.zip_code as zip_code
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 67 (offset: 66))
+"MATCH (w1:Weather) WHERE w1.min_dew_point_f < (MATCH (w2:Weather) WHERE w2.zip_code = 94107 RETURN MIN(w2.min_dew_point_f)) RETURN w1.date AS date, w1.zip_code as zip_code"
+                                                                   ^}
+
+--------------------------27-----------------
+schema:['id', 'installation_date']
+---------------------------Execute SQL Query:SELECT T1.id ,  T2.installation_date FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bd90250>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip)-[:ENDS_AT]->(s:Station) RETURN t.id AS id, s.installation_date AS installation_date-----------------
+MATCH (t:Trip)-[:ENDS_AT]->(s:Station) RETURN t.id AS id, s.installation_date AS installation_date
+Exception raised during comparison: Row number mismatch
+
+--------------------------28-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT T1.id FROM trip AS T1 JOIN station AS T2 ON T1.start_station_id  =  T2.id ORDER BY T2.dock_count DESC LIMIT 1-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b29479ae0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip)-[:STARTS_AT]->(s:Station) 
+WITH t.id AS id, s.dock_count AS dock_count 
+ORDER BY dock_count DESC 
+RETURN id 
+LIMIT 1-----------------
+MATCH (t:Trip)-[:STARTS_AT]->(s:Station) 
+WITH t.id AS id, s.dock_count AS dock_count 
+ORDER BY dock_count DESC 
+RETURN id 
+LIMIT 1
+Exception raised during comparison: Row number mismatch
+
+--------------------------29-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id WHERE T2.city !=  "San Francisco"-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bdc89a0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;-----------------
+MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;
+mismatch between MySQL and target
+mysql res: ['{"count_*": 999}']
+target res: ['{"count": 999}']
+
+--------------------------30-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id WHERE T2.city != "San Francisco"-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2947f370>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;-----------------
+MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;
+mismatch between MySQL and target
+mysql res: ['{"count_*": 999}']
+target res: ['{"count": 999}']
+
+--------------------------31-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE zip_code  =  94107 AND EVENTS != "Fog" AND EVENTS != "Rain"-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2947fc40>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) 
+WHERE w.zip_code = 94107 AND NOT (w.events IN ["Fog", "Rain"]) 
+RETURN w.date as date-----------------
+MATCH (w:Weather) 
+WHERE w.zip_code = 94107 AND NOT (w.events IN ["Fog", "Rain"]) 
+RETURN w.date as date
+Exception raised during comparison: Row number mismatch
+
+--------------------------32-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM station WHERE lat  >  37.4 EXCEPT SELECT station_id FROM status GROUP BY station_id HAVING min(bikes_available)  <  7-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b294ea7a0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)
+WHERE s.lat > 37.4 AND NOT EXISTS((MATCH (st:Status) WHERE st.station_id = s.id GROUP BY st.station_id HAVING MIN(st.bikes_available) < 7))
+RETURN s.id as id-----------------
+MATCH (s:Station)
+WHERE s.lat > 37.4 AND NOT EXISTS((MATCH (st:Status) WHERE st.station_id = s.id GROUP BY st.station_id HAVING MIN(st.bikes_available) < 7))
+RETURN s.id as id
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 2, column 54 (offset: 71))
+"WHERE s.lat > 37.4 AND NOT EXISTS((MATCH (st:Status) WHERE st.station_id = s.id GROUP BY st.station_id HAVING MIN(st.bikes_available) < 7))"
+                                                      ^}
+
+--------------------------33-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id GROUP BY T2.station_id HAVING avg(bikes_available)  >  10 EXCEPT SELECT name FROM station WHERE city  =  "San Jose"-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b294e9930>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)-[:HAS_STATUS]->(st:Status)
+WITH s.name AS name, AVG(st.bikes_available) AS avgBikes
+WHERE avgBikes > 10 AND NOT s.city = "San Jose"
+RETURN name-----------------
+MATCH (s:Station)-[:HAS_STATUS]->(st:Status)
+WITH s.name AS name, AVG(st.bikes_available) AS avgBikes
+WHERE avgBikes > 10 AND NOT s.city = "San Jose"
+RETURN name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: In a WITH/RETURN with DISTINCT or an aggregation, it is not possible to access variables declared before the WITH/RETURN: s (line 3, column 29 (offset: 130))
+"WHERE avgBikes > 10 AND NOT s.city = "San Jose""
+                             ^}
+
+--------------------------34-----------------
+schema:['name', 'lat', 'city']
+---------------------------Execute SQL Query:SELECT name ,  lat ,  city FROM station ORDER BY lat LIMIT 1-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be1d9f0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)
+RETURN s.name AS name, s.lat AS lat, s.city AS city
+ORDER BY s.lat
+LIMIT 1-----------------
+MATCH (s:Station)
+RETURN s.name AS name, s.lat AS lat, s.city AS city
+ORDER BY s.lat
+LIMIT 1
+mismatch between MySQL and target
+mysql res: ['{"name": "San Antonio Shopping Center", "lat": 37, "city": "Mountain View"}']
+target res: ['{"name": "San Jose Diridon Caltrain Station", "lat": 37, "city": "San Jose"}']
+
+--------------------------35-----------------
+schema:['date', 'mean_temperature_f', 'mean_humidity']
+---------------------------Execute SQL Query:SELECT date ,  mean_temperature_f ,  mean_humidity FROM weather ORDER BY max_gust_speed_mph DESC LIMIT 3-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bdc9330>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather)
+RETURN w.date AS date, w.mean_temperature_f AS mean_temperature_f, w.mean_humidity AS mean_humidity
+ORDER BY w.max_gust_speed_mph DESC
+LIMIT 3-----------------
+MATCH (w:Weather)
+RETURN w.date AS date, w.mean_temperature_f AS mean_temperature_f, w.mean_humidity AS mean_humidity
+ORDER BY w.max_gust_speed_mph DESC
+LIMIT 3
+mismatch between MySQL and target
+mysql res: ['{"date": "12/12/2013", "mean_temperature_f": 42, "mean_humidity": 63}', '{"date": "11/20/2013", "mean_temperature_f": 57, "mean_humidity": 85}', '{"date": "11/21/2013", "mean_temperature_f": 54, "mean_humidity": 63}']
+target res: ['{"date": "9/5/2013", "mean_temperature_f": 68, "mean_humidity": 63}', '{"date": "10/8/2013", "mean_temperature_f": 60, "mean_humidity": 60}', '{"date": "10/12/2013", "mean_temperature_f": 57, "mean_humidity": 69}']
+
+--------------------------36-----------------
+schema:['city', 'COUNT_*']
+---------------------------Execute SQL Query:SELECT city ,  COUNT(*) FROM station GROUP BY city HAVING COUNT(*)  >=  15-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be1d9f0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)
+WITH s.city AS city, COUNT(*) AS count
+WHERE count >= 15
+RETURN city, count-----------------
+MATCH (s:Station)
+WITH s.city AS city, COUNT(*) AS count
+WHERE count >= 15
+RETURN city, count
+mismatch between MySQL and target
+mysql res: ['{"city": "San Jose", "COUNT_*": 16}', '{"city": "San Francisco", "COUNT_*": 35}']
+target res: ['{"city": "San Jose", "count": 16}', '{"city": "San Francisco", "count": 35}']
+
+--------------------------37-----------------
+schema:(None, OperationalError(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT start_station_id ,  start_station_name FROM trip GROUP BY start_station_name HAVING COUNT(*)  >=  200-----------------
+execute mysql query error:(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------38-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b294e8a30>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) 
+WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avg_mean_visibility_miles 
+WHERE avg_mean_visibility_miles < 10 
+RETURN zip_code-----------------
+MATCH (w:Weather) 
+WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avg_mean_visibility_miles 
+WHERE avg_mean_visibility_miles < 10 
+RETURN zip_code
+translate SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10 success
+
+--------------------------39-----------------
+schema:['city']
+---------------------------Execute SQL Query:SELECT city FROM station GROUP BY city ORDER BY max(lat) DESC-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be1d9f0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)
+WITH s.city AS city, MAX(s.lat) AS max_lat
+RETURN city
+ORDER BY max_lat DESC-----------------
+MATCH (s:Station)
+WITH s.city AS city, MAX(s.lat) AS max_lat
+RETURN city
+ORDER BY max_lat DESC
+translate SELECT city FROM station GROUP BY city ORDER BY max(lat) DESC success
+
+--------------------------40-----------------
+schema:['date', 'cloud_cover']
+---------------------------Execute SQL Query:SELECT date ,  cloud_cover FROM weather ORDER BY cloud_cover DESC LIMIT 5-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b294eab30>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) RETURN w.date AS date, w.cloud_cover AS cloud_cover ORDER BY w.cloud_cover DESC LIMIT 5-----------------
+MATCH (w:Weather) RETURN w.date AS date, w.cloud_cover AS cloud_cover ORDER BY w.cloud_cover DESC LIMIT 5
+mismatch between MySQL and target
+mysql res: ['{"date": "5/18/2015", "cloud_cover": 8}', '{"date": "3/5/2014", "cloud_cover": 8}', '{"date": "5/22/2015", "cloud_cover": 8}', '{"date": "12/11/2014", "cloud_cover": 8}', '{"date": "5/20/2015", "cloud_cover": 8}']
+target res: ['{"date": "2/7/2014", "cloud_cover": 8}', '{"date": "2/8/2014", "cloud_cover": 8}', '{"date": "1/29/2014", "cloud_cover": 8}', '{"date": "2/6/2014", "cloud_cover": 8}', '{"date": "2/9/2014", "cloud_cover": 8}']
+
+--------------------------41-----------------
+schema:['id', 'duration']
+---------------------------Execute SQL Query:SELECT id ,  duration FROM trip ORDER BY duration DESC LIMIT 3-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b29481840>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) RETURN t.id AS id, t.duration AS duration ORDER BY t.duration DESC LIMIT 3-----------------
+MATCH (t:Trip) RETURN t.id AS id, t.duration AS duration ORDER BY t.duration DESC LIMIT 3
+translate SELECT id ,  duration FROM trip ORDER BY duration DESC LIMIT 3 success
+
+--------------------------42-----------------
+schema:['name', 'longitude', 'avg_T2_duration']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.longitude ,  avg(T2.duration) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id GROUP BY T2.start_station_id-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b29480220>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)-[:STARTS_AT]->(t:Trip)
+WHERE s.id = t.start_station_id
+WITH s.name AS name, s.longitude AS longitude, AVG(t.duration) AS avgDuration
+RETURN name, longitude, avgDuration-----------------
+MATCH (s:Station)-[:STARTS_AT]->(t:Trip)
+WHERE s.id = t.start_station_id
+WITH s.name AS name, s.longitude AS longitude, AVG(t.duration) AS avgDuration
+RETURN name, longitude, avgDuration
+Exception raised during comparison: Row number mismatch
+
+--------------------------43-----------------
+schema:['name', 'lat', 'min_T2_duration']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.lat ,  min(T2.duration) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.end_station_id GROUP BY T2.end_station_id-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be1bc40>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)-[:ENDS_AT]->(t:Trip)
+WHERE s.id = t.end_station_id
+WITH s.name AS name, s.lat AS lat, MIN(t.duration) AS min_duration
+RETURN name, lat, min_duration-----------------
+MATCH (s:Station)-[:ENDS_AT]->(t:Trip)
+WHERE s.id = t.end_station_id
+WITH s.name AS name, s.lat AS lat, MIN(t.duration) AS min_duration
+RETURN name, lat, min_duration
+Exception raised during comparison: Row number mismatch
+
+--------------------------44-----------------
+schema:['start_station_name']
+---------------------------Execute SQL Query:SELECT DISTINCT start_station_name FROM trip WHERE duration  <  100-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be19fc0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) WHERE t.duration < 100 RETURN DISTINCT t.start_station_name as start_station_name-----------------
+MATCH (t:Trip) WHERE t.duration < 100 RETURN DISTINCT t.start_station_name as start_station_name
+translate SELECT DISTINCT start_station_name FROM trip WHERE duration  <  100 success
+
+--------------------------45-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT DISTINCT zip_code FROM weather EXCEPT SELECT DISTINCT zip_code FROM weather WHERE max_dew_point_f  >=  70-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b294794e0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w1:Weather)
+WHERE NOT (w1.max_dew_point_f >= 70)
+RETURN DISTINCT w1.zip_code as zip_code-----------------
+MATCH (w1:Weather)
+WHERE NOT (w1.max_dew_point_f >= 70)
+RETURN DISTINCT w1.zip_code as zip_code
+translate SELECT DISTINCT zip_code FROM weather EXCEPT SELECT DISTINCT zip_code FROM weather WHERE max_dew_point_f  >=  70 success
+
+--------------------------46-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM trip WHERE duration  >=  (SELECT avg(duration) FROM trip WHERE zip_code  =  94103)-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2be9acb0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t1:Trip)
+WHERE t1.duration >= (MATCH (t2:Trip) WHERE t2.zip_code = 94103 RETURN AVG(t2.duration))
+RETURN t1.id as id-----------------
+MATCH (t1:Trip)
+WHERE t1.duration >= (MATCH (t2:Trip) WHERE t2.zip_code = 94103 RETURN AVG(t2.duration))
+RETURN t1.id as id
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 2, column 39 (offset: 54))
+"WHERE t1.duration >= (MATCH (t2:Trip) WHERE t2.zip_code = 94103 RETURN AVG(t2.duration))"
+                                       ^}
+
+--------------------------47-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE mean_sea_level_pressure_inches BETWEEN 30.3 AND 31-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b294eb340>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.mean_sea_level_pressure_inches >= 30.3 AND w.mean_sea_level_pressure_inches <= 31 RETURN w.date as date-----------------
+MATCH (w:Weather) WHERE w.mean_sea_level_pressure_inches >= 30.3 AND w.mean_sea_level_pressure_inches <= 31 RETURN w.date as date
+translate SELECT date FROM weather WHERE mean_sea_level_pressure_inches BETWEEN 30.3 AND 31 success
+
+--------------------------48-----------------
+schema:['date', 'max_temperature_f - min_temperature_f']
+---------------------------Execute SQL Query:SELECT date ,  max_temperature_f - min_temperature_f FROM weather ORDER BY max_temperature_f - min_temperature_f LIMIT 1-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b294e5e40>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather)
+RETURN w.date AS date, (w.max_temperature_f - w.min_temperature_f) AS temp_difference
+ORDER BY temp_difference
+LIMIT 1-----------------
+MATCH (w:Weather)
+RETURN w.date AS date, (w.max_temperature_f - w.min_temperature_f) AS temp_difference
+ORDER BY temp_difference
+LIMIT 1
+mismatch between MySQL and target
+mysql res: ['{"date": "4/16/2015", "max_temperature_f - min_temperature_f": 0}']
+target res: ['{"date": "4/16/2015", "temp_difference": 0}']
+
+--------------------------49-----------------
+schema:['id', 'name']
+---------------------------Execute SQL Query:SELECT DISTINCT T1.id ,  T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  >  12-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bef3e20>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station)-[:HAS_STATUS]->(st:Status)
+WHERE st.bikes_available > 12
+RETURN DISTINCT s.id AS id, s.name AS name;-----------------
+MATCH (s:Station)-[:HAS_STATUS]->(st:Status)
+WHERE st.bikes_available > 12
+RETURN DISTINCT s.id AS id, s.name AS name;
+Exception raised during comparison: Row number mismatch
+
+--------------------------50-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_humidity)  <  70 INTERSECT SELECT zip_code FROM trip GROUP BY zip_code HAVING count(*)  >=  100-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bd90a00>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather)
+WITH w.zip_code AS zip_code, AVG(w.mean_humidity) AS avgHumidity
+WHERE avgHumidity < 70
+WITH zip_code
+MATCH (t:Trip)
+WITH zip_code, COUNT(*) AS tripCount
+WHERE tripCount >= 100
+RETURN zip_code-----------------
+MATCH (w:Weather)
+WITH w.zip_code AS zip_code, AVG(w.mean_humidity) AS avgHumidity
+WHERE avgHumidity < 70
+WITH zip_code
+MATCH (t:Trip)
+WITH zip_code, COUNT(*) AS tripCount
+WHERE tripCount >= 100
+RETURN zip_code
+Exception raised during comparison: Row number mismatch
+
+--------------------------51-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT name FROM station WHERE city  =  "Palo Alto" EXCEPT SELECT end_station_name FROM trip GROUP BY end_station_name HAVING count(*)  >  100-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b2bef3af0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station {city: "Palo Alto"})
+WHERE NOT EXISTS {
+  MATCH (t:Trip)-[:ENDS_AT]->(s)
+  WITH COUNT(t) AS tripCount
+  WHERE tripCount > 100
+}
+RETURN s.name as name-----------------
+MATCH (s:Station {city: "Palo Alto"})
+WHERE NOT EXISTS {
+  MATCH (t:Trip)-[:ENDS_AT]->(s)
+  WITH COUNT(t) AS tripCount
+  WHERE tripCount > 100
+}
+RETURN s.name as name
+translate SELECT name FROM station WHERE city  =  "Palo Alto" EXCEPT SELECT end_station_name FROM trip GROUP BY end_station_name HAVING count(*)  >  100 success
+
+--------------------------52-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM station AS T1 JOIN trip AS T2 JOIN station AS T3 JOIN trip AS T4 ON T1.id  =  T2.start_station_id AND T2.id  =  T4.id AND T3.id  =  T4.end_station_id WHERE T1.city  =  "Mountain View" AND T3.city  =  "Palo Alto"-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b295159f0>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s1:Station {city: "Mountain View"}), (s2:Station {city: "Palo Alto"}), (t1:Trip), (t2:Trip)
+WHERE t1.start_station_id = s1.id AND t2.end_station_id = s2.id AND t1.id = t2.id
+RETURN count(*) AS count;-----------------
+MATCH (s1:Station {city: "Mountain View"}), (s2:Station {city: "Palo Alto"}), (t1:Trip), (t2:Trip)
+WHERE t1.start_station_id = s1.id AND t2.end_station_id = s2.id AND t1.id = t2.id
+RETURN count(*) AS count;
+mismatch between MySQL and target
+mysql res: ['{"count_*": 7}']
+target res: ['{"count": 7}']
+
+--------------------------53-----------------
+schema:['avg_T1_lat', 'avg_T1_longitude']
+---------------------------Execute SQL Query:SELECT avg(T1.lat) ,  avg(T1.longitude) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id-----------------
+knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f2b29515e40>]
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (t:Trip) WHERE s.id = t.start_station_id
+WITH AVG(s.lat) AS avg_lat, AVG(s.longitude) AS avg_longitude
+RETURN avg_lat, avg_longitude-----------------
+MATCH (s:Station), (t:Trip) WHERE s.id = t.start_station_id
+WITH AVG(s.lat) AS avg_lat, AVG(s.longitude) AS avg_longitude
+RETURN avg_lat, avg_longitude
+mismatch between MySQL and target
+mysql res: ['{"avg_T1_lat": 37.8997, "avg_T1_longitude": -122.0000}']
+target res: ['{"avg_lat": 37.89968872376738, "avg_longitude": -122.0}']
+success_query_count: 16
+valid_count: 49
+accuracy: 0.32653061224489793

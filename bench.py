@@ -154,6 +154,7 @@ async def benchmark(input_file: str, target_db: DBName, use_memory: bool):
         with redirect_stdout(f), redirect_stderr(f):
             if use_memory:
                 await memorier.populate_memory(get_memory_source(target_db.value))
+            print("--------")
             await single_benchmark(mysql_executor, target_executor, convertor, comparator, target_db, queries,
                                    use_memory, memorier)
 
