@@ -7,6 +7,7 @@ from typing import Tuple
 
 from converter.convert import QueryConverter
 from test_framework.comparator.hash import *
+from test_framework.executor.Neo4j_executor import Neo4jExecutor
 from test_framework.executor.MongoDB_executor import MongoDBExecutor
 from test_framework.executor.MySQL_executor import MySQLExecutor
 from test_framework.executor.base import QueryExecutor
@@ -16,11 +17,13 @@ from test_framework.fetch.base import QueryFetcher
 class DBName(Enum):
     MySQL = "mysql"
     MongoDB = "mongodb"
+    Neo4j = "neo4j"
 
 
 executor_get_func = {
     DBName.MySQL: MySQLExecutor,
-    DBName.MongoDB: MongoDBExecutor
+    DBName.MongoDB: MongoDBExecutor,
+    DBName.Neo4j: Neo4jExecutor
 }
 
 
@@ -64,6 +67,7 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
     success_query_count = 0
     idx = 1
 
+    
     for (database, sql_query) in queries:
         # filter duplicate query
         if sql_query in executed_queries:
@@ -89,7 +93,11 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         # execute target query
         target_query = await converter.convert(sql_query, target_db.value)
         print("---------------------------Execute Target Query:{}-----------------".format(target_query))
-        target_result, e = target_executor.execute_query(target_query, database, schema)
+        if target_db.value == "neo4j":
+            target_result, e = target_executor.execute_query(target_query)
+        else:
+            target_result, e = target_executor.execute_query(target_query, database, schema)
+
         if e is not None:
             print('execute target query error:{}'.format(e))
             continue
@@ -106,6 +114,9 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
             print('translate {q} success'.format(q=sql_query))
             success_query_count += 1
 
+    print('success_query_count:', success_query_count)
+    print('valid_count:', valid_query_count)
+    print('accuracy:', success_query_count / valid_query_count)
 
 async def benchmark(input_file: str, target_db: DBName):
     mysql_executor, target_executor, exception = get_database_executor(target_db)
@@ -133,5 +144,4 @@ if __name__ == '__main__':
     arg_parser.add_argument('-t', '--target', type=str, help='target database name', required=True)
 
     args = arg_parser.parse_args()
-
     asyncio.run(benchmark(args.input, DBName(args.target)))
