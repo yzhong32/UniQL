@@ -1,0 +1,251 @@
+uery string query
+Returns documents based on a provided query string, using a parser with a strict syntax.
+
+This query uses a syntax to parse and split the provided query string based on operators, such as AND or NOT. The query then analyzes each split text independently before returning matching documents.
+
+You can use the query_string query to create a complex search that includes wildcard characters, searches across multiple fields, and more. While versatile, the query is strict and returns an error if the query string includes any invalid syntax.
+
+Example request
+When running the following search, the query_string query splits (new york
+city) OR (big apple) into two parts: new york city and big apple. The content field’s analyzer then independently converts each part into tokens before returning matching documents. Because the query syntax does not use whitespace as an operator, new york city is passed as-is to the analyzer.
+
+GET /_search
+{
+  "query": {
+    "query_string": {
+      "query": "(new york city) OR (big apple)",
+      "default_field": "content"
+    }
+  }
+}
+
+Top-level parameters for query_string
+
+query
+(Required, string) Query string you wish to parse and use for search. See Query string syntax.
+default_field
+(Optional, string) Default field to search if no field is provided in the query string. Supports wildcards (*).
+
+Defaults to the index.query.default_field index setting, which has a default value of *. The * value extracts all fields that are eligible for term queries and filters the metadata fields. All extracted fields are then combined to build a query if no prefix is specified.
+
+Searching across all eligible fields does not include nested documents. Use a nested query to search those documents.
+
+For mappings with a large number of fields, searching across all eligible fields could be expensive.
+
+There is a limit on the number of fields times terms that can be queried at once. It is defined by the indices.query.bool.max_clause_count search setting, which defaults to 4096.
+
+allow_leading_wildcard
+(Optional, Boolean) If true, the wildcard characters * and ? are allowed as the first character of the query string. Defaults to true.
+analyze_wildcard
+(Optional, Boolean) If true, the query attempts to analyze wildcard terms in the query string. Defaults to false.
+analyzer
+(Optional, string) Analyzer used to convert text in the query string into tokens. Defaults to the index-time analyzer mapped for the default_field. If no analyzer is mapped, the index’s default analyzer is used.
+auto_generate_synonyms_phrase_query
+(Optional, Boolean) If true, match phrase queries are automatically created for multi-term synonyms. Defaults to true. See Synonyms and the query_string query for an example.
+boost
+(Optional, float) Floating point number used to decrease or increase the relevance scores of the query. Defaults to 1.0.
+
+Boost values are relative to the default value of 1.0. A boost value between 0 and 1.0 decreases the relevance score. A value greater than 1.0 increases the relevance score.
+
+default_operator
+(Optional, string) Default boolean logic used to interpret text in the query string if no operators are specified. Valid values are:
+
+OR (Default)
+For example, a query string of capital of Hungary is interpreted as capital
+OR of OR Hungary.
+AND
+For example, a query string of capital of Hungary is interpreted as capital
+AND of AND Hungary.
+enable_position_increments
+(Optional, Boolean) If true, enable position increments in queries constructed from a query_string search. Defaults to true.
+fields
+(Optional, array of strings) Array of fields to search. Supports wildcards (*).
+
+You can use this parameter query to search across multiple fields. See Search multiple fields.
+
+fuzziness
+(Optional, string) Maximum edit distance allowed for fuzzy matching. For fuzzy syntax, see Fuzziness.
+fuzzy_max_expansions
+(Optional, integer) Maximum number of terms to which the query expands for fuzzy matching. Defaults to 50.
+fuzzy_prefix_length
+(Optional, integer) Number of beginning characters left unchanged for fuzzy matching. Defaults to 0.
+fuzzy_transpositions
+(Optional, Boolean) If true, edits for fuzzy matching include transpositions of two adjacent characters (ab → ba). Defaults to true.
+lenient
+(Optional, Boolean) If true, format-based errors, such as providing a text value for a numeric field, are ignored. Defaults to false.
+max_determinized_states
+(Optional, integer) Maximum number of automaton states required for the query. Default is 10000.
+
+Elasticsearch uses Apache Lucene internally to parse regular expressions. Lucene converts each regular expression to a finite automaton containing a number of determinized states.
+
+You can use this parameter to prevent that conversion from unintentionally consuming too many resources. You may need to increase this limit to run complex regular expressions.
+
+minimum_should_match
+(Optional, string) Minimum number of clauses that must match for a document to be returned. See the minimum_should_match parameter for valid values and more information. See How minimum_should_match works for an example.
+quote_analyzer
+(Optional, string) Analyzer used to convert quoted text in the query string into tokens. Defaults to the search_quote_analyzer mapped for the default_field.
+
+For quoted text, this parameter overrides the analyzer specified in the analyzer parameter.
+
+phrase_slop
+(Optional, integer) Maximum number of positions allowed between matching tokens for phrases. Defaults to 0. If 0, exact phrase matches are required. Transposed terms have a slop of 2.
+quote_field_suffix
+(Optional, string) Suffix appended to quoted text in the query string.
+
+You can use this suffix to use a different analysis method for exact matches. See Mixing exact search with stemming.
+
+rewrite
+(Optional, string) Method used to rewrite the query. For valid values and more information, see the rewrite parameter.
+time_zone
+(Optional, string) Coordinated Universal Time (UTC) offset or IANA time zone used to convert date values in the query string to UTC.
+
+Valid values are ISO 8601 UTC offsets, such as +01:00 or -08:00, and IANA time zone IDs, such as America/Los_Angeles.
+
+Notes
+
+Query string syntax
+
+The query string “mini-language” is used by the Query string and by the q query string parameter in the search API.
+
+The query string is parsed into a series of terms and operators. A term can be a single word — quick or brown — or a phrase, surrounded by double quotes — "quick brown" — which searches for all the words in the phrase, in the same order.
+
+Operators allow you to customize the search — the available options are explained below.
+
+Field names
+
+You can specify fields to search in the query syntax:
+
+where the status field contains active
+
+status:active
+where the title field contains quick or brown
+
+title:(quick OR brown)
+where the author field contains the exact phrase "john smith"
+
+author:"John Smith"
+where the first name field contains Alice (note how we need to escape the space with a backslash)
+
+first\ name:Alice
+where any of the fields book.title, book.content or book.date contains quick or brown (note how we need to escape the * with a backslash):
+
+book.\*:(quick OR brown)
+where the field title has any non-null value:
+
+_exists_:title
+
+Simple query string query
+
+Returns documents based on a provided query string, using a parser with a limited but fault-tolerant syntax.
+
+This query uses a simple syntax to parse and split the provided query string into terms based on special operators. The query then analyzes each term independently before returning matching documents.
+
+While its syntax is more limited than the query_string query, the simple_query_string query does not return errors for invalid syntax. Instead, it ignores any invalid parts of the query string.
+
+Example request
+
+GET /_search
+{
+  "query": {
+    "simple_query_string" : {
+        "query": "\"fried eggs\" +(eggplant | potato) -frittata",
+        "fields": ["title^5", "body"],
+        "default_operator": "and"
+    }
+  }
+}
+
+Top-level parameters for simple_query_string
+
+query
+(Required, string) Query string you wish to parse and use for search. See Simple query string syntax.
+fields
+(Optional, array of strings) Array of fields you wish to search.
+
+This field accepts wildcard expressions. You also can boost relevance scores for matches to particular fields using a caret (^) notation. See Wildcards and per-field boosts in the fields parameter for examples.
+
+Defaults to the index.query.default_field index setting, which has a default value of *. The * value extracts all fields that are eligible to term queries and filters the metadata fields. All extracted fields are then combined to build a query if no prefix is specified.
+
+query
+(Required, string) Query string you wish to parse and use for search. See Simple query string syntax.
+fields
+(Optional, array of strings) Array of fields you wish to search.
+
+This field accepts wildcard expressions. You also can boost relevance scores for matches to particular fields using a caret (^) notation. See Wildcards and per-field boosts in the fields parameter for examples.
+
+Defaults to the index.query.default_field index setting, which has a default value of *. The * value extracts all fields that are eligible to term queries and filters the metadata fields. All extracted fields are then combined to build a query if no prefix is specified.
+
+Simple query string syntax
+
+The simple_query_string query supports the following operators:
+
++ signifies AND operation
+| signifies OR operation
+- negates a single token
+" wraps a number of tokens to signify a phrase for searching
+* at the end of a term signifies a prefix query
+( and ) signify precedence
+~N after a word signifies edit distance (fuzziness)
+~N after a phrase signifies slop amount
+To use one of these characters literally, escape it with a preceding backslash (\).
+
+The behavior of these operators may differ depending on the default_operator value. For example:
+
+GET /_search
+{
+  "query": {
+    "simple_query_string": {
+      "fields": [ "content" ],
+      "query": "foo bar -baz"
+    }
+  }
+}
+
+This search is intended to only return documents containing foo or bar that also do not contain baz. However because of a default_operator of OR, this search actually returns documents that contain foo or bar and any documents that don’t contain baz. To return documents as intended, change the query string to foo bar +-baz.
+
+Limit operators
+
+You can use the flags parameter to limit the supported operators for the simple query string syntax.
+
+To explicitly enable only specific operators, use a | separator. For example, a flags value of OR|AND|PREFIX disables all operators except OR, AND, and PREFIX.
+
+GET /_search
+{
+  "query": {
+    "simple_query_string": {
+      "query": "foo | bar + baz*",
+      "flags": "OR|AND|PREFIX"
+    }
+  }
+}
+
+Valid values
+
+The available flags are:
+
+ALL (Default)
+Enables all optional operators.
+AND
+Enables the + AND operator.
+ESCAPE
+Enables \ as an escape character.
+FUZZY
+Enables the ~N operator after a word, where N is an integer denoting the allowed edit distance for matching. See Fuzziness.
+NEAR
+Enables the ~N operator, after a phrase where N is the maximum number of positions allowed between matching tokens. Synonymous to SLOP.
+NONE
+Disables all operators.
+NOT
+Enables the - NOT operator.
+OR
+Enables the \| OR operator.
+PHRASE
+Enables the " quotes operator used to search for phrases.
+PRECEDENCE
+Enables the ( and ) operators to control operator precedence.
+PREFIX
+Enables the * prefix operator.
+SLOP
+Enables the ~N operator, after a phrase where N is maximum number of positions allowed between matching tokens. Synonymous to NEAR.
+WHITESPACE
+Enables whitespace as split characters.

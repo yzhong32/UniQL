@@ -33,6 +33,8 @@ class Memorier:
         with open(file_path, 'r') as file:
             lines = file.readlines()
 
+        num_segments = 10
+
         # Calculate the number of lines per segment
         lines_per_segment = max(1, len(lines) // num_segments)
 

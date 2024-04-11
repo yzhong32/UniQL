@@ -35,6 +35,9 @@ def get_bench_id(input_file: str, db_name: str) -> str:
 def get_output_file_path(input_file: str, db_name: str) -> str:
     return './logs/{id}.log'.format(id=get_bench_id(input_file, db_name))
 
+def get_memory_source(db_name: str) -> str:
+    return './converter/{db_name}'.format(db_name)
+
 
 def get_database_executor(target: DBName) -> (QueryExecutor, QueryExecutor, Exception):
     config_file_folder = './test_framework/config/'
@@ -61,7 +64,8 @@ def get_database_executor(target: DBName) -> (QueryExecutor, QueryExecutor, Exce
 
 
 async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: QueryExecutor,
-                           converter: QueryConverter, comparator: QueryComparator, target_db: DBName, queries: List[Tuple[str, str]]):
+                           converter: QueryConverter, comparator: QueryComparator, target_db: DBName, queries: List[Tuple[str, str]], 
+                           use_memory: bool, memorier: Memorier):
     executed_queries = set()
     valid_query_count = 0
     success_query_count = 0
@@ -91,7 +95,13 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         valid_query_count += 1
 
         # execute target query
-        target_query = await converter.convert(sql_query, target_db.value)
+        if use_memory
+            question = "Please convert the following SQL query to {db} query:\n {sql_query}".format(db=target_db.value, sql_query=sql_query)
+            knowledge = await search_memory_examples(question)
+            target_query = await converter.convert_with_knowledge(sql_query, target_db.value, knowledge)
+        else:
+            target_query = await converter.convert(sql_query, target_db.value)
+
         print("---------------------------Execute Target Query:{}-----------------".format(target_query))
         if target_db.value == "neo4j":
             target_result, e = target_executor.execute_query(target_query)
@@ -118,20 +128,27 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
     print('valid_count:', valid_query_count)
     print('accuracy:', success_query_count / valid_query_count)
 
-async def benchmark(input_file: str, target_db: DBName):
+async def benchmark(input_file: str, target_db: DBName, use_memory: bool):
     mysql_executor, target_executor, exception = get_database_executor(target_db)
     if exception is not None:
         print("Exception occurred in executor init: {}".format(exception))
 
-    convertor = QueryConverter("./converter/plugins")
+    if use_memory:
+        convertor = QueryConverter("./converter/plugins")
+    else:
+        convertor = QueryConverter("./converter/with_memory_plugins")
+
     query_fetcher = QueryFetcher()
     comparator = HashComparator()
+    memorier = Memorier()
 
     queries = query_fetcher.fetch_query("./query", input_file)
     output_file_path = get_output_file_path(input_file, target_db.value)
     with open(output_file_path, 'w') as f:
         with redirect_stdout(f), redirect_stderr(f):
-            await single_benchmark(mysql_executor, target_executor, convertor, comparator, target_db, queries)
+            if use_memory: 
+                memorier.populate_memory(get_memory_source(target_db))
+            await single_benchmark(mysql_executor, target_executor, convertor, comparator, target_db, queries, use_memory, memorier)
 
 
 if __name__ == '__main__':
@@ -142,6 +159,7 @@ if __name__ == '__main__':
                                  'folder for now',
                             required=True)
     arg_parser.add_argument('-t', '--target', type=str, help='target database name', required=True)
+    arg_parser.add_argument('-m', '--memory', type=bool, help='whether to use memory', required=True)
 
     args = arg_parser.parse_args()
-    asyncio.run(benchmark(args.input, DBName(args.target)))
+    asyncio.run(benchmark(args.input, DBName(args.target), use_memory=args.use_memory))
