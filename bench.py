@@ -26,7 +26,7 @@ class DBName(Enum):
 executor_get_func = {
     DBName.MySQL: MySQLExecutor,
     DBName.MongoDB: MongoDBExecutor,
-    DBName.Elasticsearch: ElasticsearchExecutor
+    DBName.Elasticsearch: ElasticsearchExecutor,
     DBName.Neo4j: Neo4jExecutor
 }
 
