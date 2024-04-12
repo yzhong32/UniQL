@@ -24,6 +24,7 @@ async def benchmark():
     mongodb_executor = MongoDBExecutor()
     mongodb_executor.init('./test_framework/config/mongodb_config.json')
 
+
     convertor = QueryConverter("./converter/plugins")
     query_fetcher = QueryFetcher()
     comparator = HashComparator()

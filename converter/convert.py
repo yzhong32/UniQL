@@ -24,11 +24,16 @@ class QueryConverter:
         # Import the required plugin
         self.translateFunctions = self.kernel.import_plugin_from_prompt_directory(plugins_directory, "TranslatePlugin")
         # self.mongoFunction = self.translateFunctions["mongodb"]
-        # self.neo4jFunction = self.translateFunctions["Neo4j"]
+        # self.neo4jFunction = self.translateFunctions["neo4j"]
 
     async def convert(self, sql_query, target_query_type):
         # Invoke the mongodb function from the plugin
         result = await self.kernel.invoke(self.translateFunctions[target_query_type], sk.KernelArguments(sql=sql_query))
+        return result
+
+    async def convert_with_knowledge(self, sql_query, target_query_type, knowledge):
+        # Invoke the mongodb function from the plugin
+        result = await self.kernel.invoke(self.translateFunctions[target_query_type], sk.KernelArguments(sql=sql_query, knowledge=knowledge))
         return result
 
 # Usage example

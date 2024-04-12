@@ -1,0 +1,597 @@
+
+--------------------------1-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE max_temperature_f  >  85-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date-----------------
+MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date
+translate SELECT date FROM weather WHERE max_temperature_f  >  85 success
+
+--------------------------2-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT name FROM station WHERE lat  <  37.5-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.lat < 37.5 RETURN s.name as name-----------------
+MATCH (s:Station) WHERE s.lat < 37.5 RETURN s.name as name
+translate SELECT name FROM station WHERE lat  <  37.5 success
+
+--------------------------3-----------------
+schema:['city', 'max_lat']
+---------------------------Execute SQL Query:SELECT city ,  max(lat) FROM station GROUP BY city-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WITH s.city AS city, MAX(s.lat) AS max_lat RETURN city, max_lat-----------------
+MATCH (s:Station) WITH s.city AS city, MAX(s.lat) AS max_lat RETURN city, max_lat
+translate SELECT city ,  max(lat) FROM station GROUP BY city success
+
+--------------------------4-----------------
+schema:['start_station_name', 'end_station_name']
+---------------------------Execute SQL Query:SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) RETURN t.start_station_name AS start_station_name, t.end_station_name AS end_station_name ORDER BY t.id LIMIT 3-----------------
+MATCH (t:Trip) RETURN t.start_station_name AS start_station_name, t.end_station_name AS end_station_name ORDER BY t.id LIMIT 3
+translate SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3 success
+
+--------------------------5-----------------
+schema:['avg_lat', 'avg_longitude']
+---------------------------Execute SQL Query:SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  "San Jose"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.city = "San Jose" RETURN avg(s.lat) AS avg_lat, avg(s.longitude) AS avg_longitude-----------------
+MATCH (s:Station) WHERE s.city = "San Jose" RETURN avg(s.lat) AS avg_lat, avg(s.longitude) AS avg_longitude
+mismatch between MySQL and target
+mysql res: ['{"avg_lat": 37.0000, "avg_longitude": -122.0000}']
+target res: ['{"avg_lat": 37.0, "avg_longitude": -122.0}']
+
+--------------------------6-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM trip ORDER BY duration LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) RETURN t.id AS id ORDER BY t.duration LIMIT 1-----------------
+MATCH (t:Trip) RETURN t.id AS id ORDER BY t.duration LIMIT 1
+translate SELECT id FROM trip ORDER BY duration LIMIT 1 success
+
+--------------------------7-----------------
+schema:['sum_duration', 'max_duration']
+---------------------------Execute SQL Query:SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) WHERE t.bike_id = 636 RETURN sum(t.duration) AS sum_duration, max(t.duration) AS max_duration-----------------
+MATCH (t:Trip) WHERE t.bike_id = 636 RETURN sum(t.duration) AS sum_duration, max(t.duration) AS max_duration
+translate SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636 success
+
+--------------------------8-----------------
+schema:['zip_code', 'avg_mean_temperature_f']
+---------------------------Execute SQL Query:SELECT zip_code  ,  avg(mean_temperature_f) FROM weather WHERE date LIKE "8/%" GROUP BY zip_code-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.date STARTS WITH "8/" WITH w.zip_code AS zip_code, AVG(w.mean_temperature_f) AS avg_temperature_f RETURN zip_code, avg_temperature_f-----------------
+MATCH (w:Weather) WHERE w.date STARTS WITH "8/" WITH w.zip_code AS zip_code, AVG(w.mean_temperature_f) AS avg_temperature_f RETURN zip_code, avg_temperature_f
+mismatch between MySQL and target
+mysql res: ['{"zip_code": 94107, "avg_mean_temperature_f": 67.8923}', '{"zip_code": 94063, "avg_mean_temperature_f": 69.1538}', '{"zip_code": 94301, "avg_mean_temperature_f": 69.0308}', '{"zip_code": 94041, "avg_mean_temperature_f": 69.9231}', '{"zip_code": 95113, "avg_mean_temperature_f": 70.7385}']
+target res: ['{"zip_code": 94107, "avg_temperature_f": 67.89230769230772}', '{"zip_code": 94063, "avg_temperature_f": 69.15384615384615}', '{"zip_code": 94301, "avg_temperature_f": 69.03076923076924}', '{"zip_code": 94041, "avg_temperature_f": 69.92307692307692}', '{"zip_code": 95113, "avg_temperature_f": 70.73846153846152}']
+
+--------------------------9-----------------
+schema:['count_DISTINCT bike_id']
+---------------------------Execute SQL Query:SELECT count(DISTINCT bike_id) FROM trip-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) RETURN count(DISTINCT t.bike_id) AS count-----------------
+MATCH (t:Trip) RETURN count(DISTINCT t.bike_id) AS count
+mismatch between MySQL and target
+mysql res: ['{"count_DISTINCT bike_id": 530}']
+target res: ['{"count": 530}']
+
+--------------------------10-----------------
+schema:['count_DISTINCT city']
+---------------------------Execute SQL Query:SELECT count(DISTINCT city) FROM station-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) RETURN count(DISTINCT s.city) AS count-----------------
+MATCH (s:Station) RETURN count(DISTINCT s.city) AS count
+mismatch between MySQL and target
+mysql res: ['{"count_DISTINCT city": 5}']
+target res: ['{"count": 5}']
+
+--------------------------11-----------------
+schema:['COUNT_*']
+---------------------------Execute SQL Query:SELECT COUNT(*) FROM station WHERE city  =  "Mountain View"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.city = "Mountain View" RETURN count(*) AS count-----------------
+MATCH (s:Station) WHERE s.city = "Mountain View" RETURN count(*) AS count
+mismatch between MySQL and target
+mysql res: ['{"COUNT_*": 7}']
+target res: ['{"count": 7}']
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT DISTINCT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  =  7-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (st:Status) WHERE s.id = st.station_id AND st.bikes_available = 7 RETURN DISTINCT s.name as name-----------------
+MATCH (s:Station), (st:Status) WHERE s.id = st.station_id AND st.bikes_available = 7 RETURN DISTINCT s.name as name
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:(None, OperationalError(1055, "Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT start_station_name ,  start_station_id FROM trip WHERE start_date LIKE "8/%" GROUP BY start_station_name ORDER BY COUNT(*) DESC LIMIT 1-----------------
+execute mysql query error:(1055, "Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------14-----------------
+schema:['bike_id']
+---------------------------Execute SQL Query:SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) WHERE t.zip_code = 94002 WITH t.bike_id AS bike_id, COUNT(*) AS count ORDER BY count DESC RETURN bike_id LIMIT 1-----------------
+MATCH (t:Trip) WHERE t.zip_code = 94002 WITH t.bike_id AS bike_id, COUNT(*) AS count ORDER BY count DESC RETURN bike_id LIMIT 1
+translate SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1 success
+
+--------------------------15-----------------
+schema:['COUNT_*']
+---------------------------Execute SQL Query:SELECT COUNT(*) FROM weather WHERE mean_humidity  >  50 AND mean_visibility_miles  >  8-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.mean_humidity > 50 AND w.mean_visibility_miles > 8 RETURN count(*) AS count-----------------
+MATCH (w:Weather) WHERE w.mean_humidity > 50 AND w.mean_visibility_miles > 8 RETURN count(*) AS count
+mismatch between MySQL and target
+mysql res: ['{"COUNT_*": 2974}']
+target res: ['{"count": 2974}']
+
+--------------------------16-----------------
+schema:['lat', 'longitude', 'city']
+---------------------------Execute SQL Query:SELECT T1.lat ,  T1.longitude ,  T1.city FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id ORDER BY T2.duration LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (t:Trip) WHERE s.id = t.start_station_id RETURN s.lat AS lat, s.longitude AS longitude, s.city AS city ORDER BY t.duration LIMIT 1-----------------
+MATCH (s:Station), (t:Trip) WHERE s.id = t.start_station_id RETURN s.lat AS lat, s.longitude AS longitude, s.city AS city ORDER BY t.duration LIMIT 1
+translate SELECT T1.lat ,  T1.longitude ,  T1.city FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id ORDER BY T2.duration LIMIT 1 success
+
+--------------------------17-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM station WHERE city  =  "San Francisco" INTERSECT SELECT station_id FROM status GROUP BY station_id HAVING avg(bikes_available)  >  10-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.city = "San Francisco" WITH s.id AS id MATCH (st:Status) WHERE st.station_id = id WITH st.station_id AS station_id, AVG(st.bikes_available) AS avgBikes WHERE avgBikes > 10 RETURN station_id-----------------
+MATCH (s:Station) WHERE s.city = "San Francisco" WITH s.id AS id MATCH (st:Status) WHERE st.station_id = id WITH st.station_id AS station_id, AVG(st.bikes_available) AS avgBikes WHERE avgBikes > 10 RETURN station_id
+Exception raised during comparison: Row number mismatch
+
+--------------------------18-----------------
+schema:['name', 'id']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.id FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id GROUP BY T2.station_id HAVING avg(T2.bikes_available)  >  14 UNION SELECT name ,  id FROM station WHERE installation_date LIKE "12/%"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (st:Status) WHERE s.id = st.station_id WITH s.name AS name, s.id AS id, AVG(st.bikes_available) AS avgBikes WHERE avgBikes > 14 RETURN name, id
+UNION
+MATCH (s:Station) WHERE s.installation_date STARTS WITH "12/" RETURN s.name AS name, s.id AS id-----------------
+MATCH (s:Station), (st:Status) WHERE s.id = st.station_id WITH s.name AS name, s.id AS id, AVG(st.bikes_available) AS avgBikes WHERE avgBikes > 14 RETURN name, id
+UNION
+MATCH (s:Station) WHERE s.installation_date STARTS WITH "12/" RETURN s.name AS name, s.id AS id
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:(None, ProgrammingError(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*) DESC LIMIT 3' at line 1"))
+---------------------------Execute SQL Query:SELECT cloud_cover FROM weather WHERE zip_code  =  94107 GROUP BY cloud_cover ORDER BY COUNT (*) DESC LIMIT 3-----------------
+execute mysql query error:(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*) DESC LIMIT 3' at line 1")
+
+--------------------------20-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code ORDER BY avg(mean_sea_level_pressure_inches) LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_sea_level_pressure_inches) AS avgPressure ORDER BY avgPressure LIMIT 1 RETURN zip_code-----------------
+MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_sea_level_pressure_inches) AS avgPressure ORDER BY avgPressure LIMIT 1 RETURN zip_code
+translate SELECT zip_code FROM weather GROUP BY zip_code ORDER BY avg(mean_sea_level_pressure_inches) LIMIT 1 success
+
+--------------------------21-----------------
+schema:['avg_bikes_available']
+---------------------------Execute SQL Query:SELECT avg(bikes_available) FROM status WHERE station_id NOT IN (SELECT id FROM station WHERE city  =  "Palo Alto")-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Status) WHERE NOT EXISTS ((s)-[:BELONGS_TO]->(:Station {city: "Palo Alto"})) RETURN avg(s.bikes_available) AS avg_bikes_available-----------------
+MATCH (s:Status) WHERE NOT EXISTS ((s)-[:BELONGS_TO]->(:Station {city: "Palo Alto"})) RETURN avg(s.bikes_available) AS avg_bikes_available
+mismatch between MySQL and target
+mysql res: ['{"avg_bikes_available": 7.6579}']
+target res: ['{"avg_bikes_available": 7.698833510074227}']
+
+--------------------------22-----------------
+schema:['avg_longitude']
+---------------------------Execute SQL Query:SELECT avg(longitude) FROM station WHERE id NOT IN (SELECT station_id FROM status GROUP BY station_id HAVING max(bikes_available)  >  10)-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE NOT (s.id IN [(st:Status) WHERE st.station_id = s.id AND max(st.bikes_available) > 10]) RETURN avg(s.longitude) AS avg_longitude-----------------
+MATCH (s:Station) WHERE NOT (s.id IN [(st:Status) WHERE st.station_id = s.id AND max(st.bikes_available) > 10]) RETURN avg(s.longitude) AS avg_longitude
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "]"
+  "^" (line 1, column 51 (offset: 50))
+"MATCH (s:Station) WHERE NOT (s.id IN [(st:Status) WHERE st.station_id = s.id AND max(st.bikes_available) > 10]) RETURN avg(s.longitude) AS avg_longitude"
+                                                   ^}
+
+--------------------------23-----------------
+schema:['date', 'zip_code']
+---------------------------Execute SQL Query:SELECT date ,  zip_code FROM weather WHERE max_temperature_f  >=  80-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.max_temperature_f >= 80 RETURN w.date as date, w.zip_code as zip_code-----------------
+MATCH (w:Weather) WHERE w.max_temperature_f >= 80 RETURN w.date as date, w.zip_code as zip_code
+translate SELECT date ,  zip_code FROM weather WHERE max_temperature_f  >=  80 success
+
+--------------------------24-----------------
+schema:(None, OperationalError(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.T1.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT T1.id FROM trip AS T1 JOIN weather AS T2 ON T1.zip_code  =  T2.zip_code GROUP BY T2.zip_code HAVING avg(T2.mean_temperature_f)  >  60-----------------
+execute mysql query error:(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.T1.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------25-----------------
+schema:['zip_code', 'count_*']
+---------------------------Execute SQL Query:SELECT zip_code , count(*) FROM weather WHERE max_wind_Speed_mph  >=  25 GROUP BY zip_code-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.max_wind_Speed_mph >= 25 WITH w.zip_code AS zip_code, COUNT(*) AS count RETURN zip_code, count-----------------
+MATCH (w:Weather) WHERE w.max_wind_Speed_mph >= 25 WITH w.zip_code AS zip_code, COUNT(*) AS count RETURN zip_code, count
+mismatch between MySQL and target
+mysql res: ['{"zip_code": 94107, "count_*": 88}', '{"zip_code": 94063, "count_*": 18}', '{"zip_code": 94301, "count_*": 16}', '{"zip_code": 94041, "count_*": 27}', '{"zip_code": 95113, "count_*": 21}']
+target res: ['{"zip_code": 94107, "count": 88}', '{"zip_code": 94063, "count": 18}', '{"zip_code": 94301, "count": 16}', '{"zip_code": 94041, "count": 27}', '{"zip_code": 95113, "count": 21}']
+
+--------------------------26-----------------
+schema:['date', 'zip_code']
+---------------------------Execute SQL Query:SELECT date ,  zip_code FROM weather WHERE min_dew_point_f  <  (SELECT min(min_dew_point_f) FROM weather WHERE zip_code  =  94107)-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.min_dew_point_f < (MATCH (w2:Weather) WHERE w2.zip_code = 94107 RETURN min(w2.min_dew_point_f)) RETURN w.date as date, w.zip_code as zip_code-----------------
+MATCH (w:Weather) WHERE w.min_dew_point_f < (MATCH (w2:Weather) WHERE w2.zip_code = 94107 RETURN min(w2.min_dew_point_f)) RETURN w.date as date, w.zip_code as zip_code
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 65 (offset: 64))
+"MATCH (w:Weather) WHERE w.min_dew_point_f < (MATCH (w2:Weather) WHERE w2.zip_code = 94107 RETURN min(w2.min_dew_point_f)) RETURN w.date as date, w.zip_code as zip_code"
+                                                                 ^}
+
+--------------------------27-----------------
+schema:['id', 'installation_date']
+---------------------------Execute SQL Query:SELECT T1.id ,  T2.installation_date FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id RETURN t.id AS id, s.installation_date AS installation_date-----------------
+MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id RETURN t.id AS id, s.installation_date AS installation_date
+translate SELECT T1.id ,  T2.installation_date FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id success
+
+--------------------------28-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT T1.id FROM trip AS T1 JOIN station AS T2 ON T1.start_station_id  =  T2.id ORDER BY T2.dock_count DESC LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip), (s:Station) WHERE t.start_station_id = s.id RETURN t.id AS id ORDER BY s.dock_count DESC LIMIT 1-----------------
+MATCH (t:Trip), (s:Station) WHERE t.start_station_id = s.id RETURN t.id AS id ORDER BY s.dock_count DESC LIMIT 1
+mismatch between MySQL and target
+mysql res: ['{"id": 900506}']
+target res: ['{"id": 900648}']
+
+--------------------------29-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id WHERE T2.city !=  "San Francisco"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;-----------------
+MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;
+mismatch between MySQL and target
+mysql res: ['{"count_*": 999}']
+target res: ['{"count": 999}']
+
+--------------------------30-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id WHERE T2.city != "San Francisco"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;-----------------
+MATCH (t:Trip), (s:Station) WHERE t.end_station_id = s.id AND s.city <> "San Francisco" RETURN count(*) AS count;
+mismatch between MySQL and target
+mysql res: ['{"count_*": 999}']
+target res: ['{"count": 999}']
+
+--------------------------31-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE zip_code  =  94107 AND EVENTS != "Fog" AND EVENTS != "Rain"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.zip_code = 94107 AND w.EVENTS <> "Fog" AND w.EVENTS <> "Rain" RETURN w.date as date-----------------
+MATCH (w:Weather) WHERE w.zip_code = 94107 AND w.EVENTS <> "Fog" AND w.EVENTS <> "Rain" RETURN w.date as date
+Exception raised during comparison: Row number mismatch
+
+--------------------------32-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM station WHERE lat  >  37.4 EXCEPT SELECT station_id FROM status GROUP BY station_id HAVING min(bikes_available)  <  7-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.lat > 37.4 WITH collect(s.id) AS stationIds
+MATCH (st:Status) WITH st.station_id AS station_id, MIN(st.bikes_available) AS minBikes WHERE minBikes < 7
+WITH collect(station_id) AS lowBikeStations
+RETURN [id IN stationIds WHERE NOT id IN lowBikeStations] AS id-----------------
+MATCH (s:Station) WHERE s.lat > 37.4 WITH collect(s.id) AS stationIds
+MATCH (st:Status) WITH st.station_id AS station_id, MIN(st.bikes_available) AS minBikes WHERE minBikes < 7
+WITH collect(station_id) AS lowBikeStations
+RETURN [id IN stationIds WHERE NOT id IN lowBikeStations] AS id
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Variable `stationIds` not defined (line 4, column 15 (offset: 235))
+"RETURN [id IN stationIds WHERE NOT id IN lowBikeStations] AS id"
+               ^}
+
+--------------------------33-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id GROUP BY T2.station_id HAVING avg(bikes_available)  >  10 EXCEPT SELECT name FROM station WHERE city  =  "San Jose"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (st:Status) WHERE s.id = st.station_id WITH s.name AS name, AVG(st.bikes_available) AS avgBikes WHERE avgBikes > 10 WITH COLLECT(name) AS names MATCH (s:Station) WHERE s.city = "San Jose" WITH COLLECT(s.name) AS excludedNames RETURN [n IN names WHERE NOT n IN excludedNames] AS name-----------------
+MATCH (s:Station), (st:Status) WHERE s.id = st.station_id WITH s.name AS name, AVG(st.bikes_available) AS avgBikes WHERE avgBikes > 10 WITH COLLECT(name) AS names MATCH (s:Station) WHERE s.city = "San Jose" WITH COLLECT(s.name) AS excludedNames RETURN [n IN names WHERE NOT n IN excludedNames] AS name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Variable `names` not defined (line 1, column 259 (offset: 258))
+"MATCH (s:Station), (st:Status) WHERE s.id = st.station_id WITH s.name AS name, AVG(st.bikes_available) AS avgBikes WHERE avgBikes > 10 WITH COLLECT(name) AS names MATCH (s:Station) WHERE s.city = "San Jose" WITH COLLECT(s.name) AS excludedNames RETURN [n IN names WHERE NOT n IN excludedNames] AS name"
+                                                                                                                                                                                                                                                                   ^}
+
+--------------------------34-----------------
+schema:['name', 'lat', 'city']
+---------------------------Execute SQL Query:SELECT name ,  lat ,  city FROM station ORDER BY lat LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) RETURN s.name AS name, s.lat AS lat, s.city AS city ORDER BY s.lat ASC LIMIT 1-----------------
+MATCH (s:Station) RETURN s.name AS name, s.lat AS lat, s.city AS city ORDER BY s.lat ASC LIMIT 1
+mismatch between MySQL and target
+mysql res: ['{"name": "San Antonio Shopping Center", "lat": 37, "city": "Mountain View"}']
+target res: ['{"name": "San Jose Diridon Caltrain Station", "lat": 37, "city": "San Jose"}']
+
+--------------------------35-----------------
+schema:['date', 'mean_temperature_f', 'mean_humidity']
+---------------------------Execute SQL Query:SELECT date ,  mean_temperature_f ,  mean_humidity FROM weather ORDER BY max_gust_speed_mph DESC LIMIT 3-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) RETURN w.date AS date, w.mean_temperature_f AS mean_temperature_f, w.mean_humidity AS mean_humidity ORDER BY w.max_gust_speed_mph DESC LIMIT 3-----------------
+MATCH (w:Weather) RETURN w.date AS date, w.mean_temperature_f AS mean_temperature_f, w.mean_humidity AS mean_humidity ORDER BY w.max_gust_speed_mph DESC LIMIT 3
+mismatch between MySQL and target
+mysql res: ['{"date": "12/12/2013", "mean_temperature_f": 42, "mean_humidity": 63}', '{"date": "11/20/2013", "mean_temperature_f": 57, "mean_humidity": 85}', '{"date": "11/21/2013", "mean_temperature_f": 54, "mean_humidity": 63}']
+target res: ['{"date": "9/5/2013", "mean_temperature_f": 68, "mean_humidity": 63}', '{"date": "10/8/2013", "mean_temperature_f": 60, "mean_humidity": 60}', '{"date": "10/12/2013", "mean_temperature_f": 57, "mean_humidity": 69}']
+
+--------------------------36-----------------
+schema:['city', 'COUNT_*']
+---------------------------Execute SQL Query:SELECT city ,  COUNT(*) FROM station GROUP BY city HAVING COUNT(*)  >=  15-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WITH s.city AS city, COUNT(*) AS count WHERE count >= 15 RETURN city, count-----------------
+MATCH (s:Station) WITH s.city AS city, COUNT(*) AS count WHERE count >= 15 RETURN city, count
+mismatch between MySQL and target
+mysql res: ['{"city": "San Jose", "COUNT_*": 16}', '{"city": "San Francisco", "COUNT_*": 35}']
+target res: ['{"city": "San Jose", "count": 16}', '{"city": "San Francisco", "count": 35}']
+
+--------------------------37-----------------
+schema:(None, OperationalError(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT start_station_id ,  start_station_name FROM trip GROUP BY start_station_name HAVING COUNT(*)  >=  200-----------------
+execute mysql query error:(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------38-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avgVisibility WHERE avgVisibility < 10 RETURN zip_code-----------------
+MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avgVisibility WHERE avgVisibility < 10 RETURN zip_code
+translate SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10 success
+
+--------------------------39-----------------
+schema:['city']
+---------------------------Execute SQL Query:SELECT city FROM station GROUP BY city ORDER BY max(lat) DESC-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WITH s.city AS city, MAX(s.lat) AS max_lat ORDER BY max_lat DESC RETURN city-----------------
+MATCH (s:Station) WITH s.city AS city, MAX(s.lat) AS max_lat ORDER BY max_lat DESC RETURN city
+translate SELECT city FROM station GROUP BY city ORDER BY max(lat) DESC success
+
+--------------------------40-----------------
+schema:['date', 'cloud_cover']
+---------------------------Execute SQL Query:SELECT date ,  cloud_cover FROM weather ORDER BY cloud_cover DESC LIMIT 5-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) RETURN w.date AS date, w.cloud_cover AS cloud_cover ORDER BY w.cloud_cover DESC LIMIT 5-----------------
+MATCH (w:Weather) RETURN w.date AS date, w.cloud_cover AS cloud_cover ORDER BY w.cloud_cover DESC LIMIT 5
+mismatch between MySQL and target
+mysql res: ['{"date": "5/18/2015", "cloud_cover": 8}', '{"date": "3/5/2014", "cloud_cover": 8}', '{"date": "5/22/2015", "cloud_cover": 8}', '{"date": "12/11/2014", "cloud_cover": 8}', '{"date": "5/20/2015", "cloud_cover": 8}']
+target res: ['{"date": "2/7/2014", "cloud_cover": 8}', '{"date": "2/8/2014", "cloud_cover": 8}', '{"date": "1/29/2014", "cloud_cover": 8}', '{"date": "2/6/2014", "cloud_cover": 8}', '{"date": "2/9/2014", "cloud_cover": 8}']
+
+--------------------------41-----------------
+schema:['id', 'duration']
+---------------------------Execute SQL Query:SELECT id ,  duration FROM trip ORDER BY duration DESC LIMIT 3-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) RETURN t.id AS id, t.duration AS duration ORDER BY duration DESC LIMIT 3-----------------
+MATCH (t:Trip) RETURN t.id AS id, t.duration AS duration ORDER BY duration DESC LIMIT 3
+translate SELECT id ,  duration FROM trip ORDER BY duration DESC LIMIT 3 success
+
+--------------------------42-----------------
+schema:['name', 'longitude', 'avg_T2_duration']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.longitude ,  avg(T2.duration) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id GROUP BY T2.start_station_id-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (t:Trip) WHERE s.id = t.start_station_id WITH s.name AS name, s.longitude AS longitude, AVG(t.duration) AS avg_duration RETURN name, longitude, avg_duration-----------------
+MATCH (s:Station), (t:Trip) WHERE s.id = t.start_station_id WITH s.name AS name, s.longitude AS longitude, AVG(t.duration) AS avg_duration RETURN name, longitude, avg_duration
+mismatch between MySQL and target
+mysql res: ['{"name": "Howard at 2nd", "longitude": -122, "avg_T2_duration": 414.5117}', '{"name": "South Van Ness at Market", "longitude": -122, "avg_T2_duration": 912.8476}', '{"name": "Market at Sansome", "longitude": -122, "avg_T2_duration": 786.4408}', '{"name": "Washington at Kearney", "longitude": -122, "avg_T2_duration": 1497.7671}', '{"name": "Beale at Market", "longitude": -122, "avg_T2_duration": 752.6638}', '{"name": "Clay at Battery", "longitude": -122, "avg_T2_duration": 906.0828}', '{"name": "Embarcadero at Vallejo", "longitude": -122, "avg_T2_duration": 1817.2216}', '{"name": "Davis at Jackson", "longitude": -122, "avg_T2_duration": 1067.6629}', '{"name": "2nd at Townsend", "longitude": -122, "avg_T2_duration": 905.3341}', '{"name": "Powell Street BART", "longitude": -122, "avg_T2_duration": 1245.5837}', '{"name": "Temporary Transbay Terminal (Howard at Beale)", "longitude": -122, "avg_T2_duration": 535.0488}', '{"name": "Park at Olive", "longitude": -122, "avg_T2_duration": 872.2222}', '{"name": "2nd at South Park", "longitude": -122, "avg_T2_duration": 512.8462}', '{"name": "Harry Bridges Plaza (Ferry Building)", "longitude": -122, "avg_T2_duration": 1802.6722}', '{"name": "Steuart at Market", "longitude": -122, "avg_T2_duration": 890.9442}', '{"name": "Embarcadero at Sansome", "longitude": -122, "avg_T2_duration": 1630.0023}', '{"name": "5th at Howard", "longitude": -122, "avg_T2_duration": 551.4051}', '{"name": "Spear at Folsom", "longitude": -122, "avg_T2_duration": 655.7167}', '{"name": "San Francisco Caltrain (Townsend at 4th)", "longitude": -122, "avg_T2_duration": 801.9405}', '{"name": "Yerba Buena Center of the Arts (3rd @ Howard)", "longitude": -122, "avg_T2_duration": 561.7395}', '{"name": "Embarcadero at Bryant", "longitude": -122, "avg_T2_duration": 766.0746}', '{"name": "Market at 10th", "longitude": -122, "avg_T2_duration": 1139.6390}', '{"name": "Embarcadero at Folsom", "longitude": -122, "avg_T2_duration": 938.7895}', '{"name": "Townsend at 7th", "longitude": -122, "avg_T2_duration": 568.9298}', '{"name": "Market at 4th", "longitude": -122, "avg_T2_duration": 1664.8505}', '{"name": "Mountain View City Hall", "longitude": -122, "avg_T2_duration": 563.0333}', '{"name": "Commercial at Montgomery", "longitude": -122, "avg_T2_duration": 524.7748}', '{"name": "San Francisco Caltrain 2 (330 Townsend)", "longitude": -122, "avg_T2_duration": 725.3219}', '{"name": "Mountain View Caltrain Station", "longitude": -122, "avg_T2_duration": 714.8062}', '{"name": "San Pedro Square", "longitude": -122, "avg_T2_duration": 840.2250}', '{"name": "Golden Gate at Polk", "longitude": -122, "avg_T2_duration": 734.3861}', '{"name": "Santa Clara at Almaden", "longitude": -122, "avg_T2_duration": 378.2800}', '{"name": "Civic Center BART (7th at Market)", "longitude": -122, "avg_T2_duration": 1276.7208}', '{"name": "2nd at Folsom", "longitude": -122, "avg_T2_duration": 399.6787}', '{"name": "San Francisco City Hall", "longitude": -122, "avg_T2_duration": 1774.6316}', '{"name": "Redwood City Medical Center", "longitude": -122, "avg_T2_duration": 555.4000}', '{"name": "San Jose Diridon Caltrain Station", "longitude": -122, "avg_T2_duration": 544.7612}', '{"name": "Santa Clara County Civic Center", "longitude": -122, "avg_T2_duration": 862.4667}', '{"name": "San Jose Civic Center", "longitude": -122, "avg_T2_duration": 885.0000}', '{"name": "SJSU 4th at San Carlos", "longitude": -122, "avg_T2_duration": 711.7778}', '{"name": "Broadway St at Battery St", "longitude": -122, "avg_T2_duration": 1044.7238}', '{"name": "University and Emerson", "longitude": -122, "avg_T2_duration": 2643.6000}', '{"name": "Post at Kearney", "longitude": -122, "avg_T2_duration": 825.1929}', '{"name": "Palo Alto Caltrain Station", "longitude": -122, "avg_T2_duration": 1653.3256}', '{"name": "Grant Avenue at Columbus Avenue", "longitude": -122, "avg_T2_duration": 1423.3750}', '{"name": "Redwood City Caltrain Station", "longitude": -122, "avg_T2_duration": 2643.8718}', '{"name": "Japantown", "longitude": -122, "avg_T2_duration": 1230.6552}', '{"name": "San Salvador at 1st", "longitude": -122, "avg_T2_duration": 682.3333}', '{"name": "Castro Street and El Camino Real", "longitude": -122, "avg_T2_duration": 1082.7143}', '{"name": "Arena Green / SAP Center", "longitude": -122, "avg_T2_duration": 608.8333}', '{"name": "Ryland Park", "longitude": -122, "avg_T2_duration": 556.0000}', '{"name": "Powell at Post (Union Square)", "longitude": -122, "avg_T2_duration": 765.4459}', '{"name": "Rengstorff Avenue / California Street", "longitude": -122, "avg_T2_duration": 699.7000}', '{"name": "Cowper at University", "longitude": -122, "avg_T2_duration": 1164.1154}', '{"name": "Mechanics Plaza (Market at Battery)", "longitude": -122, "avg_T2_duration": 655.2933}', '{"name": "California Ave Caltrain Station", "longitude": -122, "avg_T2_duration": 1423.8421}', '{"name": "Adobe on Almaden", "longitude": -122, "avg_T2_duration": 980.0714}', '{"name": "St James Park", "longitude": -122, "avg_T2_duration": 616.4000}', '{"name": "San Jose City Hall", "longitude": -122, "avg_T2_duration": 1123.4000}', '{"name": "MLK Library", "longitude": -122, "avg_T2_duration": 810.5417}', '{"name": "San Antonio Caltrain Station", "longitude": -122, "avg_T2_duration": 380.4091}', '{"name": "San Antonio Shopping Center", "longitude": -122, "avg_T2_duration": 667.5926}', '{"name": "SJSU - San Salvador at 9th", "longitude": -122, "avg_T2_duration": 3597.0952}', '{"name": "Franklin at Maple", "longitude": -122, "avg_T2_duration": 3909.0000}', '{"name": "Evelyn Park and Ride", "longitude": -122, "avg_T2_duration": 918.1316}', '{"name": "Paseo de San Antonio", "longitude": -122, "avg_T2_duration": 529.0909}', '{"name": "Stanford in Redwood City", "longitude": -122, "avg_T2_duration": 979.0667}', '{"name": "Redwood City Public Library", "longitude": -122, "avg_T2_duration": 741.0000}', '{"name": "Mezes Park", "longitude": -122, "avg_T2_duration": 253.3333}']
+target res: ['{"name": "Howard at 2nd", "longitude": -122, "avg_duration": 414.5117370892018}', '{"name": "South Van Ness at Market", "longitude": -122, "avg_duration": 912.84756097561}', '{"name": "Market at Sansome", "longitude": -122, "avg_duration": 786.4408284023666}', '{"name": "Washington at Kearney", "longitude": -122, "avg_duration": 1497.7671232876712}', '{"name": "Beale at Market", "longitude": -122, "avg_duration": 752.6637554585154}', '{"name": "Clay at Battery", "longitude": -122, "avg_duration": 906.0827586206896}', '{"name": "Embarcadero at Vallejo", "longitude": -122, "avg_duration": 1817.2216494845352}', '{"name": "Davis at Jackson", "longitude": -122, "avg_duration": 1067.662921348314}', '{"name": "2nd at Townsend", "longitude": -122, "avg_duration": 905.3340611353708}', '{"name": "Powell Street BART", "longitude": -122, "avg_duration": 1245.5836909871243}', '{"name": "Temporary Transbay Terminal (Howard at Beale)", "longitude": -122, "avg_duration": 535.0488372093017}', '{"name": "Park at Olive", "longitude": -122, "avg_duration": 872.2222222222222}', '{"name": "2nd at South Park", "longitude": -122, "avg_duration": 512.8461538461538}', '{"name": "Harry Bridges Plaza (Ferry Building)", "longitude": -122, "avg_duration": 1802.6721991701256}', '{"name": "Steuart at Market", "longitude": -122, "avg_duration": 890.9441964285713}', '{"name": "Embarcadero at Sansome", "longitude": -122, "avg_duration": 1630.0022675736955}', '{"name": "5th at Howard", "longitude": -122, "avg_duration": 551.4051282051278}', '{"name": "Spear at Folsom", "longitude": -122, "avg_duration": 655.7166666666665}', '{"name": "San Francisco Caltrain (Townsend at 4th)", "longitude": -122, "avg_duration": 801.9405320813767}', '{"name": "Yerba Buena Center of the Arts (3rd @ Howard)", "longitude": -122, "avg_duration": 561.7394957983194}', '{"name": "Embarcadero at Bryant", "longitude": -122, "avg_duration": 766.074626865672}', '{"name": "Market at 10th", "longitude": -122, "avg_duration": 1139.6389891696756}', '{"name": "Embarcadero at Folsom", "longitude": -122, "avg_duration": 938.7894736842107}', '{"name": "Townsend at 7th", "longitude": -122, "avg_duration": 568.929775280899}', '{"name": "Market at 4th", "longitude": -122, "avg_duration": 1664.8505338078287}', '{"name": "Mountain View City Hall", "longitude": -122, "avg_duration": 563.0333333333332}', '{"name": "Commercial at Montgomery", "longitude": -122, "avg_duration": 524.7748344370865}', '{"name": "San Francisco Caltrain 2 (330 Townsend)", "longitude": -122, "avg_duration": 725.3219284603421}', '{"name": "Mountain View Caltrain Station", "longitude": -122, "avg_duration": 714.8062015503878}', '{"name": "San Pedro Square", "longitude": -122, "avg_duration": 840.225}', '{"name": "Golden Gate at Polk", "longitude": -122, "avg_duration": 734.3861386138612}', '{"name": "Santa Clara at Almaden", "longitude": -122, "avg_duration": 378.28000000000003}', '{"name": "Civic Center BART (7th at Market)", "longitude": -122, "avg_duration": 1276.7208121827407}', '{"name": "2nd at Folsom", "longitude": -122, "avg_duration": 399.6787330316743}', '{"name": "San Francisco City Hall", "longitude": -122, "avg_duration": 1774.6315789473686}', '{"name": "Redwood City Medical Center", "longitude": -122, "avg_duration": 555.4}', '{"name": "San Jose Diridon Caltrain Station", "longitude": -122, "avg_duration": 544.761194029851}', '{"name": "Santa Clara County Civic Center", "longitude": -122, "avg_duration": 862.4666666666667}', '{"name": "San Jose Civic Center", "longitude": -122, "avg_duration": 885.0000000000001}', '{"name": "SJSU 4th at San Carlos", "longitude": -122, "avg_duration": 711.7777777777778}', '{"name": "Broadway St at Battery St", "longitude": -122, "avg_duration": 1044.7237569060774}', '{"name": "University and Emerson", "longitude": -122, "avg_duration": 2643.6}', '{"name": "Post at Kearney", "longitude": -122, "avg_duration": 825.1928571428571}', '{"name": "Palo Alto Caltrain Station", "longitude": -122, "avg_duration": 1653.3255813953492}', '{"name": "Grant Avenue at Columbus Avenue", "longitude": -122, "avg_duration": 1423.3750000000002}', '{"name": "Redwood City Caltrain Station", "longitude": -122, "avg_duration": 2643.871794871795}', '{"name": "Japantown", "longitude": -122, "avg_duration": 1230.6551724137933}', '{"name": "San Salvador at 1st", "longitude": -122, "avg_duration": 682.3333333333334}', '{"name": "Castro Street and El Camino Real", "longitude": -122, "avg_duration": 1082.714285714286}', '{"name": "Arena Green / SAP Center", "longitude": -122, "avg_duration": 608.8333333333335}', '{"name": "Ryland Park", "longitude": -122, "avg_duration": 556.0000000000002}', '{"name": "Powell at Post (Union Square)", "longitude": -122, "avg_duration": 765.4458598726114}', '{"name": "Rengstorff Avenue / California Street", "longitude": -122, "avg_duration": 699.6999999999999}', '{"name": "Cowper at University", "longitude": -122, "avg_duration": 1164.1153846153848}', '{"name": "Mechanics Plaza (Market at Battery)", "longitude": -122, "avg_duration": 655.2933333333334}', '{"name": "California Ave Caltrain Station", "longitude": -122, "avg_duration": 1423.8421052631581}', '{"name": "Adobe on Almaden", "longitude": -122, "avg_duration": 980.0714285714286}', '{"name": "St James Park", "longitude": -122, "avg_duration": 616.3999999999999}', '{"name": "San Jose City Hall", "longitude": -122, "avg_duration": 1123.4}', '{"name": "MLK Library", "longitude": -122, "avg_duration": 810.5416666666666}', '{"name": "San Antonio Caltrain Station", "longitude": -122, "avg_duration": 380.409090909091}', '{"name": "San Antonio Shopping Center", "longitude": -122, "avg_duration": 667.5925925925926}', '{"name": "SJSU - San Salvador at 9th", "longitude": -122, "avg_duration": 3597.0952380952385}', '{"name": "Franklin at Maple", "longitude": -122, "avg_duration": 3909.0}', '{"name": "Evelyn Park and Ride", "longitude": -122, "avg_duration": 918.1315789473684}', '{"name": "Paseo de San Antonio", "longitude": -122, "avg_duration": 529.0909090909091}', '{"name": "Stanford in Redwood City", "longitude": -122, "avg_duration": 979.0666666666667}', '{"name": "Redwood City Public Library", "longitude": -122, "avg_duration": 741.0}', '{"name": "Mezes Park", "longitude": -122, "avg_duration": 253.33333333333334}']
+
+--------------------------43-----------------
+schema:['name', 'lat', 'min_T2_duration']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.lat ,  min(T2.duration) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.end_station_id GROUP BY T2.end_station_id-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (t:Trip) WHERE s.id = t.end_station_id WITH s.name AS name, s.lat AS lat, MIN(t.duration) AS min_duration RETURN name, lat, min_duration-----------------
+MATCH (s:Station), (t:Trip) WHERE s.id = t.end_station_id WITH s.name AS name, s.lat AS lat, MIN(t.duration) AS min_duration RETURN name, lat, min_duration
+mismatch between MySQL and target
+mysql res: ['{"name": "San Francisco Caltrain 2 (330 Townsend)", "lat": 38, "min_T2_duration": 77}', '{"name": "Harry Bridges Plaza (Ferry Building)", "lat": 38, "min_T2_duration": 114}', '{"name": "2nd at Townsend", "lat": 38, "min_T2_duration": 68}', '{"name": "San Francisco Caltrain (Townsend at 4th)", "lat": 38, "min_T2_duration": 61}', '{"name": "Howard at 2nd", "lat": 38, "min_T2_duration": 62}', '{"name": "Temporary Transbay Terminal (Howard at Beale)", "lat": 38, "min_T2_duration": 86}', '{"name": "Market at Sansome", "lat": 38, "min_T2_duration": 104}', '{"name": "Townsend at 7th", "lat": 38, "min_T2_duration": 138}', '{"name": "Palo Alto Caltrain Station", "lat": 37, "min_T2_duration": 80}', '{"name": "Market at 10th", "lat": 38, "min_T2_duration": 101}', '{"name": "Civic Center BART (7th at Market)", "lat": 38, "min_T2_duration": 106}', '{"name": "Embarcadero at Folsom", "lat": 38, "min_T2_duration": 63}', '{"name": "Grant Avenue at Columbus Avenue", "lat": 38, "min_T2_duration": 143}', '{"name": "Market at 4th", "lat": 38, "min_T2_duration": 140}', '{"name": "5th at Howard", "lat": 38, "min_T2_duration": 73}', '{"name": "South Van Ness at Market", "lat": 38, "min_T2_duration": 70}', '{"name": "Steuart at Market", "lat": 38, "min_T2_duration": 64}', '{"name": "Powell at Post (Union Square)", "lat": 38, "min_T2_duration": 209}', '{"name": "Powell Street BART", "lat": 38, "min_T2_duration": 104}', '{"name": "Mountain View Caltrain Station", "lat": 37, "min_T2_duration": 189}', '{"name": "Commercial at Montgomery", "lat": 38, "min_T2_duration": 76}', '{"name": "Davis at Jackson", "lat": 38, "min_T2_duration": 84}', '{"name": "San Jose Diridon Caltrain Station", "lat": 37, "min_T2_duration": 195}', '{"name": "Golden Gate at Polk", "lat": 38, "min_T2_duration": 107}', '{"name": "2nd at South Park", "lat": 38, "min_T2_duration": 71}', '{"name": "Spear at Folsom", "lat": 38, "min_T2_duration": 139}', '{"name": "Embarcadero at Bryant", "lat": 38, "min_T2_duration": 136}', '{"name": "Embarcadero at Sansome", "lat": 38, "min_T2_duration": 62}', '{"name": "Post at Kearney", "lat": 38, "min_T2_duration": 73}', '{"name": "Rengstorff Avenue / California Street", "lat": 37, "min_T2_duration": 320}', '{"name": "San Mateo County Center", "lat": 37, "min_T2_duration": 126}', '{"name": "Paseo de San Antonio", "lat": 37, "min_T2_duration": 147}', '{"name": "Yerba Buena Center of the Arts (3rd @ Howard)", "lat": 38, "min_T2_duration": 126}', '{"name": "Broadway St at Battery St", "lat": 38, "min_T2_duration": 105}', '{"name": "Ryland Park", "lat": 37, "min_T2_duration": 269}', '{"name": "Beale at Market", "lat": 38, "min_T2_duration": 72}', '{"name": "Clay at Battery", "lat": 38, "min_T2_duration": 92}', '{"name": "San Pedro Square", "lat": 37, "min_T2_duration": 182}', '{"name": "Park at Olive", "lat": 37, "min_T2_duration": 166}', '{"name": "2nd at Folsom", "lat": 38, "min_T2_duration": 111}', '{"name": "Castro Street and El Camino Real", "lat": 37, "min_T2_duration": 166}', '{"name": "California Ave Caltrain Station", "lat": 37, "min_T2_duration": 151}', '{"name": "San Salvador at 1st", "lat": 37, "min_T2_duration": 161}', '{"name": "Santa Clara at Almaden", "lat": 37, "min_T2_duration": 169}', '{"name": "Washington at Kearney", "lat": 38, "min_T2_duration": 175}', '{"name": "MLK Library", "lat": 37, "min_T2_duration": 209}', '{"name": "San Jose City Hall", "lat": 37, "min_T2_duration": 219}', '{"name": "Mountain View City Hall", "lat": 37, "min_T2_duration": 145}', '{"name": "Japantown", "lat": 37, "min_T2_duration": 259}', '{"name": "Santa Clara County Civic Center", "lat": 37, "min_T2_duration": 409}', '{"name": "Arena Green / SAP Center", "lat": 37, "min_T2_duration": 165}', '{"name": "Embarcadero at Vallejo", "lat": 38, "min_T2_duration": 111}', '{"name": "St James Park", "lat": 37, "min_T2_duration": 101}', '{"name": "San Francisco City Hall", "lat": 38, "min_T2_duration": 120}', '{"name": "Mechanics Plaza (Market at Battery)", "lat": 38, "min_T2_duration": 87}', '{"name": "SJSU - San Salvador at 9th", "lat": 37, "min_T2_duration": 258}', '{"name": "Cowper at University", "lat": 37, "min_T2_duration": 145}', '{"name": "Adobe on Almaden", "lat": 37, "min_T2_duration": 237}', '{"name": "SJSU 4th at San Carlos", "lat": 37, "min_T2_duration": 205}', '{"name": "University and Emerson", "lat": 37, "min_T2_duration": 631}', '{"name": "Franklin at Maple", "lat": 37, "min_T2_duration": 198}', '{"name": "San Antonio Caltrain Station", "lat": 37, "min_T2_duration": 153}', '{"name": "Evelyn Park and Ride", "lat": 37, "min_T2_duration": 191}', '{"name": "San Antonio Shopping Center", "lat": 37, "min_T2_duration": 198}', '{"name": "Stanford in Redwood City", "lat": 37, "min_T2_duration": 651}', '{"name": "Redwood City Medical Center", "lat": 37, "min_T2_duration": 225}', '{"name": "Redwood City Caltrain Station", "lat": 37, "min_T2_duration": 206}', '{"name": "Mezes Park", "lat": 37, "min_T2_duration": 225}', '{"name": "Redwood City Public Library", "lat": 37, "min_T2_duration": 1193}', '{"name": "San Jose Civic Center", "lat": 37, "min_T2_duration": 211}']
+target res: ['{"name": "San Francisco Caltrain 2 (330 Townsend)", "lat": 38, "min_duration": 77}', '{"name": "Harry Bridges Plaza (Ferry Building)", "lat": 38, "min_duration": 114}', '{"name": "2nd at Townsend", "lat": 38, "min_duration": 68}', '{"name": "San Francisco Caltrain (Townsend at 4th)", "lat": 38, "min_duration": 61}', '{"name": "Howard at 2nd", "lat": 38, "min_duration": 62}', '{"name": "Temporary Transbay Terminal (Howard at Beale)", "lat": 38, "min_duration": 86}', '{"name": "Market at Sansome", "lat": 38, "min_duration": 104}', '{"name": "Townsend at 7th", "lat": 38, "min_duration": 138}', '{"name": "Palo Alto Caltrain Station", "lat": 37, "min_duration": 80}', '{"name": "Market at 10th", "lat": 38, "min_duration": 101}', '{"name": "Civic Center BART (7th at Market)", "lat": 38, "min_duration": 106}', '{"name": "Embarcadero at Folsom", "lat": 38, "min_duration": 63}', '{"name": "Grant Avenue at Columbus Avenue", "lat": 38, "min_duration": 143}', '{"name": "Market at 4th", "lat": 38, "min_duration": 140}', '{"name": "5th at Howard", "lat": 38, "min_duration": 73}', '{"name": "South Van Ness at Market", "lat": 38, "min_duration": 70}', '{"name": "Steuart at Market", "lat": 38, "min_duration": 64}', '{"name": "Powell at Post (Union Square)", "lat": 38, "min_duration": 209}', '{"name": "Powell Street BART", "lat": 38, "min_duration": 104}', '{"name": "Mountain View Caltrain Station", "lat": 37, "min_duration": 189}', '{"name": "Commercial at Montgomery", "lat": 38, "min_duration": 76}', '{"name": "Davis at Jackson", "lat": 38, "min_duration": 84}', '{"name": "San Jose Diridon Caltrain Station", "lat": 37, "min_duration": 195}', '{"name": "Golden Gate at Polk", "lat": 38, "min_duration": 107}', '{"name": "2nd at South Park", "lat": 38, "min_duration": 71}', '{"name": "Spear at Folsom", "lat": 38, "min_duration": 139}', '{"name": "Embarcadero at Bryant", "lat": 38, "min_duration": 136}', '{"name": "Embarcadero at Sansome", "lat": 38, "min_duration": 62}', '{"name": "Post at Kearney", "lat": 38, "min_duration": 73}', '{"name": "Rengstorff Avenue / California Street", "lat": 37, "min_duration": 320}', '{"name": "San Mateo County Center", "lat": 37, "min_duration": 126}', '{"name": "Paseo de San Antonio", "lat": 37, "min_duration": 147}', '{"name": "Yerba Buena Center of the Arts (3rd @ Howard)", "lat": 38, "min_duration": 126}', '{"name": "Broadway St at Battery St", "lat": 38, "min_duration": 105}', '{"name": "Ryland Park", "lat": 37, "min_duration": 269}', '{"name": "Beale at Market", "lat": 38, "min_duration": 72}', '{"name": "Clay at Battery", "lat": 38, "min_duration": 92}', '{"name": "San Pedro Square", "lat": 37, "min_duration": 182}', '{"name": "Park at Olive", "lat": 37, "min_duration": 166}', '{"name": "2nd at Folsom", "lat": 38, "min_duration": 111}', '{"name": "Castro Street and El Camino Real", "lat": 37, "min_duration": 166}', '{"name": "California Ave Caltrain Station", "lat": 37, "min_duration": 151}', '{"name": "San Salvador at 1st", "lat": 37, "min_duration": 161}', '{"name": "Santa Clara at Almaden", "lat": 37, "min_duration": 169}', '{"name": "Washington at Kearney", "lat": 38, "min_duration": 175}', '{"name": "MLK Library", "lat": 37, "min_duration": 209}', '{"name": "San Jose City Hall", "lat": 37, "min_duration": 219}', '{"name": "Mountain View City Hall", "lat": 37, "min_duration": 145}', '{"name": "Japantown", "lat": 37, "min_duration": 259}', '{"name": "Santa Clara County Civic Center", "lat": 37, "min_duration": 409}', '{"name": "Arena Green / SAP Center", "lat": 37, "min_duration": 165}', '{"name": "Embarcadero at Vallejo", "lat": 38, "min_duration": 111}', '{"name": "St James Park", "lat": 37, "min_duration": 101}', '{"name": "San Francisco City Hall", "lat": 38, "min_duration": 120}', '{"name": "Mechanics Plaza (Market at Battery)", "lat": 38, "min_duration": 87}', '{"name": "SJSU - San Salvador at 9th", "lat": 37, "min_duration": 258}', '{"name": "Cowper at University", "lat": 37, "min_duration": 145}', '{"name": "Adobe on Almaden", "lat": 37, "min_duration": 237}', '{"name": "SJSU 4th at San Carlos", "lat": 37, "min_duration": 205}', '{"name": "University and Emerson", "lat": 37, "min_duration": 631}', '{"name": "Franklin at Maple", "lat": 37, "min_duration": 198}', '{"name": "San Antonio Caltrain Station", "lat": 37, "min_duration": 153}', '{"name": "Evelyn Park and Ride", "lat": 37, "min_duration": 191}', '{"name": "San Antonio Shopping Center", "lat": 37, "min_duration": 198}', '{"name": "Stanford in Redwood City", "lat": 37, "min_duration": 651}', '{"name": "Redwood City Medical Center", "lat": 37, "min_duration": 225}', '{"name": "Redwood City Caltrain Station", "lat": 37, "min_duration": 206}', '{"name": "Mezes Park", "lat": 37, "min_duration": 225}', '{"name": "Redwood City Public Library", "lat": 37, "min_duration": 1193}', '{"name": "San Jose Civic Center", "lat": 37, "min_duration": 211}']
+
+--------------------------44-----------------
+schema:['start_station_name']
+---------------------------Execute SQL Query:SELECT DISTINCT start_station_name FROM trip WHERE duration  <  100-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) WHERE t.duration < 100 RETURN DISTINCT t.start_station_name as start_station_name-----------------
+MATCH (t:Trip) WHERE t.duration < 100 RETURN DISTINCT t.start_station_name as start_station_name
+translate SELECT DISTINCT start_station_name FROM trip WHERE duration  <  100 success
+
+--------------------------45-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT DISTINCT zip_code FROM weather EXCEPT SELECT DISTINCT zip_code FROM weather WHERE max_dew_point_f  >=  70-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WITH DISTINCT w.zip_code AS zip_code WHERE NOT EXISTS ((w)-[:HAS]->(:Weather {max_dew_point_f: 70})) RETURN zip_code-----------------
+MATCH (w:Weather) WITH DISTINCT w.zip_code AS zip_code WHERE NOT EXISTS ((w)-[:HAS]->(:Weather {max_dew_point_f: 70})) RETURN zip_code
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: PatternExpressions are not allowed to introduce new variables: 'w'. (line 1, column 75 (offset: 74))
+"MATCH (w:Weather) WITH DISTINCT w.zip_code AS zip_code WHERE NOT EXISTS ((w)-[:HAS]->(:Weather {max_dew_point_f: 70})) RETURN zip_code"
+                                                                           ^}
+
+--------------------------46-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM trip WHERE duration  >=  (SELECT avg(duration) FROM trip WHERE zip_code  =  94103)-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (t:Trip) WHERE t.duration >= (MATCH (t2:Trip) WHERE t2.zip_code = 94103 RETURN avg(t2.duration)) RETURN t.id as id-----------------
+MATCH (t:Trip) WHERE t.duration >= (MATCH (t2:Trip) WHERE t2.zip_code = 94103 RETURN avg(t2.duration)) RETURN t.id as id
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 53 (offset: 52))
+"MATCH (t:Trip) WHERE t.duration >= (MATCH (t2:Trip) WHERE t2.zip_code = 94103 RETURN avg(t2.duration)) RETURN t.id as id"
+                                                     ^}
+
+--------------------------47-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE mean_sea_level_pressure_inches BETWEEN 30.3 AND 31-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WHERE w.mean_sea_level_pressure_inches >= 30.3 AND w.mean_sea_level_pressure_inches <= 31 RETURN w.date as date-----------------
+MATCH (w:Weather) WHERE w.mean_sea_level_pressure_inches >= 30.3 AND w.mean_sea_level_pressure_inches <= 31 RETURN w.date as date
+translate SELECT date FROM weather WHERE mean_sea_level_pressure_inches BETWEEN 30.3 AND 31 success
+
+--------------------------48-----------------
+schema:['date', 'max_temperature_f - min_temperature_f']
+---------------------------Execute SQL Query:SELECT date ,  max_temperature_f - min_temperature_f FROM weather ORDER BY max_temperature_f - min_temperature_f LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) RETURN w.date AS date, w.max_temperature_f - w.min_temperature_f AS temperature_difference ORDER BY temperature_difference LIMIT 1-----------------
+MATCH (w:Weather) RETURN w.date AS date, w.max_temperature_f - w.min_temperature_f AS temperature_difference ORDER BY temperature_difference LIMIT 1
+mismatch between MySQL and target
+mysql res: ['{"date": "4/16/2015", "max_temperature_f - min_temperature_f": 0}']
+target res: ['{"date": "4/16/2015", "temperature_difference": 0}']
+
+--------------------------49-----------------
+schema:['id', 'name']
+---------------------------Execute SQL Query:SELECT DISTINCT T1.id ,  T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  >  12-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station), (st:Status) WHERE s.id = st.station_id AND st.bikes_available > 12 RETURN DISTINCT s.id AS id, s.name AS name-----------------
+MATCH (s:Station), (st:Status) WHERE s.id = st.station_id AND st.bikes_available > 12 RETURN DISTINCT s.id AS id, s.name AS name
+Exception raised during comparison: Row number mismatch
+
+--------------------------50-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_humidity)  <  70 INTERSECT SELECT zip_code FROM trip GROUP BY zip_code HAVING count(*)  >=  100-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_humidity) AS avgHumidity WHERE avgHumidity < 70 RETURN zip_code
+INTERSECT
+MATCH (t:Trip) WITH t.zip_code AS zip_code, COUNT(*) AS count WHERE count >= 100 RETURN zip_code-----------------
+MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_humidity) AS avgHumidity WHERE avgHumidity < 70 RETURN zip_code
+INTERSECT
+MATCH (t:Trip) WITH t.zip_code AS zip_code, COUNT(*) AS count WHERE count >= 100 RETURN zip_code
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'INTERSECT': expected
+  "!="
+  "%"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "AS"
+  "CALL"
+  "CONTAINS"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "ENDS"
+  "FOREACH"
+  "IN"
+  "INSERT"
+  "IS"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "OR"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "STARTS"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  "XOR"
+  "^"
+  <EOF> (line 2, column 1 (offset: 122))
+"INTERSECT"
+ ^}
+
+--------------------------51-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT name FROM station WHERE city  =  "Palo Alto" EXCEPT SELECT end_station_name FROM trip GROUP BY end_station_name HAVING count(*)  >  100-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 11, column 88
+---------------------------Execute Target Query:MATCH (s:Station) WHERE s.city = "Palo Alto"
+WITH collect(s.name) AS PaloAltoStations
+MATCH (t:Trip)
+WITH PaloAltoStations, t.end_station_name AS end_station_name, COUNT(*) AS tripCount
+WHERE tripCount > 100
+WITH collect(end_station_name) AS BusyStations
+RETURN [station IN PaloAltoStations WHERE NOT station IN BusyStations] AS name-----------------
+MATCH (s:Station) WHERE s.city = "Palo Alto"
+WITH collect(s.name) AS PaloAltoStations
+MATCH (t:Trip)
+WITH PaloAltoStations, t.end_station_name AS end_station_name, COUNT(*) AS tripCount
+WHERE tripCount > 100
+WITH collect(end_station_name) AS BusyStations
+RETURN [station IN PaloAltoStations WHERE NOT station IN BusyStations] AS name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Variable `PaloAltoStations` not defined (line 7, column 20 (offset: 274))
+"RETURN [station IN PaloAltoStations WHERE NOT station IN BusyStations] AS name"
+                    ^}
+success_query_count: 16
+valid_count: 47
+accuracy: 0.3404255319148936
