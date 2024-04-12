@@ -174,4 +174,4 @@ if __name__ == '__main__':
     arg_parser.add_argument('-m', '--memory', type=bool, help='whether to use memory', required=True)
 
     args = arg_parser.parse_args()
-    asyncio.run(benchmark(args.input, DBName(args.target), use_memory=args.use_memory))
+    asyncio.run(benchmark(args.input, DBName(args.target), use_memory=args.memory))
