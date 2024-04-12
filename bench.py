@@ -8,6 +8,7 @@ from typing import Tuple
 from converter.convert import QueryConverter
 from converter.memory import Memorier
 from test_framework.comparator.hash import *
+from test_framework.executor.ES_executor import ElasticsearchExecutor
 from test_framework.executor.Neo4j_executor import Neo4jExecutor
 from test_framework.executor.MongoDB_executor import MongoDBExecutor
 from test_framework.executor.MySQL_executor import MySQLExecutor
@@ -18,12 +19,14 @@ from test_framework.fetch.base import QueryFetcher
 class DBName(Enum):
     MySQL = "mysql"
     MongoDB = "mongodb"
+    Elasticsearch = "ES"
     Neo4j = "neo4j"
 
 
 executor_get_func = {
     DBName.MySQL: MySQLExecutor,
     DBName.MongoDB: MongoDBExecutor,
+    DBName.Elasticsearch: ElasticsearchExecutor
     DBName.Neo4j: Neo4jExecutor
 }
 
@@ -107,7 +110,7 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         else:
             target_query = await converter.convert(sql_query, target_db.value)
 
-        print("---------------------------Execute Target Query:{}-----------------".format(target_query))
+        print("---------------------------Execute Target Query:{}-----------------".format(target_query)) 
         if target_db.value == "neo4j":
             target_result, e = target_executor.execute_query(target_query)
         else:
@@ -120,6 +123,8 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         match, unmatched_row, e = comparator.compare(mysql_result, target_result)
         if e is not None:
             print("Exception raised during comparison: {}".format(e))
+            print("mysql res:", mysql_result)
+            print("target res:", target_result)
             continue
         if not match:
             print("mismatch between MySQL and target")
@@ -132,7 +137,6 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
     print('success_query_count:', success_query_count)
     print('valid_count:', valid_query_count)
     print('accuracy:', success_query_count / valid_query_count)
-
 
 async def benchmark(input_file: str, target_db: DBName, use_memory: bool):
     mysql_executor, target_executor, exception = get_database_executor(target_db)

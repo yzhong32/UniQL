@@ -13,6 +13,7 @@ from elasticsearch import Elasticsearch
 #     return response
 
 from .base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
+import simplejson
 
 
 class ElasticsearchExecutor(QueryExecutor):
@@ -28,9 +29,21 @@ class ElasticsearchExecutor(QueryExecutor):
             ca_certs='/home/ubuntu/elasticsearch-8.13.0/config/certs/http_ca.crt'
         )
         return es
+    
+    def init(self, config_path):
+        pass
 
-    def execute_query(self, query, index, schema):
-        self.index = index
+    def execute_query(self, inpt, database, schema):
+        try:
+            query = simplejson.loads(str(inpt))
+            table = query.pop("inner_index")
+            if "size" not in query:
+                query["size"] = 10000
+            print("**************************************************")
+            print(query)
+            self.index = database+'_'+table
+        except Exception as e:
+            return None, e
 
         try:
             # Execute the query using the Elasticsearch search() method
@@ -55,9 +68,10 @@ if __name__ == '__main__':
     executor = ElasticsearchExecutor()
 
     # Define a test index name - replace 'your_index' with a real index from your Elasticsearch
-    test_index = 'bike_1_weather'
+    database = 'bike_1'
 
     # Define a test query - this example matches all documents, but you should replace it with your actual query
+    # SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
     test_query = {
         "query": {
             "bool": {
@@ -72,14 +86,15 @@ if __name__ == '__main__':
                 ]
             }
         },
-        "_source": ["zip_code"]
+        "_source": ["zip_code"],
+        "inner_index": "weather"
     }
 
     # Define a schema for the documents you expect back - replace these fields with those relevant to your data
     test_schema = ['zip_code']
 
     # Execute the query
-    results, error = executor.execute_query(test_query, test_index, test_schema)
+    results, error = executor.execute_query(test_query, database, test_schema)
 
     # Check if there was an error
     if error is not None:

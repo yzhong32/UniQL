@@ -1,0 +1,1810 @@
+
+--------------------------1-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE max_temperature_f  >  85-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "max_temperature_f": {
+                            "gt": 85
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["date"],
+    "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'max_temperature_f': {'gt': 85}}}]}}, '_source': ['date'], 'size': 10000}
+translate SELECT date FROM weather WHERE max_temperature_f  >  85 success
+
+--------------------------2-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT name FROM station WHERE lat  <  37.5-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "lat": {
+                            "lt": 37.5
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"],
+    "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'lat': {'lt': 37.5}}}]}}, '_source': ['name'], 'size': 10000}
+translate SELECT name FROM station WHERE lat  <  37.5 success
+
+--------------------------3-----------------
+schema:['city', 'max_lat']
+---------------------------Execute SQL Query:SELECT city ,  max(lat) FROM station GROUP BY city-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "aggs": {
+      "group_by_city": {
+        "terms": {
+          "field": "city.keyword"
+        },
+        "aggs": {
+          "max_latitude": {
+            "max": {
+              "field": "lat"
+            }
+          }
+        }
+      }
+    },
+    "size": 0
+  },
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'aggs': {'group_by_city': {'terms': {'field': 'city.keyword'}, 'aggs': {'max_latitude': {'max': {'field': 'lat'}}}}}, 'size': 0}, 'size': 10000}
+execute target query error:BadRequestError(400, 'parsing_exception', 'unknown query [aggs]')
+
+--------------------------4-----------------
+schema:['start_station_name', 'end_station_name']
+---------------------------Execute SQL Query:SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "_source": ["start_station_name", "end_station_name"],
+  "sort": [
+    {
+      "id": {
+        "order": "asc"
+      }
+    }
+  ],
+  "size": 3,
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, '_source': ['start_station_name', 'end_station_name'], 'sort': [{'id': {'order': 'asc'}}], 'size': 3}
+translate SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3 success
+
+--------------------------5-----------------
+schema:['avg_lat', 'avg_longitude']
+---------------------------Execute SQL Query:SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  "San Jose"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "city": "San Jose"
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "average_latitude": {
+      "avg": {
+        "field": "lat"
+      }
+    },
+    "average_longitude": {
+      "avg": {
+        "field": "longitude"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'city': 'San Jose'}}]}}, 'aggs': {'average_latitude': {'avg': {'field': 'lat'}}, 'average_longitude': {'avg': {'field': 'longitude'}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"avg_lat": 37.0000, "avg_longitude": -122.0000}']
+target res: []
+
+--------------------------6-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM trip ORDER BY duration LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "size": 1,
+  "sort": [
+    {
+      "duration": {
+        "order": "asc"
+      }
+    }
+  ],
+  "_source": ["id"],
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 1, 'sort': [{'duration': {'order': 'asc'}}], '_source': ['id']}
+translate SELECT id FROM trip ORDER BY duration LIMIT 1 success
+
+--------------------------7-----------------
+schema:['sum_duration', 'max_duration']
+---------------------------Execute SQL Query:SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "bike_id": 636
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "sum_duration": {
+      "sum": {
+        "field": "duration"
+      }
+    },
+    "max_duration": {
+      "max": {
+        "field": "duration"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'term': {'bike_id': 636}}]}}, 'aggs': {'sum_duration': {'sum': {'field': 'duration'}}, 'max_duration': {'max': {'field': 'duration'}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"sum_duration": 21897, "max_duration": 1299}']
+target res: []
+
+--------------------------8-----------------
+schema:['zip_code', 'avg_mean_temperature_f']
+---------------------------Execute SQL Query:SELECT zip_code  ,  avg(mean_temperature_f) FROM weather WHERE date LIKE "8/%" GROUP BY zip_code-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "wildcard": {
+            "date": "8/*"
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_zip_code": {
+      "terms": {
+        "field": "zip_code.keyword"
+      },
+      "aggs": {
+        "average_temperature": {
+          "avg": {
+            "field": "mean_temperature_f"
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'wildcard': {'date': '8/*'}}]}}, 'aggs': {'group_by_zip_code': {'terms': {'field': 'zip_code.keyword'}, 'aggs': {'average_temperature': {'avg': {'field': 'mean_temperature_f'}}}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"zip_code": 94107, "avg_mean_temperature_f": 67.8923}', '{"zip_code": 94063, "avg_mean_temperature_f": 69.1538}', '{"zip_code": 94301, "avg_mean_temperature_f": 69.0308}', '{"zip_code": 94041, "avg_mean_temperature_f": 69.9231}', '{"zip_code": 95113, "avg_mean_temperature_f": 70.7385}']
+target res: []
+
+--------------------------9-----------------
+schema:['count_DISTINCT bike_id']
+---------------------------Execute SQL Query:SELECT count(DISTINCT bike_id) FROM trip-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "aggs": {
+    "unique_bike_ids": {
+      "cardinality": {
+        "field": "bike_id"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'aggs': {'unique_bike_ids': {'cardinality': {'field': 'bike_id'}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"count_DISTINCT bike_id": 530}']
+target res: []
+
+--------------------------10-----------------
+schema:['count_DISTINCT city']
+---------------------------Execute SQL Query:SELECT count(DISTINCT city) FROM station-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "aggs": {
+    "unique_city_count": {
+      "cardinality": {
+        "field": "city.keyword"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'aggs': {'unique_city_count': {'cardinality': {'field': 'city.keyword'}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"count_DISTINCT city": 5}']
+target res: []
+
+--------------------------11-----------------
+schema:['COUNT_*']
+---------------------------Execute SQL Query:SELECT COUNT(*) FROM station WHERE city  =  "Mountain View"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "city.keyword": "Mountain View"
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "total_count": {
+      "value_count": {
+        "field": "_index"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'term': {'city.keyword': 'Mountain View'}}]}}, 'aggs': {'total_count': {'value_count': {'field': '_index'}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"COUNT_*": 7}']
+target res: []
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT DISTINCT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  =  7-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "bikes_available": 7
+          }
+        }
+      ],
+      "filter": [
+        {
+          "script": {
+            "script": {
+              "source": "doc['station_id'].value == doc['id'].value",
+              "lang": "painless"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["name"],
+  "inner_index": "status"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'bikes_available': 7}}], 'filter': [{'script': {'script': {'source': "doc['station_id'].value == doc['id'].value", 'lang': 'painless'}}}]}}, '_source': ['name'], 'size': 10000}
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'runtime error')
+
+--------------------------13-----------------
+schema:(None, OperationalError(1055, "Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT start_station_name ,  start_station_id FROM trip WHERE start_date LIKE "8/%" GROUP BY start_station_name ORDER BY COUNT(*) DESC LIMIT 1-----------------
+execute mysql query error:(1055, "Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------14-----------------
+schema:['bike_id']
+---------------------------Execute SQL Query:SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "term": {
+            "zip_code": "94002"
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_bike_id": {
+      "terms": {
+        "field": "bike_id.keyword",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'term': {'zip_code': '94002'}}]}}, 'aggs': {'group_by_bike_id': {'terms': {'field': 'bike_id.keyword', 'size': 1, 'order': {'_count': 'desc'}}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"bike_id": 252}']
+target res: []
+
+--------------------------15-----------------
+schema:['COUNT_*']
+---------------------------Execute SQL Query:SELECT COUNT(*) FROM weather WHERE mean_humidity  >  50 AND mean_visibility_miles  >  8-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "mean_humidity": {
+              "gt": 50
+            }
+          }
+        },
+        {
+          "range": {
+            "mean_visibility_miles": {
+              "gt": 8
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "total_count": {
+      "value_count": {
+        "field": "_index"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'mean_humidity': {'gt': 50}}}, {'range': {'mean_visibility_miles': {'gt': 8}}}]}}, 'aggs': {'total_count': {'value_count': {'field': '_index'}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"COUNT_*": 2974}']
+target res: []
+
+--------------------------16-----------------
+schema:['lat', 'longitude', 'city']
+---------------------------Execute SQL Query:SELECT T1.lat ,  T1.longitude ,  T1.city FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id ORDER BY T2.duration LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "trip",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "size": 1,
+              "sort": [
+                {
+                  "duration": {
+                    "order": "asc"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["lat", "longitude", "city"],
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'trip', 'query': {'match_all': {}}, 'inner_hits': {'size': 1, 'sort': [{'duration': {'order': 'asc'}}]}}}]}}, '_source': ['lat', 'longitude', 'city'], 'size': 10000}
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------17-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM station WHERE city  =  "San Francisco" INTERSECT SELECT station_id FROM status GROUP BY station_id HAVING avg(bikes_available)  >  10-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "city.keyword": "San Francisco"
+          }
+        },
+        {
+          "has_child": {
+            "type": "status",
+            "query": {
+              "bool": {
+                "filter": [
+                  {
+                    "range": {
+                      "bikes_available": {
+                        "gt": 10
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "inner_hits": {
+              "size": 0,
+              "aggs": {
+                "avg_bikes_available": {
+                  "avg": {
+                    "field": "bikes_available"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["id"],
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'city.keyword': 'San Francisco'}}, {'has_child': {'type': 'status', 'query': {'bool': {'filter': [{'range': {'bikes_available': {'gt': 10}}}]}}, 'inner_hits': {'size': 0, 'aggs': {'avg_bikes_available': {'avg': {'field': 'bikes_available'}}}}}}]}}, '_source': ['id'], 'size': 10000}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:192] [inner_hits] unknown field [aggs]')
+
+--------------------------18-----------------
+schema:['name', 'id']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.id FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id GROUP BY T2.station_id HAVING avg(T2.bikes_available)  >  14 UNION SELECT name ,  id FROM station WHERE installation_date LIKE "12/%"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:```json
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "has_child": {
+            "type": "status",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match_all": {}
+                  }
+                ],
+                "filter": [
+                  {
+                    "script": {
+                      "script": {
+                        "source": "doc['bikes_available'].size() == 0 ? false : (doc['bikes_available'].stream().mapToDouble(num -> num.doubleValue()).average().getAsDouble() > 14)",
+                        "lang": "painless"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "aggs": {
+              "group_by_station_id": {
+                "terms": {
+                  "field": "station_id"
+                },
+                "aggs": {
+                  "top_station_hits": {
+                    "top_hits": {
+                      "_source": {
+                        "includes": ["name", "id"]
+                      },
+                      "size": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              {
+                "wildcard": {
+                  "installation_date": "12/*"
+                }
+              }
+            ],
+            "_source": ["name", "id"]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "size": 0,
+  "inner_index": "station"
+}
+```-----------------
+execute target query error:Expecting value: line 1 column 1 (char 0)
+
+--------------------------19-----------------
+schema:(None, ProgrammingError(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*) DESC LIMIT 3' at line 1"))
+---------------------------Execute SQL Query:SELECT cloud_cover FROM weather WHERE zip_code  =  94107 GROUP BY cloud_cover ORDER BY COUNT (*) DESC LIMIT 3-----------------
+execute mysql query error:(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*) DESC LIMIT 3' at line 1")
+
+--------------------------20-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code ORDER BY avg(mean_sea_level_pressure_inches) LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "aggs": {
+    "group_by_zip_code": {
+      "terms": {
+        "field": "zip_code.keyword",
+        "size": 1,
+        "order": {
+          "average_pressure": "asc"
+        }
+      },
+      "aggs": {
+        "average_pressure": {
+          "avg": {
+            "field": "mean_sea_level_pressure_inches"
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'aggs': {'group_by_zip_code': {'terms': {'field': 'zip_code.keyword', 'size': 1, 'order': {'average_pressure': 'asc'}}, 'aggs': {'average_pressure': {'avg': {'field': 'mean_sea_level_pressure_inches'}}}}}, 'size': 0}
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'Fielddata is disabled on [mean_sea_level_pressure_inches] in [bike_1_weather]. Text fields are not optimised for operations that require per-document field data like aggregations and sorting, so these operations are disabled by default. Please use a keyword field instead. Alternatively, set fielddata=true on [mean_sea_level_pressure_inches] in order to load field data by uninverting the inverted index. Note that this can use significant memory.')
+
+--------------------------21-----------------
+schema:['avg_bikes_available']
+---------------------------Execute SQL Query:SELECT avg(bikes_available) FROM status WHERE station_id NOT IN (SELECT id FROM station WHERE city  =  "Palo Alto")-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must_not": {
+        "terms": {
+          "station_id": {
+            "index": "station",
+            "type": "_doc",
+            "id": "city",
+            "path": "id",
+            "query": {
+              "match": {
+                "city": "Palo Alto"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "average_bikes_available": {
+      "avg": {
+        "field": "bikes_available"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "status"
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'station_id': {'index': 'station', 'type': '_doc', 'id': 'city', 'path': 'id', 'query': {'match': {'city': 'Palo Alto'}}}}}}}, 'aggs': {'average_bikes_available': {'avg': {'field': 'bikes_available'}}}, 'size': 0}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:72] [terms_lookup] unknown field [type]')
+
+--------------------------22-----------------
+schema:['avg_longitude']
+---------------------------Execute SQL Query:SELECT avg(longitude) FROM station WHERE id NOT IN (SELECT station_id FROM status GROUP BY station_id HAVING max(bikes_available)  >  10)-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must_not": {
+        "terms": {
+          "id": {
+            "index": "status",
+            "type": "_doc",
+            "id": "station_id",
+            "path": "station_id",
+            "query": {
+              "aggs": {
+                "station_id_groups": {
+                  "terms": {
+                    "field": "station_id"
+                  },
+                  "aggs": {
+                    "max_bikes_available": {
+                      "max": {
+                        "field": "bikes_available"
+                      }
+                    }
+                  }
+                }
+              },
+              "size": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "avg_longitude": {
+      "avg": {
+        "field": "longitude"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'id': {'index': 'status', 'type': '_doc', 'id': 'station_id', 'path': 'station_id', 'query': {'aggs': {'station_id_groups': {'terms': {'field': 'station_id'}, 'aggs': {'max_bikes_available': {'max': {'field': 'bikes_available'}}}}}, 'size': 0}}}}}}, 'aggs': {'avg_longitude': {'avg': {'field': 'longitude'}}}, 'size': 0}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:63] [terms_lookup] unknown field [type]')
+
+--------------------------23-----------------
+schema:['date', 'zip_code']
+---------------------------Execute SQL Query:SELECT date ,  zip_code FROM weather WHERE max_temperature_f  >=  80-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "max_temperature_f": {
+              "gte": 80
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["date", "zip_code"],
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'max_temperature_f': {'gte': 80}}}]}}, '_source': ['date', 'zip_code'], 'size': 10000}
+translate SELECT date ,  zip_code FROM weather WHERE max_temperature_f  >=  80 success
+
+--------------------------24-----------------
+schema:(None, OperationalError(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.T1.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT T1.id FROM trip AS T1 JOIN weather AS T2 ON T1.zip_code  =  T2.zip_code GROUP BY T2.zip_code HAVING avg(T2.mean_temperature_f)  >  60-----------------
+execute mysql query error:(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.T1.id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------25-----------------
+schema:['zip_code', 'count_*']
+---------------------------Execute SQL Query:SELECT zip_code , count(*) FROM weather WHERE max_wind_Speed_mph  >=  25 GROUP BY zip_code-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "max_wind_Speed_mph": {
+              "gte": 25
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_zip_code": {
+      "terms": {
+        "field": "zip_code.keyword"
+      },
+      "aggs": {
+        "count": {
+          "value_count": {
+            "field": "_index"
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'max_wind_Speed_mph': {'gte': 25}}}]}}, 'aggs': {'group_by_zip_code': {'terms': {'field': 'zip_code.keyword'}, 'aggs': {'count': {'value_count': {'field': '_index'}}}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"zip_code": 94107, "count_*": 88}', '{"zip_code": 94063, "count_*": 18}', '{"zip_code": 94301, "count_*": 16}', '{"zip_code": 94041, "count_*": 27}', '{"zip_code": 95113, "count_*": 21}']
+target res: []
+
+--------------------------26-----------------
+schema:['date', 'zip_code']
+---------------------------Execute SQL Query:SELECT date ,  zip_code FROM weather WHERE min_dew_point_f  <  (SELECT min(min_dew_point_f) FROM weather WHERE zip_code  =  94107)-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "min_dew_point_f": {
+              "lt": {
+                "min": {
+                  "field": "min_dew_point_f",
+                  "query": {
+                    "term": {
+                      "zip_code": "94107"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["date", "zip_code"],
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'min_dew_point_f': {'lt': {'min': {'field': 'min_dew_point_f', 'query': {'term': {'zip_code': '94107'}}}}}}}]}}, '_source': ['date', 'zip_code'], 'size': 10000}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[range] query does not support [min]')
+
+--------------------------27-----------------
+schema:['id', 'installation_date']
+---------------------------Execute SQL Query:SELECT T1.id ,  T2.installation_date FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "station",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "_source": ["installation_date"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["id"],
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'station', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['installation_date']}}}]}}, '_source': ['id'], 'size': 10000}
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------28-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT T1.id FROM trip AS T1 JOIN station AS T2 ON T1.start_station_id  =  T2.id ORDER BY T2.dock_count DESC LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:```json
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_all": {}
+        }
+      ],
+      "should": [],
+      "must_not": []
+    }
+  },
+  "sort": [
+    {
+      "dock_count": {
+        "order": "desc"
+      }
+    }
+  ],
+  "size": 1,
+  "_source": ["id"],
+  "inner_index": "trip"
+}
+```-----------------
+execute target query error:Expecting value: line 1 column 1 (char 0)
+
+--------------------------29-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id WHERE T2.city !=  "San Francisco"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must_not": {
+        "term": {
+          "T2.city.keyword": "San Francisco"
+        }
+      },
+      "filter": {
+        "script": {
+          "script": {
+            "source": "doc['T1.end_station_id'].value == doc['T2.id'].value",
+            "lang": "painless"
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "count": {
+      "value_count": {
+        "field": "_index"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": ["trip", "station"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'term': {'T2.city.keyword': 'San Francisco'}}, 'filter': {'script': {'script': {'source': "doc['T1.end_station_id'].value == doc['T2.id'].value", 'lang': 'painless'}}}}}, 'aggs': {'count': {'value_count': {'field': '_index'}}}, 'size': 0}
+execute target query error:can only concatenate str (not "list") to str
+
+--------------------------30-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id WHERE T2.city != "San Francisco"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must_not": {
+        "term": {
+          "T2.city.keyword": "San Francisco"
+        }
+      },
+      "filter": {
+        "script": {
+          "script": {
+            "source": "doc['T1.end_station_id'].value == doc['T2.id'].value",
+            "lang": "painless"
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "count": {
+      "value_count": {
+        "field": "_index"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "trip/station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'term': {'T2.city.keyword': 'San Francisco'}}, 'filter': {'script': {'script': {'source': "doc['T1.end_station_id'].value == doc['T2.id'].value", 'lang': 'painless'}}}}}, 'aggs': {'count': {'value_count': {'field': '_index'}}}, 'size': 0}
+execute target query error:NotFoundError(404, 'index_not_found_exception', 'no such index [bike_1_trip/station]', bike_1_trip/station, index_or_alias)
+
+--------------------------31-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE zip_code  =  94107 AND EVENTS != "Fog" AND EVENTS != "Rain"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "zip_code": 94107
+                    }
+                },
+                {
+                    "bool": {
+                        "must_not": [
+                            {
+                                "term": {
+                                    "EVENTS": "Fog"
+                                }
+                            },
+                            {
+                                "term": {
+                                    "EVENTS": "Rain"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["date"],
+    "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'zip_code': 94107}}, {'bool': {'must_not': [{'term': {'EVENTS': 'Fog'}}, {'term': {'EVENTS': 'Rain'}}]}}]}}, '_source': ['date'], 'size': 10000}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"date": "8/29/2013"}', '{"date": "8/30/2013"}', '{"date": "8/31/2013"}', '{"date": "9/1/2013"}', '{"date": "9/2/2013"}', '{"date": "9/3/2013"}', '{"date": "9/4/2013"}', '{"date": "9/5/2013"}', '{"date": "9/6/2013"}', '{"date": "9/7/2013"}', '{"date": "9/8/2013"}', '{"date": "9/9/2013"}', '{"date": "9/10/2013"}', '{"date": "9/11/2013"}', '{"date": "9/13/2013"}', '{"date": "9/14/2013"}', '{"date": "9/15/2013"}', '{"date": "9/16/2013"}', '{"date": "9/17/2013"}', '{"date": "9/18/2013"}', '{"date": "9/19/2013"}', '{"date": "9/20/2013"}', '{"date": "9/22/2013"}', '{"date": "9/23/2013"}', '{"date": "9/24/2013"}', '{"date": "9/25/2013"}', '{"date": "9/26/2013"}', '{"date": "9/27/2013"}', '{"date": "9/28/2013"}', '{"date": "9/29/2013"}', '{"date": "10/1/2013"}', '{"date": "10/2/2013"}', '{"date": "10/3/2013"}', '{"date": "10/4/2013"}', '{"date": "10/5/2013"}', '{"date": "10/6/2013"}', '{"date": "10/7/2013"}', '{"date": "10/8/2013"}', '{"date": "10/9/2013"}', '{"date": "10/10/2013"}', '{"date": "10/11/2013"}', '{"date": "10/13/2013"}', '{"date": "10/14/2013"}', '{"date": "10/15/2013"}', '{"date": "10/16/2013"}', '{"date": "10/17/2013"}', '{"date": "10/18/2013"}', '{"date": "10/19/2013"}', '{"date": "10/21/2013"}', '{"date": "10/24/2013"}', '{"date": "10/25/2013"}', '{"date": "10/28/2013"}', '{"date": "10/29/2013"}', '{"date": "10/30/2013"}', '{"date": "10/31/2013"}', '{"date": "11/1/2013"}', '{"date": "11/2/2013"}', '{"date": "11/3/2013"}', '{"date": "11/4/2013"}', '{"date": "11/5/2013"}', '{"date": "11/6/2013"}', '{"date": "11/7/2013"}', '{"date": "11/9/2013"}', '{"date": "11/10/2013"}', '{"date": "11/11/2013"}', '{"date": "11/12/2013"}', '{"date": "11/14/2013"}', '{"date": "11/15/2013"}', '{"date": "11/16/2013"}', '{"date": "11/17/2013"}', '{"date": "11/18/2013"}', '{"date": "11/22/2013"}', '{"date": "11/23/2013"}', '{"date": "11/24/2013"}', '{"date": "11/25/2013"}', '{"date": "11/26/2013"}', '{"date": "11/27/2013"}', '{"date": "11/28/2013"}', '{"date": "12/1/2013"}', '{"date": "12/2/2013"}', '{"date": "12/3/2013"}', '{"date": "12/4/2013"}', '{"date": "12/5/2013"}', '{"date": "12/8/2013"}', '{"date": "12/9/2013"}', '{"date": "12/10/2013"}', '{"date": "12/11/2013"}', '{"date": "12/12/2013"}', '{"date": "12/13/2013"}', '{"date": "12/14/2013"}', '{"date": "12/15/2013"}', '{"date": "12/16/2013"}', '{"date": "12/17/2013"}', '{"date": "12/18/2013"}', '{"date": "12/19/2013"}', '{"date": "12/20/2013"}', '{"date": "12/21/2013"}', '{"date": "12/22/2013"}', '{"date": "12/23/2013"}', '{"date": "12/24/2013"}', '{"date": "12/25/2013"}', '{"date": "12/26/2013"}', '{"date": "12/27/2013"}', '{"date": "12/28/2013"}', '{"date": "12/29/2013"}', '{"date": "12/30/2013"}', '{"date": "1/1/2014"}', '{"date": "1/2/2014"}', '{"date": "1/3/2014"}', '{"date": "1/5/2014"}', '{"date": "1/6/2014"}', '{"date": "1/8/2014"}', '{"date": "1/9/2014"}', '{"date": "1/10/2014"}', '{"date": "1/11/2014"}', '{"date": "1/12/2014"}', '{"date": "1/13/2014"}', '{"date": "1/14/2014"}', '{"date": "1/15/2014"}', '{"date": "1/16/2014"}', '{"date": "1/17/2014"}', '{"date": "1/18/2014"}', '{"date": "1/19/2014"}', '{"date": "1/20/2014"}', '{"date": "1/21/2014"}', '{"date": "1/22/2014"}', '{"date": "1/23/2014"}', '{"date": "1/24/2014"}', '{"date": "1/25/2014"}', '{"date": "1/26/2014"}', '{"date": "1/27/2014"}', '{"date": "1/28/2014"}', '{"date": "1/31/2014"}', '{"date": "2/1/2014"}', '{"date": "2/3/2014"}', '{"date": "2/4/2014"}', '{"date": "2/11/2014"}', '{"date": "2/14/2014"}', '{"date": "2/16/2014"}', '{"date": "2/17/2014"}', '{"date": "2/18/2014"}', '{"date": "2/19/2014"}', '{"date": "2/20/2014"}', '{"date": "2/21/2014"}', '{"date": "2/22/2014"}', '{"date": "2/23/2014"}', '{"date": "2/24/2014"}', '{"date": "2/25/2014"}', '{"date": "3/7/2014"}', '{"date": "3/11/2014"}', '{"date": "3/12/2014"}', '{"date": "3/13/2014"}', '{"date": "3/14/2014"}', '{"date": "3/17/2014"}', '{"date": "3/18/2014"}', '{"date": "3/19/2014"}', '{"date": "3/20/2014"}', '{"date": "3/21/2014"}', '{"date": "3/22/2014"}', '{"date": "3/23/2014"}', '{"date": "3/24/2014"}', '{"date": "3/27/2014"}', '{"date": "3/30/2014"}', '{"date": "4/3/2014"}', '{"date": "4/5/2014"}', '{"date": "4/6/2014"}', '{"date": "4/7/2014"}', '{"date": "4/8/2014"}', '{"date": "4/9/2014"}', '{"date": "4/10/2014"}', '{"date": "4/11/2014"}', '{"date": "4/12/2014"}', '{"date": "4/13/2014"}', '{"date": "4/14/2014"}', '{"date": "4/15/2014"}', '{"date": "4/16/2014"}', '{"date": "4/17/2014"}', '{"date": "4/18/2014"}', '{"date": "4/19/2014"}', '{"date": "4/20/2014"}', '{"date": "4/21/2014"}', '{"date": "4/23/2014"}', '{"date": "4/26/2014"}', '{"date": "4/28/2014"}', '{"date": "4/29/2014"}', '{"date": "4/30/2014"}', '{"date": "5/1/2014"}', '{"date": "5/3/2014"}', '{"date": "5/4/2014"}', '{"date": "5/5/2014"}', '{"date": "5/6/2014"}', '{"date": "5/7/2014"}', '{"date": "5/9/2014"}', '{"date": "5/10/2014"}', '{"date": "5/11/2014"}', '{"date": "5/12/2014"}', '{"date": "5/13/2014"}', '{"date": "5/14/2014"}', '{"date": "5/15/2014"}', '{"date": "5/16/2014"}', '{"date": "5/17/2014"}', '{"date": "5/18/2014"}', '{"date": "5/19/2014"}', '{"date": "5/20/2014"}', '{"date": "5/21/2014"}', '{"date": "5/22/2014"}', '{"date": "5/23/2014"}', '{"date": "5/24/2014"}', '{"date": "5/25/2014"}', '{"date": "5/26/2014"}', '{"date": "5/27/2014"}', '{"date": "5/28/2014"}', '{"date": "5/29/2014"}', '{"date": "5/30/2014"}', '{"date": "5/31/2014"}', '{"date": "6/1/2014"}', '{"date": "6/2/2014"}', '{"date": "6/3/2014"}', '{"date": "6/4/2014"}', '{"date": "6/5/2014"}', '{"date": "6/6/2014"}', '{"date": "6/7/2014"}', '{"date": "6/8/2014"}', '{"date": "6/9/2014"}', '{"date": "6/10/2014"}', '{"date": "6/11/2014"}', '{"date": "6/12/2014"}', '{"date": "6/13/2014"}', '{"date": "6/14/2014"}', '{"date": "6/15/2014"}', '{"date": "6/16/2014"}', '{"date": "6/17/2014"}', '{"date": "6/18/2014"}', '{"date": "6/19/2014"}', '{"date": "6/20/2014"}', '{"date": "6/21/2014"}', '{"date": "6/22/2014"}', '{"date": "6/23/2014"}', '{"date": "6/24/2014"}', '{"date": "6/25/2014"}', '{"date": "6/27/2014"}', '{"date": "6/28/2014"}', '{"date": "6/29/2014"}', '{"date": "6/30/2014"}', '{"date": "7/1/2014"}', '{"date": "7/2/2014"}', '{"date": "7/3/2014"}', '{"date": "7/4/2014"}', '{"date": "7/5/2014"}', '{"date": "7/6/2014"}', '{"date": "7/7/2014"}', '{"date": "7/8/2014"}', '{"date": "7/9/2014"}', '{"date": "7/10/2014"}', '{"date": "7/11/2014"}', '{"date": "7/12/2014"}', '{"date": "7/13/2014"}', '{"date": "7/14/2014"}', '{"date": "7/15/2014"}', '{"date": "7/16/2014"}', '{"date": "7/17/2014"}', '{"date": "7/18/2014"}', '{"date": "7/19/2014"}', '{"date": "7/20/2014"}', '{"date": "7/21/2014"}', '{"date": "7/23/2014"}', '{"date": "7/24/2014"}', '{"date": "7/25/2014"}', '{"date": "7/26/2014"}', '{"date": "7/27/2014"}', '{"date": "7/28/2014"}', '{"date": "7/29/2014"}', '{"date": "7/30/2014"}', '{"date": "7/31/2014"}', '{"date": "8/1/2014"}', '{"date": "8/2/2014"}', '{"date": "8/3/2014"}', '{"date": "8/4/2014"}', '{"date": "8/5/2014"}', '{"date": "8/7/2014"}', '{"date": "8/8/2014"}', '{"date": "8/9/2014"}', '{"date": "8/10/2014"}', '{"date": "8/11/2014"}', '{"date": "8/12/2014"}', '{"date": "8/13/2014"}', '{"date": "8/14/2014"}', '{"date": "8/15/2014"}', '{"date": "8/16/2014"}', '{"date": "8/17/2014"}', '{"date": "8/18/2014"}', '{"date": "8/20/2014"}', '{"date": "8/21/2014"}', '{"date": "8/22/2014"}', '{"date": "8/23/2014"}', '{"date": "8/24/2014"}', '{"date": "8/25/2014"}', '{"date": "8/26/2014"}', '{"date": "8/27/2014"}', '{"date": "8/28/2014"}', '{"date": "8/29/2014"}', '{"date": "8/31/2014"}', '{"date": "9/1/2014"}', '{"date": "9/2/2014"}', '{"date": "9/3/2014"}', '{"date": "9/4/2014"}', '{"date": "9/5/2014"}', '{"date": "9/6/2014"}', '{"date": "9/7/2014"}', '{"date": "9/8/2014"}', '{"date": "9/9/2014"}', '{"date": "9/10/2014"}', '{"date": "9/11/2014"}', '{"date": "9/12/2014"}', '{"date": "9/13/2014"}', '{"date": "9/14/2014"}', '{"date": "9/15/2014"}', '{"date": "9/16/2014"}', '{"date": "9/19/2014"}', '{"date": "9/20/2014"}', '{"date": "9/21/2014"}', '{"date": "9/22/2014"}', '{"date": "9/26/2014"}', '{"date": "9/27/2014"}', '{"date": "9/28/2014"}', '{"date": "9/29/2014"}', '{"date": "9/30/2014"}', '{"date": "10/1/2014"}', '{"date": "10/2/2014"}', '{"date": "10/3/2014"}', '{"date": "10/4/2014"}', '{"date": "10/5/2014"}', '{"date": "10/8/2014"}', '{"date": "10/9/2014"}', '{"date": "10/10/2014"}', '{"date": "10/11/2014"}', '{"date": "10/12/2014"}', '{"date": "10/13/2014"}', '{"date": "10/14/2014"}', '{"date": "10/16/2014"}', '{"date": "10/17/2014"}', '{"date": "10/18/2014"}', '{"date": "10/19/2014"}', '{"date": "10/21/2014"}', '{"date": "10/22/2014"}', '{"date": "10/24/2014"}', '{"date": "10/26/2014"}', '{"date": "10/27/2014"}', '{"date": "10/29/2014"}', '{"date": "10/30/2014"}', '{"date": "11/1/2014"}', '{"date": "11/2/2014"}', '{"date": "11/3/2014"}', '{"date": "11/5/2014"}', '{"date": "11/6/2014"}', '{"date": "11/11/2014"}', '{"date": "11/15/2014"}', '{"date": "11/16/2014"}', '{"date": "11/17/2014"}', '{"date": "11/18/2014"}', '{"date": "11/20/2014"}', '{"date": "11/21/2014"}', '{"date": "11/23/2014"}', '{"date": "11/24/2014"}', '{"date": "11/25/2014"}', '{"date": "11/26/2014"}', '{"date": "11/28/2014"}', '{"date": "12/4/2014"}', '{"date": "12/6/2014"}', '{"date": "12/8/2014"}', '{"date": "12/10/2014"}', '{"date": "12/13/2014"}', '{"date": "12/21/2014"}', '{"date": "12/24/2014"}', '{"date": "12/25/2014"}', '{"date": "12/26/2014"}', '{"date": "12/27/2014"}', '{"date": "12/28/2014"}', '{"date": "12/30/2014"}', '{"date": "12/31/2014"}', '{"date": "1/1/2015"}', '{"date": "1/2/2015"}', '{"date": "1/3/2015"}', '{"date": "1/4/2015"}', '{"date": "1/5/2015"}', '{"date": "1/6/2015"}', '{"date": "1/7/2015"}', '{"date": "1/8/2015"}', '{"date": "1/9/2015"}', '{"date": "1/14/2015"}', '{"date": "1/16/2015"}', '{"date": "1/17/2015"}', '{"date": "1/19/2015"}', '{"date": "1/21/2015"}', '{"date": "1/22/2015"}', '{"date": "1/23/2015"}', '{"date": "1/24/2015"}', '{"date": "1/25/2015"}', '{"date": "1/26/2015"}', '{"date": "1/27/2015"}', '{"date": "2/1/2015"}', '{"date": "2/2/2015"}', '{"date": "2/3/2015"}', '{"date": "2/5/2015"}', '{"date": "2/9/2015"}', '{"date": "2/11/2015"}', '{"date": "2/12/2015"}', '{"date": "2/13/2015"}', '{"date": "2/14/2015"}', '{"date": "2/15/2015"}', '{"date": "2/16/2015"}', '{"date": "2/17/2015"}', '{"date": "2/18/2015"}', '{"date": "2/19/2015"}', '{"date": "2/20/2015"}', '{"date": "2/21/2015"}', '{"date": "2/23/2015"}', '{"date": "2/25/2015"}', '{"date": "2/26/2015"}', '{"date": "2/27/2015"}', '{"date": "2/28/2015"}', '{"date": "3/1/2015"}', '{"date": "3/2/2015"}', '{"date": "3/3/2015"}', '{"date": "3/4/2015"}', '{"date": "3/5/2015"}', '{"date": "3/6/2015"}', '{"date": "3/7/2015"}', '{"date": "3/9/2015"}', '{"date": "3/12/2015"}', '{"date": "3/13/2015"}', '{"date": "3/14/2015"}', '{"date": "3/15/2015"}', '{"date": "3/16/2015"}', '{"date": "3/17/2015"}', '{"date": "3/18/2015"}', '{"date": "3/19/2015"}', '{"date": "3/20/2015"}', '{"date": "3/21/2015"}', '{"date": "3/23/2015"}', '{"date": "3/24/2015"}', '{"date": "3/25/2015"}', '{"date": "3/26/2015"}', '{"date": "3/28/2015"}', '{"date": "3/29/2015"}', '{"date": "3/30/2015"}', '{"date": "3/31/2015"}', '{"date": "4/1/2015"}', '{"date": "4/2/2015"}', '{"date": "4/3/2015"}', '{"date": "4/4/2015"}', '{"date": "4/6/2015"}', '{"date": "4/9/2015"}', '{"date": "4/10/2015"}', '{"date": "4/11/2015"}', '{"date": "4/12/2015"}', '{"date": "4/13/2015"}', '{"date": "4/14/2015"}', '{"date": "4/15/2015"}', '{"date": "4/16/2015"}', '{"date": "4/17/2015"}', '{"date": "4/18/2015"}', '{"date": "4/19/2015"}', '{"date": "4/20/2015"}', '{"date": "4/21/2015"}', '{"date": "4/22/2015"}', '{"date": "4/23/2015"}', '{"date": "4/26/2015"}', '{"date": "4/27/2015"}', '{"date": "4/28/2015"}', '{"date": "4/29/2015"}', '{"date": "4/30/2015"}', '{"date": "5/1/2015"}', '{"date": "5/2/2015"}', '{"date": "5/3/2015"}', '{"date": "5/4/2015"}', '{"date": "5/5/2015"}', '{"date": "5/6/2015"}', '{"date": "5/8/2015"}', '{"date": "5/9/2015"}', '{"date": "5/10/2015"}', '{"date": "5/11/2015"}', '{"date": "5/12/2015"}', '{"date": "5/13/2015"}', '{"date": "5/15/2015"}', '{"date": "5/16/2015"}', '{"date": "5/17/2015"}', '{"date": "5/18/2015"}', '{"date": "5/19/2015"}', '{"date": "5/22/2015"}', '{"date": "5/23/2015"}', '{"date": "5/24/2015"}', '{"date": "5/25/2015"}', '{"date": "5/27/2015"}', '{"date": "5/28/2015"}', '{"date": "5/29/2015"}', '{"date": "5/30/2015"}', '{"date": "5/31/2015"}', '{"date": "6/2/2015"}', '{"date": "6/3/2015"}', '{"date": "6/4/2015"}', '{"date": "6/5/2015"}', '{"date": "6/6/2015"}', '{"date": "6/7/2015"}', '{"date": "6/8/2015"}', '{"date": "6/9/2015"}', '{"date": "6/10/2015"}', '{"date": "6/11/2015"}', '{"date": "6/12/2015"}', '{"date": "6/13/2015"}', '{"date": "6/14/2015"}', '{"date": "6/15/2015"}', '{"date": "6/16/2015"}', '{"date": "6/17/2015"}', '{"date": "6/18/2015"}', '{"date": "6/19/2015"}', '{"date": "6/20/2015"}', '{"date": "6/21/2015"}', '{"date": "6/22/2015"}', '{"date": "6/23/2015"}', '{"date": "6/24/2015"}', '{"date": "6/25/2015"}', '{"date": "6/26/2015"}', '{"date": "6/27/2015"}', '{"date": "6/28/2015"}', '{"date": "6/29/2015"}', '{"date": "6/30/2015"}', '{"date": "7/1/2015"}', '{"date": "7/2/2015"}', '{"date": "7/3/2015"}', '{"date": "7/4/2015"}', '{"date": "7/5/2015"}', '{"date": "7/7/2015"}', '{"date": "7/8/2015"}', '{"date": "7/10/2015"}', '{"date": "7/11/2015"}', '{"date": "7/12/2015"}', '{"date": "7/13/2015"}', '{"date": "7/14/2015"}', '{"date": "7/15/2015"}', '{"date": "7/16/2015"}', '{"date": "7/17/2015"}', '{"date": "7/18/2015"}', '{"date": "7/19/2015"}', '{"date": "7/20/2015"}', '{"date": "7/21/2015"}', '{"date": "7/22/2015"}', '{"date": "7/23/2015"}', '{"date": "7/24/2015"}', '{"date": "7/25/2015"}', '{"date": "7/26/2015"}', '{"date": "7/27/2015"}', '{"date": "7/28/2015"}', '{"date": "7/29/2015"}', '{"date": "7/30/2015"}', '{"date": "7/31/2015"}', '{"date": "8/1/2015"}', '{"date": "8/2/2015"}', '{"date": "8/3/2015"}', '{"date": "8/4/2015"}', '{"date": "8/5/2015"}', '{"date": "8/6/2015"}', '{"date": "8/7/2015"}', '{"date": "8/8/2015"}', '{"date": "8/9/2015"}', '{"date": "8/10/2015"}', '{"date": "8/11/2015"}', '{"date": "8/12/2015"}', '{"date": "8/13/2015"}', '{"date": "8/14/2015"}', '{"date": "8/15/2015"}', '{"date": "8/16/2015"}', '{"date": "8/17/2015"}', '{"date": "8/18/2015"}', '{"date": "8/19/2015"}', '{"date": "8/20/2015"}', '{"date": "8/21/2015"}', '{"date": "8/22/2015"}', '{"date": "8/23/2015"}', '{"date": "8/24/2015"}', '{"date": "8/25/2015"}', '{"date": "8/26/2015"}', '{"date": "8/27/2015"}', '{"date": "8/28/2015"}', '{"date": "8/30/2015"}', '{"date": "8/31/2015"}']
+target res: ['{"date": "8/29/2013"}', '{"date": "8/30/2013"}', '{"date": "8/31/2013"}', '{"date": "9/1/2013"}', '{"date": "9/2/2013"}', '{"date": "9/3/2013"}', '{"date": "9/4/2013"}', '{"date": "9/5/2013"}', '{"date": "9/6/2013"}', '{"date": "9/7/2013"}', '{"date": "9/8/2013"}', '{"date": "9/9/2013"}', '{"date": "9/10/2013"}', '{"date": "9/11/2013"}', '{"date": "9/12/2013"}', '{"date": "9/13/2013"}', '{"date": "9/14/2013"}', '{"date": "9/15/2013"}', '{"date": "9/16/2013"}', '{"date": "9/17/2013"}', '{"date": "9/18/2013"}', '{"date": "9/19/2013"}', '{"date": "9/20/2013"}', '{"date": "9/21/2013"}', '{"date": "9/22/2013"}', '{"date": "9/23/2013"}', '{"date": "9/24/2013"}', '{"date": "9/25/2013"}', '{"date": "9/26/2013"}', '{"date": "9/27/2013"}', '{"date": "9/28/2013"}', '{"date": "9/29/2013"}', '{"date": "9/30/2013"}', '{"date": "10/1/2013"}', '{"date": "10/2/2013"}', '{"date": "10/3/2013"}', '{"date": "10/4/2013"}', '{"date": "10/5/2013"}', '{"date": "10/6/2013"}', '{"date": "10/7/2013"}', '{"date": "10/8/2013"}', '{"date": "10/9/2013"}', '{"date": "10/10/2013"}', '{"date": "10/11/2013"}', '{"date": "10/12/2013"}', '{"date": "10/13/2013"}', '{"date": "10/14/2013"}', '{"date": "10/15/2013"}', '{"date": "10/16/2013"}', '{"date": "10/17/2013"}', '{"date": "10/18/2013"}', '{"date": "10/19/2013"}', '{"date": "10/20/2013"}', '{"date": "10/21/2013"}', '{"date": "10/22/2013"}', '{"date": "10/23/2013"}', '{"date": "10/24/2013"}', '{"date": "10/25/2013"}', '{"date": "10/26/2013"}', '{"date": "10/27/2013"}', '{"date": "10/28/2013"}', '{"date": "10/29/2013"}', '{"date": "10/30/2013"}', '{"date": "10/31/2013"}', '{"date": "11/1/2013"}', '{"date": "11/2/2013"}', '{"date": "11/3/2013"}', '{"date": "11/4/2013"}', '{"date": "11/5/2013"}', '{"date": "11/6/2013"}', '{"date": "11/7/2013"}', '{"date": "11/8/2013"}', '{"date": "11/9/2013"}', '{"date": "11/10/2013"}', '{"date": "11/11/2013"}', '{"date": "11/12/2013"}', '{"date": "11/13/2013"}', '{"date": "11/14/2013"}', '{"date": "11/15/2013"}', '{"date": "11/16/2013"}', '{"date": "11/17/2013"}', '{"date": "11/18/2013"}', '{"date": "11/19/2013"}', '{"date": "11/20/2013"}', '{"date": "11/21/2013"}', '{"date": "11/22/2013"}', '{"date": "11/23/2013"}', '{"date": "11/24/2013"}', '{"date": "11/25/2013"}', '{"date": "11/26/2013"}', '{"date": "11/27/2013"}', '{"date": "11/28/2013"}', '{"date": "11/29/2013"}', '{"date": "11/30/2013"}', '{"date": "12/1/2013"}', '{"date": "12/2/2013"}', '{"date": "12/3/2013"}', '{"date": "12/4/2013"}', '{"date": "12/5/2013"}', '{"date": "12/6/2013"}', '{"date": "12/7/2013"}', '{"date": "12/8/2013"}', '{"date": "12/9/2013"}', '{"date": "12/10/2013"}', '{"date": "12/11/2013"}', '{"date": "12/12/2013"}', '{"date": "12/13/2013"}', '{"date": "12/14/2013"}', '{"date": "12/15/2013"}', '{"date": "12/16/2013"}', '{"date": "12/17/2013"}', '{"date": "12/18/2013"}', '{"date": "12/19/2013"}', '{"date": "12/20/2013"}', '{"date": "12/21/2013"}', '{"date": "12/22/2013"}', '{"date": "12/23/2013"}', '{"date": "12/24/2013"}', '{"date": "12/25/2013"}', '{"date": "12/26/2013"}', '{"date": "12/27/2013"}', '{"date": "12/28/2013"}', '{"date": "12/29/2013"}', '{"date": "12/30/2013"}', '{"date": "12/31/2013"}', '{"date": "1/1/2014"}', '{"date": "1/2/2014"}', '{"date": "1/3/2014"}', '{"date": "1/4/2014"}', '{"date": "1/5/2014"}', '{"date": "1/6/2014"}', '{"date": "1/7/2014"}', '{"date": "1/8/2014"}', '{"date": "1/9/2014"}', '{"date": "1/10/2014"}', '{"date": "1/11/2014"}', '{"date": "1/12/2014"}', '{"date": "1/13/2014"}', '{"date": "1/14/2014"}', '{"date": "1/15/2014"}', '{"date": "1/16/2014"}', '{"date": "1/17/2014"}', '{"date": "1/18/2014"}', '{"date": "1/19/2014"}', '{"date": "1/20/2014"}', '{"date": "1/21/2014"}', '{"date": "1/22/2014"}', '{"date": "1/23/2014"}', '{"date": "1/24/2014"}', '{"date": "1/25/2014"}', '{"date": "1/26/2014"}', '{"date": "1/27/2014"}', '{"date": "1/28/2014"}', '{"date": "1/29/2014"}', '{"date": "1/30/2014"}', '{"date": "1/31/2014"}', '{"date": "2/1/2014"}', '{"date": "2/2/2014"}', '{"date": "2/3/2014"}', '{"date": "2/4/2014"}', '{"date": "2/5/2014"}', '{"date": "2/6/2014"}', '{"date": "2/7/2014"}', '{"date": "2/8/2014"}', '{"date": "2/9/2014"}', '{"date": "2/10/2014"}', '{"date": "2/11/2014"}', '{"date": "2/12/2014"}', '{"date": "2/13/2014"}', '{"date": "2/14/2014"}', '{"date": "2/15/2014"}', '{"date": "2/16/2014"}', '{"date": "2/17/2014"}', '{"date": "2/18/2014"}', '{"date": "2/19/2014"}', '{"date": "2/20/2014"}', '{"date": "2/21/2014"}', '{"date": "2/22/2014"}', '{"date": "2/23/2014"}', '{"date": "2/24/2014"}', '{"date": "2/25/2014"}', '{"date": "2/26/2014"}', '{"date": "2/27/2014"}', '{"date": "2/28/2014"}', '{"date": "3/1/2014"}', '{"date": "3/2/2014"}', '{"date": "3/3/2014"}', '{"date": "3/4/2014"}', '{"date": "3/5/2014"}', '{"date": "3/6/2014"}', '{"date": "3/7/2014"}', '{"date": "3/8/2014"}', '{"date": "3/9/2014"}', '{"date": "3/10/2014"}', '{"date": "3/11/2014"}', '{"date": "3/12/2014"}', '{"date": "3/13/2014"}', '{"date": "3/14/2014"}', '{"date": "3/15/2014"}', '{"date": "3/16/2014"}', '{"date": "3/17/2014"}', '{"date": "3/18/2014"}', '{"date": "3/19/2014"}', '{"date": "3/20/2014"}', '{"date": "3/21/2014"}', '{"date": "3/22/2014"}', '{"date": "3/23/2014"}', '{"date": "3/24/2014"}', '{"date": "3/25/2014"}', '{"date": "3/26/2014"}', '{"date": "3/27/2014"}', '{"date": "3/28/2014"}', '{"date": "3/29/2014"}', '{"date": "3/30/2014"}', '{"date": "3/31/2014"}', '{"date": "4/1/2014"}', '{"date": "4/2/2014"}', '{"date": "4/3/2014"}', '{"date": "4/4/2014"}', '{"date": "4/5/2014"}', '{"date": "4/6/2014"}', '{"date": "4/7/2014"}', '{"date": "4/8/2014"}', '{"date": "4/9/2014"}', '{"date": "4/10/2014"}', '{"date": "4/11/2014"}', '{"date": "4/12/2014"}', '{"date": "4/13/2014"}', '{"date": "4/14/2014"}', '{"date": "4/15/2014"}', '{"date": "4/16/2014"}', '{"date": "4/17/2014"}', '{"date": "4/18/2014"}', '{"date": "4/19/2014"}', '{"date": "4/20/2014"}', '{"date": "4/21/2014"}', '{"date": "4/22/2014"}', '{"date": "4/23/2014"}', '{"date": "4/24/2014"}', '{"date": "4/25/2014"}', '{"date": "4/26/2014"}', '{"date": "4/27/2014"}', '{"date": "4/28/2014"}', '{"date": "4/29/2014"}', '{"date": "4/30/2014"}', '{"date": "5/1/2014"}', '{"date": "5/2/2014"}', '{"date": "5/3/2014"}', '{"date": "5/4/2014"}', '{"date": "5/5/2014"}', '{"date": "5/6/2014"}', '{"date": "5/7/2014"}', '{"date": "5/8/2014"}', '{"date": "5/9/2014"}', '{"date": "5/10/2014"}', '{"date": "5/11/2014"}', '{"date": "5/12/2014"}', '{"date": "5/13/2014"}', '{"date": "5/14/2014"}', '{"date": "5/15/2014"}', '{"date": "5/16/2014"}', '{"date": "5/17/2014"}', '{"date": "5/18/2014"}', '{"date": "5/19/2014"}', '{"date": "5/20/2014"}', '{"date": "5/21/2014"}', '{"date": "5/22/2014"}', '{"date": "5/23/2014"}', '{"date": "5/24/2014"}', '{"date": "5/25/2014"}', '{"date": "5/26/2014"}', '{"date": "5/27/2014"}', '{"date": "5/28/2014"}', '{"date": "5/29/2014"}', '{"date": "5/30/2014"}', '{"date": "5/31/2014"}', '{"date": "6/1/2014"}', '{"date": "6/2/2014"}', '{"date": "6/3/2014"}', '{"date": "6/4/2014"}', '{"date": "6/5/2014"}', '{"date": "6/6/2014"}', '{"date": "6/7/2014"}', '{"date": "6/8/2014"}', '{"date": "6/9/2014"}', '{"date": "6/10/2014"}', '{"date": "6/11/2014"}', '{"date": "6/12/2014"}', '{"date": "6/13/2014"}', '{"date": "6/14/2014"}', '{"date": "6/15/2014"}', '{"date": "6/16/2014"}', '{"date": "6/17/2014"}', '{"date": "6/18/2014"}', '{"date": "6/19/2014"}', '{"date": "6/20/2014"}', '{"date": "6/21/2014"}', '{"date": "6/22/2014"}', '{"date": "6/23/2014"}', '{"date": "6/24/2014"}', '{"date": "6/25/2014"}', '{"date": "6/26/2014"}', '{"date": "6/27/2014"}', '{"date": "6/28/2014"}', '{"date": "6/29/2014"}', '{"date": "6/30/2014"}', '{"date": "7/1/2014"}', '{"date": "7/2/2014"}', '{"date": "7/3/2014"}', '{"date": "7/4/2014"}', '{"date": "7/5/2014"}', '{"date": "7/6/2014"}', '{"date": "7/7/2014"}', '{"date": "7/8/2014"}', '{"date": "7/9/2014"}', '{"date": "7/10/2014"}', '{"date": "7/11/2014"}', '{"date": "7/12/2014"}', '{"date": "7/13/2014"}', '{"date": "7/14/2014"}', '{"date": "7/15/2014"}', '{"date": "7/16/2014"}', '{"date": "7/17/2014"}', '{"date": "7/18/2014"}', '{"date": "7/19/2014"}', '{"date": "7/20/2014"}', '{"date": "7/21/2014"}', '{"date": "7/22/2014"}', '{"date": "7/23/2014"}', '{"date": "7/24/2014"}', '{"date": "7/25/2014"}', '{"date": "7/26/2014"}', '{"date": "7/27/2014"}', '{"date": "7/28/2014"}', '{"date": "7/29/2014"}', '{"date": "7/30/2014"}', '{"date": "7/31/2014"}', '{"date": "8/1/2014"}', '{"date": "8/2/2014"}', '{"date": "8/3/2014"}', '{"date": "8/4/2014"}', '{"date": "8/5/2014"}', '{"date": "8/6/2014"}', '{"date": "8/7/2014"}', '{"date": "8/8/2014"}', '{"date": "8/9/2014"}', '{"date": "8/10/2014"}', '{"date": "8/11/2014"}', '{"date": "8/12/2014"}', '{"date": "8/13/2014"}', '{"date": "8/14/2014"}', '{"date": "8/15/2014"}', '{"date": "8/16/2014"}', '{"date": "8/17/2014"}', '{"date": "8/18/2014"}', '{"date": "8/19/2014"}', '{"date": "8/20/2014"}', '{"date": "8/21/2014"}', '{"date": "8/22/2014"}', '{"date": "8/23/2014"}', '{"date": "8/24/2014"}', '{"date": "8/25/2014"}', '{"date": "8/26/2014"}', '{"date": "8/27/2014"}', '{"date": "8/28/2014"}', '{"date": "8/29/2014"}', '{"date": "8/30/2014"}', '{"date": "8/31/2014"}', '{"date": "9/1/2014"}', '{"date": "9/2/2014"}', '{"date": "9/3/2014"}', '{"date": "9/4/2014"}', '{"date": "9/5/2014"}', '{"date": "9/6/2014"}', '{"date": "9/7/2014"}', '{"date": "9/8/2014"}', '{"date": "9/9/2014"}', '{"date": "9/10/2014"}', '{"date": "9/11/2014"}', '{"date": "9/12/2014"}', '{"date": "9/13/2014"}', '{"date": "9/14/2014"}', '{"date": "9/15/2014"}', '{"date": "9/16/2014"}', '{"date": "9/17/2014"}', '{"date": "9/18/2014"}', '{"date": "9/19/2014"}', '{"date": "9/20/2014"}', '{"date": "9/21/2014"}', '{"date": "9/22/2014"}', '{"date": "9/23/2014"}', '{"date": "9/24/2014"}', '{"date": "9/25/2014"}', '{"date": "9/26/2014"}', '{"date": "9/27/2014"}', '{"date": "9/28/2014"}', '{"date": "9/29/2014"}', '{"date": "9/30/2014"}', '{"date": "10/1/2014"}', '{"date": "10/2/2014"}', '{"date": "10/3/2014"}', '{"date": "10/4/2014"}', '{"date": "10/5/2014"}', '{"date": "10/6/2014"}', '{"date": "10/7/2014"}', '{"date": "10/8/2014"}', '{"date": "10/9/2014"}', '{"date": "10/10/2014"}', '{"date": "10/11/2014"}', '{"date": "10/12/2014"}', '{"date": "10/13/2014"}', '{"date": "10/14/2014"}', '{"date": "10/15/2014"}', '{"date": "10/16/2014"}', '{"date": "10/17/2014"}', '{"date": "10/18/2014"}', '{"date": "10/19/2014"}', '{"date": "10/20/2014"}', '{"date": "10/21/2014"}', '{"date": "10/22/2014"}', '{"date": "10/23/2014"}', '{"date": "10/24/2014"}', '{"date": "10/25/2014"}', '{"date": "10/26/2014"}', '{"date": "10/27/2014"}', '{"date": "10/28/2014"}', '{"date": "10/29/2014"}', '{"date": "10/30/2014"}', '{"date": "10/31/2014"}', '{"date": "11/1/2014"}', '{"date": "11/2/2014"}', '{"date": "11/3/2014"}', '{"date": "11/4/2014"}', '{"date": "11/5/2014"}', '{"date": "11/6/2014"}', '{"date": "11/7/2014"}', '{"date": "11/8/2014"}', '{"date": "11/9/2014"}', '{"date": "11/10/2014"}', '{"date": "11/11/2014"}', '{"date": "11/12/2014"}', '{"date": "11/13/2014"}', '{"date": "11/14/2014"}', '{"date": "11/15/2014"}', '{"date": "11/16/2014"}', '{"date": "11/17/2014"}', '{"date": "11/18/2014"}', '{"date": "11/19/2014"}', '{"date": "11/20/2014"}', '{"date": "11/21/2014"}', '{"date": "11/22/2014"}', '{"date": "11/23/2014"}', '{"date": "11/24/2014"}', '{"date": "11/25/2014"}', '{"date": "11/26/2014"}', '{"date": "11/27/2014"}', '{"date": "11/28/2014"}', '{"date": "11/29/2014"}', '{"date": "11/30/2014"}', '{"date": "12/1/2014"}', '{"date": "12/2/2014"}', '{"date": "12/3/2014"}', '{"date": "12/4/2014"}', '{"date": "12/5/2014"}', '{"date": "12/6/2014"}', '{"date": "12/7/2014"}', '{"date": "12/8/2014"}', '{"date": "12/9/2014"}', '{"date": "12/10/2014"}', '{"date": "12/11/2014"}', '{"date": "12/12/2014"}', '{"date": "12/13/2014"}', '{"date": "12/14/2014"}', '{"date": "12/15/2014"}', '{"date": "12/16/2014"}', '{"date": "12/17/2014"}', '{"date": "12/18/2014"}', '{"date": "12/19/2014"}', '{"date": "12/20/2014"}', '{"date": "12/21/2014"}', '{"date": "12/22/2014"}', '{"date": "12/23/2014"}', '{"date": "12/24/2014"}', '{"date": "12/25/2014"}', '{"date": "12/26/2014"}', '{"date": "12/27/2014"}', '{"date": "12/28/2014"}', '{"date": "12/29/2014"}', '{"date": "12/30/2014"}', '{"date": "12/31/2014"}', '{"date": "1/1/2015"}', '{"date": "1/2/2015"}', '{"date": "1/3/2015"}', '{"date": "1/4/2015"}', '{"date": "1/5/2015"}', '{"date": "1/6/2015"}', '{"date": "1/7/2015"}', '{"date": "1/8/2015"}', '{"date": "1/9/2015"}', '{"date": "1/10/2015"}', '{"date": "1/11/2015"}', '{"date": "1/12/2015"}', '{"date": "1/13/2015"}', '{"date": "1/14/2015"}', '{"date": "1/15/2015"}', '{"date": "1/16/2015"}', '{"date": "1/17/2015"}', '{"date": "1/18/2015"}', '{"date": "1/19/2015"}', '{"date": "1/20/2015"}', '{"date": "1/21/2015"}', '{"date": "1/22/2015"}', '{"date": "1/23/2015"}', '{"date": "1/24/2015"}', '{"date": "1/25/2015"}', '{"date": "1/26/2015"}', '{"date": "1/27/2015"}', '{"date": "1/28/2015"}', '{"date": "1/29/2015"}', '{"date": "1/30/2015"}', '{"date": "1/31/2015"}', '{"date": "2/1/2015"}', '{"date": "2/2/2015"}', '{"date": "2/3/2015"}', '{"date": "2/4/2015"}', '{"date": "2/5/2015"}', '{"date": "2/6/2015"}', '{"date": "2/7/2015"}', '{"date": "2/8/2015"}', '{"date": "2/9/2015"}', '{"date": "2/10/2015"}', '{"date": "2/11/2015"}', '{"date": "2/12/2015"}', '{"date": "2/13/2015"}', '{"date": "2/14/2015"}', '{"date": "2/15/2015"}', '{"date": "2/16/2015"}', '{"date": "2/17/2015"}', '{"date": "2/18/2015"}', '{"date": "2/19/2015"}', '{"date": "2/20/2015"}', '{"date": "2/21/2015"}', '{"date": "2/22/2015"}', '{"date": "2/23/2015"}', '{"date": "2/24/2015"}', '{"date": "2/25/2015"}', '{"date": "2/26/2015"}', '{"date": "2/27/2015"}', '{"date": "2/28/2015"}', '{"date": "3/1/2015"}', '{"date": "3/2/2015"}', '{"date": "3/3/2015"}', '{"date": "3/4/2015"}', '{"date": "3/5/2015"}', '{"date": "3/6/2015"}', '{"date": "3/7/2015"}', '{"date": "3/8/2015"}', '{"date": "3/9/2015"}', '{"date": "3/10/2015"}', '{"date": "3/11/2015"}', '{"date": "3/12/2015"}', '{"date": "3/13/2015"}', '{"date": "3/14/2015"}', '{"date": "3/15/2015"}', '{"date": "3/16/2015"}', '{"date": "3/17/2015"}', '{"date": "3/18/2015"}', '{"date": "3/19/2015"}', '{"date": "3/20/2015"}', '{"date": "3/21/2015"}', '{"date": "3/22/2015"}', '{"date": "3/23/2015"}', '{"date": "3/24/2015"}', '{"date": "3/25/2015"}', '{"date": "3/26/2015"}', '{"date": "3/27/2015"}', '{"date": "3/28/2015"}', '{"date": "3/29/2015"}', '{"date": "3/30/2015"}', '{"date": "3/31/2015"}', '{"date": "4/1/2015"}', '{"date": "4/2/2015"}', '{"date": "4/3/2015"}', '{"date": "4/4/2015"}', '{"date": "4/5/2015"}', '{"date": "4/6/2015"}', '{"date": "4/7/2015"}', '{"date": "4/8/2015"}', '{"date": "4/9/2015"}', '{"date": "4/10/2015"}', '{"date": "4/11/2015"}', '{"date": "4/12/2015"}', '{"date": "4/13/2015"}', '{"date": "4/14/2015"}', '{"date": "4/15/2015"}', '{"date": "4/16/2015"}', '{"date": "4/17/2015"}', '{"date": "4/18/2015"}', '{"date": "4/19/2015"}', '{"date": "4/20/2015"}', '{"date": "4/21/2015"}', '{"date": "4/22/2015"}', '{"date": "4/23/2015"}', '{"date": "4/24/2015"}', '{"date": "4/25/2015"}', '{"date": "4/26/2015"}', '{"date": "4/27/2015"}', '{"date": "4/28/2015"}', '{"date": "4/29/2015"}', '{"date": "4/30/2015"}', '{"date": "5/1/2015"}', '{"date": "5/2/2015"}', '{"date": "5/3/2015"}', '{"date": "5/4/2015"}', '{"date": "5/5/2015"}', '{"date": "5/6/2015"}', '{"date": "5/7/2015"}', '{"date": "5/8/2015"}', '{"date": "5/9/2015"}', '{"date": "5/10/2015"}', '{"date": "5/11/2015"}', '{"date": "5/12/2015"}', '{"date": "5/13/2015"}', '{"date": "5/14/2015"}', '{"date": "5/15/2015"}', '{"date": "5/16/2015"}', '{"date": "5/17/2015"}', '{"date": "5/18/2015"}', '{"date": "5/19/2015"}', '{"date": "5/20/2015"}', '{"date": "5/21/2015"}', '{"date": "5/22/2015"}', '{"date": "5/23/2015"}', '{"date": "5/24/2015"}', '{"date": "5/25/2015"}', '{"date": "5/26/2015"}', '{"date": "5/27/2015"}', '{"date": "5/28/2015"}', '{"date": "5/29/2015"}', '{"date": "5/30/2015"}', '{"date": "5/31/2015"}', '{"date": "6/1/2015"}', '{"date": "6/2/2015"}', '{"date": "6/3/2015"}', '{"date": "6/4/2015"}', '{"date": "6/5/2015"}', '{"date": "6/6/2015"}', '{"date": "6/7/2015"}', '{"date": "6/8/2015"}', '{"date": "6/9/2015"}', '{"date": "6/10/2015"}', '{"date": "6/11/2015"}', '{"date": "6/12/2015"}', '{"date": "6/13/2015"}', '{"date": "6/14/2015"}', '{"date": "6/15/2015"}', '{"date": "6/16/2015"}', '{"date": "6/17/2015"}', '{"date": "6/18/2015"}', '{"date": "6/19/2015"}', '{"date": "6/20/2015"}', '{"date": "6/21/2015"}', '{"date": "6/22/2015"}', '{"date": "6/23/2015"}', '{"date": "6/24/2015"}', '{"date": "6/25/2015"}', '{"date": "6/26/2015"}', '{"date": "6/27/2015"}', '{"date": "6/28/2015"}', '{"date": "6/29/2015"}', '{"date": "6/30/2015"}', '{"date": "7/1/2015"}', '{"date": "7/2/2015"}', '{"date": "7/3/2015"}', '{"date": "7/4/2015"}', '{"date": "7/5/2015"}', '{"date": "7/6/2015"}', '{"date": "7/7/2015"}', '{"date": "7/8/2015"}', '{"date": "7/9/2015"}', '{"date": "7/10/2015"}', '{"date": "7/11/2015"}', '{"date": "7/12/2015"}', '{"date": "7/13/2015"}', '{"date": "7/14/2015"}', '{"date": "7/15/2015"}', '{"date": "7/16/2015"}', '{"date": "7/17/2015"}', '{"date": "7/18/2015"}', '{"date": "7/19/2015"}', '{"date": "7/20/2015"}', '{"date": "7/21/2015"}', '{"date": "7/22/2015"}', '{"date": "7/23/2015"}', '{"date": "7/24/2015"}', '{"date": "7/25/2015"}', '{"date": "7/26/2015"}', '{"date": "7/27/2015"}', '{"date": "7/28/2015"}', '{"date": "7/29/2015"}', '{"date": "7/30/2015"}', '{"date": "7/31/2015"}', '{"date": "8/1/2015"}', '{"date": "8/2/2015"}', '{"date": "8/3/2015"}', '{"date": "8/4/2015"}', '{"date": "8/5/2015"}', '{"date": "8/6/2015"}', '{"date": "8/7/2015"}', '{"date": "8/8/2015"}', '{"date": "8/9/2015"}', '{"date": "8/10/2015"}', '{"date": "8/11/2015"}', '{"date": "8/12/2015"}', '{"date": "8/13/2015"}', '{"date": "8/14/2015"}', '{"date": "8/15/2015"}', '{"date": "8/16/2015"}', '{"date": "8/17/2015"}', '{"date": "8/18/2015"}', '{"date": "8/19/2015"}', '{"date": "8/20/2015"}', '{"date": "8/21/2015"}', '{"date": "8/22/2015"}', '{"date": "8/23/2015"}', '{"date": "8/24/2015"}', '{"date": "8/25/2015"}', '{"date": "8/26/2015"}', '{"date": "8/27/2015"}', '{"date": "8/28/2015"}', '{"date": "8/29/2015"}', '{"date": "8/30/2015"}', '{"date": "8/31/2015"}']
+
+--------------------------32-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM station WHERE lat  >  37.4 EXCEPT SELECT station_id FROM status GROUP BY station_id HAVING min(bikes_available)  <  7-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": {
+        "range": {
+          "lat": {
+            "gt": 37.4
+          }
+        }
+      },
+      "must_not": {
+        "terms": {
+          "_id": {
+            "index": "status",
+            "path": "station_id",
+            "query": {
+              "aggs": {
+                "group_by_station": {
+                  "terms": {
+                    "field": "station_id"
+                  },
+                  "aggs": {
+                    "min_bikes_available": {
+                      "min": {
+                        "field": "bikes_available"
+                      }
+                    }
+                  }
+                }
+              },
+              "size": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "_source": ["id"],
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': {'range': {'lat': {'gt': 37.4}}}, 'must_not': {'terms': {'_id': {'index': 'status', 'path': 'station_id', 'query': {'aggs': {'group_by_station': {'terms': {'field': 'station_id'}, 'aggs': {'min_bikes_available': {'min': {'field': 'bikes_available'}}}}}, 'size': 0}}}}}}, '_source': ['id'], 'size': 10000}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:121] [terms_lookup] unknown field [query]')
+
+--------------------------33-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id GROUP BY T2.station_id HAVING avg(bikes_available)  >  10 EXCEPT SELECT name FROM station WHERE city  =  "San Jose"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must_not": {
+        "term": {
+          "city.keyword": "San Jose"
+        }
+      },
+      "filter": {
+        "exists": {
+          "field": "name"
+        }
+      }
+    }
+  },
+  "aggs": {
+    "group_by_station_id": {
+      "terms": {
+        "field": "station_id"
+      },
+      "aggs": {
+        "avg_bikes_available": {
+          "avg": {
+            "field": "bikes_available"
+          }
+        },
+        "stations_with_avg_above_10": {
+          "bucket_selector": {
+            "buckets_path": {
+              "avgBikes": "avg_bikes_available"
+            },
+            "script": "params.avgBikes > 10"
+          }
+        }
+      }
+    },
+    "top_station_names": {
+      "terms": {
+        "field": "name.keyword"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station,status"
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'term': {'city.keyword': 'San Jose'}}, 'filter': {'exists': {'field': 'name'}}}}, 'aggs': {'group_by_station_id': {'terms': {'field': 'station_id'}, 'aggs': {'avg_bikes_available': {'avg': {'field': 'bikes_available'}}, 'stations_with_avg_above_10': {'bucket_selector': {'buckets_path': {'avgBikes': 'avg_bikes_available'}, 'script': 'params.avgBikes > 10'}}}}, 'top_station_names': {'terms': {'field': 'name.keyword'}}}, 'size': 0}
+execute target query error:NotFoundError(404, 'index_not_found_exception', 'no such index [status]', status, index_or_alias)
+
+--------------------------34-----------------
+schema:['name', 'lat', 'city']
+---------------------------Execute SQL Query:SELECT name ,  lat ,  city FROM station ORDER BY lat LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "size": 1,
+  "sort": [
+    {
+      "lat": {
+        "order": "asc"
+      }
+    }
+  ],
+  "_source": ["name", "lat", "city"],
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 1, 'sort': [{'lat': {'order': 'asc'}}], '_source': ['name', 'lat', 'city']}
+mismatch between MySQL and target
+mysql res: ['{"name": "San Antonio Shopping Center", "lat": 37, "city": "Mountain View"}']
+target res: ['{"name": "San Jose Diridon Caltrain Station", "lat": 37, "city": "San Jose"}']
+
+--------------------------35-----------------
+schema:['date', 'mean_temperature_f', 'mean_humidity']
+---------------------------Execute SQL Query:SELECT date ,  mean_temperature_f ,  mean_humidity FROM weather ORDER BY max_gust_speed_mph DESC LIMIT 3-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "size": 3,
+  "sort": [
+    {
+      "max_gust_speed_mph": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": ["date", "mean_temperature_f", "mean_humidity"],
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 3, 'sort': [{'max_gust_speed_mph': {'order': 'desc'}}], '_source': ['date', 'mean_temperature_f', 'mean_humidity']}
+mismatch between MySQL and target
+mysql res: ['{"date": "12/12/2013", "mean_temperature_f": 42, "mean_humidity": 63}', '{"date": "11/20/2013", "mean_temperature_f": 57, "mean_humidity": 85}', '{"date": "11/21/2013", "mean_temperature_f": 54, "mean_humidity": 63}']
+target res: ['{"date": "9/5/2013", "mean_temperature_f": 68, "mean_humidity": 63}', '{"date": "10/8/2013", "mean_temperature_f": 60, "mean_humidity": 60}', '{"date": "10/12/2013", "mean_temperature_f": 57, "mean_humidity": 69}']
+
+--------------------------36-----------------
+schema:['city', 'COUNT_*']
+---------------------------Execute SQL Query:SELECT city ,  COUNT(*) FROM station GROUP BY city HAVING COUNT(*)  >=  15-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "size": 0,
+    "aggs": {
+      "group_by_city": {
+        "terms": {
+          "field": "city.keyword"
+        },
+        "aggs": {
+          "city_count": {
+            "value_count": {
+              "field": "_index"
+            }
+          },
+          "city_count_filter": {
+            "bucket_selector": {
+              "buckets_path": {
+                "cityCount": "city_count"
+              },
+              "script": "params.cityCount >= 15"
+            }
+          }
+        }
+      }
+    }
+  },
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'size': 0, 'aggs': {'group_by_city': {'terms': {'field': 'city.keyword'}, 'aggs': {'city_count': {'value_count': {'field': '_index'}}, 'city_count_filter': {'bucket_selector': {'buckets_path': {'cityCount': 'city_count'}, 'script': 'params.cityCount >= 15'}}}}}}, 'size': 10000}
+execute target query error:BadRequestError(400, 'parsing_exception', '[size] query malformed, no start_object after query name')
+
+--------------------------37-----------------
+schema:(None, OperationalError(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT start_station_id ,  start_station_name FROM trip GROUP BY start_station_name HAVING COUNT(*)  >=  200-----------------
+execute mysql query error:(1055, "Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------38-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "aggs": {
+    "group_by_zip_code": {
+      "terms": {
+        "field": "zip_code.keyword"
+      },
+      "aggs": {
+        "avg_visibility": {
+          "avg": {
+            "field": "mean_visibility_miles"
+          }
+        },
+        "visibility_filter": {
+          "bucket_selector": {
+            "buckets_path": {
+              "avgVis": "avg_visibility"
+            },
+            "script": "params.avgVis < 10"
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'aggs': {'group_by_zip_code': {'terms': {'field': 'zip_code.keyword'}, 'aggs': {'avg_visibility': {'avg': {'field': 'mean_visibility_miles'}}, 'visibility_filter': {'bucket_selector': {'buckets_path': {'avgVis': 'avg_visibility'}, 'script': 'params.avgVis < 10'}}}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"zip_code": 94107}', '{"zip_code": 94063}', '{"zip_code": 94041}', '{"zip_code": 95113}']
+target res: []
+
+--------------------------39-----------------
+schema:['city']
+---------------------------Execute SQL Query:SELECT city FROM station GROUP BY city ORDER BY max(lat) DESC-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "aggs": {
+    "group_by_city": {
+      "terms": {
+        "field": "city.keyword",
+        "order": {
+          "max_latitude": "desc"
+        }
+      },
+      "aggs": {
+        "max_latitude": {
+          "max": {
+            "field": "lat"
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'aggs': {'group_by_city': {'terms': {'field': 'city.keyword', 'order': {'max_latitude': 'desc'}}, 'aggs': {'max_latitude': {'max': {'field': 'lat'}}}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"city": "San Francisco"}', '{"city": "San Jose"}', '{"city": "Redwood City"}', '{"city": "Mountain View"}', '{"city": "Palo Alto"}']
+target res: []
+
+--------------------------40-----------------
+schema:['date', 'cloud_cover']
+---------------------------Execute SQL Query:SELECT date ,  cloud_cover FROM weather ORDER BY cloud_cover DESC LIMIT 5-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "size": 5,
+  "sort": [
+    {
+      "cloud_cover": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": ["date", "cloud_cover"],
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 5, 'sort': [{'cloud_cover': {'order': 'desc'}}], '_source': ['date', 'cloud_cover']}
+mismatch between MySQL and target
+mysql res: ['{"date": "5/18/2015", "cloud_cover": 8}', '{"date": "3/5/2014", "cloud_cover": 8}', '{"date": "5/22/2015", "cloud_cover": 8}', '{"date": "12/11/2014", "cloud_cover": 8}', '{"date": "5/20/2015", "cloud_cover": 8}']
+target res: ['{"date": "1/29/2014", "cloud_cover": 8}', '{"date": "2/6/2014", "cloud_cover": 8}', '{"date": "2/7/2014", "cloud_cover": 8}', '{"date": "2/8/2014", "cloud_cover": 8}', '{"date": "2/9/2014", "cloud_cover": 8}']
+
+--------------------------41-----------------
+schema:['id', 'duration']
+---------------------------Execute SQL Query:SELECT id ,  duration FROM trip ORDER BY duration DESC LIMIT 3-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "size": 3,
+  "sort": [
+    {
+      "duration": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": ["id", "duration"],
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 3, 'sort': [{'duration': {'order': 'desc'}}], '_source': ['id', 'duration']}
+translate SELECT id ,  duration FROM trip ORDER BY duration DESC LIMIT 3 success
+
+--------------------------42-----------------
+schema:['name', 'longitude', 'avg_T2_duration']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.longitude ,  avg(T2.duration) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id GROUP BY T2.start_station_id-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "trip",
+            "query": {
+              "match_all": {}
+            },
+            "aggs": {
+              "avg_duration": {
+                "avg": {
+                  "field": "duration"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_station": {
+      "terms": {
+        "field": "id"
+      },
+      "aggs": {
+        "station_details": {
+          "top_hits": {
+            "_source": {
+              "includes": ["name", "longitude"]
+            },
+            "size": 1
+          }
+        },
+        "avg_duration": {
+          "avg": {
+            "field": "trip.duration"
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'trip', 'query': {'match_all': {}}, 'aggs': {'avg_duration': {'avg': {'field': 'duration'}}}}}]}}, 'aggs': {'group_by_station': {'terms': {'field': 'id'}, 'aggs': {'station_details': {'top_hits': {'_source': {'includes': ['name', 'longitude']}, 'size': 1}}, 'avg_duration': {'avg': {'field': 'trip.duration'}}}}}, 'size': 0}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[has_child] query does not support [aggs]')
+
+--------------------------43-----------------
+schema:['name', 'lat', 'min_T2_duration']
+---------------------------Execute SQL Query:SELECT T1.name ,  T1.lat ,  min(T2.duration) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.end_station_id GROUP BY T2.end_station_id-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "trip",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "_source": ["duration"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_end_station_id": {
+      "terms": {
+        "field": "id"
+      },
+      "aggs": {
+        "min_duration": {
+          "min": {
+            "field": "trip.duration"
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "_source": ["name", "lat"],
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'trip', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['duration']}}}]}}, 'aggs': {'group_by_end_station_id': {'terms': {'field': 'id'}, 'aggs': {'min_duration': {'min': {'field': 'trip.duration'}}}}}, 'size': 0, '_source': ['name', 'lat']}
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------44-----------------
+schema:['start_station_name']
+---------------------------Execute SQL Query:SELECT DISTINCT start_station_name FROM trip WHERE duration  <  100-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "duration": {
+              "lt": 100
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "unique_start_station_names": {
+      "terms": {
+        "field": "start_station_name.keyword"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'duration': {'lt': 100}}}]}}, 'aggs': {'unique_start_station_names': {'terms': {'field': 'start_station_name.keyword'}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"start_station_name": "2nd at South Park"}', '{"start_station_name": "Embarcadero at Sansome"}', '{"start_station_name": "Embarcadero at Folsom"}', '{"start_station_name": "Post at Kearny"}', '{"start_station_name": "Beale at Market"}', '{"start_station_name": "2nd at Folsom"}', '{"start_station_name": "Commercial at Montgomery"}', '{"start_station_name": "San Francisco Caltrain (Townsend at 4th)"}', '{"start_station_name": "San Francisco Caltrain 2 (330 Townsend)"}', '{"start_station_name": "Steuart at Market"}', '{"start_station_name": "Palo Alto Caltrain Station"}', '{"start_station_name": "2nd at Townsend"}', '{"start_station_name": "Washington at Kearny"}', '{"start_station_name": "South Van Ness at Market"}', '{"start_station_name": "Davis at Jackson"}', '{"start_station_name": "Embarcadero at Vallejo"}', '{"start_station_name": "5th at Howard"}']
+target res: []
+
+--------------------------45-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT DISTINCT zip_code FROM weather EXCEPT SELECT DISTINCT zip_code FROM weather WHERE max_dew_point_f  >=  70-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must_not": {
+        "range": {
+          "max_dew_point_f": {
+            "gte": 70
+          }
+        }
+      }
+    }
+  },
+  "aggs": {
+    "unique_zip_codes": {
+      "terms": {
+        "field": "zip_code.keyword"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'range': {'max_dew_point_f': {'gte': 70}}}}}, 'aggs': {'unique_zip_codes': {'terms': {'field': 'zip_code.keyword'}}}, 'size': 0}
+Exception raised during comparison: Row number mismatch
+mysql res: ['{"zip_code": 94107}', '{"zip_code": 94063}', '{"zip_code": 94301}', '{"zip_code": 94041}', '{"zip_code": 95113}']
+target res: []
+
+--------------------------46-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM trip WHERE duration  >=  (SELECT avg(duration) FROM trip WHERE zip_code  =  94103)-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "range": {
+            "duration": {
+              "gte": {
+                "script": {
+                  "source": "doc['duration'].value >= params.avg_duration",
+                  "params": {
+                    "avg_duration": {
+                      "script": {
+                        "source": "state.avg",
+                        "init_script": "state.avg = 0",
+                        "map_script": "if (doc['zip_code'].value == 94103) { state.avg += doc['duration'].value; state.count++; }",
+                        "combine_script": "return state.avg / state.count",
+                        "reduce_script": "double sum = 0; for (a in states) { sum += a; } return sum / states.length;"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["id"],
+  "inner_index": "trip"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'duration': {'gte': {'script': {'source': "doc['duration'].value >= params.avg_duration", 'params': {'avg_duration': {'script': {'source': 'state.avg', 'init_script': 'state.avg = 0', 'map_script': "if (doc['zip_code'].value == 94103) { state.avg += doc['duration'].value; state.count++; }", 'combine_script': 'return state.avg / state.count', 'reduce_script': 'double sum = 0; for (a in states) { sum += a; } return sum / states.length;'}}}}}}}}]}}, '_source': ['id'], 'size': 10000}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[range] query does not support [script]')
+
+--------------------------47-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE mean_sea_level_pressure_inches BETWEEN 30.3 AND 31-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "mean_sea_level_pressure_inches": {
+                            "gte": 30.3,
+                            "lte": 31
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["date"],
+    "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'mean_sea_level_pressure_inches': {'gte': 30.3, 'lte': 31}}}]}}, '_source': ['date'], 'size': 10000}
+translate SELECT date FROM weather WHERE mean_sea_level_pressure_inches BETWEEN 30.3 AND 31 success
+
+--------------------------48-----------------
+schema:['date', 'max_temperature_f - min_temperature_f']
+---------------------------Execute SQL Query:SELECT date ,  max_temperature_f - min_temperature_f FROM weather ORDER BY max_temperature_f - min_temperature_f LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "script_fields": {
+      "temp_difference": {
+        "script": {
+          "lang": "painless",
+          "source": "doc['max_temperature_f'].value - doc['min_temperature_f'].value"
+        }
+      }
+    },
+    "size": 1,
+    "sort": [
+      {
+        "_script": {
+          "type": "number",
+          "script": {
+            "lang": "painless",
+            "source": "doc['max_temperature_f'].value - doc['min_temperature_f'].value"
+          },
+          "order": "asc"
+        }
+      }
+    ]
+  },
+  "_source": ["date"],
+  "inner_index": "weather"
+}-----------------
+**************************************************
+{'query': {'script_fields': {'temp_difference': {'script': {'lang': 'painless', 'source': "doc['max_temperature_f'].value - doc['min_temperature_f'].value"}}}, 'size': 1, 'sort': [{'_script': {'type': 'number', 'script': {'lang': 'painless', 'source': "doc['max_temperature_f'].value - doc['min_temperature_f'].value"}, 'order': 'asc'}}]}, '_source': ['date'], 'size': 10000}
+execute target query error:BadRequestError(400, 'parsing_exception', 'unknown query [script_fields] did you mean any of [script_score, combined_fields]?')
+
+--------------------------49-----------------
+schema:['id', 'name']
+---------------------------Execute SQL Query:SELECT DISTINCT T1.id ,  T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  >  12-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "status",
+            "query": {
+              "range": {
+                "bikes_available": {
+                  "gt": 12
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["id", "name"],
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'status', 'query': {'range': {'bikes_available': {'gt': 12}}}}}]}}, '_source': ['id', 'name'], 'size': 10000}
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------50-----------------
+schema:['zip_code']
+---------------------------Execute SQL Query:SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_humidity)  <  70 INTERSECT SELECT zip_code FROM trip GROUP BY zip_code HAVING count(*)  >=  100-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "bool": {
+            "should": [
+              {
+                "bool": {
+                  "filter": [
+                    {
+                      "terms": {
+                        "inner_index": ["weather"]
+                      }
+                    }
+                  ],
+                  "aggs": {
+                    "zip_code": {
+                      "terms": {
+                        "field": "zip_code.keyword"
+                      },
+                      "aggs": {
+                        "avg_humidity": {
+                          "avg": {
+                            "field": "mean_humidity"
+                          }
+                        },
+                        "humidity_filter": {
+                          "bucket_selector": {
+                            "buckets_path": {
+                              "avgHumidity": "avg_humidity"
+                            },
+                            "script": "params.avgHumidity < 70"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "size": 0
+                }
+              },
+              {
+                "bool": {
+                  "filter": [
+                    {
+                      "terms": {
+                        "inner_index": ["trip"]
+                      }
+                    }
+                  ],
+                  "aggs": {
+                    "zip_code": {
+                      "terms": {
+                        "field": "zip_code.keyword"
+                      },
+                      "aggs": {
+                        "trip_count": {
+                          "value_count": {
+                            "field": "zip_code"
+                          }
+                        },
+                        "count_filter": {
+                          "bucket_selector": {
+                            "buckets_path": {
+                              "tripCount": "trip_count"
+                            },
+                            "script": "params.tripCount >= 100"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "size": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "inner_index": ["weather", "trip"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'should': [{'bool': {'filter': [{'terms': {'inner_index': ['weather']}}], 'aggs': {'zip_code': {'terms': {'field': 'zip_code.keyword'}, 'aggs': {'avg_humidity': {'avg': {'field': 'mean_humidity'}}, 'humidity_filter': {'bucket_selector': {'buckets_path': {'avgHumidity': 'avg_humidity'}, 'script': 'params.avgHumidity < 70'}}}}}, 'size': 0}}, {'bool': {'filter': [{'terms': {'inner_index': ['trip']}}], 'aggs': {'zip_code': {'terms': {'field': 'zip_code.keyword'}, 'aggs': {'trip_count': {'value_count': {'field': 'zip_code'}}, 'count_filter': {'bucket_selector': {'buckets_path': {'tripCount': 'trip_count'}, 'script': 'params.tripCount >= 100'}}}}}, 'size': 0}}]}}]}}, 'size': 10000}
+execute target query error:can only concatenate str (not "list") to str
+
+--------------------------51-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT name FROM station WHERE city  =  "Palo Alto" EXCEPT SELECT end_station_name FROM trip GROUP BY end_station_name HAVING count(*)  >  100-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must_not": {
+        "terms": {
+          "name.keyword": {
+            "index": "trip",
+            "type": "_doc",
+            "id": "end_station_name",
+            "path": "end_station_name.keyword",
+            "query": {
+              "aggs": {
+                "popular_end_stations": {
+                  "terms": {
+                    "field": "end_station_name.keyword",
+                    "min_doc_count": 101
+                  }
+                }
+              },
+              "size": 0
+            }
+          }
+        }
+      },
+      "filter": {
+        "term": {
+          "city.keyword": "Palo Alto"
+        }
+      }
+    }
+  },
+  "_source": ["name"],
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'name.keyword': {'index': 'trip', 'type': '_doc', 'id': 'end_station_name', 'path': 'end_station_name.keyword', 'query': {'aggs': {'popular_end_stations': {'terms': {'field': 'end_station_name.keyword', 'min_doc_count': 101}}}, 'size': 0}}}}, 'filter': {'term': {'city.keyword': 'Palo Alto'}}}}, '_source': ['name'], 'size': 10000}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:71] [terms_lookup] unknown field [type]')
+
+--------------------------52-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM station AS T1 JOIN trip AS T2 JOIN station AS T3 JOIN trip AS T4 ON T1.id  =  T2.start_station_id AND T2.id  =  T4.id AND T3.id  =  T4.end_station_id WHERE T1.city  =  "Mountain View" AND T3.city  =  "Palo Alto"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "T1.city": "Mountain View"
+          }
+        },
+        {
+          "match": {
+            "T3.city": "Palo Alto"
+          }
+        },
+        {
+          "script_score": {
+            "script": {
+              "source": "doc['T1.id'].value == doc['T2.start_station_id'].value && doc['T2.id'].value == doc['T4.id'].value && doc['T3.id'].value == doc['T4.end_station_id'].value ? 1 : 0"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "unique_counts": {
+      "cardinality": {
+        "script": {
+          "source": "doc['T1.id'].value + '-' + doc['T2.id'].value + '-' + doc['T3.id'].value + '-' + doc['T4.id'].value"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station/trip"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'T1.city': 'Mountain View'}}, {'match': {'T3.city': 'Palo Alto'}}, {'script_score': {'script': {'source': "doc['T1.id'].value == doc['T2.start_station_id'].value && doc['T2.id'].value == doc['T4.id'].value && doc['T3.id'].value == doc['T4.end_station_id'].value ? 1 : 0"}}}]}}, 'aggs': {'unique_counts': {'cardinality': {'script': {'source': "doc['T1.id'].value + '-' + doc['T2.id'].value + '-' + doc['T3.id'].value + '-' + doc['T4.id'].value"}}}}, 'size': 0}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:300] [bool] failed to parse field [must]')
+
+--------------------------53-----------------
+schema:['avg_T1_lat', 'avg_T1_longitude']
+---------------------------Execute SQL Query:SELECT avg(T1.lat) ,  avg(T1.longitude) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 7, column 64
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "trip",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "_source": ["start_station_id"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "avg_latitude": {
+      "avg": {
+        "field": "lat"
+      }
+    },
+    "avg_longitude": {
+      "avg": {
+        "field": "longitude"
+      }
+    }
+  },
+  "size": 0,
+  "inner_index": "station"
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'trip', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['start_station_id']}}}]}}, 'aggs': {'avg_latitude': {'avg': {'field': 'lat'}}, 'avg_longitude': {'avg': {'field': 'longitude'}}}, 'size': 0}
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+success_query_count: 7
+valid_query_count: 49
+accuracy: 0.14285714285714285

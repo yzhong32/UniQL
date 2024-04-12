@@ -1,0 +1,402 @@
+
+--------------------------1-----------------
+schema:['date']
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE max_temperature_f  >  85-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+    "bool": {
+        "filter": [
+        {
+            "range": {
+            "max_temperature_f": {
+                "gt": 85
+            }
+            }
+        }
+        ]
+    }
+    },
+    "_source": ["date"],
+    "inner_index": "weather"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElTc2RK06iTPCNhRgiGKwvP8t0u', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "max_temperature_f": {\n                "gt": 85\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["date"],\n    "inner_index": "weather"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703719, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=65, prompt_tokens=175, total_tokens=240)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElTc2RK06iTPCNhRgiGKwvP8t0u', 'created': 1712703719, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=65, prompt_tokens=175, total_tokens=240)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "max_temperature_f": {\n                "gt": 85\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["date"],\n    "inner_index": "weather"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT date FROM weather WHERE max_temperature_f  >  85'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElTc2RK06iTPCNhRgiGKwvP8t0u', 'created': 1712703719, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=65, prompt_tokens=175, total_tokens=240)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT date FROM weather WHERE max_temperature_f  >  85\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT name FROM station WHERE lat  <  37.5-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+    "bool": {
+        "filter": [
+        {
+            "range": {
+            "lat": {
+                "lt": 37.5
+            }
+            }
+        }
+        ]
+    }
+    },
+    "_source": ["name"],
+    "inner_index": "station"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElVyv0Ex97xjP9lEBWiAeT2eZJF', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "lat": {\n                "lt": 37.5\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["name"],\n    "inner_index": "station"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703721, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=65, prompt_tokens=175, total_tokens=240)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElVyv0Ex97xjP9lEBWiAeT2eZJF', 'created': 1712703721, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=65, prompt_tokens=175, total_tokens=240)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "lat": {\n                "lt": 37.5\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["name"],\n    "inner_index": "station"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT name FROM station WHERE lat  <  37.5'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElVyv0Ex97xjP9lEBWiAeT2eZJF', 'created': 1712703721, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=65, prompt_tokens=175, total_tokens=240)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT name FROM station WHERE lat  <  37.5\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+Exception raised during comparison: Row number mismatch
+
+--------------------------3-----------------
+schema:['city', 'max_lat']
+---------------------------Execute SQL Query:SELECT city ,  max(lat) FROM station GROUP BY city-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match_all": {}
+                }
+            ],
+            "aggs": {
+                "group_by_city": {
+                    "terms": {
+                        "field": "city.keyword",
+                        "size": 10
+                    },
+                    "aggs": {
+                        "max_lat": {
+                            "max": {
+                                "field": "lat"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["city", "lat"],
+    "inner_index": "station"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElWjueeIBXSrp9RtSQCDk3Cwe4L', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "must": [\n                {\n                    "match_all": {}\n                }\n            ],\n            "aggs": {\n                "group_by_city": {\n                    "terms": {\n                        "field": "city.keyword",\n                        "size": 10\n                    },\n                    "aggs": {\n                        "max_lat": {\n                            "max": {\n                                "field": "lat"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    },\n    "_source": ["city", "lat"],\n    "inner_index": "station"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703722, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=120, prompt_tokens=174, total_tokens=294)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElWjueeIBXSrp9RtSQCDk3Cwe4L', 'created': 1712703722, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=120, prompt_tokens=174, total_tokens=294)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "must": [\n                {\n                    "match_all": {}\n                }\n            ],\n            "aggs": {\n                "group_by_city": {\n                    "terms": {\n                        "field": "city.keyword",\n                        "size": 10\n                    },\n                    "aggs": {\n                        "max_lat": {\n                            "max": {\n                                "field": "lat"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    },\n    "_source": ["city", "lat"],\n    "inner_index": "station"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT city ,  max(lat) FROM station GROUP BY city'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElWjueeIBXSrp9RtSQCDk3Cwe4L', 'created': 1712703722, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=120, prompt_tokens=174, total_tokens=294)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT city ,  max(lat) FROM station GROUP BY city\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:45] [bool] unknown field [aggs]')
+
+--------------------------4-----------------
+schema:['start_station_name', 'end_station_name']
+---------------------------Execute SQL Query:SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "sort": [
+        {
+            "id": {
+                "order": "asc"
+            }
+        }
+    ],
+    "_source": ["start_station_name", "end_station_name"],
+    "size": 3,
+    "inner_index": "trip"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElYN8LQT4ft7j8z6ywBqCeIPn7s', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "match_all": {}\n    },\n    "sort": [\n        {\n            "id": {\n                "order": "asc"\n            }\n        }\n    ],\n    "_source": ["start_station_name", "end_station_name"],\n    "size": 3,\n    "inner_index": "trip"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703724, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=69, prompt_tokens=179, total_tokens=248)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElYN8LQT4ft7j8z6ywBqCeIPn7s', 'created': 1712703724, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=69, prompt_tokens=179, total_tokens=248)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "match_all": {}\n    },\n    "sort": [\n        {\n            "id": {\n                "order": "asc"\n            }\n        }\n    ],\n    "_source": ["start_station_name", "end_station_name"],\n    "size": 3,\n    "inner_index": "trip"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElYN8LQT4ft7j8z6ywBqCeIPn7s', 'created': 1712703724, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=69, prompt_tokens=179, total_tokens=248)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+translate SELECT start_station_name ,  end_station_name FROM trip ORDER BY id LIMIT 3 success
+
+--------------------------5-----------------
+schema:['avg_lat', 'avg_longitude']
+---------------------------Execute SQL Query:SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  "San Jose"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "city.keyword": "San Jose"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["lat", "longitude"],
+    "inner_index": "station"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElaanScTxU3ucujyDFxlo05OPfO', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "city.keyword": "San Jose"\n                    }\n                }\n            ]\n        }\n    },\n    "_source": ["lat", "longitude"],\n    "inner_index": "station"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703726, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=61, prompt_tokens=182, total_tokens=243)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElaanScTxU3ucujyDFxlo05OPfO', 'created': 1712703726, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=61, prompt_tokens=182, total_tokens=243)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "city.keyword": "San Jose"\n                    }\n                }\n            ]\n        }\n    },\n    "_source": ["lat", "longitude"],\n    "inner_index": "station"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  "San Jose"'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElaanScTxU3ucujyDFxlo05OPfO', 'created': 1712703726, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=61, prompt_tokens=182, total_tokens=243)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  "San Jose"\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+Exception raised during comparison: Row number mismatch
+
+--------------------------6-----------------
+schema:['id']
+---------------------------Execute SQL Query:SELECT id FROM trip ORDER BY duration LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "sort": [
+        {
+            "duration": {
+                "order": "asc"
+            }
+        }
+    ],
+    "_source": ["id"],
+    "size": 1,
+    "inner_index": "trip"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElcCNVc5KubsGRltOhK5VSGFvSa', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "match_all": {}\n    },\n    "sort": [\n        {\n            "duration": {\n                "order": "asc"\n            }\n        }\n    ],\n    "_source": ["id"],\n    "size": 1,\n    "inner_index": "trip"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703728, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=62, prompt_tokens=172, total_tokens=234)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElcCNVc5KubsGRltOhK5VSGFvSa', 'created': 1712703728, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=62, prompt_tokens=172, total_tokens=234)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "match_all": {}\n    },\n    "sort": [\n        {\n            "duration": {\n                "order": "asc"\n            }\n        }\n    ],\n    "_source": ["id"],\n    "size": 1,\n    "inner_index": "trip"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT id FROM trip ORDER BY duration LIMIT 1'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElcCNVc5KubsGRltOhK5VSGFvSa', 'created': 1712703728, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=62, prompt_tokens=172, total_tokens=234)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT id FROM trip ORDER BY duration LIMIT 1\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+translate SELECT id FROM trip ORDER BY duration LIMIT 1 success
+
+--------------------------7-----------------
+schema:['sum_duration', 'max_duration']
+---------------------------Execute SQL Query:SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "bike_id": 636
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["duration"],
+    "inner_index": "trip"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CEldn9TIVxdhTCETLKzuefB6bImr', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "bike_id": 636\n                    }\n                }\n            ]\n        }\n    },\n    "_source": ["duration"],\n    "inner_index": "trip"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703729, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=57, prompt_tokens=181, total_tokens=238)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CEldn9TIVxdhTCETLKzuefB6bImr', 'created': 1712703729, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=57, prompt_tokens=181, total_tokens=238)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "bike_id": 636\n                    }\n                }\n            ]\n        }\n    },\n    "_source": ["duration"],\n    "inner_index": "trip"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CEldn9TIVxdhTCETLKzuefB6bImr', 'created': 1712703729, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=57, prompt_tokens=181, total_tokens=238)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['zip_code', 'avg_mean_temperature_f']
+---------------------------Execute SQL Query:SELECT zip_code  ,  avg(mean_temperature_f) FROM weather WHERE date LIKE "8/%" GROUP BY zip_code-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "wildcard": {
+                        "date": "8/*"
+                    }
+                }
+            ]
+        },
+        "aggs": {
+            "group_by_zip_code": {
+                "terms": {
+                    "field": "zip_code"
+                },
+                "aggs": {
+                    "avg_mean_temperature_f": {
+                        "avg": {
+                            "field": "mean_temperature_f"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["zip_code", "mean_temperature_f"],
+    "inner_index": "weather"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElfTOowbleINE8QWvFZoZ9inidw', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "wildcard": {\n                        "date": "8/*"\n                    }\n                }\n            ]\n        },\n        "aggs": {\n            "group_by_zip_code": {\n                "terms": {\n                    "field": "zip_code"\n                },\n                "aggs": {\n                    "avg_mean_temperature_f": {\n                        "avg": {\n                            "field": "mean_temperature_f"\n                        }\n                    }\n                }\n            }\n        }\n    },\n    "_source": ["zip_code", "mean_temperature_f"],\n    "inner_index": "weather"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703731, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=131, prompt_tokens=186, total_tokens=317)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElfTOowbleINE8QWvFZoZ9inidw', 'created': 1712703731, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=131, prompt_tokens=186, total_tokens=317)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "wildcard": {\n                        "date": "8/*"\n                    }\n                }\n            ]\n        },\n        "aggs": {\n            "group_by_zip_code": {\n                "terms": {\n                    "field": "zip_code"\n                },\n                "aggs": {\n                    "avg_mean_temperature_f": {\n                        "avg": {\n                            "field": "mean_temperature_f"\n                        }\n                    }\n                }\n            }\n        }\n    },\n    "_source": ["zip_code", "mean_temperature_f"],\n    "inner_index": "weather"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT zip_code  ,  avg(mean_temperature_f) FROM weather WHERE date LIKE "8/%" GROUP BY zip_code'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElfTOowbleINE8QWvFZoZ9inidw', 'created': 1712703731, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=131, prompt_tokens=186, total_tokens=317)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT zip_code  ,  avg(mean_temperature_f) FROM weather WHERE date LIKE "8/%" GROUP BY zip_code\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+execute target query error:BadRequestError(400, 'parsing_exception', '[bool] malformed query, expected [END_OBJECT] but found [FIELD_NAME]')
+
+--------------------------9-----------------
+schema:['count_DISTINCT bike_id']
+---------------------------Execute SQL Query:SELECT count(DISTINCT bike_id) FROM trip-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "aggs": {
+            "distinct_bike_id": {
+                "cardinality": {
+                    "field": "bike_id"
+                }
+            }
+        }
+    },
+    "_source": [],
+    "inner_index": "trip"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CEli99TlkdvjiCDh7MGB6TdSnom8', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "aggs": {\n            "distinct_bike_id": {\n                "cardinality": {\n                    "field": "bike_id"\n                }\n            }\n        }\n    },\n    "_source": [],\n    "inner_index": "trip"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703734, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=56, prompt_tokens=172, total_tokens=228)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CEli99TlkdvjiCDh7MGB6TdSnom8', 'created': 1712703734, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=56, prompt_tokens=172, total_tokens=228)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "aggs": {\n            "distinct_bike_id": {\n                "cardinality": {\n                    "field": "bike_id"\n                }\n            }\n        }\n    },\n    "_source": [],\n    "inner_index": "trip"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT count(DISTINCT bike_id) FROM trip'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CEli99TlkdvjiCDh7MGB6TdSnom8', 'created': 1712703734, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=56, prompt_tokens=172, total_tokens=228)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT count(DISTINCT bike_id) FROM trip\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+execute target query error:BadRequestError(400, 'parsing_exception', 'unknown query [aggs]')
+
+--------------------------10-----------------
+schema:['count_DISTINCT city']
+---------------------------Execute SQL Query:SELECT count(DISTINCT city) FROM station-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "aggregations": {
+            "unique_cities": {
+                "cardinality": {
+                    "field": "city"
+                }
+            }
+        }
+    },
+    "_source": [],
+    "inner_index": "station"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CEljVk1KAZCG4wg5MkF09kG1a6EF', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "aggregations": {\n            "unique_cities": {\n                "cardinality": {\n                    "field": "city"\n                }\n            }\n        }\n    },\n    "_source": [],\n    "inner_index": "station"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703735, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=55, prompt_tokens=171, total_tokens=226)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CEljVk1KAZCG4wg5MkF09kG1a6EF', 'created': 1712703735, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=55, prompt_tokens=171, total_tokens=226)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "aggregations": {\n            "unique_cities": {\n                "cardinality": {\n                    "field": "city"\n                }\n            }\n        }\n    },\n    "_source": [],\n    "inner_index": "station"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT count(DISTINCT city) FROM station'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CEljVk1KAZCG4wg5MkF09kG1a6EF', 'created': 1712703735, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=55, prompt_tokens=171, total_tokens=226)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT count(DISTINCT city) FROM station\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+execute target query error:BadRequestError(400, 'parsing_exception', 'unknown query [aggregations]')
+
+--------------------------11-----------------
+schema:['COUNT_*']
+---------------------------Execute SQL Query:SELECT COUNT(*) FROM station WHERE city  =  "Mountain View"-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "city.keyword": "Mountain View"
+                    }
+                }
+            ]
+        }
+    },
+    "inner_index": "station"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElkLIHcRJ3vFKR0eDHdSzs0QQCM', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "city.keyword": "Mountain View"\n                    }\n                }\n            ]\n        }\n    },\n    "inner_index": "station"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703736, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=51, prompt_tokens=175, total_tokens=226)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElkLIHcRJ3vFKR0eDHdSzs0QQCM', 'created': 1712703736, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=51, prompt_tokens=175, total_tokens=226)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "city.keyword": "Mountain View"\n                    }\n                }\n            ]\n        }\n    },\n    "inner_index": "station"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT COUNT(*) FROM station WHERE city  =  "Mountain View"'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElkLIHcRJ3vFKR0eDHdSzs0QQCM', 'created': 1712703736, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=51, prompt_tokens=175, total_tokens=226)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT COUNT(*) FROM station WHERE city  =  "Mountain View"\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:SELECT DISTINCT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  =  7-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "bikes_available": 7
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"],
+    "inner_index": "station"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CEllN5pIrt02NiZq9dXuGtWoSIXp', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "bikes_available": 7\n                    }\n                }\n            ]\n        }\n    },\n    "_source": ["name"],\n    "inner_index": "station"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703737, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=58, prompt_tokens=199, total_tokens=257)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CEllN5pIrt02NiZq9dXuGtWoSIXp', 'created': 1712703737, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=58, prompt_tokens=199, total_tokens=257)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "bikes_available": 7\n                    }\n                }\n            ]\n        }\n    },\n    "_source": ["name"],\n    "inner_index": "station"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT DISTINCT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  =  7'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CEllN5pIrt02NiZq9dXuGtWoSIXp', 'created': 1712703737, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=58, prompt_tokens=199, total_tokens=257)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT DISTINCT T1.name FROM station AS T1 JOIN status AS T2 ON T1.id  =  T2.station_id WHERE T2.bikes_available  =  7\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:(None, OperationalError(1055, "Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"))
+---------------------------Execute SQL Query:SELECT start_station_name ,  start_station_id FROM trip WHERE start_date LIKE "8/%" GROUP BY start_station_name ORDER BY COUNT(*) DESC LIMIT 1-----------------
+execute mysql query error:(1055, "Expression #2 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'bike_1.trip.start_station_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by")
+
+--------------------------14-----------------
+schema:['bike_id']
+---------------------------Execute SQL Query:SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "zip_code": 94002
+                    }
+                }
+            ]
+        },
+        "aggs": {
+            "group_by_bike_id": {
+                "terms": {
+                    "field": "bike_id",
+                    "size": 1,
+                    "order": {
+                        "_count": "desc"
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["bike_id"],
+    "inner_index": "trip"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElnm3aMlGeqep9LEpAORGkaSLOQ', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "zip_code": 94002\n                    }\n                }\n            ]\n        },\n        "aggs": {\n            "group_by_bike_id": {\n                "terms": {\n                    "field": "bike_id",\n                    "size": 1,\n                    "order": {\n                        "_count": "desc"\n                    }\n                }\n            }\n        }\n    },\n    "_source": ["bike_id"],\n    "inner_index": "trip"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703739, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=114, prompt_tokens=188, total_tokens=302)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElnm3aMlGeqep9LEpAORGkaSLOQ', 'created': 1712703739, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=114, prompt_tokens=188, total_tokens=302)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "term": {\n                        "zip_code": 94002\n                    }\n                }\n            ]\n        },\n        "aggs": {\n            "group_by_bike_id": {\n                "terms": {\n                    "field": "bike_id",\n                    "size": 1,\n                    "order": {\n                        "_count": "desc"\n                    }\n                }\n            }\n        }\n    },\n    "_source": ["bike_id"],\n    "inner_index": "trip"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElnm3aMlGeqep9LEpAORGkaSLOQ', 'created': 1712703739, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=114, prompt_tokens=188, total_tokens=302)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+execute target query error:BadRequestError(400, 'parsing_exception', '[bool] malformed query, expected [END_OBJECT] but found [FIELD_NAME]')
+
+--------------------------15-----------------
+schema:['COUNT_*']
+---------------------------Execute SQL Query:SELECT COUNT(*) FROM weather WHERE mean_humidity  >  50 AND mean_visibility_miles  >  8-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "mean_humidity": {
+                            "gt": 50
+                        }
+                    }
+                },
+                {
+                    "range": {
+                        "mean_visibility_miles": {
+                            "gt": 8
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["*"],
+    "inner_index": "weather"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElomuFHQxCZHR9WYxJlKofmcyAs', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "range": {\n                        "mean_humidity": {\n                            "gt": 50\n                        }\n                    }\n                },\n                {\n                    "range": {\n                        "mean_visibility_miles": {\n                            "gt": 8\n                        }\n                    }\n                }\n            ]\n        }\n    },\n    "_source": ["*"],\n    "inner_index": "weather"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703740, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=93, prompt_tokens=186, total_tokens=279)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElomuFHQxCZHR9WYxJlKofmcyAs', 'created': 1712703740, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=93, prompt_tokens=186, total_tokens=279)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "filter": [\n                {\n                    "range": {\n                        "mean_humidity": {\n                            "gt": 50\n                        }\n                    }\n                },\n                {\n                    "range": {\n                        "mean_visibility_miles": {\n                            "gt": 8\n                        }\n                    }\n                }\n            ]\n        }\n    },\n    "_source": ["*"],\n    "inner_index": "weather"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT COUNT(*) FROM weather WHERE mean_humidity  >  50 AND mean_visibility_miles  >  8'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElomuFHQxCZHR9WYxJlKofmcyAs', 'created': 1712703740, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=93, prompt_tokens=186, total_tokens=279)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT COUNT(*) FROM weather WHERE mean_humidity  >  50 AND mean_visibility_miles  >  8\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
+Exception raised during comparison: Row number mismatch
+
+--------------------------16-----------------
+schema:['lat', 'longitude', 'city']
+---------------------------Execute SQL Query:SELECT T1.lat ,  T1.longitude ,  T1.city FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id ORDER BY T2.duration LIMIT 1-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 5, column 64
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "start_station_id": "T1.id"
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {
+            "duration": {
+                "order": "asc"
+            }
+        ],
+    },
+    "_source": ["T1.lat", "T1.longitude", "T1.city"],
+    "inner_index": "station"
+}-----------------
+<class 'semantic_kernel.functions.function_result.FunctionResult'>
+{'function': KernelFunctionMetadata(name='ES', plugin_name='TranslatePlugin', description='Translate SQL query into ES query', parameters=[KernelParameterMetadata(name='sql', description='The original SQL query', default_value='', type_='', is_required=True, type_object=None)], is_prompt=True, is_asynchronous=True, return_parameter=KernelParameterMetadata(name='return', description='The completion result', default_value=None, type_='FunctionResult', is_required=True, type_object=None)), 'value': [OpenAIChatMessageContent(inner_content=ChatCompletion(id='chatcmpl-9CElp2cm8rLgtZ6TvSecJPwalanRn', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='{\n    "query": {\n        "bool": {\n            "must": [\n                {\n                    "match": {\n                        "start_station_id": "T1.id"\n                    }\n                }\n            ]\n        }\n    },\n    "sort": [\n        {\n            "duration": {\n                "order": "asc"\n            }\n        ],\n    },\n    "_source": ["T1.lat", "T1.longitude", "T1.city"],\n    "inner_index": "station"\n}', role='assistant', function_call=None, tool_calls=None))], created=1712703741, model='gpt-3.5-turbo-0125', object='chat.completion', system_fingerprint='fp_b28b39ffa8', usage=CompletionUsage(completion_tokens=97, prompt_tokens=206, total_tokens=303)), ai_model_id='gpt-3.5-turbo', metadata={'logprobs': None, 'id': 'chatcmpl-9CElp2cm8rLgtZ6TvSecJPwalanRn', 'created': 1712703741, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=97, prompt_tokens=206, total_tokens=303)}, role=<ChatRole.ASSISTANT: 'assistant'>, content='{\n    "query": {\n        "bool": {\n            "must": [\n                {\n                    "match": {\n                        "start_station_id": "T1.id"\n                    }\n                }\n            ]\n        }\n    },\n    "sort": [\n        {\n            "duration": {\n                "order": "asc"\n            }\n        ],\n    },\n    "_source": ["T1.lat", "T1.longitude", "T1.city"],\n    "inner_index": "station"\n}', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)], 'metadata': {'arguments': {'sql': 'SELECT T1.lat ,  T1.longitude ,  T1.city FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id ORDER BY T2.duration LIMIT 1'}, 'metadata': [{'logprobs': None, 'id': 'chatcmpl-9CElp2cm8rLgtZ6TvSecJPwalanRn', 'created': 1712703741, 'system_fingerprint': 'fp_b28b39ffa8', 'usage': CompletionUsage(completion_tokens=97, prompt_tokens=206, total_tokens=303)}], 'messages': ChatHistory(messages=[OpenAIChatMessageContent(inner_content=None, ai_model_id=None, metadata={}, role=<ChatRole.USER: 'user'>, content='Translate SQL Query to ES DSL Query with Matching Attribute Names.\nYou should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.\n\nExample 1:\nSQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10\nES Query: \n{\n    "query": {\n    "bool": {\n        "filter": [\n        {\n            "range": {\n            "mean_visibility_miles": {\n                "lt": 10\n            }\n            }\n        }\n        ]\n    }\n    },\n    "_source": ["zip_code"],\n    "inner_index": "weather"\n}\n\n+++++++++\nSQL: SELECT T1.lat ,  T1.longitude ,  T1.city FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.start_station_id ORDER BY T2.duration LIMIT 1\nNeo4j Query:', encoding=None, function_call=None, tool_calls=None, tool_call_id=None)])}}
