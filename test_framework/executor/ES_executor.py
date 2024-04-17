@@ -41,7 +41,13 @@ class ElasticsearchExecutor(QueryExecutor):
                 query["size"] = 10000
             print("**************************************************")
             print(query)
+            print("**************************************************")
             self.index = database+'_'+table
+
+            code = {}
+            if "code" in query:
+                code = query.pop('code')
+
         except Exception as e:
             return None, e
 
@@ -54,6 +60,12 @@ class ElasticsearchExecutor(QueryExecutor):
                 # Convert each hit/document to match the desired schema
                 doc_json = {field: hit['_source'].get(field, None) for field in schema}
                 results.append(json.dumps(doc_json))
+            
+            exec_result_dict = {'response':response}
+            for k,v in code.items():
+                exec('{}={}'.format(k, v), None, exec_result_dict)
+            exec_result_dict.pop('response')
+            print('exec_result_dict:', exec_result_dict)
 
             return results, None
 

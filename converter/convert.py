@@ -15,7 +15,7 @@ class QueryConverter:
         self.kernel.add_service(
             OpenAIChatCompletion(
                 service_id=service_id,
-                ai_model_id="gpt-4-0125-preview",
+                ai_model_id="gpt-4-turbo",
                 api_key=api_key,
                 org_id=org_id
             )
