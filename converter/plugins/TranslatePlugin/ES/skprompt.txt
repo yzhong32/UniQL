@@ -1,50 +1,109 @@
-Translate SQL Query to ES DSL Query with Matching Attribute Names.
-You should return a json, including two parts: first the query, then the "index". The index should correspond to the "table" in SQL and map to the "inner_index" field.
-Notice, in ES syntax, if there are aggregation functions, then you need to set "size" to 0 to neglect original documents and only return aggregation results. Show as Example 2.
-IMPORTANT! Only return the json, but not other words!
+Translating SQL Query to a query body can be used in Python Elasticsearch Code. You should only return a JSON.
+Then add "inner_index" to that JSON: The index should correspond to the "table" in SQL and map to the "inner_index" field.
+If the SQL contains aggregation or group by, then add "code" to that JSON: The code text that I can use to retrieve variables in Python Elasticsearch response. For example, total_duration: "response['aggregations']['total_duration']['value']"
+
+Note:
+If there are aggregation functions, you need to set "size" to 0 to neglect original documents and only return aggregation results. Show as Example 2.
+IMPORTANT! Only return the JSON, but not other words! 
 
 Example 1:
-SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
-ES Query: 
+SQL Query: SELECT date FROM weather WHERE max_temperature_f  >  85
+Response body:
 {
+    "inner_index": "weather",
     "query": {
-    "bool": {
-        "filter": [
-        {
-            "range": {
-            "mean_visibility_miles": {
-                "lt": 10
-            }
+        "bool": {
+            "must": {
+                "range": {
+                    "max_temperature_f": {
+                        "gt": 85
+                    }
+                }
             }
         }
-        ]
     }
-    },
-    "_source": ["zip_code"],
-    "inner_index": "weather"
 }
 
 Example 2:
-SQL: SELECT city ,  max(lat) FROM station GROUP BY city
-ES query:
-query = {
-  "aggs": {
-    "group_by_city": {
-      "terms": {
-        "field": "city.keyword"
-      },
-      "aggs": {
-        "max_latitude": {
-          "max": {
-            "field": "lat"
+SQL Query: SELECT city ,  max(lat) FROM station GROUP BY city
+Response body:
+{
+    "inner_index": "station",
+    "aggs": {
+        "city_groups": {
+            "terms": {
+                "field": "city.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "max_lat": {
+                    "max": {
+                        "field": "lat"
+                    }
+                }
+            }
+        }
+    },
+    "size": 0,
+    "code": {
+        "results": "response['aggregations']['city_groups']['buckets']"
+    }
+}
+
+Example 3: 
+SQL Query: SELECT start_station_name,  end_station_name FROM trip ORDER BY id LIMIT 3
+Response body:
+{
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "id": {
+        "order": "asc"
+      }
+    }
+  ],
+  "size": 3,
+  "_source": ["start_station_name", "end_station_name"],
+  "inner_index": "trip"
+}
+
+
+Example 4:
+SQL Query: SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  “San Jose”
+Response body:
+{
+  "inner_index": "station",
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "city": "San Jose"
           }
         }
+      ]
+    }
+  },
+  "aggs": {
+    "avg_latitude": {
+      "avg": {
+        "field": "lat"
+      }
+    },
+    "avg_longitude": {
+      "avg": {
+        "field": "longitude"
       }
     }
   },
-  "size":0
+  "code": {
+    "avg_latitude": "response['aggregations']['avg_latitude']['value']",
+    "avg_longitude": "response['aggregations']['avg_longitude']['value']"
+  }
 }
-
 
 +++++++++
 SQL: {{$sql}}
