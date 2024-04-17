@@ -184,4 +184,16 @@ mongodb: admin
 *  wedding
 *  workshop_paper
 *  world_1
+## 10 Chosen Dataset
+*  chinook_1
+*  icfp_1
+*  scientist_1
+*  small_bank_1
+*  soccer_2
+*  twitter_1
+*  allergy_1
+*  network_1
+*  battle_death
+*  swimming
+
 
