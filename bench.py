@@ -41,8 +41,11 @@ def get_output_file_path(input_file: str, db_name: str) -> str:
     return './logs/{id}.log'.format(id=get_bench_id(input_file, db_name))
 
 
-def get_memory_source(db_name: str) -> str:
+def get_memory_text_source(db_name: str) -> str:
     return './converter/memory/{db_name}'.format(db_name=db_name)
+
+def get_memory_examples_source(db_name: str) -> str:
+    return './converter/memory/{db_name}_examples'.format(db_name=db_name)
 
 
 def get_database_executor(target: DBName) -> (QueryExecutor, QueryExecutor, Exception):
@@ -104,9 +107,11 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         if use_memory:
             question = "Please convert the following SQL query to {db} query:\n {sql_query}".format(db=target_db.value,
                                                                                                     sql_query=sql_query)
-            knowledge = await memorier.search_memory_examples(question)
-            print("knowledge:{}".format(knowledge))
-            target_query = await converter.convert_with_knowledge(sql_query, target_db.value, knowledge)
+            knowledge = await memorier.search_text_memory(question)
+            examples = await memorier.search_examples_memory(sql_query)
+            # print("knowledge: {}".format(knowledge))
+            # print("examples: {}".format(examples))
+            target_query = await converter.convert_with_knowledge(sql_query, target_db.value, knowledge, examples)
         else:
             target_query = await converter.convert(sql_query, target_db.value)
 
@@ -157,7 +162,8 @@ async def benchmark(input_file: str, target_db: DBName, use_memory: bool):
     with open(output_file_path, 'w') as f:
         with redirect_stdout(f), redirect_stderr(f):
             if use_memory:
-                await memorier.populate_memory(get_memory_source(target_db.value))
+                await memorier.populate_text_memory(get_memory_text_source(target_db.value))
+                await memorier.populate_examples_memory(get_memory_examples_source(target_db.value))
             print("--------")
             await single_benchmark(mysql_executor, target_executor, convertor, comparator, target_db, queries,
                                    use_memory, memorier)

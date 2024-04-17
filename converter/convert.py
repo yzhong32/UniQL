@@ -31,9 +31,9 @@ class QueryConverter:
         result = await self.kernel.invoke(self.translateFunctions[target_query_type], sk.KernelArguments(sql=sql_query))
         return result
 
-    async def convert_with_knowledge(self, sql_query, target_query_type, knowledge):
+    async def convert_with_knowledge(self, sql_query, target_query_type, knowledge, examples):
         # Invoke the mongodb function from the plugin
-        result = await self.kernel.invoke(self.translateFunctions[target_query_type], sk.KernelArguments(sql=sql_query, knowledge=knowledge))
+        result = await self.kernel.invoke(self.translateFunctions[target_query_type], sk.KernelArguments(sql=sql_query, knowledge=knowledge, examples=examples))
         return result
 
 # Usage example

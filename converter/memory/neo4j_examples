@@ -1,0 +1,11 @@
+SQL: SELECT city ,  max(lat) FROM station GROUP BY city
+Neo4j: MATCH (s:Station) WITH s.city AS city, MAX(s.lat) AS max_lat RETURN city, max_lat
+
+SQL: SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1
+Neo4j: MATCH (t:Trip) WHERE t.zip_code = 94002 WITH t.bike_id AS bike_id, COUNT(*) AS count ORDER BY count DESC LIMIT 1 RETURN bike_id
+
+SQL: SELECT T1.name ,  T1.lat ,  min(T2.duration) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.end_station_id GROUP BY T2.end_station_id
+Neo4j: MATCH (s:Station), (t:Trip) WHERE s.id = t.end_station_id WITH s.name AS name, s.lat AS lat, MIN(t.duration) AS min_duration RETURN name, lat, min_duration
+
+SQL: SELECT id FROM trip WHERE duration  >=  (SELECT avg(duration) FROM trip WHERE zip_code  =  94103)
+Neo4j: MATCH (t:Trip), (avgTrip:Trip) WHERE t.zip_code = 94103 WITH AVG(avgTrip.duration) AS avgDuration MATCH (t:Trip) WHERE t.duration >= avgDuration RETURN t.id AS id

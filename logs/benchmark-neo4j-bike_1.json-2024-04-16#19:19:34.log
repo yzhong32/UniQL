@@ -1,0 +1,11 @@
+--------
+
+--------------------------1-----------------
+schema:(None, OperationalError(2003, "Can't connect to MySQL server on '34.30.77.251' (timed out)"))
+---------------------------Execute SQL Query:SELECT date FROM weather WHERE max_temperature_f  >  85-----------------
+execute mysql query error:(2003, "Can't connect to MySQL server on '34.30.77.251' (timed out)")
+
+--------------------------2-----------------
+schema:(None, OperationalError(2003, "Can't connect to MySQL server on '34.30.77.251' (timed out)"))
+---------------------------Execute SQL Query:SELECT name FROM station WHERE lat  <  37.5-----------------
+execute mysql query error:(2003, "Can't connect to MySQL server on '34.30.77.251' (timed out)")

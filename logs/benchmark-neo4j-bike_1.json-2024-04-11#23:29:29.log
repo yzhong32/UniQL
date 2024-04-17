@@ -1,6 +1,0 @@
---------
-
---------------------------1-----------------
-schema:['date']
----------------------------Execute SQL Query:SELECT date FROM weather WHERE max_temperature_f  >  85-----------------
-knowledge:[<semantic_kernel.memory.memory_query_result.MemoryQueryResult object at 0x7f8aa9813280>]
