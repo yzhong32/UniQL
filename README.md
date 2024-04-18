@@ -185,7 +185,7 @@ mongodb: admin
 *  workshop_paper
 *  world_1
 ## 10 Chosen Dataset
-*  chinook_1
+*  world_1
 *  icfp_1
 *  scientist_1
 *  small_bank_1
