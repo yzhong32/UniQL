@@ -185,15 +185,15 @@ mongodb: admin
 *  workshop_paper
 *  world_1
 ## 10 Chosen Dataset
-*  world_1
+*  wedding
 *  icfp_1
 *  scientist_1
 *  small_bank_1
 *  soccer_2
 *  twitter_1
 *  allergy_1
-*  network_1
-*  battle_death
+*  ship_1
+*  railway
 *  swimming
 
 
