@@ -12,18 +12,7 @@ Here are some knowledge you may need. Notice, it is for reference only. Maybe so
 {{$knowledge}}
 
 ---------------------------------------------------------------------------
-Example 1:
-SQL: SELECT max_humidity FROM weather WHERE max_humidity >= 90 LIMIT 10
-MongoDB Query: db.weather.find({ "max_humidity": { "$gte": 90 } },{ "max_humidity": 1, "_id": 0 }).limit(10)
-
-Example 2:
-SQL: SELECT avg(longitude) FROM station WHERE city  =  "San Jose"
-MongoDB Query: db.station.aggregate([{"$match": {"city": "San Jose"}}, {"$group": {"_id": None, "avg_longitude": {"$avg": "$longitude"}}}])
-
-Example 3:
-SQL: SELECT city ,  max(lat) FROM station GROUP BY city
-MongDB Query: 
-db.station.aggregate([{"$group": {"_id": "$city", "max_lat": {"$max": "$lat"}}},{"$project": {"_id": 0, "city": "$_id", "max_lat": 1}}])
+Here are some examples:
 
 {{$examples}}
 

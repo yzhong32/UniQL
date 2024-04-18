@@ -6,25 +6,10 @@ Note:
 If there are aggregation functions, you need to set "size" to 0 to neglect original documents and only return aggregation results. Show as Example 2.
 IMPORTANT! Only return the JSON, but not other words! 
 
-Example 1:
-SQL Query: SELECT date FROM weather WHERE max_temperature_f  >  85
-Response body:
-{
-    "inner_index": "weather",
-    "query": {
-        "bool": {
-            "must": {
-                "range": {
-                    "max_temperature_f": {
-                        "gt": 85
-                    }
-                }
-            }
-        }
-    }
-}
+---------------------------------------------------------------------------
+Here are some examples:
 
-Example 2:
+Example 1:
 SQL Query: SELECT city ,  max(lat) FROM station GROUP BY city
 Response body:
 {
@@ -50,61 +35,6 @@ Response body:
     }
 }
 
-Example 3: 
-SQL Query: SELECT start_station_name,  end_station_name FROM trip ORDER BY id LIMIT 3
-Response body:
-{
-  "query": {
-    "match_all": {}
-  },
-  "sort": [
-    {
-      "id": {
-        "order": "asc"
-      }
-    }
-  ],
-  "size": 3,
-  "_source": ["start_station_name", "end_station_name"],
-  "inner_index": "trip"
-}
-
-
-Example 4:
-SQL Query: SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  “San Jose”
-Response body:
-{
-  "inner_index": "station",
-  "size": 0,
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "match": {
-            "city": "San Jose"
-          }
-        }
-      ]
-    }
-  },
-  "aggs": {
-    "avg_latitude": {
-      "avg": {
-        "field": "lat"
-      }
-    },
-    "avg_longitude": {
-      "avg": {
-        "field": "longitude"
-      }
-    }
-  },
-  "code": {
-    "avg_latitude": "response['aggregations']['avg_latitude']['value']",
-    "avg_longitude": "response['aggregations']['avg_longitude']['value']"
-  }
-}
-
-+++++++++
+---------------------------------------------------------------------------
 SQL: {{$sql}}
 ES Query:

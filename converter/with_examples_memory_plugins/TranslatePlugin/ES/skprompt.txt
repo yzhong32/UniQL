@@ -1,29 +1,19 @@
-Translate SQL Query to ES DSL Query with Matching Attribute Names.
+Translating SQL Query to a query body can be used in Python Elasticsearch Code. You should only return a JSON.
+Then add "inner_index" to that JSON: The index should correspond to the "table" in SQL and map to the "inner_index" field.
+If the SQL contains aggregation or group by, then add "code" to that JSON: The code text that I can use to retrieve variables in Python Elasticsearch response. For example, total_duration: "response['aggregations']['total_duration']['value']"
+
+Note:
+If there are aggregation functions, you need to set "size" to 0 to neglect original documents and only return aggregation results. Show as Example 2.
+IMPORTANT! Only return the JSON, but not other words! 
 
 ---------------------------------------------------------------------------
 Here are some knowledge you may need. Notice, it is for reference only. Maybe something within is incomplete or truncated.
+
 {{$knowledge}}
 
 ---------------------------------------------------------------------------
-Example 1:
-SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
-ES Query: 
-{
-    "query": {
-    "bool": {
-        "filter": [
-        {
-            "range": {
-            "mean_visibility_miles": {
-                "lt": 10
-            }
-            }
-        }
-        ]
-    }
-    },
-    "_source": ["zip_code"]
-}
+Here are some examples:
+
 {{$examples}}
 
 -----------------------------------------------------------------------------
