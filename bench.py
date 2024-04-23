@@ -148,10 +148,10 @@ async def benchmark(input_file: str, target_db: DBName, use_memory: bool):
     if exception is not None:
         print("Exception occurred in executor init: {}".format(exception))
 
-    if use_memory:
+    if use_memory == False:
         convertor = QueryConverter("./converter/plugins")
     else:
-        convertor = QueryConverter("./converter/with_memory_plugins")
+        convertor = QueryConverter("./converter/with_examples_memory_plugins")
 
     query_fetcher = QueryFetcher()
     comparator = HashComparator()
@@ -177,7 +177,8 @@ if __name__ == '__main__':
                                  'folder for now',
                             required=True)
     arg_parser.add_argument('-t', '--target', type=str, help='target database name', required=True)
-    arg_parser.add_argument('-m', '--memory', type=bool, help='whether to use memory', required=True)
+    arg_parser.add_argument('-m', '--memory', type=str, help='whether to use memory', required=True)
 
     args = arg_parser.parse_args()
-    asyncio.run(benchmark(args.input, DBName(args.target), use_memory=args.memory))
+    # print(args.memory)
+    asyncio.run(benchmark(args.input, DBName(args.target), use_memory=(args.memory=="true")))
