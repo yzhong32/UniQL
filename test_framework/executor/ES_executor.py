@@ -63,7 +63,10 @@ class ElasticsearchExecutor(QueryExecutor):
             
             exec_result_dict = {'response':response}
             for k,v in code.items():
-                exec('{}={}'.format(k, v), None, exec_result_dict)
+                try:
+                    exec('{}={}'.format(k, v), None, exec_result_dict)
+                except Exception as e:
+                    continue
             exec_result_dict.pop('response')
             print('exec_result_dict:', exec_result_dict)
 

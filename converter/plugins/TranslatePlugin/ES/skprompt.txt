@@ -1,40 +1,124 @@
-Translating SQL Query to a query body can be used in Python Elasticsearch Code. You should only return a JSON.
-Then add "inner_index" to that JSON: The index should correspond to the "table" in SQL and map to the "inner_index" field.
-If the SQL contains aggregation or group by, then add "code" to that JSON: The code text that I can use to retrieve variables in Python Elasticsearch response. For example, total_duration: "response['aggregations']['total_duration']['value']"
+Task:
+1. Translating SQL Query to a query body can be used in Python Elasticsearch Code. You should only return a JSON.
+2. Then add "inner_index" to that JSON: The index should correspond to the "table" in SQL and map to the "inner_index" field.
+3. If the SQL contains aggregation or group by, then add "code" dict to that JSON: The code text that I can use to retrieve variables in Python Elasticsearch response. 
+For example, "code": {total_duration: "response['aggregations']['total_duration']['value']"}. The key should be the variable as indicated in the SQL query SELECT clause. If a variable may contains many values, you should get the whole list, which can be named xxx_result
 
 Note:
-If there are aggregation functions, you need to set "size" to 0 to neglect original documents and only return aggregation results. Show as Example 2.
-IMPORTANT! Only return the JSON, but not other words! 
-
----------------------------------------------------------------------------
-Here are some examples:
+1. If there are aggregation functions, you need to set "size" to 0 to neglect original documents and only return aggregation results.
+2. Add 'keyword' if needed. for example: mean_sea_level_pressure_inches.keyword
+3. IMPORTANT! Only return the JSON body, looks like {content}, but not other words!! 
 
 Example 1:
 SQL Query: SELECT city ,  max(lat) FROM station GROUP BY city
 Response body:
 {
-    "inner_index": "station",
-    "aggs": {
-        "city_groups": {
-            "terms": {
-                "field": "city.keyword",
-                "size": 10
-            },
-            "aggs": {
-                "max_lat": {
-                    "max": {
-                        "field": "lat"
-                    }
-                }
-            }
+  "size": 0,
+  "aggs": {
+    "cities": {
+      "terms": {
+        "field": "city.keyword"
+      },
+      "aggs": {
+        "max_latitude": {
+          "max": {
+            "field": "lat"
+          }
         }
-    },
-    "size": 0,
-    "code": {
-        "results": "response['aggregations']['city_groups']['buckets']"
+      }
     }
+  },
+  "inner_index": "station",
+  "code": {
+    "city": "response['aggregations']['cities']['buckets'][0]['key']",
+    "max_lat": "response['aggregations']['cities']['buckets'][0]['max_latitude']['value']"
+  }
 }
 
----------------------------------------------------------------------------
+Example 3: 
+SQL Query: SELECT start_station_name,  end_station_name FROM trip ORDER BY id LIMIT 3
+Response body:
+{
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "id": {
+        "order": "asc"
+      }
+    }
+  ],
+  "size": 3,
+  "_source": ["start_station_name", "end_station_name"],
+  "inner_index": "trip"
+}
+
+
+Example 4:
+SQL Query: SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  “San Jose”
+Response body:
+{
+  "inner_index": "station",
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "city": "San Jose"
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "avg_latitude": {
+      "avg": {
+        "field": "lat"
+      }
+    },
+    "avg_longitude": {
+      "avg": {
+        "field": "longitude"
+      }
+    }
+  },
+  "code": {
+    "avg_latitude": "response['aggregations']['avg_latitude']['value']",
+    "avg_longitude": "response['aggregations']['avg_longitude']['value']"
+  }
+}
+
+Example 5:
+SQL Query: SELECT zip_code FROM weather GROUP BY zip_code ORDER BY avg(mean_sea_level_pressure_inches) LIMIT 1
+Response body:
+{
+  "size": 0,
+  "aggs": {
+    "zip_codes": {
+      "terms": {
+        "field": "zip_code",
+        "size": 1,
+        "order": {
+          "avg_pressure": "asc"
+        }
+      },
+      "aggs": {
+        "avg_pressure": {
+          "avg": {
+            "field": "mean_sea_level_pressure_inches.keyword"
+          }
+        }
+      }
+    }
+  },
+  "inner_index": "weather",
+  "code": {
+    "zip_code": "response['aggregations']['zip_codes']['buckets'][0]['key']"
+  }
+}
+
++++++++++
 SQL: {{$sql}}
 ES Query:
