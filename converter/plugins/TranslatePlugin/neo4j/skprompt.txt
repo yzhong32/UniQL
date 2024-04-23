@@ -1,45 +1,16 @@
-Translate SQL Query to Neo4j Cypher Query with Matching Attribute Names. The result should be exactly an executable cypher query without any additional content.
-There shouldn't be result like ```cypher
-MATCH (t:Trip) RETURN t.start_station_name AS start_station_name, t.end_station_name AS end_station_name ORDER BY t.id ASC LIMIT 3
-```, these outputs should exclude ```cypher```, for example: MATCH (t:Trip) RETURN t.start_station_name AS start_station_name, t.end_station_name AS end_station_name ORDER BY t.id ASC LIMIT 3
-Remember: neo4j doesn't have GROUP BY key word
-
+Translate SQL Query to Neo4j Cypher Query with Matching Attribute Names.
 Requirement:
 1. For SQL aggregation functions, link the operation and field with an underscore. For instance, convert max(score) in SQL to max_score.
 2. For SQL queries with join, Do not write multiple queries with dash lines and use relationships such as A -[:r]-> B. Just write one query with where to represent the relatinoship instead (see example 3).
 3. Important: There is NO relationship in this database.
-4. The table name in the translated cypher query should always be in lowercase
+
+---------------------------------------------------------------------------
+Here are some examples:
 
 Example 1:
 SQL: SELECT date FROM weather WHERE max_temperature_f  >  85
 Neo4j: MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date
 
-Example 2:
-SQL: SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10
-Neo4j: MATCH (w:Weather) WITH w.zip_code AS zip_code, AVG(w.mean_visibility_miles) AS avgVisibility WHERE avgVisibility < 10 RETURN zip_code
-
-Example 3:
-SQL: SELECT count(*) FROM trip AS T1 JOIN station AS T2 ON T1.end_station_id  =  T2.id WHERE T2.city !=  "San Francisco"
-
-Example 4:
-SQL: SELECT city ,  max(lat) FROM station GROUP BY city
-Neo4j: MATCH (s:Station) WITH s.city AS city, MAX(s.lat) AS max_lat RETURN city, max_lat
-
-Example 5:
-SQL: SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1
-Neo4j: MATCH (t:Trip) WHERE t.zip_code = 94002 WITH t.bike_id AS bike_id, COUNT(*) AS count ORDER BY count DESC LIMIT 1 RETURN bike_id
-
-Example 6:
-SQL: SELECT T1.name ,  T1.lat ,  min(T2.duration) FROM station AS T1 JOIN trip AS T2 ON T1.id  =  T2.end_station_id GROUP BY T2.end_station_id
-Neo4j: MATCH (s:Station), (t:Trip) WHERE s.id = t.end_station_id WITH s.name AS name, s.lat AS lat, MIN(t.duration) AS min_duration RETURN name, lat, min_duration
-
-Example 7:
-SQL: SELECT id FROM trip WHERE duration  >=  (SELECT avg(duration) FROM trip WHERE zip_code  =  94103)
-Neo4j: MATCH (t:Trip), (avgTrip:Trip) WHERE t.zip_code = 94103 WITH AVG(avgTrip.duration) AS avgDuration MATCH (t:Trip) WHERE t.duration >= avgDuration RETURN t.id AS id
-
-Important!!!!!!!!!
-Please make sure that all collection names in cypher query should be exactly same as corresponding table name in mysql.
-
-+++++++++
+---------------------------------------------------------------------------
 SQL: {{$sql}}
 Neo4j:
