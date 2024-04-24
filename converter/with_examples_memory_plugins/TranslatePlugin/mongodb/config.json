@@ -25,6 +25,16 @@
         "name": "examples",
         "description": "Some more examples more related to the target query",
         "default": ""
+      },
+      {
+        "name": "MySQL_schema",
+        "description": "the schema of the based sql table",
+        "default": ""
+      },
+      {
+        "name": "target_db_schema",
+        "description": "",
+        "default": ""
       }
     ]
   } 

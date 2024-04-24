@@ -19,6 +19,23 @@ class MongoDBExecutor(QueryExecutor):
             schema.update(doc.keys())
 
         return ', '.join(schema)
+    
+    def get_schemas(self, database, table_list):
+        # Initialize an empty string to store the concatenated schema
+        concatenated_schema = ""
+
+        # Loop through each table name in the list
+        for table in table_list:
+            schema = self.get_schema(database, table)
+            if schema is not None:
+                if concatenated_schema:  # Add the table name as a splitter if it's not the first schema
+                    concatenated_schema += f"{table}: {schema}\n"
+                else:
+                    concatenated_schema = schema  # Start with the first schema without a splitter
+            else:
+                print(f"No schema found for {table}. Skipping.")
+
+        return concatenated_schema
 
 
     def init(self, config_path):
