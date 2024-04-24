@@ -13,7 +13,7 @@ import json
 #     response = es.search(index=index_name, body={"query": {"match_all": {}}})
 #     return response
 
-from .base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
+from test_framework.executor.base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
 import simplejson
 
 
@@ -25,9 +25,9 @@ class ElasticsearchExecutor(QueryExecutor):
     def get_elasticsearch_conn(self):
         # Set up the Elasticsearch connection using the provided details
         es = Elasticsearch(
-            hosts=['https://35.188.8.40:9200'],
+            hosts=['https://127.0.0.1:9200'],
             basic_auth=('cs511', 'cs511password'),
-            ca_certs='https://35.188.8.40:/home/ubuntu/elasticsearch-8.13.0/config/certs/http_ca.crt'
+            ca_certs='/home/ubuntu/elasticsearch-8.13.0/config/certs/http_ca.crt'
         )
         return es
 
@@ -57,7 +57,7 @@ class ElasticsearchExecutor(QueryExecutor):
             print("**************************************************")
             print(query)
             print("**************************************************")
-            self.index = database+'_'+table
+            self.index = database+'_'+table[0]
 
             code = {}
             if "code" in query:

@@ -189,10 +189,10 @@ mongodb: admin
 *  icfp_1
 *  scientist_1
 *  small_bank_1
-*  soccer_2
+*  debate
 *  twitter_1
 *  allergy_1
-*  ship_1
+*  device
 *  railway
 *  swimming
 

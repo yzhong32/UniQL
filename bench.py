@@ -1,9 +1,11 @@
 import argparse
 import asyncio
+import os
 from contextlib import redirect_stdout, redirect_stderr
 from datetime import datetime
 from enum import Enum
 from typing import Tuple
+from dotenv import load_dotenv
 
 from converter.convert import QueryConverter
 from converter.memory import Memorier
@@ -34,7 +36,8 @@ executor_get_func = {
 
 def get_bench_id(input_file: str, db_name: str) -> str:
     current_time = datetime.now()
-    return 'benchmark-{target}-{input}-{time}'.format(target=db_name, input=input_file,
+    gpt_version = os.getenv('GPT_VERSION')
+    return 'benchmark-{target}-{input}-{gpt_version}-{time}'.format(gpt_version=gpt_version, target=db_name, input=input_file,
                                                       time=current_time.strftime("%Y-%m-%d#%H:%M:%S"))
 
 
@@ -49,7 +52,7 @@ def get_memory_examples_source(db_name: str) -> str:
     return './converter/memory/{db_name}_examples'.format(db_name=db_name)
 
 
-def get_database_executor(target: DBName) -> (QueryExecutor, QueryExecutor, Exception):
+def get_database_executor(target: DBName) -> Tuple[QueryExecutor, QueryExecutor, Exception]:
     config_file_folder = './test_framework/config/'
     # obtain mysql executor
     mysql_executor = MySQLExecutor()
@@ -98,7 +101,7 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         sql_schema = mysql_executor.get_schemas(database, sql_query)
         print('schema:{}'.format(schema))
 
-        print("---------------------------Execute SQL Query:{}-----------------".format(sql_query))
+        print("---------------------------Execute SQL Query:[{}]-----------------".format(sql_query))
         # execute original SQL query in MySQL
         mysql_result, e = mysql_executor.execute_query(sql_query, database, schema)
         if e is not None:
@@ -107,6 +110,7 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
         valid_query_count += 1
 
         # execute target query
+        start_time = datetime.now()
         if use_memory:
             question = "Please convert the following SQL query to {db} query:\n {sql_query}".format(db=target_db.value,
                                                                                                     sql_query=sql_query)
@@ -114,10 +118,12 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
             examples = await memorier.search_examples_memory(sql_query)
             target_db_schema = target_executor.get_schemas(database, tables)
             # print("knowledge: {}".format(knowledge))
-            # print("examples: {}".format(examples))
+            print("examples: {}".format(str(examples)))
             target_query = await converter.convert_with_knowledge(sql_query, target_db.value, knowledge, examples, sql_schema, target_db_schema)
         else:
             target_query = await converter.convert(sql_query, target_db.value)
+        elapsed = datetime.now() - start_time
+        print("convert time:{} s".format(elapsed.total_seconds()))
 
         print("---------------------------Execute Target Query:{}-----------------".format(target_query)) 
         if target_db.value == "neo4j":
@@ -177,6 +183,7 @@ async def benchmark(input_file: str, target_db: DBName, use_memory: bool):
 
 
 if __name__ == '__main__':
+    load_dotenv()
     arg_parser = argparse.ArgumentParser(description='Benchmark the converter')
 
     arg_parser.add_argument('-i', '--input', type=str,

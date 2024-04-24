@@ -8,25 +8,53 @@ def get_elasticsearch_conn():
 
 es = get_elasticsearch_conn()
 
-query = {
+database_name = "bike_1"
+
+converter_resp = {
   "size": 0,
   "aggs": {
-    "group_by_city": {
+    "zip_codes": {
       "terms": {
-        "field": "city.keyword"
+        "field": "zip_code",
+        "size": 1,
+        "order": {
+          "avg_pressure": "asc"
+        }
       },
       "aggs": {
-        "max_latitude": {
-          "max": {
-            "field": "lat"
+        "avg_pressure": {
+          "avg": {
+            "field": "mean_sea_level_pressure_inches.keyword"
           }
         }
       }
     }
+  },
+  "inner_index": ["weather"],
+  "code": {
+    "zip_code": "response['aggregations']['zip_codes']['buckets'][0]['key']"
   }
 }
 
-response = es.search(index="bike_1_station", body=query)
 
-for bucket in response['aggregations']['group_by_city']['buckets']:
-    print(f"City: {bucket['key']}, Max Latitude: {bucket['max_latitude']['value']}")
+
+
+
+index = converter_resp.pop("inner_index")
+
+code = {}
+if "code" in converter_resp:
+    code = converter_resp.pop("code")
+
+response = es.search(index="{db}_{table}".format(db=database_name, table=index[0]), body=converter_resp)
+print(response)
+print("---------------------")
+
+exec_result_dict = {'response':response}
+for k,v in code.items():
+    try:
+        exec('{} = {}'.format(k, v), globals(), exec_result_dict)
+    except Exception as e:
+        continue
+exec_result_dict.pop('response')
+print('exec_result_dict:', exec_result_dict)
