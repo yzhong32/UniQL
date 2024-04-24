@@ -13,7 +13,7 @@ import json
 #     response = es.search(index=index_name, body={"query": {"match_all": {}}})
 #     return response
 
-from base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
+from .base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
 import simplejson
 
 
