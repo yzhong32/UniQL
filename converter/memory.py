@@ -78,7 +78,7 @@ class Memorier:
             return ""
         result = ""
         for i, sql in enumerate(sqls):
-            example = "Example {i}:\nSQL: {sql}\ntarget query: {tq}\n".format(i=i+1, sql=sql.text, tq=self.mp[sql.text])
+            example = "Example {i}:\n{sql}\n{tq}\n".format(i=i+1, sql=sql.text, tq=self.mp[sql.text])
             result = result+example
         return result
     

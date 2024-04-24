@@ -118,7 +118,7 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
             examples = await memorier.search_examples_memory(sql_query)
             target_db_schema = target_executor.get_schemas(database, tables)
             # print("knowledge: {}".format(knowledge))
-            # print("examples: {}".format(examples))
+            print("examples: {}".format(str(examples)))
             target_query = await converter.convert_with_knowledge(sql_query, target_db.value, knowledge, examples, sql_schema, target_db_schema)
         else:
             target_query = await converter.convert(sql_query, target_db.value)
