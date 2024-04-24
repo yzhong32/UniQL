@@ -10,6 +10,17 @@ class MongoDBExecutor(QueryExecutor):
         self.client = None
         self.db = None
 
+    def get_schema(self, database, table_name):
+        self.db = self.client[database]
+        collection = self.db[table_name]
+        documents = collection.aggregate([{'$sample': {'size': 10}}])
+        schema = set()
+        for doc in documents:
+            schema.update(doc.keys())
+
+        return ', '.join(schema)
+
+
     def init(self, config_path):
         with open(config_path) as config_file:
             config = json.load(config_file)
@@ -36,4 +47,10 @@ class MongoDBExecutor(QueryExecutor):
 
         except Exception as e:
             return None, e
-        
+
+if __name__ == '__main__':
+    executor = MongoDBExecutor()
+    executor.init('../config/mongodb_config.json')
+    database = 'swimming'
+    table_name = 'swimmer'
+    print(executor.get_schema(database, table_name))

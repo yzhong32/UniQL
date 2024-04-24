@@ -48,3 +48,32 @@ class MySQLExecutor(QueryExecutor):
                 return field_names
         except Exception as e:
             return None, e
+
+    def get_schema(self, database, table_name):
+        try:
+            if self.connection is None or self.connection.db != database:
+                self.get_conn(database)
+
+            query = f"""
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s;
+            """
+
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (database, table_name))
+                results = cursor.fetchall()
+
+            schema = [column_name[0] for column_name in results]
+            return schema
+        except Exception as e:
+            print(f"Error retrieving schema: {e}")
+            return None
+
+
+if __name__ == '__main__':
+    executor = MySQLExecutor()
+    executor.init('../config/mysql_config.json')
+    database = 'bike_1'
+    table_name = 'weather'
+    print(executor.get_schema(database, table_name))

@@ -37,5 +37,29 @@ class Neo4jExecutor(QueryExecutor):
         finally:
             session.close()
 
+    def get_schema(self, label_name):
+        query = f"""
+            MATCH (n:{label_name})
+            WITH n LIMIT 10
+            UNWIND keys(n) AS key
+            RETURN collect(distinct key) AS keys
+            """
+        session = self.driver.session()
+        try:
+            results = session.run(query).single()
+            keys = results["keys"]
+            return keys
+        except Exception as e:
+            print(f"Error retrieving schema for label {label_name}: {e}")
+            return None
+        finally:
+            session.close()
+
     def __del__(self):
         self.close()
+
+if __name__ == '__main__':
+    executor = Neo4jExecutor()
+    executor.init('../config/neo4j_config.json')
+    label_name = 'swimmer'
+    print(executor.get_schema(label_name))
