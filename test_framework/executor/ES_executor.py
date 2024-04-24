@@ -69,6 +69,8 @@ class ElasticsearchExecutor(QueryExecutor):
         try:
             # Execute the query using the Elasticsearch search() method
             response = self.client.search(index=self.index, body=query)
+            print("response of elasticsearch:", response)
+            print("")
 
             results = []
             for hit in response['hits']['hits']:
