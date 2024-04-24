@@ -3,13 +3,17 @@ Requirement:
 1. For SQL aggregation functions, link the operation and field with an underscore. For instance, convert max(score) in SQL to max_score.
 2. For SQL queries with join, Do not write multiple queries with dash lines and use relationships such as A -[:r]-> B. Just write one query with where to represent the relatinoship instead (see example 3).
 3. Important: There is NO relationship in this database.
+4. Important: Just give me cypher query without any explanation. Exclude 'cypher'
+
+Extremely Important!!!!!!!!!!!!!
+Please make sure that all collection names in cypher query should be exactly same as corresponding table name in mysql.
 
 ---------------------------------------------------------------------------
 Here are some examples:
 
 Example 1:
 SQL: SELECT date FROM weather WHERE max_temperature_f  >  85
-Neo4j: MATCH (w:Weather) WHERE w.max_temperature_f > 85 RETURN w.date as date
+Neo4j: MATCH (w:weather) WHERE w.max_temperature_f > 85 RETURN w.date as date
 
 ---------------------------------------------------------------------------
 SQL: {{$sql}}

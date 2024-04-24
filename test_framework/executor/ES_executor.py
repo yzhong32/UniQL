@@ -42,7 +42,7 @@ class ElasticsearchExecutor(QueryExecutor):
             print("**************************************************")
             print(query)
             print("**************************************************")
-            self.index = database+'_'+table
+            self.index = database+'_'+table[0]
 
             code = {}
             if "code" in query:

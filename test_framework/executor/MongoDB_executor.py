@@ -10,6 +10,19 @@ class MongoDBExecutor(QueryExecutor):
         self.client = None
         self.db = None
 
+    def get_schema(self, database, table_name):
+        self.db = self.client[database]
+        collection = self.db[table_name]
+        # Sample up to 10 documents to infer the schema
+        documents = collection.aggregate([{'$sample': {'size': 10}}])
+        schema = set()
+        for doc in documents:
+            # Update the schema set with the keys of each document
+            schema.update(doc.keys())
+
+        # Return the schema as a comma-separated string of field names
+        return ', '.join(schema)
+
     def init(self, config_path):
         with open(config_path) as config_file:
             config = json.load(config_file)
@@ -36,4 +49,9 @@ class MongoDBExecutor(QueryExecutor):
 
         except Exception as e:
             return None, e
-        
+    
+if __name__ == '__main__':
+    executor = MongoDBExecutor()
+    database = 'bike_1'
+    table_name = 'weather'
+    print(executor.get_schema(database, table_name))

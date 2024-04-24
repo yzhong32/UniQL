@@ -1,4 +1,5 @@
 import asyncio
+import os
 import semantic_kernel as sk
 from semantic_kernel.connectors.ai.open_ai import OpenAIChatCompletion
 
@@ -15,7 +16,7 @@ class QueryConverter:
         self.kernel.add_service(
             OpenAIChatCompletion(
                 service_id=service_id,
-                ai_model_id="gpt-4-turbo",
+                ai_model_id=os.getenv('GPT_VERSION'),
                 api_key=api_key,
                 org_id=org_id
             )

@@ -1,3 +1,4 @@
+import argparse
 import json
 from datetime import datetime
 
@@ -5,7 +6,6 @@ import pymysql
 from elasticsearch import Elasticsearch, helpers
 
 mysql_config_path = './test_framework/config/mysql_config.json'
-mysql_database_name = 'bike_1'
 
 
 def get_mysql_conn(database_name):
@@ -37,7 +37,7 @@ def process_datetime_fields(row):
     return row
 
 
-def migrate_es():
+def migrate_es(mysql_database_name):
     # get es and mysql conn
     mysql = get_mysql_conn(mysql_database_name)
     mysql_cursor = mysql.cursor()
@@ -122,5 +122,8 @@ def migrate_es():
 
 
 if __name__ == '__main__':
-    migrate_es()
+    arg_parser = argparse.ArgumentParser(description='Migrator for elasticsearch')
+    arg_parser.add_argument('--database', type=str, help='MySQL database name (to be migrated)', required=True)
+    args = arg_parser.parse_args()
+    migrate_es(args.database)
 
