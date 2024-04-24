@@ -37,5 +37,46 @@ class Neo4jExecutor(QueryExecutor):
         finally:
             session.close()
 
+    def get_schema(self, label_name):
+        query = f"""
+            MATCH (n:{label_name})
+            WITH n LIMIT 10
+            UNWIND keys(n) AS key
+            RETURN collect(distinct key) AS keys
+            """
+        session = self.driver.session()
+        try:
+            results = session.run(query).single()
+            keys = results["keys"]
+            return keys
+        except Exception as e:
+            print(f"Error retrieving schema for label {label_name}: {e}")
+            return None
+        finally:
+            session.close()
+
+    def get_schemas(self, database, table_list):
+        # Initialize an empty string to store the concatenated schema
+        concatenated_schema = ""
+
+        # Loop through each table name in the list
+        for table in table_list:
+            schema = self.get_schema(table)
+            if schema is not None:
+                if concatenated_schema:  # Add the table name as a splitter if it's not the first schema
+                    concatenated_schema += f"{table}: {schema}\n"
+                else:
+                    concatenated_schema = schema  # Start with the first schema without a splitter
+            else:
+                print(f"No schema found for {table}. Skipping.")
+
+        return concatenated_schema
+
     def __del__(self):
         self.close()
+
+if __name__ == '__main__':
+    executor = Neo4jExecutor()
+    executor.init('../config/neo4j_config.json')
+    label_name = 'swimmer'
+    print(executor.get_schema(label_name))

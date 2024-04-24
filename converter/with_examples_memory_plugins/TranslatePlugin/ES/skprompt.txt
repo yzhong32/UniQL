@@ -17,5 +17,12 @@ Here are some examples:
 {{$examples}}
 
 -----------------------------------------------------------------------------
+Here are the schema:
+The schema for MySQL table:
+{{$MySQL_schema}}
+The schema for ES index:
+{{$target_db_schema}}
+
+-----------------------------------------------------------------------------
 SQL: {{$sql}}
 Neo4j Query:

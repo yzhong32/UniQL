@@ -12,6 +12,13 @@ Here are some examples:
 
 {{$examples}}
 
+-----------------------------------------------------------------------------
+Here are the schema:
+The schema for MySQL table:
+{{$MySQL_schema}}
+The schema for Neo4j table:
+{{$target_db_schema}}
+
 ---------------------------------------------------------------------------
 SQL: {{$sql}}
 Neo4j Query:

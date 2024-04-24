@@ -15,6 +15,7 @@ from test_framework.executor.Neo4j_executor import Neo4jExecutor
 from test_framework.executor.MongoDB_executor import MongoDBExecutor
 from test_framework.executor.MySQL_executor import MySQLExecutor
 from test_framework.executor.base import QueryExecutor
+from test_framework.executor.sql_parser import extract_tables
 from test_framework.fetch.base import QueryFetcher
 
 
@@ -96,6 +97,8 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
 
         # get result schema
         schema = mysql_executor.load_schema(sql_query, database)
+        tables = extract_tables(sql_query)
+        sql_schema = mysql_executor.get_schemas(database, sql_query)
         print('schema:{}'.format(schema))
 
         print("---------------------------Execute SQL Query:[{}]-----------------".format(sql_query))
@@ -113,9 +116,10 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
                                                                                                     sql_query=sql_query)
             knowledge = await memorier.search_text_memory(question)
             examples = await memorier.search_examples_memory(sql_query)
+            target_db_schema = target_executor.get_schemas(database, tables)
             # print("knowledge: {}".format(knowledge))
-            print("examples: {}".format(str(examples)))
-            target_query = await converter.convert_with_knowledge(sql_query, target_db.value, knowledge, examples)
+            # print("examples: {}".format(examples))
+            target_query = await converter.convert_with_knowledge(sql_query, target_db.value, knowledge, examples, sql_schema, target_db_schema)
         else:
             target_query = await converter.convert(sql_query, target_db.value)
         elapsed = datetime.now() - start_time
@@ -147,7 +151,10 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
 
     print('success_query_count:', success_query_count)
     print('valid_count:', valid_query_count)
-    print('accuracy:', success_query_count / valid_query_count)
+    if valid_query_count == 0:
+        print('accuracy:', 0)
+    else:
+        print('accuracy:', success_query_count / valid_query_count)
 
 async def benchmark(input_file: str, target_db: DBName, use_memory: bool):
     mysql_executor, target_executor, exception = get_database_executor(target_db)

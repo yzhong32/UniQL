@@ -1,0 +1,13 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM authors-----------------
+---------------------------Execute Target Query:db.authors.aggregate([ { "$count": "count" } ])-----------------
+mismatch between MySQL and target
+mysql res: ['{"count_*": 13}']
+target res: ['{"count_*": null}']
+
+--------------------------2-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:SELECT count(*) FROM inst-----------------

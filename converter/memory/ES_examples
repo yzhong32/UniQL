@@ -1,0 +1,271 @@
+SQL Query: SELECT date FROM weather WHERE max_temperature_f  >  85 ###
+ES Query:
+{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "max_temperature_f": {
+                            "gt": 85
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["date"],
+    "inner_index": ["weather"],
+}
+
+SQL Query: SELECT city ,  max(lat) FROM station GROUP BY city ###
+ES Query:
+{
+  "inner_index": ["station"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "city": "San Jose"
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "avg_latitude": {
+      "avg": {
+        "field": "lat"
+      }
+    },
+    "avg_longitude": {
+      "avg": {
+        "field": "longitude"
+      }
+    }
+  },
+  "code": {
+    "avg_latitude": "response['aggregations']['avg_latitude']['value']",
+    "avg_longitude": "response['aggregations']['avg_longitude']['value']"
+  }
+}
+
+SQL Query: SELECT start_station_name,  end_station_name FROM trip ORDER BY id LIMIT 3 ###
+ES Query:
+{
+    "size": 3,  
+    "sort": [
+        {"id": {"order": "asc"}}  # Orders the results by the 'id' field in ascending order
+    ],
+    "_source": ["start_station_name", "end_station_name"],  # Specifies which fields to retrieve
+	"inner_index": ["trip"],
+}
+
+SQL Query: SELECT avg(lat) ,  avg(longitude) FROM station WHERE city  =  “San Jose” ###
+ES Query:
+{
+  "inner_index": ["station"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "city": "San Jose"
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "avg_latitude": {
+      "avg": {
+        "field": "lat"
+      }
+    },
+    "avg_longitude": {
+      "avg": {
+        "field": "longitude"
+      }
+    }
+  },
+  "code": {
+    "avg_latitude": "response['aggregations']['avg_latitude']['value']",
+    "avg_longitude": "response['aggregations']['avg_longitude']['value']"
+  }
+}
+
+SQL Query: SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636 ###
+ES Query:
+{
+  "query": {
+    "term": {
+      "bike_id": 636
+    }
+  },
+  "size": 0,
+  "aggs": {
+    "total_duration": {
+      "sum": {
+        "field": "duration"
+      }
+    },
+    "max_duration": {
+      "max": {
+        "field": "duration"
+      }
+    }
+  },
+  "inner_index": ["trip"],
+  "code": {
+    "total_duration": "response['aggregations']['total_duration']['value']",
+    "max_duration": "response['aggregations']['max_duration']['value']"
+  }
+}
+
+SQL Query: SELECT zip_code  ,  avg(mean_temperature_f) FROM weather WHERE date LIKE "8/%" GROUP BY zip_code ###
+ES Query:
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "wildcard": {
+                        "date": "8*"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "zip_code": {
+            "terms": {
+                "field": "zip_code",
+                "size": 10
+            },
+            "aggs": {
+                "avg_temperature": {
+                    "avg": {
+                        "field": "mean_temperature_f"
+                    }
+                }
+            }
+        }
+    },
+    "inner_index": ["weather"],
+    "code": {
+        "zip_code_result": "response['aggregations']['zip_code']['buckets']",
+        "avg_temperature": "bucket['avg_temperature']['value'] for bucket in response['aggregations']['zip_code']['buckets']"
+    }
+}
+
+SQL Query: SELECT count(DISTINCT bike_id) FROM trip ###
+ES Query:
+{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_bikes": {
+            "cardinality": {
+                "field": "bike_id"
+            }
+        }
+    },
+    "inner_index": ["trip"],
+    "code": {
+        "count_distinct_bike_id": "response['aggregations']['unique_bikes']['value']"
+    }
+}
+
+SQL Query: SELECT COUNT(*) FROM station WHERE city  =  "Mountain View" ###
+ES Query:
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "city": "Mountain View"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_stations": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["station"],
+    "code": {
+        "total_stations": "response['aggregations']['total_stations']['value']"
+    }
+}
+
+SQL Query: SELECT bike_id FROM trip WHERE zip_code  =  94002 GROUP BY bike_id ORDER BY COUNT(*) DESC LIMIT 1 ###
+ES Query:
+{
+  "inner_index": ["trip"],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "zip_code": 94002
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_bike": {
+      "terms": {
+        "field": "bike_id",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "code": {
+      'bike_id':"response['aggregations']['group_by_bike']['buckets'][0]['key']"
+  }
+}
+
+SQL Query: SELECT zip_code FROM weather GROUP BY zip_code ORDER BY avg(mean_sea_level_pressure_inches) LIMIT 1 ###
+ES Query:
+{
+  "size": 0,
+  "aggs": {
+    "zip_codes": {
+      "terms": {
+        "field": "zip_code",
+        "size": 1,
+        "order": {
+          "avg_pressure": "asc"
+        }
+      },
+      "aggs": {
+        "avg_pressure": {
+          "avg": {
+            "field": "mean_sea_level_pressure_inches.keyword"
+          }
+        }
+      }
+    }
+  },
+  "inner_index": ["weather"],
+  "code": {
+    "zip_code": "response['aggregations']['zip_codes']['buckets'][0]['key']"
+  }
+}

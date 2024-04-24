@@ -16,7 +16,7 @@ def read_and_split_queries(filename):
     blocks = content.split('\n\n')
     
     # Split each block into SQL and Neo4J queries and strip any leading/trailing whitespace
-    queries = [block.strip().split('\n') for block in blocks if block.strip()]
+    queries = [block.strip().split("###") for block in blocks if block.strip()]
     
     # Return list of query pairs
     return queries

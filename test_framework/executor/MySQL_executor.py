@@ -48,3 +48,49 @@ class MySQLExecutor(QueryExecutor):
                 return field_names
         except Exception as e:
             return None, e
+
+    def get_schema(self, database, table_name):
+        try:
+            if self.connection is None or self.connection.db != database:
+                self.get_conn(database)
+
+            query = f"""
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s;
+            """
+
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, (database, table_name))
+                results = cursor.fetchall()
+
+            schema = [column_name[0] for column_name in results]
+            return schema
+        except Exception as e:
+            print(f"Error retrieving schema: {e}")
+            return None
+        
+    def get_schemas(self, database, table_list):
+        # Initialize an empty string to store the concatenated schema
+        concatenated_schema = ""
+
+        # Loop through each table name in the list
+        for table in table_list:
+            schema = self.get_schema(database, table)
+            if schema is not None:
+                if concatenated_schema:  # Add the table name as a splitter if it's not the first schema
+                    concatenated_schema += f"{table}: {schema}\n"
+                else:
+                    concatenated_schema = schema  # Start with the first schema without a splitter
+            else:
+                print(f"No schema found for {table}. Skipping.")
+
+        return concatenated_schema
+
+
+if __name__ == '__main__':
+    executor = MySQLExecutor()
+    executor.init('../config/mysql_config.json')
+    database = 'bike_1'
+    table_name = 'weather'
+    print(executor.get_schema(database, table_name))

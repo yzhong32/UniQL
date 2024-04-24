@@ -13,15 +13,30 @@ class MongoDBExecutor(QueryExecutor):
     def get_schema(self, database, table_name):
         self.db = self.client[database]
         collection = self.db[table_name]
-        # Sample up to 10 documents to infer the schema
         documents = collection.aggregate([{'$sample': {'size': 10}}])
         schema = set()
         for doc in documents:
-            # Update the schema set with the keys of each document
             schema.update(doc.keys())
 
-        # Return the schema as a comma-separated string of field names
         return ', '.join(schema)
+    
+    def get_schemas(self, database, table_list):
+        # Initialize an empty string to store the concatenated schema
+        concatenated_schema = ""
+
+        # Loop through each table name in the list
+        for table in table_list:
+            schema = self.get_schema(database, table)
+            if schema is not None:
+                if concatenated_schema:  # Add the table name as a splitter if it's not the first schema
+                    concatenated_schema += f"{table}: {schema}\n"
+                else:
+                    concatenated_schema = schema  # Start with the first schema without a splitter
+            else:
+                print(f"No schema found for {table}. Skipping.")
+
+        return concatenated_schema
+
 
     def init(self, config_path):
         with open(config_path) as config_file:
@@ -49,9 +64,10 @@ class MongoDBExecutor(QueryExecutor):
 
         except Exception as e:
             return None, e
-    
+
 if __name__ == '__main__':
     executor = MongoDBExecutor()
-    database = 'bike_1'
-    table_name = 'weather'
+    executor.init('../config/mongodb_config.json')
+    database = 'swimming'
+    table_name = 'swimmer'
     print(executor.get_schema(database, table_name))
