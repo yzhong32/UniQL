@@ -75,50 +75,66 @@ class ElasticsearchExecutor(QueryExecutor):
         except Exception as e:
             return None, e
 
+    def get_schema(self, index_name):
+        try:
+            mappings = self.client.indices.get_mapping(index=index_name)
+            properties = mappings[index_name]['mappings']['properties']
+            field_names = list(properties.keys())
+            return field_names
+
+        except Exception as e:
+            print(f"Error retrieving schema for index {index_name}: {e}")
+            return None
 
 import json
 
 if __name__ == '__main__':
-    # Create an instance of the ElasticsearchExecutor
     executor = ElasticsearchExecutor()
+    index_name = 'bike_1_trip'
+    schema = executor.get_schema(index_name)
+    print(schema)
 
-    # Define a test index name - replace 'your_index' with a real index from your Elasticsearch
-    database = 'bike_1'
+# if __name__ == '__main__':
+#    # Create an instance of the ElasticsearchExecutor
+#    executor = ElasticsearchExecutor()
 
-    # Define a test query - this example matches all documents, but you should replace it with your actual query
-    # SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
-    test_query = {
-        "query": {
-            "bool": {
-                "filter": [
-                    {
-                        "range": {
-                            "mean_visibility_miles": {
-                                "lt": 10
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-        "_source": ["zip_code"],
-        "inner_index": "weather"
-    }
+#    # Define a test index name - replace 'your_index' with a real index from your Elasticsearch
+#    database = 'bike_1'
 
-    # Define a schema for the documents you expect back - replace these fields with those relevant to your data
-    test_schema = ['zip_code']
-
-    # Execute the query
-    results, error = executor.execute_query(test_query, database, test_schema)
-
-    # Check if there was an error
-    if error is not None:
-        print(f"An error occurred: {error}")
-    else:
-        # Print the results
-        print("Query results:")
-        for doc in results:
-            print(json.loads(doc))
+#    # Define a test query - this example matches all documents, but you should replace it with your actual query
+#    # SQL: SELECT zip_code FROM weather WHERE mean_visibility_miles  <  10
+#    test_query = {
+#        "query": {
+#            "bool": {
+#                "filter": [
+#                    {
+#                        "range": {
+#                            "mean_visibility_miles": {
+#                                "lt": 10
+#                            }
+#                        }
+#                    }
+#                ]
+#            }
+#        },
+#        "_source": ["zip_code"],
+#        "inner_index": "weather"
+#    }
+#
+#    # Define a schema for the documents you expect back - replace these fields with those relevant to your data
+#    test_schema = ['zip_code']
+#
+#    # Execute the query
+#    results, error = executor.execute_query(test_query, database, test_schema)
+#
+#    # Check if there was an error
+#    if error is not None:
+#        print(f"An error occurred: {error}")
+#    else:
+#        # Print the results
+#        print("Query results:")
+#        for doc in results:
+#            print(json.loads(doc))
 
 # if __name__ == '__main__':
 #     es = get_elasticsearch_conn()
