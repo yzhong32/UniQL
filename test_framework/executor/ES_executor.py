@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+import json
 
 # def get_elasticsearch_conn():
 #     es = Elasticsearch(
@@ -12,7 +13,7 @@ from elasticsearch import Elasticsearch
 #     response = es.search(index=index_name, body={"query": {"match_all": {}}})
 #     return response
 
-from .base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
+from base import QueryExecutor  # Assuming there is a BaseExecutor to inherit from
 import simplejson
 
 
@@ -24,12 +25,26 @@ class ElasticsearchExecutor(QueryExecutor):
     def get_elasticsearch_conn(self):
         # Set up the Elasticsearch connection using the provided details
         es = Elasticsearch(
-            hosts=['https://localhost:9200'],
+            hosts=['https://35.188.8.40:9200'],
             basic_auth=('cs511', 'cs511password'),
-            ca_certs='/home/ubuntu/elasticsearch-8.13.0/config/certs/http_ca.crt'
+            ca_certs='https://35.188.8.40:/home/ubuntu/elasticsearch-8.13.0/config/certs/http_ca.crt'
         )
         return es
-    
+
+    def get_schema(self, index_name):
+        try:
+            mappings = self.client.indices.get_mapping(index=index_name)
+            properties = mappings[index_name]['mappings']['properties']
+            schema = {}
+            for field, details in properties.items():
+                schema[field] = details.get('type', 'unknown')  # 'unknown' as default if type is not specified
+
+            return schema
+
+        except Exception as e:
+            print(f"Error retrieving schema for index {index_name}: {e}")
+            return None
+
     def init(self, config_path):
         pass
 
@@ -86,7 +101,6 @@ class ElasticsearchExecutor(QueryExecutor):
             print(f"Error retrieving schema for index {index_name}: {e}")
             return None
 
-import json
 
 if __name__ == '__main__':
     executor = ElasticsearchExecutor()
@@ -138,16 +152,16 @@ if __name__ == '__main__':
 
 # if __name__ == '__main__':
 #     es = get_elasticsearch_conn()
-
+#
 #     # Define the index to query
 #     index_name = 'bike_1_trip'
-
+#
 #     # Define a simple query. In this example, it retrieves all documents
 #     query = es.search(index=index_name, body={"query": {"match_all": {}}})
-
+#
 #     # Execute the query
 #     response = simple_es_query(es, index_name, query)
-
+#
 #     # Process and print out the results
 #     for hit in response['hits']['hits']:
 #         print(hit['_source'])

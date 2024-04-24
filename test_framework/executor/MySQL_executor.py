@@ -1,6 +1,6 @@
 import json
 import pymysql
-import simplejson
+import simplejsonclea
 from .base import QueryExecutor
 from .utils import *
 
