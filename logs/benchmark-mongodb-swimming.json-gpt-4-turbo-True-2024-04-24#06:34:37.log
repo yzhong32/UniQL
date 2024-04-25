@@ -1,0 +1,361 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM event]-----------------
+target_db_schema: Name, _id, Year, Stadium_ID, ID
+convert time:2.649659 s
+---------------------------Execute Target Query:db.event.aggregate([ { $group: { _id: null, count: { $sum: 1 } } }, { $project: { _id: 0, count: 1 } } ])-----------------
+here we are in executor, and the query is:  db.event.aggregate([ { $group: { _id: null, count: { $sum: 1 } } }, { $project: { _id: 0, count: 1 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------2-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM event ORDER BY YEAR DESC]-----------------
+target_db_schema: Name, _id, Year, Stadium_ID, ID
+convert time:1.79659 s
+---------------------------Execute Target Query:db.event.find({}, { "name": 1, "_id": 0 }).sort({ "Year": -1 })-----------------
+here we are in executor, and the query is:  db.event.find({}, { "name": 1, "_id": 0 }).sort({ "Year": -1 })
+result of mongodb: ['{}', '{}', '{}', '{}', '{}', '{}']
+mysql res: ['{"name": "European FINA"}', '{"name": "FINA"}', '{"name": "IPC"}', '{"name": "World Junior"}', '{"name": "World Master"}', '{"name": "Pacific"}']
+target res: ['{"name": null}', '{"name": null}', '{"name": null}', '{"name": null}', '{"name": null}', '{"name": null}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM event ORDER BY YEAR DESC LIMIT 1]-----------------
+target_db_schema: Name, _id, Year, Stadium_ID, ID
+convert time:1.647641 s
+---------------------------Execute Target Query:db.event.find({}, { "name": 1, "_id": 0 }).sort({ "Year": -1 }).limit(1)-----------------
+here we are in executor, and the query is:  db.event.find({}, { "name": 1, "_id": 0 }).sort({ "Year": -1 }).limit(1)
+result of mongodb: ['{}']
+mysql res: ['{"name": "European FINA"}']
+target res: ['{"name": null}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM stadium]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+convert time:1.859179 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$group": {"_id": None, "count": {"$sum": 1}}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$group": {"_id": None, "count": {"$sum": 1}}}])
+result of mongodb: ['{"_id": null, "count": 10}']
+mysql res: ['{"count_*": 10}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium ORDER BY capacity DESC LIMIT 1]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+convert time:2.295274 s
+---------------------------Execute Target Query:db.stadium.find({}, { "name": 1, "_id": 0 }).sort({ "capacity": -1 }).limit(1)-----------------
+here we are in executor, and the query is:  db.stadium.find({}, { "name": 1, "_id": 0 }).sort({ "capacity": -1 }).limit(1)
+result of mongodb: ['{"name": "Nou Mestalla"}']
+mysql res: ['{"name": "Nou Mestalla"}']
+target res: ['{"name": "Nou Mestalla"}']
+translate SELECT name FROM stadium ORDER BY capacity DESC LIMIT 1 success
+
+--------------------------6-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium WHERE capacity  <  (SELECT avg(capacity) FROM stadium)]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:4.630019 s
+---------------------------Execute Target Query:db.stadium.aggregate([ { $group: { _id: None, avg_capacity: { $avg: "$Capacity" } } }, { $lookup: { from: "stadium", localField: "avg_capacity", foreignField: "Capacity", as: "stadiums" } }, { $match: { "stadiums.Capacity": { $lt: "$avg_capacity" } } }, { $project: { "name": "$stadiums.name", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([ { $group: { _id: None, avg_capacity: { $avg: "$Capacity" } } }, { $lookup: { from: "stadium", localField: "avg_capacity", foreignField: "Capacity", as: "stadiums" } }, { $match: { "stadiums.Capacity": { $lt: "$avg_capacity" } } }, { $project: { "name": "$stadiums.name", "_id": 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------7-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium GROUP BY country ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+convert time:9.597265 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$group": {"_id": "$country", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"country": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$group": {"_id": "$country", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"country": "$_id", "_id": 0}}])
+result of mongodb: ['{"country": null}']
+mysql res: ['{"country": "Russia"}']
+target res: ['{"country": null}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium GROUP BY country HAVING count(*)  <=  3]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:3.184731 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$group": {"_id": "$country", "count": {"$sum": 1}}}, {"$match": {"count": {"$lte": 3}}}, {"$project": {"country": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$group": {"_id": "$country", "count": {"$sum": 1}}}, {"$match": {"count": {"$lte": 3}}}, {"$project": {"country": "$_id", "_id": 0}}])
+result of mongodb: []
+mysql res: ['{"country": "Spain"}', '{"country": "Azerbaijan"}', '{"country": "Hungary"}', '{"country": "France"}', '{"country": "England"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium WHERE capacity  >  60000 INTERSECT SELECT country FROM stadium WHERE capacity  <  50000]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:2.417144 s
+---------------------------Execute Target Query:db.stadium.aggregate([{$match:{$or:[{"capacity":{$gt:60000}},{"capacity":{$lt:50000}}]}},{$group:{_id:"$country"}},{$project:{country:"$_id",_id:0}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{$match:{$or:[{"capacity":{$gt:60000}},{"capacity":{$lt:50000}}]}},{$group:{_id:"$country"}},{$project:{country:"$_id",_id:0}}])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------10-----------------
+schema:['count_DISTINCT city']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT city) FROM stadium WHERE opening_year  <  2006]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:4.079195 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$match":{"opening_year":{"$lt":2006}}},{"$group":{"_id":"$city"}},{"$count":"count"}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$match":{"opening_year":{"$lt":2006}}},{"$group":{"_id":"$city"}},{"$count":"count"}])
+result of mongodb: []
+mysql res: ['{"count_DISTINCT city": 7}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['country', 'count_*']
+---------------------------Execute SQL Query:[SELECT country ,  count(*) FROM stadium GROUP BY country]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+convert time:3.814891 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$group": {"_id": "$country", "count": {"$sum": 1}}}, {"$project": {"country": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$group": {"_id": "$country", "count": {"$sum": 1}}}, {"$project": {"country": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 10, "country": null}']
+mysql res: ['{"country": "Spain", "count_*": 2}', '{"country": "Russia", "count_*": 4}', '{"country": "Azerbaijan", "count_*": 1}', '{"country": "Hungary", "count_*": 1}', '{"country": "France", "count_*": 1}', '{"country": "England", "count_*": 1}']
+target res: ['{"country": null, "count_*": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium EXCEPT SELECT country FROM stadium WHERE opening_year  >  2006]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+convert time:1.812921 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$match":{"opening_year":{"$not":{"$gt":2006}}}},{"$group":{"_id":"$country"}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$match":{"opening_year":{"$not":{"$gt":2006}}}},{"$group":{"_id":"$country"}}])
+result of mongodb: ['{"_id": null}']
+mysql res: ['{"country": "Spain"}', '{"country": "Azerbaijan"}', '{"country": "Hungary"}', '{"country": "France"}', '{"country": "England"}']
+target res: ['{"country": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM stadium WHERE country != 'Russia']-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+convert time:1.621216 s
+---------------------------Execute Target Query:db.stadium.find({ "Country": { "$ne": "Russia" } }, { "_id": 0 }).count()-----------------
+here we are in executor, and the query is:  db.stadium.find({ "Country": { "$ne": "Russia" } }, { "_id": 0 }).count()
+execute target query error:'Cursor' object has no attribute 'count'
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM swimmer ORDER BY meter_100]-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, ID
+convert time:1.82929 s
+---------------------------Execute Target Query:db.swimmer.find({}, { "name": 1, "_id": 0 }).sort({ "meter_100": 1 })-----------------
+here we are in executor, and the query is:  db.swimmer.find({}, { "name": 1, "_id": 0 }).sort({ "meter_100": 1 })
+result of mongodb: ['{"name": "S\\u00e9bastien Rouault"}', '{"name": "Oussama Mellouli"}', '{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+mysql res: ['{"name": "S\\u00e9bastien Rouault"}', '{"name": "Oussama Mellouli"}', '{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+target res: ['{"name": "S\\u00e9bastien Rouault"}', '{"name": "Oussama Mellouli"}', '{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+translate SELECT name FROM swimmer ORDER BY meter_100 success
+
+--------------------------15-----------------
+schema:['count_DISTINCT nationality']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT nationality) FROM swimmer]-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, ID
+convert time:2.397089 s
+---------------------------Execute Target Query:db.swimmer.aggregate([{"$group": {"_id": "$nationality"}}, {"$count": "count_distinct_nationality"}])-----------------
+here we are in executor, and the query is:  db.swimmer.aggregate([{"$group": {"_id": "$nationality"}}, {"$count": "count_distinct_nationality"}])
+result of mongodb: ['{"count_distinct_nationality": 1}']
+mysql res: ['{"count_DISTINCT nationality": 7}']
+target res: ['{"count_DISTINCT nationality": null}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['nationality', 'count_*']
+---------------------------Execute SQL Query:[SELECT nationality ,  count(*) FROM swimmer GROUP BY nationality HAVING count(*)  >  1]-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, ID
+convert time:3.907615 s
+---------------------------Execute Target Query:db.swimmer.aggregate([{"$group": {"_id": "$nationality", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"nationality": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.swimmer.aggregate([{"$group": {"_id": "$nationality", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"nationality": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 8, "nationality": null}']
+mysql res: ['{"nationality": "Australia", "count_*": 2}']
+target res: ['{"nationality": null, "count_*": null}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['meter_200', 'meter_300']
+---------------------------Execute SQL Query:[SELECT meter_200 ,  meter_300 FROM swimmer WHERE nationality  =  'Australia']-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, ID
+convert time:3.022095 s
+---------------------------Execute Target Query:db.swimmer.find({ "Nationality": "Australia" }, { "meter_200": 1, "meter_300": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.swimmer.find({ "Nationality": "Australia" }, { "meter_200": 1, "meter_300": 1, "_id": 0 })
+result of mongodb: ['{"meter_200": "1:57.21", "meter_300": "2:56.95"}', '{"meter_200": "1:56.34", "meter_300": "2:55.90"}']
+mysql res: ['{"meter_200": "1:57.21", "meter_300": "2:56.95"}', '{"meter_200": "1:56.34", "meter_300": "2:55.90"}']
+target res: ['{"meter_200": "1:57.21", "meter_300": "2:56.95"}', '{"meter_200": "1:56.34", "meter_300": "2:55.90"}']
+translate SELECT meter_200 ,  meter_300 FROM swimmer WHERE nationality  =  'Australia' success
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win']-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, IDrecord: Result, _id, Swimmer_ID, Event_ID, ID
+
+convert time:4.264821 s
+---------------------------Execute Target Query:db.swimmer.aggregate([{"$lookup": {"from": "record", "localField": "ID", "foreignField": "Swimmer_ID", "as": "record"}}, {"$match": {"record.Result": "Win"}}, {"$project": {"name": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.swimmer.aggregate([{"$lookup": {"from": "record", "localField": "ID", "foreignField": "Swimmer_ID", "as": "record"}}, {"$match": {"record.Result": "Win"}}, {"$project": {"name": 1, "_id": 0}}])
+result of mongodb: ['{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Oussama Mellouli"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+mysql res: ['{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Oussama Mellouli"}', '{"name": "Oussama Mellouli"}', '{"name": "Craig Stevens"}', '{"name": "Craig Stevens"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+target res: ['{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Oussama Mellouli"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM stadium AS t1 JOIN event AS t2 ON t1.id  =  t2.stadium_id GROUP BY t2.stadium_id ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, IDevent: Name, _id, Year, Stadium_ID, ID
+
+convert time:4.946233 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$lookup": {"from": "event", "localField": "_id", "foreignField": "Stadium_ID", "as": "events"}}, {"$unwind": "$events"}, {"$group": {"_id": "$events_Stadium_ID", "name": {"$first": "$name"}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"name": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$lookup": {"from": "event", "localField": "_id", "foreignField": "Stadium_ID", "as": "events"}}, {"$unwind": "$events"}, {"$group": {"_id": "$events_Stadium_ID", "name": {"$first": "$name"}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"name": 1, "_id": 0}}])
+result of mongodb: []
+mysql res: ['{"name": "Estadio La Peineta"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------20-----------------
+schema:['name', 'capacity']
+---------------------------Execute SQL Query:[SELECT t1.name ,  t1.capacity FROM stadium AS t1 JOIN event AS t2 ON t1.id  =  t2.stadium_id WHERE t2.name  =  'World Junior']-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, IDevent: Name, _id, Year, Stadium_ID, ID
+
+convert time:9.234756 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$lookup":{"from":"event","localField":"_id","foreignField":"stadium_ID","as":"event"}},{"$match":{"event_Name":"World Junior"}},{"$project":{"name":1,"capacity":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$lookup":{"from":"event","localField":"_id","foreignField":"stadium_ID","as":"event"}},{"$match":{"event_Name":"World Junior"}},{"$project":{"name":1,"capacity":1,"_id":0}}])
+result of mongodb: []
+mysql res: ['{"name": "Baku Olympic Stadium", "capacity": 68000}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------21-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium WHERE id NOT IN (SELECT stadium_id FROM event)]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, IDevent: Name, _id, Year, Stadium_ID, ID
+
+convert time:4.300281 s
+---------------------------Execute Target Query:db.stadium.find({ "ID": { $not: { $in: db.event.find({}, { "stadium_id": 1, "_id": 0 }).toArray().map(event => event.stadium_id) } } }, { "name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.stadium.find({ "ID": { $not: { $in: db.event.find({}, { "stadium_id": 1, "_id": 0 }).toArray().map(event => event.stadium_id) } } }, { "name": 1, "_id": 0 })
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------22-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id GROUP BY t2.swimmer_id ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, IDrecord: Result, _id, Swimmer_ID, Event_ID, ID
+
+convert time:7.195558 s
+---------------------------Execute Target Query:db.swimmer.aggregate([ { $lookup: { from: "record", localField: "ID", foreignField: "Swimmer_ID", as: "record" } }, { $unwind: "$record" }, { $group: { _id: "$record_Swimmer_ID", name: { $first: "$name" }, count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 1 }, { $project: { name: 1, _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.swimmer.aggregate([ { $lookup: { from: "record", localField: "ID", foreignField: "Swimmer_ID", as: "record" } }, { $unwind: "$record" }, { $group: { _id: "$record_Swimmer_ID", name: { $first: "$name" }, count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 1 }, { $project: { name: 1, _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id GROUP BY t2.swimmer_id HAVING count(*)  >=  2]-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, IDrecord: Result, _id, Swimmer_ID, Event_ID, ID
+
+convert time:5.742308 s
+---------------------------Execute Target Query:db.swimmer.aggregate([{"$lookup": {"from": "record", "localField": "id", "foreignField": "swimmer_id", "as": "record"}}, {"$unwind": "$record"}, {"$group": {"_id": "$record_swimmer_id", "name": {"$first": "$name"}}}, {"$match": {"count": {"$gte": 2}}}, {"$project": {"name": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.swimmer.aggregate([{"$lookup": {"from": "record", "localField": "id", "foreignField": "swimmer_id", "as": "record"}}, {"$unwind": "$record"}, {"$group": {"_id": "$record_swimmer_id", "name": {"$first": "$name"}}}, {"$match": {"count": {"$gte": 2}}}, {"$project": {"name": 1, "_id": 0}}])
+result of mongodb: []
+mysql res: ['{"name": "Sergiy Fesenko"}', '{"name": "Oussama Mellouli"}', '{"name": "Craig Stevens"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------24-----------------
+schema:['name', 'nationality']
+---------------------------Execute SQL Query:[SELECT t1.name ,  t1.nationality FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win' GROUP BY t2.swimmer_id HAVING count(*)  >  1]-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, IDrecord: Result, _id, Swimmer_ID, Event_ID, ID
+
+convert time:6.324294 s
+---------------------------Execute Target Query:db.swimmer.aggregate([{"$lookup":{"from":"record","localField":"ID","foreignField":"Swimmer_ID","as":"record"}},{"$unwind":"$record"},{"$match":{"record_Result":"Win"}},{"$group":{"_id":"$record_Swimmer_ID","count":{"$sum":1},"name":{"$first":"$name"},"nationality":{"$first":"$nationality"}}},{"$match":{"count":{"$gt":1}}},{"$project":{"name":1,"nationality":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.swimmer.aggregate([{"$lookup":{"from":"record","localField":"ID","foreignField":"Swimmer_ID","as":"record"}},{"$unwind":"$record"},{"$match":{"record_Result":"Win"}},{"$group":{"_id":"$record_Swimmer_ID","count":{"$sum":1},"name":{"$first":"$name"},"nationality":{"$first":"$nationality"}}},{"$match":{"count":{"$gt":1}}},{"$project":{"name":1,"nationality":1,"_id":0}}])
+result of mongodb: []
+mysql res: ['{"name": "Oussama Mellouli", "nationality": "Tunisia"}', '{"name": "Craig Stevens", "nationality": "Australia"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------25-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM swimmer WHERE id NOT IN (SELECT swimmer_id FROM record)]-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, IDrecord: Result, _id, Swimmer_ID, Event_ID, ID
+
+convert time:3.340826 s
+---------------------------Execute Target Query:db.swimmer.find({ "ID": { "$nin": db.record.distinct("Swimmer_ID") } }, { "name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.swimmer.find({ "ID": { "$nin": db.record.distinct("Swimmer_ID") } }, { "name": 1, "_id": 0 })
+result of mongodb: ['{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "S\\u00e9bastien Rouault"}']
+mysql res: ['{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "S\\u00e9bastien Rouault"}']
+target res: ['{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "S\\u00e9bastien Rouault"}']
+translate SELECT name FROM swimmer WHERE id NOT IN (SELECT swimmer_id FROM record) success
+
+--------------------------26-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win' INTERSECT SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Loss']-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, IDrecord: Result, _id, Swimmer_ID, Event_ID, ID
+
+convert time:4.25329 s
+---------------------------Execute Target Query:db.swimmer.aggregate([{$lookup:{from:"record",localField:"ID",foreignField:"Swimmer_ID",as:"record"}},{$match:{$or:[{"record.Result":"Win"},{"record.Result":"Loss"}]}},{$group:{_id:"$name"}},{$project:{name:"$_id",_id:0}}])-----------------
+here we are in executor, and the query is:  db.swimmer.aggregate([{$lookup:{from:"record",localField:"ID",foreignField:"Swimmer_ID",as:"record"}},{$match:{$or:[{"record.Result":"Win"},{"record.Result":"Loss"}]}},{$group:{_id:"$name"}},{$project:{name:"$_id",_id:0}}])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------27-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t4.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id JOIN event AS t3 ON t2.event_id  =  t3.id JOIN stadium AS t4 ON t4.id  =  t3.stadium_id WHERE t1.nationality  =  'Australia']-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, IDstadium: Opening_year, name, _id, City, Capacity, Country, ID
+record: Result, _id, Swimmer_ID, Event_ID, ID
+event: Name, _id, Year, Stadium_ID, ID
+
+convert time:5.546254 s
+---------------------------Execute Target Query:db.swimmer.aggregate([{"$lookup":{"from":"record","localField":"ID","foreignField":"Swimmer_ID","as":"record"}},{"$unwind":"$record"},{"$lookup":{"from":"event","localField":"record.Event_ID","foreignField":"ID","as":"event"}},{"$unwind":"$event"},{"$lookup":{"from":"stadium","localField":"event.Stadium_ID","foreignField":"ID","as":"stadium"}},{"$unwind":"$stadium"},{"$match":{"Nationality":"Australia"}},{"$project":{"name":"$stadium.name","_id":0}}])-----------------
+here we are in executor, and the query is:  db.swimmer.aggregate([{"$lookup":{"from":"record","localField":"ID","foreignField":"Swimmer_ID","as":"record"}},{"$unwind":"$record"},{"$lookup":{"from":"event","localField":"record.Event_ID","foreignField":"ID","as":"event"}},{"$unwind":"$event"},{"$lookup":{"from":"stadium","localField":"event.Stadium_ID","foreignField":"ID","as":"stadium"}},{"$unwind":"$stadium"},{"$match":{"Nationality":"Australia"}},{"$project":{"name":"$stadium.name","_id":0}}])
+result of mongodb: ['{"name": "Nou Mestalla"}', '{"name": "Nou Mestalla"}', '{"name": "Yubileyniy Stadium"}', '{"name": "Gazprom Arena"}', '{"name": "Baku Olympic Stadium"}']
+mysql res: ['{"name": "Nou Mestalla"}', '{"name": "Nou Mestalla"}', '{"name": "Yubileyniy Stadium"}', '{"name": "Gazprom Arena"}', '{"name": "Baku Olympic Stadium"}']
+target res: ['{"name": "Nou Mestalla"}', '{"name": "Nou Mestalla"}', '{"name": "Yubileyniy Stadium"}', '{"name": "Gazprom Arena"}', '{"name": "Baku Olympic Stadium"}']
+translate SELECT t4.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id JOIN event AS t3 ON t2.event_id  =  t3.id JOIN stadium AS t4 ON t4.id  =  t3.stadium_id WHERE t1.nationality  =  'Australia' success
+
+--------------------------28-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t3.name FROM record AS t1 JOIN event AS t2 ON t1.event_id  =  t2.id JOIN stadium AS t3 ON t3.id  =  t2.stadium_id GROUP BY t2.stadium_id ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, IDrecord: Result, _id, Swimmer_ID, Event_ID, ID
+event: Name, _id, Year, Stadium_ID, ID
+
+convert time:5.676927 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$lookup":{"from":"event","localField":"ID","foreignField":"Stadium_ID","as":"events"}},{"$unwind":"$events"},{"$lookup":{"from":"record","localField":"events.ID","foreignField":"Event_ID","as":"records"}},{"$unwind":"$records"},{"$group":{"_id":"$events_Stadium_ID","name":{"$first":"$name"}}},{"$sort":{"count":-1}},{"$limit":1},{"$project":{"name":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$lookup":{"from":"event","localField":"ID","foreignField":"Stadium_ID","as":"events"}},{"$unwind":"$events"},{"$lookup":{"from":"record","localField":"events.ID","foreignField":"Event_ID","as":"records"}},{"$unwind":"$records"},{"$group":{"_id":"$events_Stadium_ID","name":{"$first":"$name"}}},{"$sort":{"count":-1}},{"$limit":1},{"$project":{"name":1,"_id":0}}])
+result of mongodb: ['{"name": "Nou Mestalla"}']
+mysql res: ['{"name": "Gazprom Arena"}']
+target res: ['{"name": "Nou Mestalla"}']
+mismatch between MySQL and target
+
+--------------------------29-----------------
+schema:['ID', 'name', 'Nationality', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'Time']
+---------------------------Execute SQL Query:[SELECT * FROM swimmer]-----------------
+target_db_schema: Time, meter_100, name, meter_700, Nationality, meter_200, _id, meter_600, meter_500, meter_300, meter_400, ID
+convert time:1.377785 s
+---------------------------Execute Target Query:db.swimmer.find({}, { "_id": 0 })-----------------
+here we are in executor, and the query is:  db.swimmer.find({}, { "_id": 0 })
+result of mongodb: ['{"ID": 1, "Nationality": "Ukraine", "Time": "7:53.43", "meter_100": 57.34, "meter_200": "1:57.26", "meter_300": "2:57.10", "meter_400": "3:57.12", "meter_500": "4:57.03", "meter_600": "5:56.31", "meter_700": "6:55.07", "name": "Sergiy Fesenko"}', '{"ID": 2, "Nationality": "Australia", "Time": "7:55.39", "meter_100": 57.34, "meter_200": "1:57.21", "meter_300": "2:56.95", "meter_400": "3:57.00", "meter_500": "4:56.96", "meter_600": "5:57.10", "meter_700": "6:57.44", "name": "Grant Hackett"}', '{"ID": 3, "Nationality": "Tunisia", "Time": "7:46.95", "meter_100": 57.31, "meter_200": "1:56.44", "meter_300": "2:55.94", "meter_400": "3:55.49", "meter_500": "4:54.19", "meter_600": "5:52.92", "meter_700": "6:50.80", "name": "Oussama Mellouli"}', '{"ID": 4, "Nationality": "Australia", "Time": "7:48.67", "meter_100": 57.35, "meter_200": "1:56.34", "meter_300": "2:55.90", "meter_400": "3:55.72", "meter_500": "4:55.08", "meter_600": "5:54.45", "meter_700": "6:52.69", "name": "Craig Stevens"}', '{"ID": 5, "Nationality": "Italy", "Time": "7:49.98", "meter_100": 57.66, "meter_200": "1:56.77", "meter_300": "2:56.04", "meter_400": "3:55.37", "meter_500": "4:54.48", "meter_600": "5:53.53", "meter_700": "6:52.58", "name": "Federico Colbertaldo"}', '{"ID": 6, "Nationality": "Canada", "Time": "7:56.56", "meter_100": 57.84, "meter_200": "1:57.26", "meter_300": "2:56.64", "meter_400": "3:56.34", "meter_500": "4:56.15", "meter_600": "5:56.99", "meter_700": "6:57.69", "name": "Ryan Cochrane"}', '{"ID": 7, "Nationality": "Poland", "Time": "7:47.91", "meter_100": 57.31, "meter_200": "1:57.10", "meter_300": "2:56.02", "meter_400": "3:55.36", "meter_500": "4:54.21", "meter_600": "5:52.59", "meter_700": "6:50.91", "name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"ID": 8, "Nationality": "France", "Time": "7:52.04", "meter_100": 55.67, "meter_200": "1:54.40", "meter_300": "2:53.46", "meter_400": "3:52.93", "meter_500": "4:52.85", "meter_600": "5:53.03", "meter_700": "6:53.34", "name": "S\\u00e9bastien Rouault"}']
+mysql res: ['{"ID": 1, "name": "Sergiy Fesenko", "Nationality": "Ukraine", "meter_100": 57.34, "meter_200": "1:57.26", "meter_300": "2:57.10", "meter_400": "3:57.12", "meter_500": "4:57.03", "meter_600": "5:56.31", "meter_700": "6:55.07", "Time": "7:53.43"}', '{"ID": 2, "name": "Grant Hackett", "Nationality": "Australia", "meter_100": 57.34, "meter_200": "1:57.21", "meter_300": "2:56.95", "meter_400": "3:57.00", "meter_500": "4:56.96", "meter_600": "5:57.10", "meter_700": "6:57.44", "Time": "7:55.39"}', '{"ID": 3, "name": "Oussama Mellouli", "Nationality": "Tunisia", "meter_100": 57.31, "meter_200": "1:56.44", "meter_300": "2:55.94", "meter_400": "3:55.49", "meter_500": "4:54.19", "meter_600": "5:52.92", "meter_700": "6:50.80", "Time": "7:46.95"}', '{"ID": 4, "name": "Craig Stevens", "Nationality": "Australia", "meter_100": 57.35, "meter_200": "1:56.34", "meter_300": "2:55.90", "meter_400": "3:55.72", "meter_500": "4:55.08", "meter_600": "5:54.45", "meter_700": "6:52.69", "Time": "7:48.67"}', '{"ID": 5, "name": "Federico Colbertaldo", "Nationality": "Italy", "meter_100": 57.66, "meter_200": "1:56.77", "meter_300": "2:56.04", "meter_400": "3:55.37", "meter_500": "4:54.48", "meter_600": "5:53.53", "meter_700": "6:52.58", "Time": "7:49.98"}', '{"ID": 6, "name": "Ryan Cochrane", "Nationality": "Canada", "meter_100": 57.84, "meter_200": "1:57.26", "meter_300": "2:56.64", "meter_400": "3:56.34", "meter_500": "4:56.15", "meter_600": "5:56.99", "meter_700": "6:57.69", "Time": "7:56.56"}', '{"ID": 7, "name": "Przemys\\u0142aw Sta\\u0144czyk", "Nationality": "Poland", "meter_100": 57.31, "meter_200": "1:57.10", "meter_300": "2:56.02", "meter_400": "3:55.36", "meter_500": "4:54.21", "meter_600": "5:52.59", "meter_700": "6:50.91", "Time": "7:47.91"}', '{"ID": 8, "name": "S\\u00e9bastien Rouault", "Nationality": "France", "meter_100": 55.67, "meter_200": "1:54.40", "meter_300": "2:53.46", "meter_400": "3:52.93", "meter_500": "4:52.85", "meter_600": "5:53.03", "meter_700": "6:53.34", "Time": "7:52.04"}']
+target res: ['{"ID": 1, "name": "Sergiy Fesenko", "Nationality": "Ukraine", "meter_100": 57.34, "meter_200": "1:57.26", "meter_300": "2:57.10", "meter_400": "3:57.12", "meter_500": "4:57.03", "meter_600": "5:56.31", "meter_700": "6:55.07", "Time": "7:53.43"}', '{"ID": 2, "name": "Grant Hackett", "Nationality": "Australia", "meter_100": 57.34, "meter_200": "1:57.21", "meter_300": "2:56.95", "meter_400": "3:57.00", "meter_500": "4:56.96", "meter_600": "5:57.10", "meter_700": "6:57.44", "Time": "7:55.39"}', '{"ID": 3, "name": "Oussama Mellouli", "Nationality": "Tunisia", "meter_100": 57.31, "meter_200": "1:56.44", "meter_300": "2:55.94", "meter_400": "3:55.49", "meter_500": "4:54.19", "meter_600": "5:52.92", "meter_700": "6:50.80", "Time": "7:46.95"}', '{"ID": 4, "name": "Craig Stevens", "Nationality": "Australia", "meter_100": 57.35, "meter_200": "1:56.34", "meter_300": "2:55.90", "meter_400": "3:55.72", "meter_500": "4:55.08", "meter_600": "5:54.45", "meter_700": "6:52.69", "Time": "7:48.67"}', '{"ID": 5, "name": "Federico Colbertaldo", "Nationality": "Italy", "meter_100": 57.66, "meter_200": "1:56.77", "meter_300": "2:56.04", "meter_400": "3:55.37", "meter_500": "4:54.48", "meter_600": "5:53.53", "meter_700": "6:52.58", "Time": "7:49.98"}', '{"ID": 6, "name": "Ryan Cochrane", "Nationality": "Canada", "meter_100": 57.84, "meter_200": "1:57.26", "meter_300": "2:56.64", "meter_400": "3:56.34", "meter_500": "4:56.15", "meter_600": "5:56.99", "meter_700": "6:57.69", "Time": "7:56.56"}', '{"ID": 7, "name": "Przemys\\u0142aw Sta\\u0144czyk", "Nationality": "Poland", "meter_100": 57.31, "meter_200": "1:57.10", "meter_300": "2:56.02", "meter_400": "3:55.36", "meter_500": "4:54.21", "meter_600": "5:52.59", "meter_700": "6:50.91", "Time": "7:47.91"}', '{"ID": 8, "name": "S\\u00e9bastien Rouault", "Nationality": "France", "meter_100": 55.67, "meter_200": "1:54.40", "meter_300": "2:53.46", "meter_400": "3:52.93", "meter_500": "4:52.85", "meter_600": "5:53.03", "meter_700": "6:53.34", "Time": "7:52.04"}']
+translate SELECT * FROM swimmer success
+
+--------------------------30-----------------
+schema:['avg_capacity']
+---------------------------Execute SQL Query:[SELECT avg(capacity) FROM stadium WHERE opening_year  =  2005]-----------------
+target_db_schema: Opening_year, name, _id, City, Capacity, Country, ID
+convert time:4.22353 s
+---------------------------Execute Target Query:db.stadium.aggregate([{"$match": {"opening_year": 2005}}, {"$group": {"_id": None, "avg_capacity": {"$avg": "$capacity"}}}, {"$project": {"_id": 0, "avg_capacity": 1}}])-----------------
+here we are in executor, and the query is:  db.stadium.aggregate([{"$match": {"opening_year": 2005}}, {"$group": {"_id": None, "avg_capacity": {"$avg": "$capacity"}}}, {"$project": {"_id": 0, "avg_capacity": 1}}])
+result of mongodb: []
+mysql res: ['{"avg_capacity": 62504.0000}']
+target res: []
+Exception raised during comparison: Row number mismatch
+success_query_count: 6
+valid_count: 30
+accuracy: 0.2

@@ -1,0 +1,364 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM authors]-----------------
+convert time:1.084304 s
+---------------------------Execute Target Query:db.authors.aggregate([{ "$count": "count" }])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([{ "$count": "count" }])
+result of mongodb: ['{"count": 13}']
+mysql res: ['{"count_*": 13}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM inst]-----------------
+convert time:1.532328 s
+---------------------------Execute Target Query:db.inst.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])-----------------
+here we are in executor, and the query is:  db.inst.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])
+result of mongodb: ['{"_id": null, "count": 8}']
+mysql res: ['{"count_*": 8}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM papers]-----------------
+convert time:4.664285 s
+---------------------------Execute Target Query:db.papers.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])-----------------
+here we are in executor, and the query is:  db.papers.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])
+result of mongodb: ['{"_id": null, "count": 7}']
+mysql res: ['{"count_*": 7}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Jeremy" AND t1.lname  =  "Gibbons"]-----------------
+convert time:9.467736 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$match": { "fname": "Jeremy", "lname": "Gibbons" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "papers", "localField": "authorship.paperid", "foreignField": "paperid", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers.title", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$match": { "fname": "Jeremy", "lname": "Gibbons" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "papers", "localField": "authorship.paperid", "foreignField": "paperid", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers.title", "_id": 0 } } ])
+result of mongodb: ['{"title": "Just do it: Simple Monadic Equational Reasoning"}']
+mysql res: ['{"title": "Just do it: Simple Monadic Equational Reasoning"}']
+target res: ['{"title": "Just do it: Simple Monadic Equational Reasoning"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Jeremy" AND t1.lname  =  "Gibbons" success
+
+--------------------------5-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Aaron" AND t1.lname  =  "Turon"]-----------------
+convert time:8.071642 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$match": { "fname": "Aaron", "lname": "Turon" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "papers", "localField": "authorship.paperid", "foreignField": "paperid", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers.title", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$match": { "fname": "Aaron", "lname": "Turon" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "papers", "localField": "authorship.paperid", "foreignField": "paperid", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers.title", "_id": 0 } } ])
+result of mongodb: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Aaron" AND t1.lname  =  "Turon" success
+
+--------------------------6-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Atsushi" AND t1.lname  =  "Ohori"]-----------------
+convert time:11.32626 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "fname": "Atsushi", "lname": "Ohori" } }, { "$count": "count" } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "fname": "Atsushi", "lname": "Ohori" } }, { "$count": "count" } ])
+result of mongodb: ['{"count": 1}']
+mysql res: ['{"count_*": 1}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Matthias" AND t1.lname  =  "Blume"]-----------------
+convert time:8.914435 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$match": { "fname": "Matthias", "lname": "Blume" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "inst", "localField": "authorship.instid", "foreignField": "instid", "as": "inst" } }, { "$unwind": "$inst" }, { "$group": { "_id": "$inst.name" } }, { "$project": { "name": "$_id", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$match": { "fname": "Matthias", "lname": "Blume" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "inst", "localField": "authorship.instid", "foreignField": "instid", "as": "inst" } }, { "$unwind": "$inst" }, { "$group": { "_id": "$inst.name" } }, { "$project": { "name": "$_id", "_id": 0 } } ])
+result of mongodb: ['{"name": "Google"}']
+mysql res: ['{"name": "Google"}']
+target res: ['{"name": "Google"}']
+translate SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Matthias" AND t1.lname  =  "Blume" success
+
+--------------------------8-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Katsuhiro" AND t1.lname  =  "Ueno"]-----------------
+convert time:8.151302 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$match": { "fname": "Katsuhiro", "lname": "Ueno" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "inst", "localField": "authorship.instid", "foreignField": "instid", "as": "inst" } }, { "$unwind": "$inst" }, { "$group": { "_id": "$inst.name" } }, { "$project": { "name": "$_id", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$match": { "fname": "Katsuhiro", "lname": "Ueno" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "inst", "localField": "authorship.instid", "foreignField": "instid", "as": "inst" } }, { "$unwind": "$inst" }, { "$group": { "_id": "$inst.name" } }, { "$project": { "name": "$_id", "_id": 0 } } ])
+result of mongodb: ['{"name": "Tohoku University"}']
+mysql res: ['{"name": "Tohoku University"}']
+target res: ['{"name": "Tohoku University"}']
+translate SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Katsuhiro" AND t1.lname  =  "Ueno" success
+
+--------------------------9-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Oxford"]-----------------
+convert time:9.165604 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "University of Oxford" } }, { "$group": { "_id": { "fname": "$fname", "lname": "$lname" } } }, { "$project": { "fname": "$_id.fname", "lname": "$_id.lname", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "University of Oxford" } }, { "$group": { "_id": { "fname": "$fname", "lname": "$lname" } } }, { "$project": { "fname": "$_id.fname", "lname": "$_id.lname", "_id": 0 } } ])
+result of mongodb: ['{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Ralf", "lname": "Hinze"}']
+mysql res: ['{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}']
+target res: ['{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Ralf", "lname": "Hinze"}']
+translate SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Oxford" success
+
+--------------------------10-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google"]-----------------
+convert time:24.701645 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "Google" } }, { "$group": { "_id": { "fname": "$fname", "lname": "$lname" } } }, { "$project": { "fname": "$_id.fname", "lname": "$_id.lname", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "Google" } }, { "$group": { "_id": { "fname": "$fname", "lname": "$lname" } } }, { "$project": { "fname": "$_id.fname", "lname": "$_id.lname", "_id": 0 } } ])
+result of mongodb: ['{"fname": "Matthias", "lname": "Blume"}']
+mysql res: ['{"fname": "Matthias", "lname": "Blume"}']
+target res: ['{"fname": "Matthias", "lname": "Blume"}']
+translate SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google" success
+
+--------------------------11-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Binders Unbound"]-----------------
+convert time:6.161197 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3_title": "Binders Unbound" } }, { "$project": { "lname": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3_title": "Binders Unbound" } }, { "$project": { "lname": 1, "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"lname": "Weirich"}', '{"lname": "Yorgey"}', '{"lname": "Sheard"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Nameless ,  Painless"]-----------------
+convert time:10.88474 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.title": "Nameless ,  Painless" } }, { "$project": { "fname": 1, "lname": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.title": "Nameless ,  Painless" } }, { "$project": { "fname": 1, "lname": 1, "_id": 0 } } ])
+result of mongodb: []
+mysql res: []
+target res: []
+translate SELECT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Nameless ,  Painless" success
+
+--------------------------13-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Indiana University"]-----------------
+convert time:11.771332 s
+---------------------------Execute Target Query:db.papers.aggregate([ { "$lookup": { "from": "authorship", "localField": "paperid", "foreignField": "paperid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "Indiana University" } }, { "$group": { "_id": "$title" } }, { "$project": { "title": "$_id", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.papers.aggregate([ { "$lookup": { "from": "authorship", "localField": "paperid", "foreignField": "paperid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "Indiana University" } }, { "$group": { "_id": "$title" } }, { "$project": { "title": "$_id", "_id": 0 } } ])
+result of mongodb: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+mysql res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+target res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+translate SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Indiana University" success
+
+--------------------------14-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google"]-----------------
+convert time:7.438559 s
+---------------------------Execute Target Query:db.papers.aggregate([ { "$lookup": { "from": "authorship", "localField": "paperid", "foreignField": "paperid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "Google" } }, { "$group": { "_id": "$title" } }, { "$project": { "title": "$_id", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.papers.aggregate([ { "$lookup": { "from": "authorship", "localField": "paperid", "foreignField": "paperid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "Google" } }, { "$group": { "_id": "$title" } }, { "$project": { "title": "$_id", "_id": 0 } } ])
+result of mongodb: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+mysql res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+target res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+translate SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google" success
+
+--------------------------15-----------------
+schema:['count_DISTINCT t1_title']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT t1.title) FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Tokohu University"]-----------------
+convert time:10.37091 s
+---------------------------Execute Target Query:db.papers.aggregate([ { "$lookup": { "from": "authorship", "localField": "paperid", "foreignField": "paperid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "Tokohu University" } }, { "$group": { "_id": None, "count_distinct_title": { "$sum": 1 } } } ])-----------------
+here we are in executor, and the query is:  db.papers.aggregate([ { "$lookup": { "from": "authorship", "localField": "paperid", "foreignField": "paperid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "Tokohu University" } }, { "$group": { "_id": None, "count_distinct_title": { "$sum": 1 } } } ])
+result of mongodb: []
+mysql res: ['{"count_DISTINCT t1_title": 0}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------16-----------------
+schema:['count_DISTINCT t1_title']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT t1.title) FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Pennsylvania"]-----------------
+convert time:10.471345 s
+---------------------------Execute Target Query:db.papers.aggregate([ { "$lookup": { "from": "authorship", "localField": "paperid", "foreignField": "paperid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "University of Pennsylvania" } }, { "$group": { "_id": None, "count_distinct_t1_title": { "$addToSet": "$title" } } }, { "$project": { "count_distinct_t1_title": { "$size": "$count_distinct_t1_title" }, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.papers.aggregate([ { "$lookup": { "from": "authorship", "localField": "paperid", "foreignField": "paperid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.name": "University of Pennsylvania" } }, { "$group": { "_id": None, "count_distinct_t1_title": { "$addToSet": "$title" } } }, { "$project": { "count_distinct_t1_title": { "$size": "$count_distinct_t1_title" }, "_id": 0 } } ])
+result of mongodb: ['{"count_distinct_t1_title": 1}']
+mysql res: ['{"count_DISTINCT t1_title": 1}']
+target res: ['{"count_DISTINCT t1_title": null}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Olin" AND t1.lname  =  "Shivers"]-----------------
+convert time:8.222341 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$match": { "fname": "Olin", "lname": "Shivers" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "papers", "localField": "authorship.paperid", "foreignField": "paperid", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers.title", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$match": { "fname": "Olin", "lname": "Shivers" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "papers", "localField": "authorship.paperid", "foreignField": "paperid", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers.title", "_id": 0 } } ])
+result of mongodb: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Olin" AND t1.lname  =  "Shivers" success
+
+--------------------------18-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Stephanie" AND t1.lname  =  "Weirich"]-----------------
+convert time:13.429764 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$match": { "fname": "Stephanie", "lname": "Weirich" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "papers", "localField": "authorship_paperid", "foreignField": "paperid", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers_title", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$match": { "fname": "Stephanie", "lname": "Weirich" } }, { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "authorship" } }, { "$unwind": "$authorship" }, { "$lookup": { "from": "papers", "localField": "authorship_paperid", "foreignField": "paperid", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers_title", "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"title": "Binders Unbound"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "USA" AND t2.authorder  =  2 AND t1.lname  =  "Turon"]-----------------
+convert time:12.479871 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t4" } }, { "$unwind": "$t4" }, { "$match": { "t4_country": "USA", "t2_authorder": 2, "lname": "Turon" } }, { "$project": { "title": "$t3.title", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t4" } }, { "$unwind": "$t4" }, { "$match": { "t4_country": "USA", "t2_authorder": 2, "lname": "Turon" } }, { "$project": { "title": "$t3.title", "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------20-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "Japan" AND t2.authorder  =  1 AND t1.lname  =  "Ohori"]-----------------
+convert time:10.589403 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t4" } }, { "$unwind": "$t4" }, { "$match": { "t4_country": "Japan", "t2_authorder": 1, "lname": "Ohori" } }, { "$project": { "title": "$t3.title", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$lookup": { "from": "inst", "localField": "t2.instid", "foreignField": "instid", "as": "t4" } }, { "$unwind": "$t4" }, { "$match": { "t4_country": "Japan", "t2_authorder": 1, "lname": "Ohori" } }, { "$project": { "title": "$t3.title", "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------21-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.fname ,  t1.lname ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:11.256012 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$group": { "_id": { "fname": "$fname", "lname": "$lname" }, "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "lname": "$_id.lname", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$group": { "_id": { "fname": "$fname", "lname": "$lname" }, "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "lname": "$_id.lname", "_id": 0 } } ])
+result of mongodb: ['{"lname": "Hinze"}']
+mysql res: ['{"lname": "Hinze"}']
+target res: ['{"lname": "Hinze"}']
+translate SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.fname ,  t1.lname ORDER BY count(*) DESC LIMIT 1 success
+
+--------------------------22-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT t1.country FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.country ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:24.719081 s
+---------------------------Execute Target Query:db.inst.aggregate([ { "$lookup": { "from": "authorship", "localField": "instid", "foreignField": "instid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$group": { "_id": "$country", "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "country": "$_id", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.inst.aggregate([ { "$lookup": { "from": "authorship", "localField": "instid", "foreignField": "instid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$group": { "_id": "$country", "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "country": "$_id", "_id": 0 } } ])
+result of mongodb: ['{"country": "USA"}']
+mysql res: ['{"country": "USA"}']
+target res: ['{"country": "USA"}']
+translate SELECT t1.country FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.country ORDER BY count(*) DESC LIMIT 1 success
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.name ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:13.306061 s
+---------------------------Execute Target Query:db.inst.aggregate([ { "$lookup": { "from": "authorship", "localField": "instid", "foreignField": "instid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$group": { "_id": "$name", "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "name": "$_id", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.inst.aggregate([ { "$lookup": { "from": "authorship", "localField": "instid", "foreignField": "instid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$group": { "_id": "$name", "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "name": "$_id", "_id": 0 } } ])
+result of mongodb: ['{"name": "University of Oxford"}']
+mysql res: ['{"name": "University of Oxford"}']
+target res: ['{"name": "University of Oxford"}']
+translate SELECT t1.name FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.name ORDER BY count(*) DESC LIMIT 1 success
+
+--------------------------24-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT title FROM papers WHERE title LIKE "%ML%"]-----------------
+convert time:2.236663 s
+---------------------------Execute Target Query:db.papers.find({ "title": { "$regex": "ML", "$options": "i" } },{ "title": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.papers.find({ "title": { "$regex": "ML", "$options": "i" } },{ "title": 1, "_id": 0 })
+result of mongodb: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+translate SELECT title FROM papers WHERE title LIKE "%ML%" success
+
+--------------------------25-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT title FROM papers WHERE title LIKE "%Database%"]-----------------
+convert time:2.561673 s
+---------------------------Execute Target Query:db.papers.find({ "title": { "$regex": "Database", "$options": "i" } },{ "title": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.papers.find({ "title": { "$regex": "Database", "$options": "i" } },{ "title": 1, "_id": 0 })
+result of mongodb: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+translate SELECT title FROM papers WHERE title LIKE "%Database%" success
+
+--------------------------26-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT t1.fname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Functional%"]-----------------
+convert time:8.140605 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.title": { "$regex": "Functional", "$options": "i" } } }, { "$project": { "fname": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.title": { "$regex": "Functional", "$options": "i" } } }, { "$project": { "fname": 1, "_id": 0 } } ])
+result of mongodb: ['{"fname": "Olin"}', '{"fname": "Aaron"}']
+mysql res: ['{"fname": "Olin"}', '{"fname": "Aaron"}']
+target res: ['{"fname": "Olin"}', '{"fname": "Aaron"}']
+translate SELECT t1.fname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Functional%" success
+
+--------------------------27-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Monadic%"]-----------------
+convert time:8.228042 s
+---------------------------Execute Target Query:db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.title": { "$regex": "Monadic", "$options": "i" } } }, { "$project": { "lname": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authors.aggregate([ { "$lookup": { "from": "authorship", "localField": "authid", "foreignField": "authid", "as": "t2" } }, { "$unwind": "$t2" }, { "$lookup": { "from": "papers", "localField": "t2.paperid", "foreignField": "paperid", "as": "t3" } }, { "$unwind": "$t3" }, { "$match": { "t3.title": { "$regex": "Monadic", "$options": "i" } } }, { "$project": { "lname": 1, "_id": 0 } } ])
+result of mongodb: ['{"lname": "Gibbons"}', '{"lname": "Hinze"}']
+mysql res: ['{"lname": "Gibbons"}', '{"lname": "Hinze"}']
+target res: ['{"lname": "Gibbons"}', '{"lname": "Hinze"}']
+translate SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Monadic%" success
+
+--------------------------28-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t2.title FROM authorship AS t1 JOIN papers AS t2 ON t1.paperid  =  t2.paperid WHERE t1.authorder  =  (SELECT max(authorder) FROM authorship)]-----------------
+convert time:5.022154 s
+---------------------------Execute Target Query:db.authorship.aggregate([ { "$group": { "_id": null, "max_authorder": { "$max": "$authorder" } } }, { "$lookup": { "from": "papers", "localField": "max_authorder", "foreignField": "authorder", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers_title", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.authorship.aggregate([ { "$group": { "_id": null, "max_authorder": { "$max": "$authorder" } } }, { "$lookup": { "from": "papers", "localField": "max_authorder", "foreignField": "authorder", "as": "papers" } }, { "$unwind": "$papers" }, { "$project": { "title": "$papers_title", "_id": 0 } } ])
+execute target query error:name 'null' is not defined
+
+--------------------------29-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT fname FROM authors WHERE lname  =  "Ueno"]-----------------
+convert time:1.488677 s
+---------------------------Execute Target Query:db.authors.find({ "lname": "Ueno" }, { "fname": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.authors.find({ "lname": "Ueno" }, { "fname": 1, "_id": 0 })
+result of mongodb: ['{"fname": "Katsuhiro"}']
+mysql res: ['{"fname": "Katsuhiro"}']
+target res: ['{"fname": "Katsuhiro"}']
+translate SELECT fname FROM authors WHERE lname  =  "Ueno" success
+
+--------------------------30-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM authors WHERE fname  =  "Amal"]-----------------
+convert time:1.577421 s
+---------------------------Execute Target Query:db.authors.find({ "fname": "Amal" }, { "lname": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.authors.find({ "fname": "Amal" }, { "lname": 1, "_id": 0 })
+result of mongodb: ['{"lname": "Ahmed"}']
+mysql res: ['{"lname": "Ahmed"}']
+target res: ['{"lname": "Ahmed"}']
+translate SELECT lname FROM authors WHERE fname  =  "Amal" success
+
+--------------------------31-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT fname FROM authors ORDER BY fname]-----------------
+convert time:1.492152 s
+---------------------------Execute Target Query:db.authors.find({}, { "fname": 1, "_id": 0 }).sort({ "fname": 1 })-----------------
+here we are in executor, and the query is:  db.authors.find({}, { "fname": 1, "_id": 0 }).sort({ "fname": 1 })
+result of mongodb: ['{"fname": "Aaron"}', '{"fname": "Amal"}', '{"fname": "Atsushi"}', '{"fname": "Brent"}', '{"fname": "Daniel W. H."}', '{"fname": "Jeremy"}', '{"fname": "Katsuhiro"}', '{"fname": "Matthias"}', '{"fname": "Nicolas"}', '{"fname": "Olin"}', '{"fname": "Ralf"}', '{"fname": "Stephanie"}', '{"fname": "Tim"}']
+mysql res: ['{"fname": "Aaron"}', '{"fname": "Amal"}', '{"fname": "Atsushi"}', '{"fname": "Brent"}', '{"fname": "Daniel W. H."}', '{"fname": "Jeremy"}', '{"fname": "Katsuhiro"}', '{"fname": "Matthias"}', '{"fname": "Nicolas"}', '{"fname": "Olin"}', '{"fname": "Ralf"}', '{"fname": "Stephanie"}', '{"fname": "Tim"}']
+target res: ['{"fname": "Aaron"}', '{"fname": "Amal"}', '{"fname": "Atsushi"}', '{"fname": "Brent"}', '{"fname": "Daniel W. H."}', '{"fname": "Jeremy"}', '{"fname": "Katsuhiro"}', '{"fname": "Matthias"}', '{"fname": "Nicolas"}', '{"fname": "Olin"}', '{"fname": "Ralf"}', '{"fname": "Stephanie"}', '{"fname": "Tim"}']
+translate SELECT fname FROM authors ORDER BY fname success
+
+--------------------------32-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM authors ORDER BY lname]-----------------
+convert time:1.425353 s
+---------------------------Execute Target Query:db.authors.find({}, { "lname": 1, "_id": 0 }).sort({ "lname": 1 })-----------------
+here we are in executor, and the query is:  db.authors.find({}, { "lname": 1, "_id": 0 }).sort({ "lname": 1 })
+result of mongodb: ['{"lname": "Ahmed"}', '{"lname": "Blume"}', '{"lname": "Gibbons"}', '{"lname": "Hinze"}', '{"lname": "James"}', '{"lname": "Ohori"}', '{"lname": "Pouillard"}', '{"lname": "Sheard"}', '{"lname": "Shivers"}', '{"lname": "Turon"}', '{"lname": "Ueno"}', '{"lname": "Weirich"}', '{"lname": "Yorgey"}']
+mysql res: ['{"lname": "Ahmed"}', '{"lname": "Blume"}', '{"lname": "Gibbons"}', '{"lname": "Hinze"}', '{"lname": "James"}', '{"lname": "Ohori"}', '{"lname": "Pouillard"}', '{"lname": "Sheard"}', '{"lname": "Shivers"}', '{"lname": "Turon"}', '{"lname": "Ueno"}', '{"lname": "Weirich"}', '{"lname": "Yorgey"}']
+target res: ['{"lname": "Ahmed"}', '{"lname": "Blume"}', '{"lname": "Gibbons"}', '{"lname": "Hinze"}', '{"lname": "James"}', '{"lname": "Ohori"}', '{"lname": "Pouillard"}', '{"lname": "Sheard"}', '{"lname": "Shivers"}', '{"lname": "Turon"}', '{"lname": "Ueno"}', '{"lname": "Weirich"}', '{"lname": "Yorgey"}']
+translate SELECT lname FROM authors ORDER BY lname success
+
+--------------------------33-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT fname ,  lname FROM authors ORDER BY lname]-----------------
+convert time:2.210172 s
+---------------------------Execute Target Query:db.authors.find({}, { "fname": 1, "lname": 1, "_id": 0 }).sort({ "lname": 1 })-----------------
+here we are in executor, and the query is:  db.authors.find({}, { "fname": 1, "lname": 1, "_id": 0 }).sort({ "lname": 1 })
+result of mongodb: ['{"fname": "Amal", "lname": "Ahmed"}', '{"fname": "Matthias", "lname": "Blume"}', '{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Atsushi", "lname": "Ohori"}', '{"fname": "Nicolas", "lname": "Pouillard"}', '{"fname": "Tim", "lname": "Sheard"}', '{"fname": "Olin", "lname": "Shivers"}', '{"fname": "Aaron", "lname": "Turon"}', '{"fname": "Katsuhiro", "lname": "Ueno"}', '{"fname": "Stephanie", "lname": "Weirich"}', '{"fname": "Brent", "lname": "Yorgey"}']
+mysql res: ['{"fname": "Amal", "lname": "Ahmed"}', '{"fname": "Matthias", "lname": "Blume"}', '{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Atsushi", "lname": "Ohori"}', '{"fname": "Nicolas", "lname": "Pouillard"}', '{"fname": "Tim", "lname": "Sheard"}', '{"fname": "Olin", "lname": "Shivers"}', '{"fname": "Aaron", "lname": "Turon"}', '{"fname": "Katsuhiro", "lname": "Ueno"}', '{"fname": "Stephanie", "lname": "Weirich"}', '{"fname": "Brent", "lname": "Yorgey"}']
+target res: ['{"fname": "Amal", "lname": "Ahmed"}', '{"fname": "Matthias", "lname": "Blume"}', '{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Atsushi", "lname": "Ohori"}', '{"fname": "Nicolas", "lname": "Pouillard"}', '{"fname": "Tim", "lname": "Sheard"}', '{"fname": "Olin", "lname": "Shivers"}', '{"fname": "Aaron", "lname": "Turon"}', '{"fname": "Katsuhiro", "lname": "Ueno"}', '{"fname": "Stephanie", "lname": "Weirich"}', '{"fname": "Brent", "lname": "Yorgey"}']
+translate SELECT fname ,  lname FROM authors ORDER BY lname success
+success_query_count: 22
+valid_count: 33
+accuracy: 0.6666666666666666

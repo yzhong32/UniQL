@@ -1,0 +1,336 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM scientists]-----------------
+target_db_schema: ['ssn', 'name']
+convert time:1.72244 s
+---------------------------Execute Target Query:MATCH (s:scientists) RETURN count(*) AS count-----------------
+MATCH (s:scientists) RETURN count(*) AS count
+mysql res: ['{"count_*": 12}']
+target res: ['{"count": 12}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['sum_hours']
+---------------------------Execute SQL Query:[SELECT sum(hours) FROM projects]-----------------
+target_db_schema: ['name', 'code', 'hours']
+convert time:1.433458 s
+---------------------------Execute Target Query:MATCH (p:projects) RETURN SUM(p.hours) AS sum_hours-----------------
+MATCH (p:projects) RETURN SUM(p.hours) AS sum_hours
+mysql res: ['{"sum_hours": 20183}']
+target res: ['{"sum_hours": 20183}']
+translate SELECT sum(hours) FROM projects success
+
+--------------------------3-----------------
+schema:['count_DISTINCT scientist']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT scientist) FROM assignedto]-----------------
+target_db_schema: ['scientist', 'project']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:2.216734 s
+---------------------------Execute Target Query:MATCH (a:assignedto)
+RETURN COUNT(DISTINCT a.scientist) AS count_distinct_scientist-----------------
+MATCH (a:assignedto)
+RETURN COUNT(DISTINCT a.scientist) AS count_distinct_scientist
+mysql res: ['{"count_DISTINCT scientist": 12}']
+target res: ['{"count_distinct_scientist": 12}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['count_DISTINCT name']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT name) FROM projects]-----------------
+target_db_schema: ['name', 'code', 'hours']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:3.791042 s
+---------------------------Execute Target Query:MATCH (p:projects) RETURN COUNT(DISTINCT p.name) AS count_distinct_name-----------------
+MATCH (p:projects) RETURN COUNT(DISTINCT p.name) AS count_distinct_name
+mysql res: ['{"count_DISTINCT name": 14}']
+target res: ['{"count_distinct_name": 14}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['avg_hours']
+---------------------------Execute SQL Query:[SELECT avg(hours) FROM projects]-----------------
+target_db_schema: ['name', 'code', 'hours']
+convert time:2.320178 s
+---------------------------Execute Target Query:MATCH (p:projects)
+RETURN AVG(p.hours) AS avg_hours-----------------
+MATCH (p:projects)
+RETURN AVG(p.hours) AS avg_hours
+mysql res: ['{"avg_hours": 1441.6429}']
+target res: ['{"avg_hours": 1441.6428571428573}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects ORDER BY hours DESC LIMIT 1]-----------------
+target_db_schema: ['name', 'code', 'hours']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:6.150633 s
+---------------------------Execute Target Query:MATCH (p:projects) RETURN p.name AS name ORDER BY p.hours DESC LIMIT 1-----------------
+MATCH (p:projects) RETURN p.name AS name ORDER BY p.hours DESC LIMIT 1
+mysql res: ['{"name": "A Magnetic Primer Designer"}']
+target res: ['{"name": "A Magnetic Primer Designer"}']
+translate SELECT name FROM projects ORDER BY hours DESC LIMIT 1 success
+
+--------------------------7-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE hours  >  (SELECT avg(hours) FROM projects)]-----------------
+target_db_schema: ['name', 'code', 'hours']
+convert time:2.361775 s
+---------------------------Execute Target Query:MATCH (p:projects), (avgProj:projects) WHERE p.hours > (WITH AVG(avgProj.hours) AS avgHours RETURN avgHours) RETURN p.name AS name-----------------
+MATCH (p:projects), (avgProj:projects) WHERE p.hours > (WITH AVG(avgProj.hours) AS avgHours RETURN avgHours) RETURN p.name AS name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input '(': expected "+" or "-" (line 1, column 56 (offset: 55))
+"MATCH (p:projects), (avgProj:projects) WHERE p.hours > (WITH AVG(avgProj.hours) AS avgHours RETURN avgHours) RETURN p.name AS name"
+                                                        ^}
+
+--------------------------8-----------------
+schema:['name', 'hours']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.hours FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T2.project ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['name', 'code', 'hours', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+convert time:3.48196 s
+---------------------------Execute Target Query:MATCH (p:projects), (a:assignedto) WHERE p.code = a.project WITH p.name AS name, p.hours AS hours, COUNT(*) AS count_star ORDER BY count_star DESC LIMIT 1 RETURN name, hours-----------------
+MATCH (p:projects), (a:assignedto) WHERE p.code = a.project WITH p.name AS name, p.hours AS hours, COUNT(*) AS count_star ORDER BY count_star DESC LIMIT 1 RETURN name, hours
+mysql res: ['{"name": "Build Your Own Telescope", "hours": 6546}']
+target res: ['{"name": "Build Your Own Telescope", "hours": 6546}']
+translate SELECT T1.name ,  T1.hours FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T2.project ORDER BY count(*) DESC LIMIT 1 success
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T3.name LIKE '%Smith%']-----------------
+target_db_schema: ['ssn', 'name', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ']', '\n', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:2.705499 s
+---------------------------Execute Target Query:MATCH (a:assignedto), (p:projects), (s:scientists) WHERE a.project = p.code AND a.scientist = s.ssn AND s.name CONTAINS 'Smith' RETURN p.name-----------------
+MATCH (a:assignedto), (p:projects), (s:scientists) WHERE a.project = p.code AND a.scientist = s.ssn AND s.name CONTAINS 'Smith' RETURN p.name
+mysql res: ['{"name": "Build Your Own Telescope"}', '{"name": "Build Your Own Telescope"}', '{"name": "Aerodynamics and Gas Mileage"}']
+target res: ['{"p.name": "Build Your Own Telescope"}', '{"p.name": "Build Your Own Telescope"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['sum_T2_hours']
+---------------------------Execute SQL Query:[SELECT sum(T2.hours) FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T3.name  =  'Michael Rogers' OR T3.name  =  'Carol Smith']-----------------
+target_db_schema: ['ssn', 'name', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ']', '\n', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 32, column 24
+convert time:2.745152 s
+---------------------------Execute Target Query:MATCH (s:scientists)-[:assignedto]->(p:projects) WHERE s.name = 'Michael Rogers' OR s.name = 'Carol Smith' WITH SUM(p.hours) AS sum_hours RETURN sum_hours-----------------
+MATCH (s:scientists)-[:assignedto]->(p:projects) WHERE s.name = 'Michael Rogers' OR s.name = 'Carol Smith' WITH SUM(p.hours) AS sum_hours RETURN sum_hours
+mysql res: ['{"sum_T2_hours": 6702}']
+target res: ['{"sum_hours": 0}']
+mismatch between MySQL and target
+
+--------------------------11-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE hours BETWEEN 100 AND 300]-----------------
+target_db_schema: ['name', 'code', 'hours']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:2.248315 s
+---------------------------Execute Target Query:MATCH (p:projects) WHERE p.hours >= 100 AND p.hours <= 300 RETURN p.name AS name-----------------
+MATCH (p:projects) WHERE p.hours >= 100 AND p.hours <= 300 RETURN p.name AS name
+mysql res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+target res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+translate SELECT name FROM projects WHERE hours BETWEEN 100 AND 300 success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'Matter of Time' INTERSECT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'A Puzzling Parallax']-----------------
+target_db_schema: ['ssn', 'name', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ']', '\n', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:5.883102 s
+---------------------------Execute Target Query:MATCH (a:assignedto)-[:ASSIGNED_TO]->(p:projects), (a)-[:ASSIGNED_TO]->(s:scientists)
+WHERE p.name = 'Matter of Time'
+WITH s
+MATCH (a:assignedto)-[:ASSIGNED_TO]->(p:projects), (a)-[:ASSIGNED_TO]->(s:scientists)
+WHERE p.name = 'A Puzzling Parallax'
+RETURN s.name AS name-----------------
+MATCH (a:assignedto)-[:ASSIGNED_TO]->(p:projects), (a)-[:ASSIGNED_TO]->(s:scientists)
+WHERE p.name = 'Matter of Time'
+WITH s
+MATCH (a:assignedto)-[:ASSIGNED_TO]->(p:projects), (a)-[:ASSIGNED_TO]->(s:scientists)
+WHERE p.name = 'A Puzzling Parallax'
+RETURN s.name AS name
+mysql res: []
+target res: []
+translate SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'Matter of Time' INTERSECT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'A Puzzling Parallax' success
+
+--------------------------13-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists ORDER BY name]-----------------
+target_db_schema: ['ssn', 'name']
+convert time:1.337209 s
+---------------------------Execute Target Query:MATCH (s:scientists) RETURN s.name AS name ORDER BY s.name-----------------
+MATCH (s:scientists) RETURN s.name AS name ORDER BY s.name
+mysql res: ['{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "Elizabeth Doe"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "John Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Mary-Anne Foster"}', '{"name": "Michael Rogers"}', '{"name": "Zacary Efron"}']
+target res: ['{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "Elizabeth Doe"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "John Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Mary-Anne Foster"}', '{"name": "Michael Rogers"}', '{"name": "Zacary Efron"}']
+translate SELECT name FROM scientists ORDER BY name success
+
+--------------------------14-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T1.name]-----------------
+target_db_schema: ['name', 'code', 'hours', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+convert time:2.214336 s
+---------------------------Execute Target Query:MATCH (p:projects), (a:assignedto) WHERE p.code = a.project WITH p.name AS name, COUNT(*) AS count_star RETURN name, count_star-----------------
+MATCH (p:projects), (a:assignedto) WHERE p.code = a.project WITH p.name AS name, COUNT(*) AS count_star RETURN name, count_star
+mysql res: ['{"count_*": 1, "name": "Winds: Studying Bernoullis Principle"}', '{"count_*": 2, "name": "Aerodynamics and Gas Mileage"}', '{"count_*": 1, "name": "Aerodynamics and Ice Hockey"}', '{"count_*": 1, "name": "A Matter of Time"}', '{"count_*": 1, "name": "A Puzzling Parallax"}', '{"count_*": 3, "name": "Build Your Own Telescope"}', '{"count_*": 1, "name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"count_*": 2, "name": "A Silver-Cleaning Battery"}']
+target res: ['{"name": "Winds: Studying Bernoullis Principle", "count_star": 1}', '{"name": "Aerodynamics and Gas Mileage", "count_star": 2}', '{"name": "Aerodynamics and Ice Hockey", "count_star": 1}', '{"name": "A Matter of Time", "count_star": 1}', '{"name": "A Puzzling Parallax", "count_star": 1}', '{"name": "Build Your Own Telescope", "count_star": 3}', '{"name": "Juicy: Extracting Apple Juice with Pectinase", "count_star": 1}', '{"name": "A Silver-Cleaning Battery", "count_star": 2}']
+mismatch between MySQL and target
+
+--------------------------15-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project WHERE T1.hours  >  300 GROUP BY T1.name]-----------------
+target_db_schema: ['name', 'code', 'hours', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+convert time:2.708761 s
+---------------------------Execute Target Query:MATCH (p:projects), (a:assignedto) WHERE p.code = a.project AND p.hours > 300 WITH p.name AS name, COUNT(*) AS count_star RETURN name, count_star-----------------
+MATCH (p:projects), (a:assignedto) WHERE p.code = a.project AND p.hours > 300 WITH p.name AS name, COUNT(*) AS count_star RETURN name, count_star
+mysql res: ['{"count_*": 1, "name": "Aerodynamics and Ice Hockey"}', '{"count_*": 3, "name": "Build Your Own Telescope"}', '{"count_*": 1, "name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"count_*": 2, "name": "A Silver-Cleaning Battery"}']
+target res: ['{"name": "Aerodynamics and Ice Hockey", "count_star": 1}', '{"name": "Build Your Own Telescope", "count_star": 3}', '{"name": "Juicy: Extracting Apple Juice with Pectinase", "count_star": 1}', '{"name": "A Silver-Cleaning Battery", "count_star": 2}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM scientists AS T1 JOIN assignedto AS T2 ON T1.ssn  =  T2.scientist GROUP BY T1.name]-----------------
+target_db_schema: ['ssn', 'name', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+convert time:3.594065 s
+---------------------------Execute Target Query:MATCH (s:scientists), (a:assignedto) WHERE s.ssn = a.scientist WITH s.name AS name, COUNT(*) AS count_star RETURN name, count_star-----------------
+MATCH (s:scientists), (a:assignedto) WHERE s.ssn = a.scientist WITH s.name AS name, COUNT(*) AS count_star RETURN name, count_star
+mysql res: ['{"count_*": 1, "name": "Michael Rogers"}', '{"count_*": 1, "name": "Anand Manikutty"}', '{"count_*": 1, "name": "Carol Smith"}', '{"count_*": 1, "name": "Joe Stevens"}', '{"count_*": 1, "name": "Mary-Anne Foster"}', '{"count_*": 1, "name": "George ODonnell"}', '{"count_*": 1, "name": "John Doe"}', '{"count_*": 1, "name": "David Smith"}', '{"count_*": 1, "name": "Zacary Efron"}', '{"count_*": 1, "name": "Eric Goldsmith"}', '{"count_*": 1, "name": "Elizabeth Doe"}', '{"count_*": 1, "name": "Kumar Swamy"}']
+target res: ['{"name": "Michael Rogers", "count_star": 1}', '{"name": "Anand Manikutty", "count_star": 1}', '{"name": "Eric Goldsmith", "count_star": 1}', '{"name": "George ODonnell", "count_star": 1}', '{"name": "Elizabeth Doe", "count_star": 1}', '{"name": "Kumar Swamy", "count_star": 1}', '{"name": "Carol Smith", "count_star": 1}', '{"name": "Joe Stevens", "count_star": 1}', '{"name": "David Smith", "count_star": 1}', '{"name": "Mary-Anne Foster", "count_star": 1}', '{"name": "John Doe", "count_star": 1}', '{"name": "Zacary Efron", "count_star": 1}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['ssn', 'name']
+---------------------------Execute SQL Query:[SELECT T3.ssn ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects)]-----------------
+target_db_schema: ['ssn', 'name', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ']', '\n', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+convert time:4.524283 s
+---------------------------Execute Target Query:MATCH (a:assignedto)-[:ASSIGNED_TO]->(p:projects), (a)-[:ASSIGNED_TO]->(s:scientists)
+WHERE p.hours = (MATCH (p2:projects) RETURN MAX(p2.hours))
+RETURN s.ssn, s.name-----------------
+MATCH (a:assignedto)-[:ASSIGNED_TO]->(p:projects), (a)-[:ASSIGNED_TO]->(s:scientists)
+WHERE p.hours = (MATCH (p2:projects) RETURN MAX(p2.hours))
+RETURN s.ssn, s.name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'RETURN': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 2, column 38 (offset: 123))
+"WHERE p.hours = (MATCH (p2:projects) RETURN MAX(p2.hours))"
+                                      ^}
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM assignedto AS T1 JOIN scientists AS T2 ON T1.scientist  =  T2.ssn]-----------------
+target_db_schema: ['ssn', 'name', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:2.159154 s
+---------------------------Execute Target Query:MATCH (a:assignedto), (s:scientists) WHERE a.scientist = s.ssn RETURN s.name AS name-----------------
+MATCH (a:assignedto), (s:scientists) WHERE a.scientist = s.ssn RETURN s.name AS name
+mysql res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "David Smith"}', '{"name": "Mary-Anne Foster"}', '{"name": "John Doe"}', '{"name": "Zacary Efron"}']
+target res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "Mary-Anne Foster"}', '{"name": "George ODonnell"}', '{"name": "John Doe"}', '{"name": "David Smith"}', '{"name": "Zacary Efron"}', '{"name": "Eric Goldsmith"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}']
+translate SELECT T2.name FROM assignedto AS T1 JOIN scientists AS T2 ON T1.scientist  =  T2.ssn success
+
+--------------------------19-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE code NOT IN (SELECT project FROM assignedto)]-----------------
+target_db_schema: ['name', 'code', 'hours', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.694773 s
+---------------------------Execute Target Query:MATCH (p:projects) WHERE NOT EXISTS ((p)-[:assignedto]->()) RETURN p.name as name-----------------
+MATCH (p:projects) WHERE NOT EXISTS ((p)-[:assignedto]->()) RETURN p.name as name
+mysql res: ['{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics of a Football"}', '{"name": "Aerodynamics of Air Hockey"}', '{"name": "A Magnetic Primer Designer"}', '{"name": "Bacterial Transformation Efficiency"}', '{"name": "A Soluble Separation Solution"}']
+target res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "Aerodynamics and Ice Hockey"}', '{"name": "Aerodynamics of a Football"}', '{"name": "Aerodynamics of Air Hockey"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}', '{"name": "Build Your Own Telescope"}', '{"name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"name": "A Magnetic Primer Designer"}', '{"name": "Bacterial Transformation Efficiency"}', '{"name": "A Silver-Cleaning Battery"}', '{"name": "A Soluble Separation Solution"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------20-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto)]-----------------
+target_db_schema: ['ssn', 'name', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.998192 s
+---------------------------Execute Target Query:MATCH (s:scientists) WHERE NOT EXISTS ((s)-[:assignedto]->(:project)) RETURN s.name as name-----------------
+MATCH (s:scientists) WHERE NOT EXISTS ((s)-[:assignedto]->(:project)) RETURN s.name as name
+mysql res: []
+target res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "Mary-Anne Foster"}', '{"name": "George ODonnell"}', '{"name": "John Doe"}', '{"name": "David Smith"}', '{"name": "Zacary Efron"}', '{"name": "Eric Goldsmith"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------21-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto)]-----------------
+target_db_schema: ['ssn', 'name', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.794503 s
+---------------------------Execute Target Query:MATCH (s:scientists) WHERE NOT EXISTS ((s)-[:assignedto]->()) RETURN COUNT(*) AS count-----------------
+MATCH (s:scientists) WHERE NOT EXISTS ((s)-[:assignedto]->()) RETURN COUNT(*) AS count
+mysql res: ['{"count_*": 0}']
+target res: ['{"count": 12}']
+mismatch between MySQL and target
+
+--------------------------22-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists EXCEPT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects)]-----------------
+target_db_schema: ['ssn', 'name', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ']', '\n', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:3.87698 s
+---------------------------Execute Target Query:MATCH (s:scientists)
+WHERE NOT (s)-[:assignedto]->(:projects)-[:assignedto]->(s2:scientists)
+WITH s.name AS name, MAX((:projects).hours) AS max_hours
+WHERE (s2)-[:assignedto]->(:projects {hours: max_hours})
+RETURN name-----------------
+MATCH (s:scientists)
+WHERE NOT (s)-[:assignedto]->(:projects)-[:assignedto]->(s2:scientists)
+WITH s.name AS name, MAX((:projects).hours) AS max_hours
+WHERE (s2)-[:assignedto]->(:projects {hours: max_hours})
+RETURN name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input ':': expected "NOT", an expression or an identifier (line 3, column 27 (offset: 119))
+"WITH s.name AS name, MAX((:projects).hours) AS max_hours"
+                           ^}
+
+--------------------------23-----------------
+schema:['name', 'name', 'hours']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T3.name ,  T3.hours FROM scientists AS T1 JOIN assignedto AS T2 ON T1.ssn = T2.scientist JOIN projects AS T3 ON T2.project = T3.code ORDER BY T3.name ,  T1.name]-----------------
+target_db_schema: ['ssn', 'name', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ']', '\n', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+convert time:11.008692 s
+---------------------------Execute Target Query:MATCH (s:scientists)-[:assignedto]->(p:projects)
+WHERE s.ssn = p.code
+RETURN s.name AS scientist_name, p.name AS project_name, p.hours AS project_hours
+ORDER BY p.name, s.name-----------------
+MATCH (s:scientists)-[:assignedto]->(p:projects)
+WHERE s.ssn = p.code
+RETURN s.name AS scientist_name, p.name AS project_name, p.hours AS project_hours
+ORDER BY p.name, s.name
+mysql res: ['{"name": "Elizabeth Doe", "hours": 112}', '{"name": "Kumar Swamy", "hours": 299}', '{"name": "John Doe", "hours": 545}', '{"name": "Zacary Efron", "hours": 545}', '{"name": "Anand Manikutty", "hours": 256}', '{"name": "Eric Goldsmith", "hours": 256}', '{"name": "George ODonnell", "hours": 789}', '{"name": "Carol Smith", "hours": 6546}', '{"name": "David Smith", "hours": 6546}', '{"name": "Joe Stevens", "hours": 6546}', '{"name": "Mary-Anne Foster", "hours": 321}', '{"name": "Michael Rogers", "hours": 156}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------24-----------------
+schema:['name', 'name']
+---------------------------Execute SQL Query:[SELECT T2.name ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT min(hours) FROM projects)]-----------------
+target_db_schema: ['ssn', 'name', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ']', '\n', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ',', ' ', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ']', '\n']
+convert time:4.598926 s
+---------------------------Execute Target Query:MATCH (p:projects), (s:scientists), (a:assignedto) WHERE a.project = p.code AND a.scientist = s.ssn AND p.hours = (SELECT min(hours) FROM projects) RETURN p.name, s.name-----------------
+MATCH (p:projects), (s:scientists), (a:assignedto) WHERE a.project = p.code AND a.scientist = s.ssn AND p.hours = (SELECT min(hours) FROM projects) RETURN p.name, s.name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input '(': expected "+" or "-" (line 1, column 115 (offset: 114))
+"MATCH (p:projects), (s:scientists), (a:assignedto) WHERE a.project = p.code AND a.scientist = s.ssn AND p.hours = (SELECT min(hours) FROM projects) RETURN p.name, s.name"
+                                                                                                                   ^}
+success_query_count: 7
+valid_count: 24
+accuracy: 0.2916666666666667

@@ -1,0 +1,434 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM authors]-----------------
+convert time:1.824843 s
+---------------------------Execute Target Query:MATCH (a:authors) RETURN count(a) as count-----------------
+MATCH (a:authors) RETURN count(a) as count
+mysql res: ['{"count_*": 13}']
+target res: ['{"count": 13}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM inst]-----------------
+convert time:0.967594 s
+---------------------------Execute Target Query:MATCH (i:inst) RETURN count(i) as count-----------------
+MATCH (i:inst) RETURN count(i) as count
+mysql res: ['{"count_*": 8}']
+target res: ['{"count": 8}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM papers]-----------------
+convert time:1.400395 s
+---------------------------Execute Target Query:MATCH (p:papers) RETURN count(p) as count-----------------
+MATCH (p:papers) RETURN count(p) as count
+mysql res: ['{"count_*": 7}']
+target res: ['{"count": 7}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Jeremy" AND t1.lname  =  "Gibbons"]-----------------
+convert time:5.682659 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Jeremy" AND t1.lname = "Gibbons"
+RETURN t3.title as title-----------------
+MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Jeremy" AND t1.lname = "Gibbons"
+RETURN t3.title as title
+mysql res: ['{"title": "Just do it: Simple Monadic Equational Reasoning"}']
+target res: ['{"title": "Just do it: Simple Monadic Equational Reasoning"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Jeremy" AND t1.lname  =  "Gibbons" success
+
+--------------------------5-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Aaron" AND t1.lname  =  "Turon"]-----------------
+convert time:16.711167 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Aaron" AND t1.lname = "Turon"
+RETURN t3.title as title-----------------
+MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Aaron" AND t1.lname = "Turon"
+RETURN t3.title as title
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Aaron" AND t1.lname  =  "Turon" success
+
+--------------------------6-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Atsushi" AND t1.lname  =  "Ohori"]-----------------
+convert time:3.819121 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Atsushi" AND t1.lname = "Ohori"
+RETURN count(*) as count-----------------
+MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Atsushi" AND t1.lname = "Ohori"
+RETURN count(*) as count
+mysql res: ['{"count_*": 1}']
+target res: ['{"count": 1}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Matthias" AND t1.lname  =  "Blume"]-----------------
+convert time:3.667603 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:inst)
+WHERE t1.authid = t2.authid AND t2.instid = t3.instid AND t1.fname = "Matthias" AND t1.lname = "Blume"
+RETURN DISTINCT t3.name as name-----------------
+MATCH (t1:authors), (t2:authorship), (t3:inst)
+WHERE t1.authid = t2.authid AND t2.instid = t3.instid AND t1.fname = "Matthias" AND t1.lname = "Blume"
+RETURN DISTINCT t3.name as name
+mysql res: ['{"name": "Google"}']
+target res: ['{"name": "Google"}']
+translate SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Matthias" AND t1.lname  =  "Blume" success
+
+--------------------------8-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Katsuhiro" AND t1.lname  =  "Ueno"]-----------------
+convert time:4.016334 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:inst)
+WHERE t1.authid = t2.authid AND t2.instid = t3.instid AND t1.fname = "Katsuhiro" AND t1.lname = "Ueno"
+RETURN DISTINCT t3.name as name-----------------
+MATCH (t1:authors), (t2:authorship), (t3:inst)
+WHERE t1.authid = t2.authid AND t2.instid = t3.instid AND t1.fname = "Katsuhiro" AND t1.lname = "Ueno"
+RETURN DISTINCT t3.name as name
+mysql res: ['{"name": "Tohoku University"}']
+target res: ['{"name": "Tohoku University"}']
+translate SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Katsuhiro" AND t1.lname  =  "Ueno" success
+
+--------------------------9-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Oxford"]-----------------
+convert time:2.743861 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (i:inst)
+WHERE a.authid = as.authid AND as.instid = i.instid AND i.name = "University of Oxford"
+RETURN DISTINCT a.fname AS fname, a.lname AS lname-----------------
+MATCH (a:authors), (as:authorship), (i:inst)
+WHERE a.authid = as.authid AND as.instid = i.instid AND i.name = "University of Oxford"
+RETURN DISTINCT a.fname AS fname, a.lname AS lname
+mysql res: ['{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}']
+target res: ['{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}']
+translate SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Oxford" success
+
+--------------------------10-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google"]-----------------
+convert time:2.617545 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (i:inst)
+WHERE a.authid = as.authid AND as.instid = i.instid AND i.name = "Google"
+RETURN DISTINCT a.fname AS fname, a.lname AS lname-----------------
+MATCH (a:authors), (as:authorship), (i:inst)
+WHERE a.authid = as.authid AND as.instid = i.instid AND i.name = "Google"
+RETURN DISTINCT a.fname AS fname, a.lname AS lname
+mysql res: ['{"fname": "Matthias", "lname": "Blume"}']
+target res: ['{"fname": "Matthias", "lname": "Blume"}']
+translate SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google" success
+
+--------------------------11-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Binders Unbound"]-----------------
+convert time:3.120218 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title = "Binders Unbound"
+RETURN a.lname as lname-----------------
+MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title = "Binders Unbound"
+RETURN a.lname as lname
+mysql res: ['{"lname": "Weirich"}', '{"lname": "Yorgey"}', '{"lname": "Sheard"}']
+target res: ['{"lname": "Weirich"}', '{"lname": "Yorgey"}', '{"lname": "Sheard"}']
+translate SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Binders Unbound" success
+
+--------------------------12-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Nameless ,  Painless"]-----------------
+convert time:8.653705 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title = "Nameless, Painless"
+RETURN a.fname AS fname, a.lname AS lname-----------------
+MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title = "Nameless, Painless"
+RETURN a.fname AS fname, a.lname AS lname
+mysql res: []
+target res: ['{"fname": "Nicolas", "lname": "Pouillard"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Indiana University"]-----------------
+convert time:4.32406 s
+---------------------------Execute Target Query:MATCH (p:papers), (a:authorship), (i:inst)
+WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Indiana University"
+RETURN DISTINCT p.title as title-----------------
+MATCH (p:papers), (a:authorship), (i:inst)
+WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Indiana University"
+RETURN DISTINCT p.title as title
+mysql res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+target res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+translate SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Indiana University" success
+
+--------------------------14-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google"]-----------------
+convert time:8.657758 s
+---------------------------Execute Target Query:MATCH (p:papers), (a:authorship), (i:inst)
+WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Google"
+RETURN DISTINCT p.title as title-----------------
+MATCH (p:papers), (a:authorship), (i:inst)
+WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Google"
+RETURN DISTINCT p.title as title
+mysql res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+target res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+translate SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google" success
+
+--------------------------15-----------------
+schema:['count_DISTINCT t1_title']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT t1.title) FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Tokohu University"]-----------------
+convert time:4.351574 s
+---------------------------Execute Target Query:MATCH (p:papers)-[:authorship]->(a:authorship)-[:inst]->(i:inst)
+WHERE i.name = "Tokohu University"
+RETURN count(DISTINCT p.title) as count_distinct_title-----------------
+MATCH (p:papers)-[:authorship]->(a:authorship)-[:inst]->(i:inst)
+WHERE i.name = "Tokohu University"
+RETURN count(DISTINCT p.title) as count_distinct_title
+mysql res: ['{"count_DISTINCT t1_title": 0}']
+target res: ['{"count_distinct_title": 0}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['count_DISTINCT t1_title']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT t1.title) FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Pennsylvania"]-----------------
+convert time:10.345755 s
+---------------------------Execute Target Query:MATCH (p:papers), (a:authorship), (i:inst)
+WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "University of Pennsylvania"
+RETURN count(DISTINCT p.title) as count_distinct_title-----------------
+MATCH (p:papers), (a:authorship), (i:inst)
+WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "University of Pennsylvania"
+RETURN count(DISTINCT p.title) as count_distinct_title
+mysql res: ['{"count_DISTINCT t1_title": 1}']
+target res: ['{"count_distinct_title": 1}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Olin" AND t1.lname  =  "Shivers"]-----------------
+convert time:4.891025 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Olin" AND t1.lname = "Shivers"
+RETURN t3.title as title-----------------
+MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Olin" AND t1.lname = "Shivers"
+RETURN t3.title as title
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Olin" AND t1.lname  =  "Shivers" success
+
+--------------------------18-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Stephanie" AND t1.lname  =  "Weirich"]-----------------
+convert time:11.001981 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Stephanie" AND t1.lname = "Weirich"
+RETURN t3.title as title-----------------
+MATCH (t1:authors), (t2:authorship), (t3:papers)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t1.fname = "Stephanie" AND t1.lname = "Weirich"
+RETURN t3.title as title
+mysql res: ['{"title": "Binders Unbound"}']
+target res: ['{"title": "Binders Unbound"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Stephanie" AND t1.lname  =  "Weirich" success
+
+--------------------------19-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "USA" AND t2.authorder  =  2 AND t1.lname  =  "Turon"]-----------------
+convert time:6.504234 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:papers), (t4:inst)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t2.instid = t4.instid AND t4.country = "USA" AND t2.authorder = 2 AND t1.lname = "Turon"
+RETURN t3.title as title-----------------
+MATCH (t1:authors), (t2:authorship), (t3:papers), (t4:inst)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t2.instid = t4.instid AND t4.country = "USA" AND t2.authorder = 2 AND t1.lname = "Turon"
+RETURN t3.title as title
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "USA" AND t2.authorder  =  2 AND t1.lname  =  "Turon" success
+
+--------------------------20-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "Japan" AND t2.authorder  =  1 AND t1.lname  =  "Ohori"]-----------------
+convert time:5.71771 s
+---------------------------Execute Target Query:MATCH (t1:authors), (t2:authorship), (t3:papers), (t4:inst)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t2.instid = t4.instid AND t4.country = "Japan" AND t2.authorder = 1 AND t1.lname = "Ohori"
+RETURN t3.title as title-----------------
+MATCH (t1:authors), (t2:authorship), (t3:papers), (t4:inst)
+WHERE t1.authid = t2.authid AND t2.paperid = t3.paperid AND t2.instid = t4.instid AND t4.country = "Japan" AND t2.authorder = 1 AND t1.lname = "Ohori"
+RETURN t3.title as title
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "Japan" AND t2.authorder  =  1 AND t1.lname  =  "Ohori" success
+
+--------------------------21-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.fname ,  t1.lname ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:4.20776 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid
+RETURN a.lname as lname
+ORDER BY count(*) DESC
+LIMIT 1-----------------
+MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid
+RETURN a.lname as lname
+ORDER BY count(*) DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Cannot use aggregation in ORDER BY if there are no aggregate expressions in the preceding RETURN (line 3, column 1 (offset: 101))
+"RETURN a.lname as lname"
+ ^}
+
+--------------------------22-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT t1.country FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.country ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:4.142892 s
+---------------------------Execute Target Query:MATCH (t1:inst), (t2:authorship), (t3:papers)
+WHERE t1.instid = t2.instid AND t2.paperid = t3.paperid
+RETURN t1.country as country
+ORDER BY count(*) DESC
+LIMIT 1-----------------
+MATCH (t1:inst), (t2:authorship), (t3:papers)
+WHERE t1.instid = t2.instid AND t2.paperid = t3.paperid
+RETURN t1.country as country
+ORDER BY count(*) DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Cannot use aggregation in ORDER BY if there are no aggregate expressions in the preceding RETURN (line 3, column 1 (offset: 102))
+"RETURN t1.country as country"
+ ^}
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.name ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:4.109309 s
+---------------------------Execute Target Query:MATCH (i:inst), (a:authorship), (p:papers)
+WHERE i.instid = a.instid AND a.paperid = p.paperid
+RETURN i.name as name
+ORDER BY count(*) DESC
+LIMIT 1-----------------
+MATCH (i:inst), (a:authorship), (p:papers)
+WHERE i.instid = a.instid AND a.paperid = p.paperid
+RETURN i.name as name
+ORDER BY count(*) DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Cannot use aggregation in ORDER BY if there are no aggregate expressions in the preceding RETURN (line 3, column 1 (offset: 95))
+"RETURN i.name as name"
+ ^}
+
+--------------------------24-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT title FROM papers WHERE title LIKE "%ML%"]-----------------
+convert time:1.143334 s
+---------------------------Execute Target Query:MATCH (p:papers) WHERE p.title CONTAINS "ML" RETURN p.title as title-----------------
+MATCH (p:papers) WHERE p.title CONTAINS "ML" RETURN p.title as title
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+translate SELECT title FROM papers WHERE title LIKE "%ML%" success
+
+--------------------------25-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT title FROM papers WHERE title LIKE "%Database%"]-----------------
+convert time:1.256149 s
+---------------------------Execute Target Query:MATCH (p:papers) WHERE p.title CONTAINS "Database" RETURN p.title as title-----------------
+MATCH (p:papers) WHERE p.title CONTAINS "Database" RETURN p.title as title
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+translate SELECT title FROM papers WHERE title LIKE "%Database%" success
+
+--------------------------26-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT t1.fname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Functional%"]-----------------
+convert time:2.279102 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title CONTAINS "Functional"
+RETURN a.fname as fname-----------------
+MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title CONTAINS "Functional"
+RETURN a.fname as fname
+mysql res: ['{"fname": "Olin"}', '{"fname": "Aaron"}']
+target res: ['{"fname": "Olin"}', '{"fname": "Aaron"}']
+translate SELECT t1.fname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Functional%" success
+
+--------------------------27-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Monadic%"]-----------------
+convert time:3.576329 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title CONTAINS "Monadic"
+RETURN a.lname as lname-----------------
+MATCH (a:authors), (as:authorship), (p:papers)
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title CONTAINS "Monadic"
+RETURN a.lname as lname
+mysql res: ['{"lname": "Gibbons"}', '{"lname": "Hinze"}']
+target res: ['{"lname": "Gibbons"}', '{"lname": "Hinze"}']
+translate SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Monadic%" success
+
+--------------------------28-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t2.title FROM authorship AS t1 JOIN papers AS t2 ON t1.paperid  =  t2.paperid WHERE t1.authorder  =  (SELECT max(authorder) FROM authorship)]-----------------
+convert time:2.694855 s
+---------------------------Execute Target Query:MATCH (t1:authorship), (t2:papers) WHERE t1.paperid = t2.paperid AND t1.authorder = (SELECT max(authorder) FROM authorship) RETURN t2.title as title-----------------
+MATCH (t1:authorship), (t2:papers) WHERE t1.paperid = t2.paperid AND t1.authorder = (SELECT max(authorder) FROM authorship) RETURN t2.title as title
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input '(': expected "+" or "-" (line 1, column 85 (offset: 84))
+"MATCH (t1:authorship), (t2:papers) WHERE t1.paperid = t2.paperid AND t1.authorder = (SELECT max(authorder) FROM authorship) RETURN t2.title as title"
+                                                                                     ^}
+
+--------------------------29-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT fname FROM authors WHERE lname  =  "Ueno"]-----------------
+convert time:1.275655 s
+---------------------------Execute Target Query:MATCH (a:authors) WHERE a.lname = "Ueno" RETURN a.fname as fname-----------------
+MATCH (a:authors) WHERE a.lname = "Ueno" RETURN a.fname as fname
+mysql res: ['{"fname": "Katsuhiro"}']
+target res: ['{"fname": "Katsuhiro"}']
+translate SELECT fname FROM authors WHERE lname  =  "Ueno" success
+
+--------------------------30-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM authors WHERE fname  =  "Amal"]-----------------
+convert time:2.270225 s
+---------------------------Execute Target Query:MATCH (a:authors) WHERE a.fname = "Amal" RETURN a.lname as lname-----------------
+MATCH (a:authors) WHERE a.fname = "Amal" RETURN a.lname as lname
+mysql res: ['{"lname": "Ahmed"}']
+target res: ['{"lname": "Ahmed"}']
+translate SELECT lname FROM authors WHERE fname  =  "Amal" success
+
+--------------------------31-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT fname FROM authors ORDER BY fname]-----------------
+convert time:1.093976 s
+---------------------------Execute Target Query:MATCH (a:authors) RETURN a.fname as fname ORDER BY a.fname-----------------
+MATCH (a:authors) RETURN a.fname as fname ORDER BY a.fname
+mysql res: ['{"fname": "Aaron"}', '{"fname": "Amal"}', '{"fname": "Atsushi"}', '{"fname": "Brent"}', '{"fname": "Daniel W. H."}', '{"fname": "Jeremy"}', '{"fname": "Katsuhiro"}', '{"fname": "Matthias"}', '{"fname": "Nicolas"}', '{"fname": "Olin"}', '{"fname": "Ralf"}', '{"fname": "Stephanie"}', '{"fname": "Tim"}']
+target res: ['{"fname": "Aaron"}', '{"fname": "Amal"}', '{"fname": "Atsushi"}', '{"fname": "Brent"}', '{"fname": "Daniel W. H."}', '{"fname": "Jeremy"}', '{"fname": "Katsuhiro"}', '{"fname": "Matthias"}', '{"fname": "Nicolas"}', '{"fname": "Olin"}', '{"fname": "Ralf"}', '{"fname": "Stephanie"}', '{"fname": "Tim"}']
+translate SELECT fname FROM authors ORDER BY fname success
+
+--------------------------32-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM authors ORDER BY lname]-----------------
+convert time:1.528883 s
+---------------------------Execute Target Query:MATCH (a:authors) RETURN a.lname as lname ORDER BY a.lname-----------------
+MATCH (a:authors) RETURN a.lname as lname ORDER BY a.lname
+mysql res: ['{"lname": "Ahmed"}', '{"lname": "Blume"}', '{"lname": "Gibbons"}', '{"lname": "Hinze"}', '{"lname": "James"}', '{"lname": "Ohori"}', '{"lname": "Pouillard"}', '{"lname": "Sheard"}', '{"lname": "Shivers"}', '{"lname": "Turon"}', '{"lname": "Ueno"}', '{"lname": "Weirich"}', '{"lname": "Yorgey"}']
+target res: ['{"lname": "Ahmed"}', '{"lname": "Blume"}', '{"lname": "Gibbons"}', '{"lname": "Hinze"}', '{"lname": "James"}', '{"lname": "Ohori"}', '{"lname": "Pouillard"}', '{"lname": "Sheard"}', '{"lname": "Shivers"}', '{"lname": "Turon"}', '{"lname": "Ueno"}', '{"lname": "Weirich"}', '{"lname": "Yorgey"}']
+translate SELECT lname FROM authors ORDER BY lname success
+
+--------------------------33-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT fname ,  lname FROM authors ORDER BY lname]-----------------
+convert time:2.353231 s
+---------------------------Execute Target Query:MATCH (a:authors) RETURN a.fname AS fname, a.lname AS lname ORDER BY a.lname-----------------
+MATCH (a:authors) RETURN a.fname AS fname, a.lname AS lname ORDER BY a.lname
+mysql res: ['{"fname": "Amal", "lname": "Ahmed"}', '{"fname": "Matthias", "lname": "Blume"}', '{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Atsushi", "lname": "Ohori"}', '{"fname": "Nicolas", "lname": "Pouillard"}', '{"fname": "Tim", "lname": "Sheard"}', '{"fname": "Olin", "lname": "Shivers"}', '{"fname": "Aaron", "lname": "Turon"}', '{"fname": "Katsuhiro", "lname": "Ueno"}', '{"fname": "Stephanie", "lname": "Weirich"}', '{"fname": "Brent", "lname": "Yorgey"}']
+target res: ['{"fname": "Amal", "lname": "Ahmed"}', '{"fname": "Matthias", "lname": "Blume"}', '{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Atsushi", "lname": "Ohori"}', '{"fname": "Nicolas", "lname": "Pouillard"}', '{"fname": "Tim", "lname": "Sheard"}', '{"fname": "Olin", "lname": "Shivers"}', '{"fname": "Aaron", "lname": "Turon"}', '{"fname": "Katsuhiro", "lname": "Ueno"}', '{"fname": "Stephanie", "lname": "Weirich"}', '{"fname": "Brent", "lname": "Yorgey"}']
+translate SELECT fname ,  lname FROM authors ORDER BY lname success
+success_query_count: 22
+valid_count: 33
+accuracy: 0.6666666666666666

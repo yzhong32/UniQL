@@ -1,0 +1,323 @@
+--------
+
+--------------------------1-----------------
+schema:['email']
+---------------------------Execute SQL Query:[SELECT email FROM user_profiles WHERE name  =  'Mary']-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:2.926094 s
+---------------------------Execute Target Query:db.user_profiles.find({ "name": "Mary" }, { "email": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.user_profiles.find({ "name": "Mary" }, { "email": 1, "_id": 0 })
+result of mongodb: ['{"email": "Mary@yale.edu"}']
+mysql res: ['{"email": "Mary@yale.edu"}']
+target res: ['{"email": "Mary@yale.edu"}']
+translate SELECT email FROM user_profiles WHERE name  =  'Mary' success
+
+--------------------------2-----------------
+schema:['partitionid']
+---------------------------Execute SQL Query:[SELECT partitionid FROM user_profiles WHERE name  =  'Iron Man']-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:3.210716 s
+---------------------------Execute Target Query:db.user_profiles.find({ "name": "Iron Man" }, { "partitionid": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.user_profiles.find({ "name": "Iron Man" }, { "partitionid": 1, "_id": 0 })
+result of mongodb: ['{"partitionid": 1}']
+mysql res: ['{"partitionid": 1}']
+target res: ['{"partitionid": 1}']
+translate SELECT partitionid FROM user_profiles WHERE name  =  'Iron Man' success
+
+--------------------------3-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM user_profiles]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:1.79547 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$count": "count"}])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$count": "count"}])
+result of mongodb: ['{"count": 7}']
+mysql res: ['{"count_*": 7}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM follows]-----------------
+target_db_schema: f2, _id, f1
+convert time:4.538277 s
+---------------------------Execute Target Query:db.follows.aggregate([{"$group": {"_id": None, "count": {"$sum": 1}}}, {"$project": {"_id": 0, "count": 1}}])-----------------
+here we are in executor, and the query is:  db.follows.aggregate([{"$group": {"_id": None, "count": {"$sum": 1}}}, {"$project": {"_id": 0, "count": 1}}])
+result of mongodb: ['{"count": 9}']
+mysql res: ['{"count_*": 9}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM follows GROUP BY f1]-----------------
+target_db_schema: f2, _id, f1
+convert time:2.21566 s
+---------------------------Execute Target Query:db.follows.aggregate([ { $group: { _id: "$f1", count: { $sum: 1 } } } ])-----------------
+here we are in executor, and the query is:  db.follows.aggregate([ { $group: { _id: "$f1", count: { $sum: 1 } } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------6-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM tweets]-----------------
+target_db_schema: uid, id, _id, text, createdate
+convert time:1.81511 s
+---------------------------Execute Target Query:db.tweets.aggregate([{"$count": "count"}])-----------------
+here we are in executor, and the query is:  db.tweets.aggregate([{"$count": "count"}])
+result of mongodb: ['{"count": 8}']
+mysql res: ['{"count_*": 8}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['count_DISTINCT UID']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT UID) FROM tweets]-----------------
+target_db_schema: uid, id, _id, text, createdate
+convert time:3.799933 s
+---------------------------Execute Target Query:db.tweets.aggregate([{"$group": {"_id": "$UID", "count": {"$sum": 1}}}, {"$count": "distinct_UID"}])-----------------
+here we are in executor, and the query is:  db.tweets.aggregate([{"$group": {"_id": "$UID", "count": {"$sum": 1}}}, {"$count": "distinct_UID"}])
+result of mongodb: ['{"distinct_UID": 1}']
+mysql res: ['{"count_DISTINCT UID": 5}']
+target res: ['{"count_DISTINCT UID": null}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles WHERE name LIKE '%Swift%']-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:3.7751 s
+---------------------------Execute Target Query:db.user_profiles.find({ "name": { "$regex": "Swift", "$options": "i" } }, { "name": 1, "email": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.user_profiles.find({ "name": { "$regex": "Swift", "$options": "i" } }, { "name": 1, "email": 1, "_id": 0 })
+result of mongodb: ['{"email": "ts@superstar.com\\n", "name": "Tyler Swift"}']
+mysql res: ['{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}']
+target res: ['{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}']
+translate SELECT name ,  email FROM user_profiles WHERE name LIKE '%Swift%' success
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles WHERE email LIKE '%superstar%' OR email LIKE '%edu%']-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:8.3622 s
+---------------------------Execute Target Query:db.user_profiles.find({ $or: [{ email: /superstar/ }, { email: /edu/ }] }, { "name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.user_profiles.find({ $or: [{ email: /superstar/ }, { email: /edu/ }] }, { "name": 1, "_id": 0 })
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------10-----------------
+schema:['text']
+---------------------------Execute SQL Query:[SELECT text FROM tweets WHERE text LIKE '%intern%']-----------------
+target_db_schema: uid, id, _id, text, createdate
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:2.499952 s
+---------------------------Execute Target Query:db.tweets.find({ "text": { "$regex": "intern", "$options": "i" } }, { "text": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.tweets.find({ "text": { "$regex": "intern", "$options": "i" } }, { "text": 1, "_id": 0 })
+result of mongodb: ['{"text": "My company is hiring interns."}']
+mysql res: ['{"text": "My company is hiring interns."}']
+target res: ['{"text": "My company is hiring interns."}']
+translate SELECT text FROM tweets WHERE text LIKE '%intern%' success
+
+--------------------------11-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles WHERE followers  >  1000]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:2.969312 s
+---------------------------Execute Target Query:db.user_profiles.find({ "followers": { "$gt": 1000 } }, { "name": 1, "email": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.user_profiles.find({ "followers": { "$gt": 1000 } }, { "name": 1, "email": 1, "_id": 0 })
+result of mongodb: ['{"email": "ts@richest.com", "name": "Iron Man"}', '{"email": "bw@superhero.com", "name": "Black Widow\\n"}', '{"email": "ts@superstar.com\\n", "name": "Tyler Swift"}', '{"email": "cd@superstar.com", "name": "Celine Dion"}', '{"email": "np@superstar.com", "name": "Natalie Portman"}']
+mysql res: ['{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}', '{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}', '{"name": "Celine Dion", "email": "cd@superstar.com"}', '{"name": "Natalie Portman", "email": "np@superstar.com"}']
+target res: ['{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}', '{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}', '{"name": "Celine Dion", "email": "cd@superstar.com"}', '{"name": "Natalie Portman", "email": "np@superstar.com"}']
+translate SELECT name ,  email FROM user_profiles WHERE followers  >  1000 success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidfollows: f2, _id, f1
+
+convert time:6.754046 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$lookup":{"from":"follows","localField":"uid","foreignField":"f1","as":"follows_join"}},{"$unwind":"$follows_join"},{"$group":{"_id":"$follows_join_f1","name":{"$first":"$name"},"count":{"$sum":1}}},{"$match":{"count":{"$gt":{"$sum":1}},"name":"Tyler Swift"}}],{"_id":0,"name":1})-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$lookup":{"from":"follows","localField":"uid","foreignField":"f1","as":"follows_join"}},{"$unwind":"$follows_join"},{"$group":{"_id":"$follows_join_f1","name":{"$first":"$name"},"count":{"$sum":1}}},{"$match":{"count":{"$gt":{"$sum":1}},"name":"Tyler Swift"}}],{"_id":0,"name":1})
+execute target query error:'session' argument must be a ClientSession or None.
+
+--------------------------13-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.email FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  1]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidfollows: f2, _id, f1
+
+convert time:7.645882 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$lookup": {"from": "follows", "localField": "uid", "foreignField": "f1", "as": "follows_join"}}, {"$unwind": "$follows_join"}, {"$group": {"_id": "$follows_join_f1", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"name": 1, "email": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$lookup": {"from": "follows", "localField": "uid", "foreignField": "f1", "as": "follows_join"}}, {"$unwind": "$follows_join"}, {"$group": {"_id": "$follows_join_f1", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"name": 1, "email": 1, "_id": 0}}])
+result of mongodb: ['{}']
+mysql res: ['{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}', '{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}']
+target res: ['{"name": null, "email": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  >  1]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidtweets: uid, id, _id, text, createdate
+
+convert time:6.98518 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$lookup": {"from": "tweets", "localField": "uid", "foreignField": "uid", "as": "tweets"}}, {"$unwind": "$tweets"}, {"$group": {"_id": "$tweets_uid", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"name": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$lookup": {"from": "tweets", "localField": "uid", "foreignField": "uid", "as": "tweets"}}, {"$unwind": "$tweets"}, {"$group": {"_id": "$tweets_uid", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"name": 1, "_id": 0}}])
+result of mongodb: ['{}']
+mysql res: ['{"name": "Iron Man"}', '{"name": "Susan"}', '{"name": "Celine Dion"}']
+target res: ['{"name": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------15-----------------
+schema:['f1']
+---------------------------Execute SQL Query:[SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Mary" INTERSECT SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Susan"]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidfollows: f2, _id, f1
+
+convert time:8.325882 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([ { $match: { name: { $in: ["Mary", "Susan"] } } }, { $lookup: { from: "follows", localField: "uid", foreignField: "f2", as: "follows" } }, { $unwind: "$follows" }, { $group: { _id: "$follows.f1", count: { $sum: 1 } } }, { $match: { count: 2 } }, { $project: { f1: "$_id", _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([ { $match: { name: { $in: ["Mary", "Susan"] } } }, { $lookup: { from: "follows", localField: "uid", foreignField: "f2", as: "follows" } }, { $unwind: "$follows" }, { $group: { _id: "$follows.f1", count: { $sum: 1 } } }, { $match: { count: 2 } }, { $project: { f1: "$_id", _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------16-----------------
+schema:['f1']
+---------------------------Execute SQL Query:[SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Mary" OR T1.name  =  "Susan"]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidfollows: f2, _id, f1
+
+convert time:5.650657 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$match": {"$or": [{"name": "Mary"}, {"name": "Susan"}]}}, {"$lookup": {"from": "follows", "localField": "uid", "foreignField": "f2", "as": "follows"}}, {"$unwind": "$follows"}, {"$project": {"f1": "$follows_f1", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$match": {"$or": [{"name": "Mary"}, {"name": "Susan"}]}}, {"$lookup": {"from": "follows", "localField": "uid", "foreignField": "f2", "as": "follows"}}, {"$unwind": "$follows"}, {"$project": {"f1": "$follows_f1", "_id": 0}}])
+result of mongodb: ['{}', '{}']
+mysql res: ['{"f1": 1}', '{"f1": 3}']
+target res: ['{"f1": null}', '{"f1": null}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:2.355639 s
+---------------------------Execute Target Query:db.user_profiles.find({}, { "name": 1, "_id": 0 }).sort({ "followers": -1 }).limit(1)-----------------
+here we are in executor, and the query is:  db.user_profiles.find({}, { "name": 1, "_id": 0 }).sort({ "followers": -1 }).limit(1)
+result of mongodb: ['{"name": "Tyler Swift"}']
+mysql res: ['{"name": "Tyler Swift"}']
+target res: ['{"name": "Tyler Swift"}']
+translate SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1 success
+
+--------------------------18-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles ORDER BY followers LIMIT 1]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:3.942641 s
+---------------------------Execute Target Query:db.user_profiles.find({}, { "name": 1, "email": 1, "_id": 0 }).sort({ "followers": 1 }).limit(1)-----------------
+here we are in executor, and the query is:  db.user_profiles.find({}, { "name": 1, "email": 1, "_id": 0 }).sort({ "followers": 1 }).limit(1)
+result of mongodb: ['{"email": "susan@gmail.com\\n", "name": "Susan"}']
+mysql res: ['{"name": "Susan", "email": "susan@gmail.com\\n"}']
+target res: ['{"name": "Susan", "email": "susan@gmail.com\\n"}']
+translate SELECT name ,  email FROM user_profiles ORDER BY followers LIMIT 1 success
+
+--------------------------19-----------------
+schema:['name', 'followers']
+---------------------------Execute SQL Query:[SELECT name ,  followers FROM user_profiles ORDER BY followers DESC]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:4.78886 s
+---------------------------Execute Target Query:db.user_profiles.find({}, { "name": 1, "followers": 1, "_id": 0 }).sort({ "followers": -1 })-----------------
+here we are in executor, and the query is:  db.user_profiles.find({}, { "name": 1, "followers": 1, "_id": 0 }).sort({ "followers": -1 })
+result of mongodb: ['{"followers": 99999998, "name": "Tyler Swift"}', '{"followers": 94375428, "name": "Natalie Portman"}', '{"followers": 35425845, "name": "Black Widow\\n"}', '{"followers": 23927492, "name": "Celine Dion"}', '{"followers": 6662425, "name": "Iron Man"}', '{"followers": 890, "name": "Mary"}', '{"followers": 100, "name": "Susan"}']
+mysql res: ['{"name": "Tyler Swift", "followers": 99999998}', '{"name": "Natalie Portman", "followers": 94375428}', '{"name": "Black Widow\\n", "followers": 35425845}', '{"name": "Celine Dion", "followers": 23927492}', '{"name": "Iron Man", "followers": 6662425}', '{"name": "Mary", "followers": 890}', '{"name": "Susan", "followers": 100}']
+target res: ['{"name": "Tyler Swift", "followers": 99999998}', '{"name": "Natalie Portman", "followers": 94375428}', '{"name": "Black Widow\\n", "followers": 35425845}', '{"name": "Celine Dion", "followers": 23927492}', '{"name": "Iron Man", "followers": 6662425}', '{"name": "Mary", "followers": 890}', '{"name": "Susan", "followers": 100}']
+translate SELECT name ,  followers FROM user_profiles ORDER BY followers DESC success
+
+--------------------------20-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 5]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:2.355962 s
+---------------------------Execute Target Query:db.user_profiles.find({}, { "name": 1, "_id": 0 }).sort({ "followers": -1 }).limit(5)-----------------
+here we are in executor, and the query is:  db.user_profiles.find({}, { "name": 1, "_id": 0 }).sort({ "followers": -1 }).limit(5)
+result of mongodb: ['{"name": "Tyler Swift"}', '{"name": "Natalie Portman"}', '{"name": "Black Widow\\n"}', '{"name": "Celine Dion"}', '{"name": "Iron Man"}']
+mysql res: ['{"name": "Tyler Swift"}', '{"name": "Natalie Portman"}', '{"name": "Black Widow\\n"}', '{"name": "Celine Dion"}', '{"name": "Iron Man"}']
+target res: ['{"name": "Tyler Swift"}', '{"name": "Natalie Portman"}', '{"name": "Black Widow\\n"}', '{"name": "Celine Dion"}', '{"name": "Iron Man"}']
+translate SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 5 success
+
+--------------------------21-----------------
+schema:['text']
+---------------------------Execute SQL Query:[SELECT text FROM tweets ORDER BY createdate]-----------------
+target_db_schema: uid, id, _id, text, createdate
+convert time:2.765092 s
+---------------------------Execute Target Query:db.tweets.find({}, { "text": 1, "_id": 0 }).sort({ "createdate": 1 })-----------------
+here we are in executor, and the query is:  db.tweets.find({}, { "text": 1, "_id": 0 }).sort({ "createdate": 1 })
+result of mongodb: ['{"text": "Hello I\'m Tony Stark."}', '{"text": "Today I have went shopping at Laffayette."}', '{"text": "My company is hiring interns."}', '{"text": "Oh, I only have a few fans."}', '{"text": "Let\\u2019s celebrate women, fight for equality and support each other,  not just today, but everyday!"}', '{"text": "I love my new boyfriend."}', '{"text": "I feel tired and don\'t want to write SQLs."}', '{"text": "I had a pretty rough time during the last couple of weeks"}']
+mysql res: ['{"text": "Hello I\'m Tony Stark."}', '{"text": "Today I have went shopping at Laffayette."}', '{"text": "My company is hiring interns."}', '{"text": "Oh, I only have a few fans."}', '{"text": "Let\\u2019s celebrate women, fight for equality and support each other,  not just today, but everyday!"}', '{"text": "I love my new boyfriend."}', '{"text": "I feel tired and don\'t want to write SQLs."}', '{"text": "I had a pretty rough time during the last couple of weeks"}']
+target res: ['{"text": "Hello I\'m Tony Stark."}', '{"text": "Today I have went shopping at Laffayette."}', '{"text": "My company is hiring interns."}', '{"text": "Oh, I only have a few fans."}', '{"text": "Let\\u2019s celebrate women, fight for equality and support each other,  not just today, but everyday!"}', '{"text": "I love my new boyfriend."}', '{"text": "I feel tired and don\'t want to write SQLs."}', '{"text": "I had a pretty rough time during the last couple of weeks"}']
+translate SELECT text FROM tweets ORDER BY createdate success
+
+--------------------------22-----------------
+schema:['name', 'count_*']
+---------------------------Execute SQL Query:[SELECT T1.name ,  count(*) FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidtweets: uid, id, _id, text, createdate
+
+convert time:5.028445 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$lookup": {"from": "tweets", "localField": "uid", "foreignField": "uid", "as": "tweets"}}, {"$unwind": "$tweets"}, {"$group": {"_id": "$tweets_uid", "name": {"$first": "$name"}, "count": {"$sum": 1}}}, {"$project": {"_id": 0, "name": 1, "count": 1}}])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$lookup": {"from": "tweets", "localField": "uid", "foreignField": "uid", "as": "tweets"}}, {"$unwind": "$tweets"}, {"$group": {"_id": "$tweets_uid", "name": {"$first": "$name"}, "count": {"$sum": 1}}}, {"$project": {"_id": 0, "name": 1, "count": 1}}])
+result of mongodb: ['{"name": "Iron Man", "count": 8}']
+mysql res: ['{"name": "Iron Man", "count_*": 2}', '{"name": "Black Widow\\n", "count_*": 1}', '{"name": "Susan", "count_*": 2}', '{"name": "Tyler Swift", "count_*": 1}', '{"name": "Celine Dion", "count_*": 2}']
+target res: ['{"name": "Iron Man", "count_*": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------23-----------------
+schema:['name', 'partitionid']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.partitionid FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  <  2]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidtweets: uid, id, _id, text, createdate
+
+Error parsing XML of prompt: not well-formed (invalid token): line 90, column 136
+convert time:6.409673 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$lookup": {"from": "tweets", "localField": "uid", "foreignField": "uid", "as": "tweets"}}, {"$unwind": "$tweets"}, {"$group": {"_id": "$tweets_uid", "count": {"$sum": 1}, "name": {"$first": "$name"}, "partitionid": {"$first": "$partitionid"}}}, {"$match": {"count": {"$lt": 2}}}, {"$project": {"name": 1, "partitionid": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$lookup": {"from": "tweets", "localField": "uid", "foreignField": "uid", "as": "tweets"}}, {"$unwind": "$tweets"}, {"$group": {"_id": "$tweets_uid", "count": {"$sum": 1}, "name": {"$first": "$name"}, "partitionid": {"$first": "$partitionid"}}}, {"$match": {"count": {"$lt": 2}}}, {"$project": {"name": 1, "partitionid": 1, "_id": 0}}])
+result of mongodb: []
+mysql res: ['{"name": "Black Widow\\n", "partitionid": 23}', '{"name": "Tyler Swift", "partitionid": 10}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------24-----------------
+schema:['name', 'count_*']
+---------------------------Execute SQL Query:[SELECT T1.name ,  count(*) FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  >  1]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidtweets: uid, id, _id, text, createdate
+
+convert time:4.966926 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$lookup":{"from":"tweets","localField":"uid","foreignField":"uid","as":"tweets"}},{"$unwind":"$tweets"},{"$group":{"_id":"$tweets_uid","name":{"$first":"$name"},"count":{"$sum":1}}},{"$match":{"count":{"$gt":1}}},{"$project":{"name":1,"count":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$lookup":{"from":"tweets","localField":"uid","foreignField":"uid","as":"tweets"}},{"$unwind":"$tweets"},{"$group":{"_id":"$tweets_uid","name":{"$first":"$name"},"count":{"$sum":1}}},{"$match":{"count":{"$gt":1}}},{"$project":{"name":1,"count":1,"_id":0}}])
+result of mongodb: ['{"name": "Iron Man", "count": 8}']
+mysql res: ['{"name": "Iron Man", "count_*": 2}', '{"name": "Susan", "count_*": 2}', '{"name": "Celine Dion", "count_*": 2}']
+target res: ['{"name": "Iron Man", "count_*": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------25-----------------
+schema:['avg_followers']
+---------------------------Execute SQL Query:[SELECT avg(followers) FROM user_profiles WHERE UID NOT IN (SELECT UID FROM tweets)]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidtweets: uid, id, _id, text, createdate
+
+convert time:4.318467 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([ { $lookup: { from: "tweets", localField: "uid", foreignField: "uid", as: "tweets" } }, { $match: { "tweets": { $size: 0 } } }, { $group: { _id: None, avg_followers: { $avg: "$followers" } } } ])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([ { $lookup: { from: "tweets", localField: "uid", foreignField: "uid", as: "tweets" } }, { $match: { "tweets": { $size: 0 } } }, { $group: { _id: None, avg_followers: { $avg: "$followers" } } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------26-----------------
+schema:['avg_followers']
+---------------------------Execute SQL Query:[SELECT avg(followers) FROM user_profiles WHERE UID IN (SELECT UID FROM tweets)]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionidtweets: uid, id, _id, text, createdate
+
+convert time:5.214722 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([ { $match: { uid: { $in: db.tweets.distinct("uid") } } }, { $group: { _id: None, avg_followers: { $avg: "$followers" } } } ])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([ { $match: { uid: { $in: db.tweets.distinct("uid") } } }, { $group: { _id: None, avg_followers: { $avg: "$followers" } } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------27-----------------
+schema:['max_followers', 'sum_followers']
+---------------------------Execute SQL Query:[SELECT max(followers) ,  sum(followers) FROM user_profiles]-----------------
+target_db_schema: uid, email, name, _id, followers, partitionid
+convert time:2.828763 s
+---------------------------Execute Target Query:db.user_profiles.aggregate([{"$group": {"_id": None, "max_followers": {"$max": "$followers"}, "sum_followers": {"$sum": "$followers"}}}, {"$project": {"_id": 0}}])-----------------
+here we are in executor, and the query is:  db.user_profiles.aggregate([{"$group": {"_id": None, "max_followers": {"$max": "$followers"}, "sum_followers": {"$sum": "$followers"}}}, {"$project": {"_id": 0}}])
+result of mongodb: ['{"max_followers": 99999998, "sum_followers": 260392178}']
+mysql res: ['{"max_followers": 99999998, "sum_followers": 260392178}']
+target res: ['{"max_followers": 99999998, "sum_followers": 260392178}']
+translate SELECT max(followers) ,  sum(followers) FROM user_profiles success
+success_query_count: 11
+valid_count: 27
+accuracy: 0.4074074074074074

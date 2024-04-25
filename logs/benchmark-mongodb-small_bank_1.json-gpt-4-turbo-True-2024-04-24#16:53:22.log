@@ -1,0 +1,290 @@
+--------
+
+--------------------------1-----------------
+schema:['sum_T2_balance']
+---------------------------Execute SQL Query:[SELECT sum(T2.balance) FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T1.name != 'Brown']-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+
+convert time:4.051702 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$match":{"name":{"$ne":"Brown"}}},{"$unwind":"$savings"},{"$group":{"_id":None,"sum_balance":{"$sum":"$savings_balance"}}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$match":{"name":{"$ne":"Brown"}}},{"$unwind":"$savings"},{"$group":{"_id":None,"sum_balance":{"$sum":"$savings_balance"}}}])
+result of mongodb: ['{"_id": null, "sum_balance": 0}']
+mysql res: ['{"sum_T2_balance": 1000310300.0}']
+target res: ['{"sum_T2_balance": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM accounts]-----------------
+target_db_schema: name, custid, _id
+convert time:4.731549 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$group": {"_id": None, "count": {"$sum": 1}}}, {"$project": {"_id": 0, "count": 1}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$group": {"_id": None, "count": {"$sum": 1}}}, {"$project": {"_id": 0, "count": 1}}])
+result of mongodb: ['{"count": 7}']
+mysql res: ['{"count_*": 7}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['sum_balance']
+---------------------------Execute SQL Query:[SELECT sum(balance) FROM checking]-----------------
+target_db_schema: balance, custid, _id
+convert time:4.684831 s
+---------------------------Execute Target Query:db.checking.aggregate([{"$group": {"_id": None, "sum_balance": {"$sum": "$balance"}}}, {"$project": {"_id": 0, "sum_balance": 1}}])-----------------
+here we are in executor, and the query is:  db.checking.aggregate([{"$group": {"_id": None, "sum_balance": {"$sum": "$balance"}}}, {"$project": {"_id": 0, "sum_balance": 1}}])
+result of mongodb: ['{"sum_balance": 32084.0}']
+mysql res: ['{"sum_balance": 32084.0}']
+target res: ['{"sum_balance": 32084.0}']
+translate SELECT sum(balance) FROM checking success
+
+--------------------------4-----------------
+schema:['avg_balance']
+---------------------------Execute SQL Query:[SELECT avg(balance) FROM checking]-----------------
+target_db_schema: balance, custid, _id
+convert time:3.072978 s
+---------------------------Execute Target Query:db.checking.aggregate([{"$group": {"_id": None, "avg_balance": {"$avg": "$balance"}}}, {"$project": {"_id": 0, "avg_balance": 1}}])-----------------
+here we are in executor, and the query is:  db.checking.aggregate([{"$group": {"_id": None, "avg_balance": {"$avg": "$balance"}}}, {"$project": {"_id": 0, "avg_balance": 1}}])
+result of mongodb: ['{"avg_balance": 4583.428571428572}']
+mysql res: ['{"avg_balance": 4583.428571428572}']
+target res: ['{"avg_balance": 4583.428571428572}']
+translate SELECT avg(balance) FROM checking success
+
+--------------------------5-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM savings WHERE balance  >  (SELECT avg(balance) FROM savings)]-----------------
+target_db_schema: balance, custid, _id
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:6.341168 s
+---------------------------Execute Target Query:db.savings.aggregate([ { $group: { _id: null, avg_balance: { $avg: "$balance" } } }, { $lookup: { from: "savings", localField: "avg_balance", foreignField: "balance", as: "higher_balances" } }, { $match: { "higher_balances.balance": { $gt: "$avg_balance" } } }, { $count: "count" } ])-----------------
+here we are in executor, and the query is:  db.savings.aggregate([ { $group: { _id: null, avg_balance: { $avg: "$balance" } } }, { $lookup: { from: "savings", localField: "avg_balance", foreignField: "balance", as: "higher_balances" } }, { $match: { "higher_balances.balance": { $gt: "$avg_balance" } } }, { $count: "count" } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------6-----------------
+schema:['custid', 'name']
+---------------------------Execute SQL Query:[SELECT T1.custid ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT max(balance) FROM checking)]-----------------
+target_db_schema: name, custid, _idchecking: balance, custid, _id
+
+Error parsing XML of prompt: not well-formed (invalid token): line 90, column 119
+convert time:5.853108 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_info" } }, { $unwind: "$checking_info" }, { $match: { "checking_info_balance": { $lt: { $max: "$checking_info_balance" } } } }, { $project: { "custid": 1, "name": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_info" } }, { $unwind: "$checking_info" }, { $match: { "checking_info_balance": { $lt: { $max: "$checking_info_balance" } } } }, { $project: { "custid": 1, "name": 1, "_id": 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------7-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T1.name LIKE '%ee%']-----------------
+target_db_schema: name, custid, _idchecking: balance, custid, _id
+
+convert time:5.23116 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$lookup":{"from":"checking","localField":"custid","foreignField":"custid","as":"checking"}},{"$match":{"name":{"$regex":"ee","$options":"i"}}},{"$project":{"balance":"$checking.balance","_id":0}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$lookup":{"from":"checking","localField":"custid","foreignField":"custid","as":"checking"}},{"$match":{"name":{"$regex":"ee","$options":"i"}}},{"$project":{"balance":"$checking.balance","_id":0}}])
+result of mongodb: ['{"balance": [7000.0]}']
+mysql res: ['{"balance": 7000.0}']
+target res: ['{"balance": [7000.0]}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['balance', 'balance']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T1.name  =  'Brown']-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:8.384705 s
+---------------------------Execute Target Query:db.accounts.aggregate([{$match: {name: 'Brown'}}, {$lookup: {from: 'checking', localField: 'custid', foreignField: 'custid', as: 'checking'}}, {$lookup: {from: 'savings', localField: 'custid', foreignField: 'custid', as: 'savings'}}, {$project: {checking_balance: '$checking.balance', savings_balance: '$savings.balance', _id: 0}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{$match: {name: 'Brown'}}, {$lookup: {from: 'checking', localField: 'custid', foreignField: 'custid', as: 'checking'}}, {$lookup: {from: 'savings', localField: 'custid', foreignField: 'custid', as: 'savings'}}, {$project: {checking_balance: '$checking.balance', savings_balance: '$savings.balance', _id: 0}}])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  >  (SELECT avg(balance) FROM checking) INTERSECT SELECT T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT avg(balance) FROM savings)]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+Error parsing XML of prompt: not well-formed (invalid token): line 91, column 254
+convert time:9.526003 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $unwind: "$checking" }, { $match: { "checking_balance": { $gt: { $avg: "$checking_balance" } } } }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $unwind: "$savings" }, { $match: { "savings_balance": { $lt: { $avg: "$savings_balance" } } } }, { $group: { _id: "$name" } }, { $project: { name: "$_id", _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $unwind: "$checking" }, { $match: { "checking_balance": { $gt: { $avg: "$checking_balance" } } } }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $unwind: "$savings" }, { $match: { "savings_balance": { $lt: { $avg: "$savings_balance" } } } }, { $group: { _id: "$name" } }, { $project: { name: "$_id", _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------10-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T1.name IN (SELECT T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  >  (SELECT avg(balance) FROM savings))]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:23.057901 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $match: { "savings.balance": { $gt: { $avg: "$savings.balance" } } } }, { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $project: { balance: "$checking.balance", _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $match: { "savings.balance": { $gt: { $avg: "$savings.balance" } } } }, { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $project: { balance: "$checking.balance", _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------11-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM accounts ORDER BY name]-----------------
+target_db_schema: name, custid, _id
+convert time:1.750745 s
+---------------------------Execute Target Query:db.accounts.find({}, { "name": 1, "_id": 0 }).sort({ "name": 1 })-----------------
+here we are in executor, and the query is:  db.accounts.find({}, { "name": 1, "_id": 0 }).sort({ "name": 1 })
+result of mongodb: ['{"name": "Brown"}', '{"name": "Granger"}', '{"name": "O\'mahony"}', '{"name": "Porter"}', '{"name": "Wang"}', '{"name": "Weeks"}', '{"name": "Wesley"}']
+mysql res: ['{"name": "Brown"}', '{"name": "Granger"}', '{"name": "O\'mahony"}', '{"name": "Porter"}', '{"name": "Wang"}', '{"name": "Weeks"}', '{"name": "Wesley"}']
+target res: ['{"name": "Brown"}', '{"name": "Granger"}', '{"name": "O\'mahony"}', '{"name": "Porter"}', '{"name": "Wang"}', '{"name": "Weeks"}', '{"name": "Wesley"}']
+translate SELECT name FROM accounts ORDER BY name success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance + T3.balance LIMIT 1]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:8.904823 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_docs" } }, { $unwind: "$checking_docs" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_docs" } }, { $unwind: "$savings_docs" }, { $project: { name: 1, total_balance: { $add: ["$checking_docs_balance", "$savings_docs_balance"] }, _id: 0 } }, { $sort: { total_balance: 1 } }, { $limit: 1 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_docs" } }, { $unwind: "$checking_docs" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_docs" } }, { $unwind: "$savings_docs" }, { $project: { name: 1, total_balance: { $add: ["$checking_docs_balance", "$savings_docs_balance"] }, _id: 0 } }, { $sort: { total_balance: 1 } }, { $limit: 1 } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------13-----------------
+schema:['name', 'T2_balance + T3_balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T2.balance + T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T3.balance  >  (SELECT avg(balance) FROM savings)]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:8.913937 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $unwind: "$checking" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $unwind: "$savings" }, { $match: { "savings_balance": { $gt: { $avg: "$savings_balance" } } } }, { $project: { name: 1, total_balance: { $add: ["$checking_balance", "$savings_balance"] }, _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $unwind: "$checking" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $unwind: "$savings" }, { $match: { "savings_balance": { $gt: { $avg: "$savings_balance" } } } }, { $project: { name: 1, total_balance: { $add: ["$checking_balance", "$savings_balance"] }, _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------14-----------------
+schema:['name', 'balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T3.balance LIMIT 1]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:8.349884 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $unwind: "$checking" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $unwind: "$savings" }, { $project: { name: 1, "checking_balance": "$checking.balance", "_id": 0 } }, { $sort: { "savings_balance": 1 } }, { $limit: 1 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $unwind: "$checking" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $unwind: "$savings" }, { $project: { name: 1, "checking_balance": "$checking.balance", "_id": 0 } }, { $sort: { "savings_balance": 1 } }, { $limit: 1 } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------15-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid GROUP BY T1.name]-----------------
+target_db_schema: name, custid, _idchecking: balance, custid, _id
+
+convert time:5.444036 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$lookup": {"from": "checking", "localField": "custid", "foreignField": "custid", "as": "checking"}}, {"$unwind": "$checking"}, {"$group": {"_id": "$name", "count": {"$sum": 1}}}, {"$project": {"name": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$lookup": {"from": "checking", "localField": "custid", "foreignField": "custid", "as": "checking"}}, {"$unwind": "$checking"}, {"$group": {"_id": "$name", "count": {"$sum": 1}}}, {"$project": {"name": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 1, "name": "Brown"}', '{"count": 1, "name": "Wang"}', '{"count": 1, "name": "O\'mahony"}', '{"count": 1, "name": "Granger"}', '{"count": 1, "name": "Weeks"}', '{"count": 1, "name": "Porter"}', '{"count": 1, "name": "Wesley"}']
+mysql res: ['{"count_*": 1, "name": "Brown"}', '{"count_*": 1, "name": "Wang"}', '{"count_*": 1, "name": "O\'mahony"}', '{"count_*": 1, "name": "Weeks"}', '{"count_*": 1, "name": "Granger"}', '{"count_*": 1, "name": "Porter"}', '{"count_*": 1, "name": "Wesley"}']
+target res: ['{"count_*": null, "name": "Brown"}', '{"count_*": null, "name": "Wang"}', '{"count_*": null, "name": "O\'mahony"}', '{"count_*": null, "name": "Granger"}', '{"count_*": null, "name": "Weeks"}', '{"count_*": null, "name": "Porter"}', '{"count_*": null, "name": "Wesley"}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['sum_T2_balance', 'name']
+---------------------------Execute SQL Query:[SELECT sum(T2.balance) ,  T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid GROUP BY T1.name]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+
+convert time:5.311427 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$unwind":"$savings"},{"$group":{"_id":"$name","sum_balance":{"$sum":"$savings_balance"}}},{"$project":{"name":"$_id","sum_balance":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$unwind":"$savings"},{"$group":{"_id":"$name","sum_balance":{"$sum":"$savings_balance"}}},{"$project":{"name":"$_id","sum_balance":1,"_id":0}}])
+result of mongodb: ['{"sum_balance": 0, "name": "Brown"}', '{"sum_balance": 0, "name": "Wang"}', '{"sum_balance": 0, "name": "O\'mahony"}', '{"sum_balance": 0, "name": "Weeks"}', '{"sum_balance": 0, "name": "Porter"}', '{"sum_balance": 0, "name": "Granger"}']
+mysql res: ['{"sum_T2_balance": 200000.0, "name": "Brown"}', '{"sum_T2_balance": 1000000000.0, "name": "Wang"}', '{"sum_T2_balance": 230000.0, "name": "O\'mahony"}', '{"sum_T2_balance": 60.0, "name": "Weeks"}', '{"sum_T2_balance": 80000.0, "name": "Granger"}', '{"sum_T2_balance": 240.0, "name": "Porter"}']
+target res: ['{"sum_T2_balance": null, "name": "Brown"}', '{"sum_T2_balance": null, "name": "Wang"}', '{"sum_T2_balance": null, "name": "O\'mahony"}', '{"sum_T2_balance": null, "name": "Weeks"}', '{"sum_T2_balance": null, "name": "Porter"}', '{"sum_T2_balance": null, "name": "Granger"}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT avg(balance) FROM checking)]-----------------
+target_db_schema: name, custid, _idchecking: balance, custid, _id
+
+Error parsing XML of prompt: not well-formed (invalid token): line 90, column 106
+convert time:7.448111 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_info" } }, { $unwind: "$checking_info" }, { $match: { "checking_info_balance": { $lt: { $avg: "$checking_info_balance" } } } }, { $project: { "name": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_info" } }, { $unwind: "$checking_info" }, { $match: { "checking_info_balance": { $lt: { $avg: "$checking_info_balance" } } } }, { $project: { "name": 1, "_id": 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------18-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance DESC LIMIT 1]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:9.566334 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_docs" } }, { $unwind: "$checking_docs" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_docs" } }, { $unwind: "$savings_docs" }, { $project: { balance: "$savings_docs.balance", _id: 0 } }, { $sort: { "checking_docs_balance": -1 } }, { $limit: 1 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_docs" } }, { $unwind: "$checking_docs" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_docs" } }, { $unwind: "$savings_docs" }, { $project: { balance: "$savings_docs.balance", _id: 0 } }, { $sort: { "checking_docs_balance": -1 } }, { $limit: 1 } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------19-----------------
+schema:['T1_balance + T2_balance']
+---------------------------Execute SQL Query:[SELECT T1.balance + T2.balance FROM checking AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid ORDER BY T1.balance + T2.balance]-----------------
+target_db_schema: balance, custid, _idchecking: balance, custid, _id
+
+convert time:6.439942 s
+---------------------------Execute Target Query:db.checking.aggregate([ { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_data" } }, { $unwind: "$savings_data" }, { $project: { total_balance: { $add: ["$balance", "$savings_data_balance"] }, _id: 0 } }, { $sort: { total_balance: 1 } } ])-----------------
+here we are in executor, and the query is:  db.checking.aggregate([ { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_data" } }, { $unwind: "$savings_data" }, { $project: { total_balance: { $add: ["$balance", "$savings_data_balance"] }, _id: 0 } }, { $sort: { total_balance: 1 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------20-----------------
+schema:['balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T3.balance LIMIT 1]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:10.659772 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $unwind: "$checking" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $unwind: "$savings" }, { $project: { balance: "$checking_balance", name: 1, _id: 0 } }, { $sort: { "savings_balance": 1 } }, { $limit: 1 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking" } }, { $unwind: "$checking" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings" } }, { $unwind: "$savings" }, { $project: { balance: "$checking_balance", name: 1, _id: 0 } }, { $sort: { "savings_balance": 1 } }, { $limit: 1 } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------21-----------------
+schema:['balance', 'balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:10.030921 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_info" } }, { $unwind: "$checking_info" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_info" } }, { $unwind: "$savings_info" }, { $project: { name: 1, "checking_info.balance": 1, "savings_info.balance": 1, _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_info" } }, { $unwind: "$checking_info" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_info" } }, { $unwind: "$savings_info" }, { $project: { name: 1, "checking_info.balance": 1, "savings_info.balance": 1, _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------22-----------------
+schema:['balance', 'balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance + T3.balance DESC]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:9.586309 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$lookup":{"from":"checking","localField":"custid","foreignField":"custid","as":"checking"}},{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$unwind":"$checking"},{"$unwind":"$savings"},{"$project":{"name":1,"checking_balance":"$checking.balance","savings_balance":"$savings.balance","_id":0}},{"$sort":{"$add":["$checking_balance","$savings_balance"]:-1}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$lookup":{"from":"checking","localField":"custid","foreignField":"custid","as":"checking"}},{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$unwind":"$checking"},{"$unwind":"$savings"},{"$project":{"name":1,"checking_balance":"$checking.balance","savings_balance":"$savings.balance","_id":0}},{"$sort":{"$add":["$checking_balance","$savings_balance"]:-1}}])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T2.balance  >  T3.balance]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+convert time:12.37176 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_docs" } }, { $unwind: "$checking_docs" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_docs" } }, { $unwind: "$savings_docs" }, { $match: { "checking_docs_balance": { $gt: "$savings_docs_balance" } } }, { $project: { "name": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "checking", localField: "custid", foreignField: "custid", as: "checking_docs" } }, { $unwind: "$checking_docs" }, { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_docs" } }, { $unwind: "$savings_docs" }, { $match: { "checking_docs_balance": { $gt: "$savings_docs_balance" } } }, { $project: { "name": 1, "_id": 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------24-----------------
+schema:['name', 'T3_balance + T2_balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T3.balance + T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T3.balance  <  T2.balance]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+checking: balance, custid, _id
+
+Error parsing XML of prompt: not well-formed (invalid token): line 91, column 179
+convert time:6.387723 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$lookup":{"from":"checking","localField":"custid","foreignField":"custid","as":"checking"}},{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$match":{"$expr":{"$lt":["$savings.balance","$checking.balance"]}}},{"$project":{"name":1,"total_balance":{"$add":["$checking.balance","$savings.balance"]},"_id":0}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$lookup":{"from":"checking","localField":"custid","foreignField":"custid","as":"checking"}},{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$match":{"$expr":{"$lt":["$savings.balance","$checking.balance"]}}},{"$project":{"name":1,"total_balance":{"$add":["$checking.balance","$savings.balance"]},"_id":0}}])
+execute target query error:PlanExecutor error during aggregation :: caused by :: $add only supports numeric or date types, not array, full error: {'ok': 0.0, 'errmsg': 'PlanExecutor error during aggregation :: caused by :: $add only supports numeric or date types, not array', 'code': 14, 'codeName': 'TypeMismatch'}
+
+--------------------------25-----------------
+schema:['name', 'balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T2.balance FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid ORDER BY T2.balance DESC LIMIT 3]-----------------
+target_db_schema: balance, custid, _idaccounts: name, custid, _id
+
+convert time:6.376686 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_info" } }, { $unwind: "$savings_info" }, { $project: { "name": 1, "savings_info_balance": "$savings_info.balance", "_id": 0 } }, { $sort: { "savings_info_balance": -1 } }, { $limit: 3 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { $lookup: { from: "savings", localField: "custid", foreignField: "custid", as: "savings_info" } }, { $unwind: "$savings_info" }, { $project: { "name": 1, "savings_info_balance": "$savings_info.balance", "_id": 0 } }, { $sort: { "savings_info_balance": -1 } }, { $limit: 3 } ])
+execute target query error:invalid syntax (<string>, line 1)
+success_query_count: 3
+valid_count: 25
+accuracy: 0.12

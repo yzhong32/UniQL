@@ -1,0 +1,786 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM church WHERE open_date  <  1850]-----------------
+target_db_schema: ['church_id', 'continuation_of', 'name', 'open_date', 'organized_by']
+Error parsing XML of prompt: not well-formed (invalid token): line 129, column 51
+convert time:7.64342 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "open_date": {
+                            "lt": 1850
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_churches": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["church"],
+    "code": {
+        "total_churches": "response['aggregations']['total_churches']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'open_date': {'lt': 1850}}}]}}, 'size': 0, 'aggs': {'total_churches': {'value_count': {'field': '_index'}}}, 'code': {'total_churches': "response['aggregations']['total_churches']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_churches': {'value': 9}}}
+
+exec_result_dict: {'total_churches': 9}
+mysql res: ['{"count_*": 9}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['name', 'open_date', 'organized_by']
+---------------------------Execute SQL Query:[SELECT name ,  open_date ,  organized_by FROM church]-----------------
+target_db_schema: ['church_id', 'continuation_of', 'name', 'open_date', 'organized_by']
+convert time:2.234413 s
+---------------------------Execute Target Query:{
+    "size": 10,
+    "_source": ["name", "open_date", "organized_by"],
+    "inner_index": ["church"]
+}-----------------
+**************************************************
+{'size': 10, '_source': ['name', 'open_date', 'organized_by']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'wedding_church', '_id': 'UlcLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': 'Pure Church of Christ', 'organized_by': 'Wycam Clark', 'open_date': 1831}}, {'_index': 'wedding_church', '_id': 'U1cLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': 'Independent Church', 'organized_by': '– Hoton', 'open_date': 1832}}, {'_index': 'wedding_church', '_id': 'VFcLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': 'Church of Christ', 'organized_by': 'Ezra Booth', 'open_date': 1836}}, {'_index': 'wedding_church', '_id': 'VVcLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': 'Church of Christ (Parrishite)', 'organized_by': 'Warren Parrish', 'open_date': 1837}}, {'_index': 'wedding_church', '_id': 'VlcLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': 'Alston Church', 'organized_by': 'Isaac Russell', 'open_date': 1839}}, {'_index': 'wedding_church', '_id': 'V1cLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': 'Church of Christ', 'organized_by': 'William Chubby', 'open_date': 1830}}, {'_index': 'wedding_church', '_id': 'WFcLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': "Church of Jesus Christ, the Bride, the Lamb's Wife", 'organized_by': 'George M. Hinkle', 'open_date': 1840}}, {'_index': 'wedding_church', '_id': 'WVcLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': 'Church of Christ', 'organized_by': 'Hiram Page', 'open_date': 1842}}, {'_index': 'wedding_church', '_id': 'WlcLEo8BsHbYzo2o8nR2', '_score': 1.0, '_source': {'name': 'True Church of Jesus Christ of Latter Day Saints', 'organized_by': 'William Law', 'open_date': 1844}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Pure Church of Christ", "open_date": 1831, "organized_by": "Wycam Clark"}', '{"name": "Independent Church", "open_date": 1832, "organized_by": "\\u2013 Hoton"}', '{"name": "Church of Christ", "open_date": 1836, "organized_by": "Ezra Booth"}', '{"name": "Church of Christ (Parrishite)", "open_date": 1837, "organized_by": "Warren Parrish"}', '{"name": "Alston Church", "open_date": 1839, "organized_by": "Isaac Russell"}', '{"name": "Church of Christ", "open_date": 1830, "organized_by": "William Chubby"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840, "organized_by": "George M. Hinkle"}', '{"name": "Church of Christ", "open_date": 1842, "organized_by": "Hiram Page"}', '{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844, "organized_by": "William Law"}']
+target res: ['{"name": "Pure Church of Christ", "open_date": 1831, "organized_by": "Wycam Clark"}', '{"name": "Independent Church", "open_date": 1832, "organized_by": "\\u2013 Hoton"}', '{"name": "Church of Christ", "open_date": 1836, "organized_by": "Ezra Booth"}', '{"name": "Church of Christ (Parrishite)", "open_date": 1837, "organized_by": "Warren Parrish"}', '{"name": "Alston Church", "open_date": 1839, "organized_by": "Isaac Russell"}', '{"name": "Church of Christ", "open_date": 1830, "organized_by": "William Chubby"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840, "organized_by": "George M. Hinkle"}', '{"name": "Church of Christ", "open_date": 1842, "organized_by": "Hiram Page"}', '{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844, "organized_by": "William Law"}']
+translate SELECT name ,  open_date ,  organized_by FROM church success
+
+--------------------------3-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM church ORDER BY open_date DESC]-----------------
+target_db_schema: ['church_id', 'continuation_of', 'name', 'open_date', 'organized_by']
+convert time:4.978146 s
+---------------------------Execute Target Query:{
+    "size": 1000,
+    "sort": [
+        {"open_date": {"order": "desc"}}
+    ],
+    "_source": ["name"],
+    "inner_index": ["church"]
+}-----------------
+**************************************************
+{'size': 1000, 'sort': [{'open_date': {'order': 'desc'}}], '_source': ['name']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'wedding_church', '_id': 'WlcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'True Church of Jesus Christ of Latter Day Saints'}, 'sort': [1844]}, {'_index': 'wedding_church', '_id': 'WVcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'Church of Christ'}, 'sort': [1842]}, {'_index': 'wedding_church', '_id': 'WFcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': "Church of Jesus Christ, the Bride, the Lamb's Wife"}, 'sort': [1840]}, {'_index': 'wedding_church', '_id': 'VlcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'Alston Church'}, 'sort': [1839]}, {'_index': 'wedding_church', '_id': 'VVcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'Church of Christ (Parrishite)'}, 'sort': [1837]}, {'_index': 'wedding_church', '_id': 'VFcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'Church of Christ'}, 'sort': [1836]}, {'_index': 'wedding_church', '_id': 'U1cLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'Independent Church'}, 'sort': [1832]}, {'_index': 'wedding_church', '_id': 'UlcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'Pure Church of Christ'}, 'sort': [1831]}, {'_index': 'wedding_church', '_id': 'V1cLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'Church of Christ'}, 'sort': [1830]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "True Church of Jesus Christ of Latter Day Saints"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}']
+target res: ['{"name": "True Church of Jesus Christ of Latter Day Saints"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}']
+translate SELECT name FROM church ORDER BY open_date DESC success
+
+--------------------------4-----------------
+schema:['open_date']
+---------------------------Execute SQL Query:[SELECT open_date FROM church GROUP BY open_date HAVING count(*)  >=  2]-----------------
+target_db_schema: ['church_id', 'continuation_of', 'name', 'open_date', 'organized_by']
+convert time:10.156085 s
+---------------------------Execute Target Query:{
+    "inner_index": ["church"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": []
+        }
+    },
+    "aggs": {
+        "group_by_open_date": {
+            "terms": {
+                "field": "open_date",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "open_date"
+                    }
+                }
+            }
+        },
+        "open_dates_with_min_count_2": {
+            "bucket_selector": {
+                "buckets_path": {
+                    "count": "group_by_open_date>count"
+                },
+                "script": "params.count >= 2"
+            }
+        }
+    },
+    "code": {
+        "open_date_result": "response['aggregations']['group_by_open_date']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': []}}, 'aggs': {'group_by_open_date': {'terms': {'field': 'open_date', 'size': 10}, 'aggs': {'count': {'value_count': {'field': 'open_date'}}}}, 'open_dates_with_min_count_2': {'bucket_selector': {'buckets_path': {'count': 'group_by_open_date>count'}, 'script': 'params.count >= 2'}}}, 'code': {'open_date_result': "response['aggregations']['group_by_open_date']['buckets']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'action_request_validation_exception', 'Validation Failed: 1: bucket_selector aggregation [open_dates_with_min_count_2] must be declared inside of another aggregation;')
+
+--------------------------5-----------------
+schema:['organized_by', 'name']
+---------------------------Execute SQL Query:[SELECT organized_by ,  name FROM church WHERE open_date BETWEEN 1830 AND 1840]-----------------
+target_db_schema: ['church_id', 'continuation_of', 'name', 'open_date', 'organized_by']
+convert time:5.054015 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "open_date": {
+                            "gte": 1830,
+                            "lte": 1840
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["organized_by", "name"],
+    "inner_index": ["church"]
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'open_date': {'gte': 1830, 'lte': 1840}}}]}}, '_source': ['organized_by', 'name'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': 0.0, 'hits': [{'_index': 'wedding_church', '_id': 'UlcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Pure Church of Christ', 'organized_by': 'Wycam Clark'}}, {'_index': 'wedding_church', '_id': 'U1cLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Independent Church', 'organized_by': '– Hoton'}}, {'_index': 'wedding_church', '_id': 'VFcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Church of Christ', 'organized_by': 'Ezra Booth'}}, {'_index': 'wedding_church', '_id': 'VVcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Church of Christ (Parrishite)', 'organized_by': 'Warren Parrish'}}, {'_index': 'wedding_church', '_id': 'VlcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Alston Church', 'organized_by': 'Isaac Russell'}}, {'_index': 'wedding_church', '_id': 'V1cLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Church of Christ', 'organized_by': 'William Chubby'}}, {'_index': 'wedding_church', '_id': 'WFcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': "Church of Jesus Christ, the Bride, the Lamb's Wife", 'organized_by': 'George M. Hinkle'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"organized_by": "Wycam Clark", "name": "Pure Church of Christ"}', '{"organized_by": "\\u2013 Hoton", "name": "Independent Church"}', '{"organized_by": "Ezra Booth", "name": "Church of Christ"}', '{"organized_by": "Warren Parrish", "name": "Church of Christ (Parrishite)"}', '{"organized_by": "Isaac Russell", "name": "Alston Church"}', '{"organized_by": "William Chubby", "name": "Church of Christ"}', '{"organized_by": "George M. Hinkle", "name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}']
+target res: ['{"organized_by": "Wycam Clark", "name": "Pure Church of Christ"}', '{"organized_by": "\\u2013 Hoton", "name": "Independent Church"}', '{"organized_by": "Ezra Booth", "name": "Church of Christ"}', '{"organized_by": "Warren Parrish", "name": "Church of Christ (Parrishite)"}', '{"organized_by": "Isaac Russell", "name": "Alston Church"}', '{"organized_by": "William Chubby", "name": "Church of Christ"}', '{"organized_by": "George M. Hinkle", "name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}']
+translate SELECT organized_by ,  name FROM church WHERE open_date BETWEEN 1830 AND 1840 success
+
+--------------------------6-----------------
+schema:['open_date', 'count_*']
+---------------------------Execute SQL Query:[SELECT open_date ,  count(*) FROM church GROUP BY open_date]-----------------
+target_db_schema: ['church_id', 'continuation_of', 'name', 'open_date', 'organized_by']
+convert time:12.934624 s
+---------------------------Execute Target Query:{
+    "inner_index": ["church"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "open_date": {
+            "terms": {
+                "field": "open_date",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "open_date"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "open_date_result": "response['aggregations']['open_date']['buckets']",
+        "count": "bucket['count']['value'] for bucket in response['aggregations']['open_date']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'open_date': {'terms': {'field': 'open_date', 'size': 10}, 'aggs': {'count': {'value_count': {'field': 'open_date'}}}}}, 'code': {'open_date_result': "response['aggregations']['open_date']['buckets']", 'count': "bucket['count']['value'] for bucket in response['aggregations']['open_date']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'open_date': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 1830, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1831, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1832, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1836, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1837, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1839, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1840, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1842, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1844, 'doc_count': 1, 'count': {'value': 1}}]}}}
+
+exec_result_dict: {'open_date_result': [{'key': 1830, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1831, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1832, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1836, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1837, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1839, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1840, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1842, 'doc_count': 1, 'count': {'value': 1}}, {'key': 1844, 'doc_count': 1, 'count': {'value': 1}}]}
+mysql res: ['{"open_date": 1831, "count_*": 1}', '{"open_date": 1832, "count_*": 1}', '{"open_date": 1836, "count_*": 1}', '{"open_date": 1837, "count_*": 1}', '{"open_date": 1839, "count_*": 1}', '{"open_date": 1830, "count_*": 1}', '{"open_date": 1840, "count_*": 1}', '{"open_date": 1842, "count_*": 1}', '{"open_date": 1844, "count_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------7-----------------
+schema:['name', 'open_date']
+---------------------------Execute SQL Query:[SELECT name ,  open_date FROM church ORDER BY open_date DESC LIMIT 3]-----------------
+target_db_schema: ['church_id', 'continuation_of', 'name', 'open_date', 'organized_by']
+convert time:2.652017 s
+---------------------------Execute Target Query:{
+    "size": 3,
+    "sort": [
+        {"open_date": {"order": "desc"}}
+    ],
+    "_source": ["name", "open_date"],
+    "inner_index": ["church"]
+}-----------------
+**************************************************
+{'size': 3, 'sort': [{'open_date': {'order': 'desc'}}], '_source': ['name', 'open_date']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'wedding_church', '_id': 'WlcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'True Church of Jesus Christ of Latter Day Saints', 'open_date': 1844}, 'sort': [1844]}, {'_index': 'wedding_church', '_id': 'WVcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': 'Church of Christ', 'open_date': 1842}, 'sort': [1842]}, {'_index': 'wedding_church', '_id': 'WFcLEo8BsHbYzo2o8nR2', '_score': None, '_source': {'name': "Church of Jesus Christ, the Bride, the Lamb's Wife", 'open_date': 1840}, 'sort': [1840]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844}', '{"name": "Church of Christ", "open_date": 1842}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840}']
+target res: ['{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844}', '{"name": "Church of Christ", "open_date": 1842}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840}']
+translate SELECT name ,  open_date FROM church ORDER BY open_date DESC LIMIT 3 success
+
+--------------------------8-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM people WHERE is_male  =  'F' AND age  >  30]-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id']
+convert time:8.368517 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "Is_male": "F" #comment: keyword
+                    }
+                },
+                {
+                    "range": {
+                        "age": {
+                            "gt": 30
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_people": {
+            "value_count": {
+                "field": "people_id"
+            }
+        }
+    },
+    "inner_index": ["people"],
+    "code": {
+        "total_people": "response['aggregations']['total_people']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'Is_male': 'F'}}, {'range': {'age': {'gt': 30}}}]}}, 'size': 0, 'aggs': {'total_people': {'value_count': {'field': 'people_id'}}}, 'code': {'total_people': "response['aggregations']['total_people']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_people': {'value': 0}}}
+
+exec_result_dict: {'total_people': 0}
+mysql res: ['{"count_*": 3}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM people WHERE age  <  25 INTERSECT SELECT country FROM people WHERE age  >  30]-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id']
+Error parsing XML of prompt: not well-formed (invalid token): line 135, column 44
+convert time:7.592529 s
+---------------------------Execute Target Query:{
+    "inner_index": ["people"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {
+                                "range": {
+                                    "age": {
+                                        "lt": 25
+                                    }
+                                }
+                            },
+                            {
+                                "range": {
+                                    "age": {
+                                        "gt": 30
+                                    }
+                                }
+                            }
+                        ],
+                        "minimum_should_match": 1
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["country"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'should': [{'range': {'age': {'lt': 25}}}, {'range': {'age': {'gt': 30}}}], 'minimum_should_match': 1}}]}}, '_source': ['country'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'wedding_people', '_id': 'W1cLEo8BsHbYzo2o9HSY', '_score': 1.0, '_source': {'country': 'Canada'}}, {'_index': 'wedding_people', '_id': 'XFcLEo8BsHbYzo2o9HSY', '_score': 1.0, '_source': {'country': 'Sweden'}}, {'_index': 'wedding_people', '_id': 'YVcLEo8BsHbYzo2o9HSY', '_score': 1.0, '_source': {'country': 'United States'}}, {'_index': 'wedding_people', '_id': 'YlcLEo8BsHbYzo2o9HSY', '_score': 1.0, '_source': {'country': 'United States'}}, {'_index': 'wedding_people', '_id': 'Y1cLEo8BsHbYzo2o9HSY', '_score': 1.0, '_source': {'country': 'Northern Ireland'}}, {'_index': 'wedding_people', '_id': 'ZFcLEo8BsHbYzo2o9HSY', '_score': 1.0, '_source': {'country': 'United States'}}]}}
+
+exec_result_dict: {}
+mysql res: []
+target res: ['{"country": "Canada"}', '{"country": "Sweden"}', '{"country": "United States"}', '{"country": "United States"}', '{"country": "Northern Ireland"}', '{"country": "United States"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['min_age', 'max_age', 'avg_age']
+---------------------------Execute SQL Query:[SELECT min(age) ,  max(age) ,  avg(age) FROM people]-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id']
+convert time:8.560988 s
+---------------------------Execute Target Query:{
+  "inner_index": ["people"],
+  "size": 0,
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "min_age": {
+      "min": {
+        "field": "age"
+      }
+    },
+    "max_age": {
+      "max": {
+        "field": "age"
+      }
+    },
+    "avg_age": {
+      "avg": {
+        "field": "age"
+      }
+    }
+  },
+  "code": {
+    "min_age": "response['aggregations']['min_age']['value']",
+    "max_age": "response['aggregations']['max_age']['value']",
+    "avg_age": "response['aggregations']['avg_age']['value']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'min_age': {'min': {'field': 'age'}}, 'max_age': {'max': {'field': 'age'}}, 'avg_age': {'avg': {'field': 'age'}}}, 'code': {'min_age': "response['aggregations']['min_age']['value']", 'max_age': "response['aggregations']['max_age']['value']", 'avg_age': "response['aggregations']['avg_age']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 12, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'min_age': {'value': 25.0}, 'max_age': {'value': 36.0}, 'avg_age': {'value': 30.166666666666668}}}
+
+exec_result_dict: {'min_age': 25.0, 'max_age': 36.0, 'avg_age': 30.166666666666668}
+mysql res: ['{"min_age": 25, "max_age": 36, "avg_age": 30.1667}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['name', 'country']
+---------------------------Execute SQL Query:[SELECT name ,  country FROM people WHERE age  <  (SELECT avg(age) FROM people)]-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id']
+Error parsing XML of prompt: not well-formed (invalid token): line 152, column 52
+convert time:7.778335 s
+---------------------------Execute Target Query:{
+    "inner_index": ["people"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "age": {
+                            "lt": {
+                                "script": {
+                                    "source": "params.avg_age",
+                                    "params": {
+                                        "avg_age": "response['aggregations']['avg_age']['value']"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "avg_age": {
+            "avg": {
+                "field": "age"
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['hits']['hits']",
+        "country_result": "response['hits']['hits']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'range': {'age': {'lt': {'script': {'source': 'params.avg_age', 'params': {'avg_age': "response['aggregations']['avg_age']['value']"}}}}}}]}}, 'aggs': {'avg_age': {'avg': {'field': 'age'}}}, 'code': {'name_result': "response['hits']['hits']", 'country_result': "response['hits']['hits']"}, 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[range] query does not support [script]')
+
+--------------------------12-----------------
+schema:['name', 'name']
+---------------------------Execute SQL Query:[SELECT T2.name ,  T3.name FROM wedding AS T1 JOIN people AS T2 ON T1.male_id  =  T2.people_id JOIN people AS T3 ON T1.female_id  =  T3.people_id WHERE T1.year  >  2014]-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id', 'w', 'e', 'd', 'd', 'i', 'n', 'g', ':', ' ', '[', "'", 'c', 'h', 'u', 'r', 'c', 'h', '_', 'i', 'd', "'", ',', ' ', "'", 'f', 'e', 'm', 'a', 'l', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 'm', 'a', 'l', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 'y', 'e', 'a', 'r', "'", ']', '\n']
+convert time:8.954613 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "wedding",
+                        "query": {
+                            "range": {
+                                "year": {
+                                    "gt": 2014
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "should": [
+                {
+                    "has_parent": {
+                        "parent_type": "people",
+                        "query": {
+                            "term": {
+                                "people_id": {
+                                    "value": "{{male_id}}"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "has_parent": {
+                        "parent_type": "people",
+                        "query": {
+                            "term": {
+                                "people_id": {
+                                    "value": "{{female_id}}"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "minimum_should_match": 1
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["wedding", "people"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_parent': {'parent_type': 'wedding', 'query': {'range': {'year': {'gt': 2014}}}}}], 'should': [{'has_parent': {'parent_type': 'people', 'query': {'term': {'people_id': {'value': '{{male_id}}'}}}}}, {'has_parent': {'parent_type': 'people', 'query': {'term': {'people_id': {'value': '{{female_id}}'}}}}}], 'minimum_should_match': 1}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------13-----------------
+schema:['name', 'age']
+---------------------------Execute SQL Query:[SELECT name ,  age FROM people WHERE is_male  =  'T' AND people_id NOT IN (SELECT male_id FROM wedding)]-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id', 'w', 'e', 'd', 'd', 'i', 'n', 'g', ':', ' ', '[', "'", 'c', 'h', 'u', 'r', 'c', 'h', '_', 'i', 'd', "'", ',', ' ', "'", 'f', 'e', 'm', 'a', 'l', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 'm', 'a', 'l', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 'y', 'e', 'a', 'r', "'", ']', '\n']
+convert time:5.53146 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "is_male": "T"
+                    }
+                },
+                {
+                    "bool": {
+                        "must_not": [
+                            {
+                                "terms": {
+                                    "people_id": {
+                                        "index": "wedding",
+                                        "path": "male_id"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name", "age"],
+    "inner_index": ["people", "wedding"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'is_male': 'T'}}, {'bool': {'must_not': [{'terms': {'people_id': {'index': 'wedding', 'path': 'male_id'}}}]}}]}}, '_source': ['name', 'age'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:130] [bool] failed to parse field [must_not]')
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM church EXCEPT SELECT T1.name FROM church AS T1 JOIN wedding AS T2 ON T1.church_id  =  T2.church_id WHERE T2.year  =  2015]-----------------
+target_db_schema: ['church_id', 'female_id', 'male_id', 'year', 'c', 'h', 'u', 'r', 'c', 'h', ':', ' ', '[', "'", 'c', 'h', 'u', 'r', 'c', 'h', '_', 'i', 'd', "'", ',', ' ', "'", 'c', 'o', 'n', 't', 'i', 'n', 'u', 'a', 't', 'i', 'o', 'n', '_', 'o', 'f', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'o', 'p', 'e', 'n', '_', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'o', 'r', 'g', 'a', 'n', 'i', 'z', 'e', 'd', '_', 'b', 'y', "'", ']', '\n']
+convert time:5.771662 s
+---------------------------Execute Target Query:{
+    "inner_index": ["church", "wedding"],
+    "query": {
+        "bool": {
+            "must_not": {
+                "bool": {
+                    "must": [
+                        {
+                            "term": {
+                                "year": 2015
+                            }
+                        },
+                        {
+                            "has_parent": {
+                                "parent_type": "church",
+                                "query": {
+                                    "match_all": {}
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "_source": ["name"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'bool': {'must': [{'term': {'year': 2015}}, {'has_parent': {'parent_type': 'church', 'query': {'match_all': {}}}}]}}}}, '_source': ['name'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': 0.0, 'hits': [{'_index': 'wedding_church', '_id': 'UlcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Pure Church of Christ'}}, {'_index': 'wedding_church', '_id': 'U1cLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Independent Church'}}, {'_index': 'wedding_church', '_id': 'VFcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Church of Christ'}}, {'_index': 'wedding_church', '_id': 'VVcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Church of Christ (Parrishite)'}}, {'_index': 'wedding_church', '_id': 'VlcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Alston Church'}}, {'_index': 'wedding_church', '_id': 'V1cLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Church of Christ'}}, {'_index': 'wedding_church', '_id': 'WFcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': "Church of Jesus Christ, the Bride, the Lamb's Wife"}}, {'_index': 'wedding_church', '_id': 'WVcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'Church of Christ'}}, {'_index': 'wedding_church', '_id': 'WlcLEo8BsHbYzo2o8nR2', '_score': 0.0, '_source': {'name': 'True Church of Jesus Christ of Latter Day Saints'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Pure Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Alston Church"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "True Church of Jesus Christ of Latter Day Saints"}']
+target res: ['{"name": "Pure Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Church of Christ"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Alston Church"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Church of Christ"}', '{"name": "True Church of Jesus Christ of Latter Day Saints"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------15-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM church AS T1 JOIN wedding AS T2 ON T1.church_id  =  T2.church_id GROUP BY T1.church_id HAVING count(*)  >=  2]-----------------
+target_db_schema: ['church_id', 'female_id', 'male_id', 'year', 'c', 'h', 'u', 'r', 'c', 'h', ':', ' ', '[', "'", 'c', 'h', 'u', 'r', 'c', 'h', '_', 'i', 'd', "'", ',', ' ', "'", 'c', 'o', 'n', 't', 'i', 'n', 'u', 'a', 't', 'i', 'o', 'n', '_', 'o', 'f', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'o', 'p', 'e', 'n', '_', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'o', 'r', 'g', 'a', 'n', 'i', 'z', 'e', 'd', '_', 'b', 'y', "'", ']', '\n']
+convert time:12.04763 s
+---------------------------Execute Target Query:{
+    "inner_index": ["church", "wedding"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "church",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match_all": {}
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "church_groups": {
+            "terms": {
+                "field": "church_id",
+                "min_doc_count": 2
+            },
+            "aggs": {
+                "top_church_names": {
+                    "top_hits": {
+                        "_source": {
+                            "includes": ["name"]
+                        },
+                        "size": 1
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['aggregations']['church_groups']['buckets'][*]['top_church_names']['hits']['hits'][*]['_source']['name']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'church', 'query': {'bool': {'must': [{'match_all': {}}]}}}}]}}, 'aggs': {'church_groups': {'terms': {'field': 'church_id', 'min_doc_count': 2}, 'aggs': {'top_church_names': {'top_hits': {'_source': {'includes': ['name']}, 'size': 1}}}}}, 'code': {'name_result': "response['aggregations']['church_groups']['buckets'][*]['top_church_names']['hits']['hits'][*]['_source']['name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------16-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM wedding AS T1 JOIN people AS T2 ON T1.female_id  =  T2.people_id WHERE T1.year  =  2016 AND T2.is_male  =  'F' AND T2.country  =  'Canada']-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id', 'w', 'e', 'd', 'd', 'i', 'n', 'g', ':', ' ', '[', "'", 'c', 'h', 'u', 'r', 'c', 'h', '_', 'i', 'd', "'", ',', ' ', "'", 'f', 'e', 'm', 'a', 'l', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 'm', 'a', 'l', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 'y', 'e', 'a', 'r', "'", ']', '\n']
+convert time:8.169322 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "year": 2016
+                    }
+                },
+                {
+                    "term": {
+                        "is_male": "F"
+                    }
+                },
+                {
+                    "term": {
+                        "country": "Canada"
+                    }
+                }
+            ],
+            "should": [
+                {
+                    "has_parent": {
+                        "parent_type": "wedding",
+                        "query": {
+                            "term": {
+                                "female_id": {
+                                    "field": "people_id"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "minimum_should_match": 1
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["wedding", "people"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'year': 2016}}, {'term': {'is_male': 'F'}}, {'term': {'country': 'Canada'}}], 'should': [{'has_parent': {'parent_type': 'wedding', 'query': {'term': {'female_id': {'field': 'people_id'}}}}}], 'minimum_should_match': 1}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[term] query does not support [field]')
+
+--------------------------17-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM wedding WHERE YEAR  =  2016]-----------------
+target_db_schema: ['church_id', 'female_id', 'male_id', 'year']
+convert time:5.790929 s
+---------------------------Execute Target Query:{
+    "query": {
+        "term": {
+            "year": 2016
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_count": {
+            "value_count": {
+                "field": "year"
+            }
+        }
+    },
+    "inner_index": ["wedding"],
+    "code": {
+        "count": "response['aggregations']['total_count']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'term': {'year': 2016}}, 'size': 0, 'aggs': {'total_count': {'value_count': {'field': 'year'}}}, 'code': {'count': "response['aggregations']['total_count']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 2, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_count': {'value': 2}}}
+
+exec_result_dict: {'count': 2}
+mysql res: ['{"count_*": 2}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T4.name FROM wedding AS T1 JOIN people AS T2 ON T1.male_id  =  T2.people_id JOIN people AS T3 ON T1.female_id  =  T3.people_id JOIN church AS T4 ON T4.church_id  =  T1.church_id WHERE T2.age  >  30 OR T3.age  >  30]-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id', 'w', 'e', 'd', 'd', 'i', 'n', 'g', ':', ' ', '[', "'", 'c', 'h', 'u', 'r', 'c', 'h', '_', 'i', 'd', "'", ',', ' ', "'", 'f', 'e', 'm', 'a', 'l', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 'm', 'a', 'l', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 'y', 'e', 'a', 'r', "'", ']', '\n', 'c', 'h', 'u', 'r', 'c', 'h', ':', ' ', '[', "'", 'c', 'h', 'u', 'r', 'c', 'h', '_', 'i', 'd', "'", ',', ' ', "'", 'c', 'o', 'n', 't', 'i', 'n', 'u', 'a', 't', 'i', 'o', 'n', '_', 'o', 'f', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'o', 'p', 'e', 'n', '_', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'o', 'r', 'g', 'a', 'n', 'i', 'z', 'e', 'd', '_', 'b', 'y', "'", ']', '\n']
+convert time:17.018834 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "has_parent": {
+                        "parent_type": "male",
+                        "query": {
+                            "range": {
+                                "age": {
+                                    "gt": 30
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "has_parent": {
+                        "parent_type": "female",
+                        "query": {
+                            "range": {
+                                "age": {
+                                    "gt": 30
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "minimum_should_match": 1,
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "church",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["wedding", "people", "church"]
+}-----------------
+**************************************************
+{'query': {'bool': {'should': [{'has_parent': {'parent_type': 'male', 'query': {'range': {'age': {'gt': 30}}}}}, {'has_parent': {'parent_type': 'female', 'query': {'range': {'age': {'gt': 30}}}}}], 'minimum_should_match': 1, 'must': [{'has_parent': {'parent_type': 'church', 'query': {'match_all': {}}}}]}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------19-----------------
+schema:['country', 'count_*']
+---------------------------Execute SQL Query:[SELECT country ,  count(*) FROM people GROUP BY country]-----------------
+target_db_schema: ['Is_male', 'age', 'country', 'name', 'people_id']
+convert time:4.47511 s
+---------------------------Execute Target Query:{
+    "inner_index": ["people"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "country_count": {
+            "terms": {
+                "field": "country"
+            }
+        }
+    },
+    "code": {
+        "country_result": "response['aggregations']['country_count']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'country_count': {'terms': {'field': 'country'}}}, 'code': {'country_result': "response['aggregations']['country_count']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 12, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'country_count': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'states', 'doc_count': 8}, {'key': 'united', 'doc_count': 8}, {'key': 'australia', 'doc_count': 1}, {'key': 'canada', 'doc_count': 1}, {'key': 'ireland', 'doc_count': 1}, {'key': 'northern', 'doc_count': 1}, {'key': 'sweden', 'doc_count': 1}]}}}
+
+exec_result_dict: {'country_result': [{'key': 'states', 'doc_count': 8}, {'key': 'united', 'doc_count': 8}, {'key': 'australia', 'doc_count': 1}, {'key': 'canada', 'doc_count': 1}, {'key': 'ireland', 'doc_count': 1}, {'key': 'northern', 'doc_count': 1}, {'key': 'sweden', 'doc_count': 1}]}
+mysql res: ['{"country": "Canada", "count_*": 1}', '{"country": "Sweden", "count_*": 1}', '{"country": "United States", "count_*": 8}', '{"country": "Northern Ireland", "count_*": 1}', '{"country": "Australia", "count_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------20-----------------
+schema:(None, ProgrammingError(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DISTINCT church_id) FROM wedding WHERE YEAR  =  2016' at line 1"))
+---------------------------Execute SQL Query:[SELECT COUNT (DISTINCT church_id) FROM wedding WHERE YEAR  =  2016]-----------------
+execute mysql query error:(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DISTINCT church_id) FROM wedding WHERE YEAR  =  2016' at line 1")
+success_query_count: 4
+valid_count: 19
+accuracy: 0.21052631578947367

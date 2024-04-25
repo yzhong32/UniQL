@@ -1,0 +1,229 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM church WHERE open_date  <  1850]-----------------
+target_db_schema: organized_by, continuation_of, church_id, name, _id, open_date
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:2.552519 s
+---------------------------Execute Target Query:db.church.aggregate([{"$match":{"open_date":{"$lt":1850}}},{"$count":"count"}])-----------------
+here we are in executor, and the query is:  db.church.aggregate([{"$match":{"open_date":{"$lt":1850}}},{"$count":"count"}])
+result of mongodb: ['{"count": 9}']
+mysql res: ['{"count_*": 9}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['name', 'open_date', 'organized_by']
+---------------------------Execute SQL Query:[SELECT name ,  open_date ,  organized_by FROM church]-----------------
+target_db_schema: organized_by, continuation_of, church_id, name, _id, open_date
+convert time:4.45501 s
+---------------------------Execute Target Query:db.church.find({}, { "name": 1, "open_date": 1, "organized_by": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.church.find({}, { "name": 1, "open_date": 1, "organized_by": 1, "_id": 0 })
+result of mongodb: ['{"name": "Pure Church of Christ", "open_date": 1831, "organized_by": "Wycam Clark"}', '{"name": "Independent Church", "open_date": 1832, "organized_by": "\\u2013 Hoton"}', '{"name": "Church of Christ", "open_date": 1836, "organized_by": "Ezra Booth"}', '{"name": "Church of Christ (Parrishite)", "open_date": 1837, "organized_by": "Warren Parrish"}', '{"name": "Alston Church", "open_date": 1839, "organized_by": "Isaac Russell"}', '{"name": "Church of Christ", "open_date": 1830, "organized_by": "William Chubby"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840, "organized_by": "George M. Hinkle"}', '{"name": "Church of Christ", "open_date": 1842, "organized_by": "Hiram Page"}', '{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844, "organized_by": "William Law"}']
+mysql res: ['{"name": "Pure Church of Christ", "open_date": 1831, "organized_by": "Wycam Clark"}', '{"name": "Independent Church", "open_date": 1832, "organized_by": "\\u2013 Hoton"}', '{"name": "Church of Christ", "open_date": 1836, "organized_by": "Ezra Booth"}', '{"name": "Church of Christ (Parrishite)", "open_date": 1837, "organized_by": "Warren Parrish"}', '{"name": "Alston Church", "open_date": 1839, "organized_by": "Isaac Russell"}', '{"name": "Church of Christ", "open_date": 1830, "organized_by": "William Chubby"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840, "organized_by": "George M. Hinkle"}', '{"name": "Church of Christ", "open_date": 1842, "organized_by": "Hiram Page"}', '{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844, "organized_by": "William Law"}']
+target res: ['{"name": "Pure Church of Christ", "open_date": 1831, "organized_by": "Wycam Clark"}', '{"name": "Independent Church", "open_date": 1832, "organized_by": "\\u2013 Hoton"}', '{"name": "Church of Christ", "open_date": 1836, "organized_by": "Ezra Booth"}', '{"name": "Church of Christ (Parrishite)", "open_date": 1837, "organized_by": "Warren Parrish"}', '{"name": "Alston Church", "open_date": 1839, "organized_by": "Isaac Russell"}', '{"name": "Church of Christ", "open_date": 1830, "organized_by": "William Chubby"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840, "organized_by": "George M. Hinkle"}', '{"name": "Church of Christ", "open_date": 1842, "organized_by": "Hiram Page"}', '{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844, "organized_by": "William Law"}']
+translate SELECT name ,  open_date ,  organized_by FROM church success
+
+--------------------------3-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM church ORDER BY open_date DESC]-----------------
+target_db_schema: organized_by, continuation_of, church_id, name, _id, open_date
+convert time:1.939991 s
+---------------------------Execute Target Query:db.church.find({}, { "name": 1, "_id": 0 }).sort({ "open_date": -1 })-----------------
+here we are in executor, and the query is:  db.church.find({}, { "name": 1, "_id": 0 }).sort({ "open_date": -1 })
+result of mongodb: ['{"name": "True Church of Jesus Christ of Latter Day Saints"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}']
+mysql res: ['{"name": "True Church of Jesus Christ of Latter Day Saints"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}']
+target res: ['{"name": "True Church of Jesus Christ of Latter Day Saints"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}']
+translate SELECT name FROM church ORDER BY open_date DESC success
+
+--------------------------4-----------------
+schema:['open_date']
+---------------------------Execute SQL Query:[SELECT open_date FROM church GROUP BY open_date HAVING count(*)  >=  2]-----------------
+target_db_schema: organized_by, continuation_of, church_id, name, _id, open_date
+convert time:5.216085 s
+---------------------------Execute Target Query:db.church.aggregate([ { $group: { _id: "$open_date", count: { $sum: 1 } } }, { $match: { count: { $gte: 2 } } }, { $project: { open_date: "$_id", _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.church.aggregate([ { $group: { _id: "$open_date", count: { $sum: 1 } } }, { $match: { count: { $gte: 2 } } }, { $project: { open_date: "$_id", _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------5-----------------
+schema:['organized_by', 'name']
+---------------------------Execute SQL Query:[SELECT organized_by ,  name FROM church WHERE open_date BETWEEN 1830 AND 1840]-----------------
+target_db_schema: organized_by, continuation_of, church_id, name, _id, open_date
+convert time:3.393104 s
+---------------------------Execute Target Query:db.church.find({ "open_date": { "$gte": 1830, "$lte": 1840 } }, { "organized_by": 1, "name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.church.find({ "open_date": { "$gte": 1830, "$lte": 1840 } }, { "organized_by": 1, "name": 1, "_id": 0 })
+result of mongodb: ['{"name": "Pure Church of Christ", "organized_by": "Wycam Clark"}', '{"name": "Independent Church", "organized_by": "\\u2013 Hoton"}', '{"name": "Church of Christ", "organized_by": "Ezra Booth"}', '{"name": "Church of Christ (Parrishite)", "organized_by": "Warren Parrish"}', '{"name": "Alston Church", "organized_by": "Isaac Russell"}', '{"name": "Church of Christ", "organized_by": "William Chubby"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "organized_by": "George M. Hinkle"}']
+mysql res: ['{"organized_by": "Wycam Clark", "name": "Pure Church of Christ"}', '{"organized_by": "\\u2013 Hoton", "name": "Independent Church"}', '{"organized_by": "Ezra Booth", "name": "Church of Christ"}', '{"organized_by": "Warren Parrish", "name": "Church of Christ (Parrishite)"}', '{"organized_by": "Isaac Russell", "name": "Alston Church"}', '{"organized_by": "William Chubby", "name": "Church of Christ"}', '{"organized_by": "George M. Hinkle", "name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}']
+target res: ['{"organized_by": "Wycam Clark", "name": "Pure Church of Christ"}', '{"organized_by": "\\u2013 Hoton", "name": "Independent Church"}', '{"organized_by": "Ezra Booth", "name": "Church of Christ"}', '{"organized_by": "Warren Parrish", "name": "Church of Christ (Parrishite)"}', '{"organized_by": "Isaac Russell", "name": "Alston Church"}', '{"organized_by": "William Chubby", "name": "Church of Christ"}', '{"organized_by": "George M. Hinkle", "name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}']
+translate SELECT organized_by ,  name FROM church WHERE open_date BETWEEN 1830 AND 1840 success
+
+--------------------------6-----------------
+schema:['open_date', 'count_*']
+---------------------------Execute SQL Query:[SELECT open_date ,  count(*) FROM church GROUP BY open_date]-----------------
+target_db_schema: organized_by, continuation_of, church_id, name, _id, open_date
+convert time:6.98213 s
+---------------------------Execute Target Query:db.church.aggregate([{"$group": {"_id": "$open_date", "count": {"$sum": 1}}}, {"$project": {"open_date": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.church.aggregate([{"$group": {"_id": "$open_date", "count": {"$sum": 1}}}, {"$project": {"open_date": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 1, "open_date": 1837}', '{"count": 1, "open_date": 1832}', '{"count": 1, "open_date": 1830}', '{"count": 1, "open_date": 1840}', '{"count": 1, "open_date": 1831}', '{"count": 1, "open_date": 1842}', '{"count": 1, "open_date": 1836}', '{"count": 1, "open_date": 1839}', '{"count": 1, "open_date": 1844}']
+mysql res: ['{"open_date": 1831, "count_*": 1}', '{"open_date": 1832, "count_*": 1}', '{"open_date": 1836, "count_*": 1}', '{"open_date": 1837, "count_*": 1}', '{"open_date": 1839, "count_*": 1}', '{"open_date": 1830, "count_*": 1}', '{"open_date": 1840, "count_*": 1}', '{"open_date": 1842, "count_*": 1}', '{"open_date": 1844, "count_*": 1}']
+target res: ['{"open_date": 1837, "count_*": null}', '{"open_date": 1832, "count_*": null}', '{"open_date": 1830, "count_*": null}', '{"open_date": 1840, "count_*": null}', '{"open_date": 1831, "count_*": null}', '{"open_date": 1842, "count_*": null}', '{"open_date": 1836, "count_*": null}', '{"open_date": 1839, "count_*": null}', '{"open_date": 1844, "count_*": null}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['name', 'open_date']
+---------------------------Execute SQL Query:[SELECT name ,  open_date FROM church ORDER BY open_date DESC LIMIT 3]-----------------
+target_db_schema: organized_by, continuation_of, church_id, name, _id, open_date
+convert time:2.268864 s
+---------------------------Execute Target Query:db.church.find({}, { "name": 1, "open_date": 1, "_id": 0 }).sort({ "open_date": -1 }).limit(3)-----------------
+here we are in executor, and the query is:  db.church.find({}, { "name": 1, "open_date": 1, "_id": 0 }).sort({ "open_date": -1 }).limit(3)
+result of mongodb: ['{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844}', '{"name": "Church of Christ", "open_date": 1842}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840}']
+mysql res: ['{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844}', '{"name": "Church of Christ", "open_date": 1842}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840}']
+target res: ['{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844}', '{"name": "Church of Christ", "open_date": 1842}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840}']
+translate SELECT name ,  open_date FROM church ORDER BY open_date DESC LIMIT 3 success
+
+--------------------------8-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM people WHERE is_male  =  'F' AND age  >  30]-----------------
+target_db_schema: country, people_id, age, name, Is_male, _id
+convert time:3.197547 s
+---------------------------Execute Target Query:db.people.countDocuments({ "Is_male": "F", "age": { "$gt": 30 } })-----------------
+here we are in executor, and the query is:  db.people.countDocuments({ "Is_male": "F", "age": { "$gt": 30 } })
+execute target query error:'Collection' object is not callable. If you meant to call the 'countDocuments' method on a 'Collection' object it is failing because no such method exists.
+
+--------------------------9-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM people WHERE age  <  25 INTERSECT SELECT country FROM people WHERE age  >  30]-----------------
+target_db_schema: country, people_id, age, name, Is_male, _id
+Error parsing XML of prompt: not well-formed (invalid token): line 89, column 44
+convert time:4.041473 s
+---------------------------Execute Target Query:db.people.aggregate([{$match: {$or: [{age: {$lt: 25}}, {age: {$gt: 30}}]}}, {$group: {_id: "$country", countries: {$addToSet: "$country"}}}, {$project: {country: "$_id", _id: 0}}])-----------------
+here we are in executor, and the query is:  db.people.aggregate([{$match: {$or: [{age: {$lt: 25}}, {age: {$gt: 30}}]}}, {$group: {_id: "$country", countries: {$addToSet: "$country"}}}, {$project: {country: "$_id", _id: 0}}])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------10-----------------
+schema:['min_age', 'max_age', 'avg_age']
+---------------------------Execute SQL Query:[SELECT min(age) ,  max(age) ,  avg(age) FROM people]-----------------
+target_db_schema: country, people_id, age, name, Is_male, _id
+convert time:6.132241 s
+---------------------------Execute Target Query:db.people.aggregate([{"$group": {"_id": null, "min_age": {"$min": "$age"}, "max_age": {"$max": "$age"}, "avg_age": {"$avg": "$age"}}}, {"$project": {"_id": 0, "min_age": 1, "max_age": 1, "avg_age": 1}}])-----------------
+here we are in executor, and the query is:  db.people.aggregate([{"$group": {"_id": null, "min_age": {"$min": "$age"}, "max_age": {"$max": "$age"}, "avg_age": {"$avg": "$age"}}}, {"$project": {"_id": 0, "min_age": 1, "max_age": 1, "avg_age": 1}}])
+execute target query error:name 'null' is not defined
+
+--------------------------11-----------------
+schema:['name', 'country']
+---------------------------Execute SQL Query:[SELECT name ,  country FROM people WHERE age  <  (SELECT avg(age) FROM people)]-----------------
+target_db_schema: country, people_id, age, name, Is_male, _id
+Error parsing XML of prompt: not well-formed (invalid token): line 89, column 52
+convert time:38.189993 s
+---------------------------Execute Target Query:db.people.aggregate([ { $group: { _id: null, avg_age: { $avg: "$age" } } }, { $lookup: { from: "people", localField: "avg_age", foreignField: "age", as: "people_below_avg_age" } }, { $unwind: "$people_below_avg_age" }, { $match: { "people_below_avg_age.age": { $lt: "$avg_age" } } }, { $project: { name: "$people_below_avg_age.name", country: "$people_below_avg_age.country", _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.people.aggregate([ { $group: { _id: null, avg_age: { $avg: "$age" } } }, { $lookup: { from: "people", localField: "avg_age", foreignField: "age", as: "people_below_avg_age" } }, { $unwind: "$people_below_avg_age" }, { $match: { "people_below_avg_age.age": { $lt: "$avg_age" } } }, { $project: { name: "$people_below_avg_age.name", country: "$people_below_avg_age.country", _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------12-----------------
+schema:['name', 'name']
+---------------------------Execute SQL Query:[SELECT T2.name ,  T3.name FROM wedding AS T1 JOIN people AS T2 ON T1.male_id  =  T2.people_id JOIN people AS T3 ON T1.female_id  =  T3.people_id WHERE T1.year  >  2014]-----------------
+target_db_schema: female_id, church_id, male_id, _id, yearpeople: country, people_id, age, name, Is_male, _id
+
+convert time:5.495677 s
+---------------------------Execute Target Query:db.wedding.aggregate([{"$match":{"year":{"$gt":2014}}},{"$lookup":{"from":"people","localField":"male_id","foreignField":"people_id","as":"male"}},{"$lookup":{"from":"people","localField":"female_id","foreignField":"people_id","as":"female"}},{"$project":{"male_name":{"$arrayElemAt":["$male.name",0]},"female_name":{"$arrayElemAt":["$female.name",0]},"_id":0}}])-----------------
+here we are in executor, and the query is:  db.wedding.aggregate([{"$match":{"year":{"$gt":2014}}},{"$lookup":{"from":"people","localField":"male_id","foreignField":"people_id","as":"male"}},{"$lookup":{"from":"people","localField":"female_id","foreignField":"people_id","as":"female"}},{"$project":{"male_name":{"$arrayElemAt":["$male.name",0]},"female_name":{"$arrayElemAt":["$female.name",0]},"_id":0}}])
+result of mongodb: ['{"male_name": "Ricky Barnes", "female_name": "Summer Duval"}', '{"male_name": "Lucas Glover", "female_name": "Joe O\'Hair"}', '{"male_name": "Todd Hamilton", "female_name": "Annie Mediate"}']
+mysql res: ['{"name": "Ricky Barnes"}', '{"name": "Lucas Glover"}', '{"name": "Todd Hamilton"}']
+target res: ['{"name": null}', '{"name": null}', '{"name": null}']
+mismatch between MySQL and target
+
+--------------------------13-----------------
+schema:['name', 'age']
+---------------------------Execute SQL Query:[SELECT name ,  age FROM people WHERE is_male  =  'T' AND people_id NOT IN (SELECT male_id FROM wedding)]-----------------
+target_db_schema: female_id, church_id, male_id, _id, yearpeople: country, people_id, age, name, Is_male, _id
+
+convert time:3.619003 s
+---------------------------Execute Target Query:db.people.find({ "Is_male": "T", "people_id": { "$not": { "$in": db.wedding.find({}, { "male_id": 1, "_id": 0 }).toArray().map(wed => wed.male_id) } } }, { "name": 1, "age": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.people.find({ "Is_male": "T", "people_id": { "$not": { "$in": db.wedding.find({}, { "male_id": 1, "_id": 0 }).toArray().map(wed => wed.male_id) } } }, { "name": 1, "age": 1, "_id": 0 })
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM church EXCEPT SELECT T1.name FROM church AS T1 JOIN wedding AS T2 ON T1.church_id  =  T2.church_id WHERE T2.year  =  2015]-----------------
+target_db_schema: female_id, church_id, male_id, _id, yearchurch: organized_by, continuation_of, church_id, name, _id, open_date
+
+convert time:3.427431 s
+---------------------------Execute Target Query:db.church.aggregate([{"$lookup":{"from":"wedding","localField":"church_id","foreignField":"church_id","as":"weddings"}},{"$match":{"weddings":{"$not":{"$elemMatch":{"year":2015}}}}},{"$project":{"name":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.church.aggregate([{"$lookup":{"from":"wedding","localField":"church_id","foreignField":"church_id","as":"weddings"}},{"$match":{"weddings":{"$not":{"$elemMatch":{"year":2015}}}}},{"$project":{"name":1,"_id":0}}])
+result of mongodb: ['{"name": "Pure Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Alston Church"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Church of Christ"}', '{"name": "True Church of Jesus Christ of Latter Day Saints"}']
+mysql res: ['{"name": "Pure Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Alston Church"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "True Church of Jesus Christ of Latter Day Saints"}']
+target res: ['{"name": "Pure Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Alston Church"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Church of Christ"}', '{"name": "True Church of Jesus Christ of Latter Day Saints"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------15-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM church AS T1 JOIN wedding AS T2 ON T1.church_id  =  T2.church_id GROUP BY T1.church_id HAVING count(*)  >=  2]-----------------
+target_db_schema: female_id, church_id, male_id, _id, yearchurch: organized_by, continuation_of, church_id, name, _id, open_date
+
+convert time:26.515352 s
+---------------------------Execute Target Query:db.wedding.aggregate([{"$group": {"_id": "$church_id", "count": {"$sum": 1}}}, {"$match": {"count": {"$gte": 2}}}, {"$lookup": {"from": "church", "localField": "_id", "foreignField": "church_id", "as": "church_info"}}, {"$unwind": "$church_info"}, {"$project": {"name": "$church_info.name", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.wedding.aggregate([{"$group": {"_id": "$church_id", "count": {"$sum": 1}}}, {"$match": {"count": {"$gte": 2}}}, {"$lookup": {"from": "church", "localField": "_id", "foreignField": "church_id", "as": "church_info"}}, {"$unwind": "$church_info"}, {"$project": {"name": "$church_info.name", "_id": 0}}])
+result of mongodb: []
+mysql res: []
+target res: []
+translate SELECT T1.name FROM church AS T1 JOIN wedding AS T2 ON T1.church_id  =  T2.church_id GROUP BY T1.church_id HAVING count(*)  >=  2 success
+
+--------------------------16-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM wedding AS T1 JOIN people AS T2 ON T1.female_id  =  T2.people_id WHERE T1.year  =  2016 AND T2.is_male  =  'F' AND T2.country  =  'Canada']-----------------
+target_db_schema: female_id, church_id, male_id, _id, yearpeople: country, people_id, age, name, Is_male, _id
+
+convert time:5.890667 s
+---------------------------Execute Target Query:db.wedding.aggregate([{"$match": {"year": 2016}}, {"$lookup": {"from": "people", "localField": "female_id", "foreignField": "people_id", "as": "people"}}, {"$unwind": "$people"}, {"$match": {"people.is_male": "F", "people.country": "Canada"}}, {"$project": {"name": "$people.name", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.wedding.aggregate([{"$match": {"year": 2016}}, {"$lookup": {"from": "people", "localField": "female_id", "foreignField": "people_id", "as": "people"}}, {"$unwind": "$people"}, {"$match": {"people.is_male": "F", "people.country": "Canada"}}, {"$project": {"name": "$people.name", "_id": 0}}])
+result of mongodb: []
+mysql res: []
+target res: []
+translate SELECT T2.name FROM wedding AS T1 JOIN people AS T2 ON T1.female_id  =  T2.people_id WHERE T1.year  =  2016 AND T2.is_male  =  'F' AND T2.country  =  'Canada' success
+
+--------------------------17-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM wedding WHERE YEAR  =  2016]-----------------
+target_db_schema: female_id, church_id, male_id, _id, year
+convert time:5.823519 s
+---------------------------Execute Target Query:db.wedding.aggregate([{"$match": {"year": 2016}}, {"$count": "count"}])-----------------
+here we are in executor, and the query is:  db.wedding.aggregate([{"$match": {"year": 2016}}, {"$count": "count"}])
+result of mongodb: ['{"count": 2}']
+mysql res: ['{"count_*": 2}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T4.name FROM wedding AS T1 JOIN people AS T2 ON T1.male_id  =  T2.people_id JOIN people AS T3 ON T1.female_id  =  T3.people_id JOIN church AS T4 ON T4.church_id  =  T1.church_id WHERE T2.age  >  30 OR T3.age  >  30]-----------------
+target_db_schema: female_id, church_id, male_id, _id, yearchurch: organized_by, continuation_of, church_id, name, _id, open_date
+people: country, people_id, age, name, Is_male, _id
+
+convert time:8.902663 s
+---------------------------Execute Target Query:db.wedding.aggregate([{"$lookup":{"from":"people","localField":"male_id","foreignField":"people_id","as":"male"}},{"$lookup":{"from":"people","localField":"female_id","foreignField":"people_id","as":"female"}},{"$lookup":{"from":"church","localField":"church_id","foreignField":"church_id","as":"church"}},{"$match":{"$or":[{"male.age":{"$gt":30}},{"female.age":{"$gt":30}}]}},{"$project":{"name":"$church.name","_id":0}}])-----------------
+here we are in executor, and the query is:  db.wedding.aggregate([{"$lookup":{"from":"people","localField":"male_id","foreignField":"people_id","as":"male"}},{"$lookup":{"from":"people","localField":"female_id","foreignField":"people_id","as":"female"}},{"$lookup":{"from":"church","localField":"church_id","foreignField":"church_id","as":"church"}},{"$match":{"$or":[{"male.age":{"$gt":30}},{"female.age":{"$gt":30}}]}},{"$project":{"name":"$church.name","_id":0}}])
+result of mongodb: ['{"name": ["Pure Church of Christ"]}', '{"name": ["Church of Christ (Parrishite)"]}']
+mysql res: ['{"name": "Pure Church of Christ"}', '{"name": "Church of Christ (Parrishite)"}']
+target res: ['{"name": ["Pure Church of Christ"]}', '{"name": ["Church of Christ (Parrishite)"]}']
+mismatch between MySQL and target
+
+--------------------------19-----------------
+schema:['country', 'count_*']
+---------------------------Execute SQL Query:[SELECT country ,  count(*) FROM people GROUP BY country]-----------------
+target_db_schema: country, people_id, age, name, Is_male, _id
+convert time:4.389426 s
+---------------------------Execute Target Query:db.people.aggregate([{"$group": {"_id": "$country", "count": {"$sum": 1}}}, {"$project": {"country": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.people.aggregate([{"$group": {"_id": "$country", "count": {"$sum": 1}}}, {"$project": {"country": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 1, "country": "Sweden"}', '{"count": 1, "country": "Northern Ireland"}', '{"count": 1, "country": "Australia"}', '{"count": 1, "country": "Canada"}', '{"count": 8, "country": "United States"}']
+mysql res: ['{"country": "Canada", "count_*": 1}', '{"country": "Sweden", "count_*": 1}', '{"country": "United States", "count_*": 8}', '{"country": "Northern Ireland", "count_*": 1}', '{"country": "Australia", "count_*": 1}']
+target res: ['{"country": "Sweden", "count_*": null}', '{"country": "Northern Ireland", "count_*": null}', '{"country": "Australia", "count_*": null}', '{"country": "Canada", "count_*": null}', '{"country": "United States", "count_*": null}']
+mismatch between MySQL and target
+
+--------------------------20-----------------
+schema:(None, ProgrammingError(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DISTINCT church_id) FROM wedding WHERE YEAR  =  2016' at line 1"))
+---------------------------Execute SQL Query:[SELECT COUNT (DISTINCT church_id) FROM wedding WHERE YEAR  =  2016]-----------------
+execute mysql query error:(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DISTINCT church_id) FROM wedding WHERE YEAR  =  2016' at line 1")
+success_query_count: 6
+valid_count: 19
+accuracy: 0.3157894736842105

@@ -1,0 +1,478 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM event]-----------------
+convert time:3.074127 s
+---------------------------Execute Target Query:MATCH (e:event) RETURN count(e) as count_-----------------
+MATCH (e:event) RETURN count(e) as count_
+mysql res: ['{"count_*": 6}']
+target res: ['{"count_": 6}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM event ORDER BY YEAR DESC]-----------------
+convert time:2.345634 s
+---------------------------Execute Target Query:MATCH (e:event) RETURN e.name as name ORDER BY e.YEAR DESC-----------------
+MATCH (e:event) RETURN e.name as name ORDER BY e.YEAR DESC
+mysql res: ['{"name": "European FINA"}', '{"name": "FINA"}', '{"name": "IPC"}', '{"name": "World Junior"}', '{"name": "World Master"}', '{"name": "Pacific"}']
+target res: ['{"name": "FINA"}', '{"name": "Pacific"}', '{"name": "World Master"}', '{"name": "World Junior"}', '{"name": "IPC"}', '{"name": "European FINA"}']
+translate SELECT name FROM event ORDER BY YEAR DESC success
+
+--------------------------3-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM event ORDER BY YEAR DESC LIMIT 1]-----------------
+convert time:1.914217 s
+---------------------------Execute Target Query:MATCH (e:event) RETURN e.name as name ORDER BY e.YEAR DESC LIMIT 1-----------------
+MATCH (e:event) RETURN e.name as name ORDER BY e.YEAR DESC LIMIT 1
+mysql res: ['{"name": "European FINA"}']
+target res: ['{"name": "FINA"}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM stadium]-----------------
+convert time:3.081129 s
+---------------------------Execute Target Query:MATCH (s:stadium) RETURN count(s) as count_-----------------
+MATCH (s:stadium) RETURN count(s) as count_
+mysql res: ['{"count_*": 10}']
+target res: ['{"count_": 10}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium ORDER BY capacity DESC LIMIT 1]-----------------
+convert time:1.442561 s
+---------------------------Execute Target Query:MATCH (s:stadium) RETURN s.name as name ORDER BY s.capacity DESC LIMIT 1-----------------
+MATCH (s:stadium) RETURN s.name as name ORDER BY s.capacity DESC LIMIT 1
+mysql res: ['{"name": "Nou Mestalla"}']
+target res: ['{"name": "Nou Mestalla"}']
+translate SELECT name FROM stadium ORDER BY capacity DESC LIMIT 1 success
+
+--------------------------6-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium WHERE capacity  <  (SELECT avg(capacity) FROM stadium)]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 19, column 47
+convert time:2.355241 s
+---------------------------Execute Target Query:MATCH (s:stadium)
+WITH avg(s.capacity) AS avg_capacity
+MATCH (s2:stadium)
+WHERE s2.capacity < avg_capacity
+RETURN s2.name AS name-----------------
+MATCH (s:stadium)
+WITH avg(s.capacity) AS avg_capacity
+MATCH (s2:stadium)
+WHERE s2.capacity < avg_capacity
+RETURN s2.name AS name
+mysql res: ['{"name": "Northumberland Development Project"}', '{"name": "Fisht Olympic Stadium"}', '{"name": "Arena Baltika"}', '{"name": "Yubileyniy Stadium"}']
+target res: ['{"name": "Northumberland Development Project"}', '{"name": "Fisht Olympic Stadium"}', '{"name": "Arena Baltika"}', '{"name": "Yubileyniy Stadium"}']
+translate SELECT name FROM stadium WHERE capacity  <  (SELECT avg(capacity) FROM stadium) success
+
+--------------------------7-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium GROUP BY country ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:1.477996 s
+---------------------------Execute Target Query:MATCH (s:stadium)
+RETURN s.country as country
+ORDER BY count(s) DESC
+LIMIT 1-----------------
+MATCH (s:stadium)
+RETURN s.country as country
+ORDER BY count(s) DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Cannot use aggregation in ORDER BY if there are no aggregate expressions in the preceding RETURN (line 2, column 1 (offset: 18))
+"RETURN s.country as country"
+ ^}
+
+--------------------------8-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium GROUP BY country HAVING count(*)  <=  3]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 19, column 68
+convert time:2.89477 s
+---------------------------Execute Target Query:MATCH (s:stadium)
+RETURN s.country as country, count(*) as count_star
+HAVING count_star <= 3
+GROUP BY s.country-----------------
+MATCH (s:stadium)
+RETURN s.country as country, count(*) as count_star
+HAVING count_star <= 3
+GROUP BY s.country
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'HAVING': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 70))
+"HAVING count_star <= 3"
+ ^}
+
+--------------------------9-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium WHERE capacity  >  60000 INTERSECT SELECT country FROM stadium WHERE capacity  <  50000]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 19, column 113
+convert time:2.95612 s
+---------------------------Execute Target Query:MATCH (s1:stadium) WHERE s1.capacity > 60000
+WITH s1.country AS country
+MATCH (s2:stadium) WHERE s2.capacity < 50000 AND s2.country = country
+RETURN DISTINCT s2.country AS country-----------------
+MATCH (s1:stadium) WHERE s1.capacity > 60000
+WITH s1.country AS country
+MATCH (s2:stadium) WHERE s2.capacity < 50000 AND s2.country = country
+RETURN DISTINCT s2.country AS country
+mysql res: ['{"country": "Russia"}']
+target res: ['{"country": "Russia"}']
+translate SELECT country FROM stadium WHERE capacity  >  60000 INTERSECT SELECT country FROM stadium WHERE capacity  <  50000 success
+
+--------------------------10-----------------
+schema:['count_DISTINCT city']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT city) FROM stadium WHERE opening_year  <  2006]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 19, column 67
+convert time:2.018423 s
+---------------------------Execute Target Query:MATCH (s:stadium) WHERE s.opening_year < 2006 RETURN count(DISTINCT s.city) as count_distinct_city-----------------
+MATCH (s:stadium) WHERE s.opening_year < 2006 RETURN count(DISTINCT s.city) as count_distinct_city
+mysql res: ['{"count_DISTINCT city": 7}']
+target res: ['{"count_distinct_city": 7}']
+mismatch between MySQL and target
+
+--------------------------11-----------------
+schema:['country', 'count_*']
+---------------------------Execute SQL Query:[SELECT country ,  count(*) FROM stadium GROUP BY country]-----------------
+convert time:1.863198 s
+---------------------------Execute Target Query:MATCH (s:stadium)
+RETURN s.country AS country, count(*) AS count_country-----------------
+MATCH (s:stadium)
+RETURN s.country AS country, count(*) AS count_country
+mysql res: ['{"country": "Spain", "count_*": 2}', '{"country": "Russia", "count_*": 4}', '{"country": "Azerbaijan", "count_*": 1}', '{"country": "Hungary", "count_*": 1}', '{"country": "France", "count_*": 1}', '{"country": "England", "count_*": 1}']
+target res: ['{"country": "Spain", "count_country": 2}', '{"country": "Russia", "count_country": 4}', '{"country": "Azerbaijan", "count_country": 1}', '{"country": "Hungary", "count_country": 1}', '{"country": "France", "count_country": 1}', '{"country": "England", "count_country": 1}']
+mismatch between MySQL and target
+
+--------------------------12-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium EXCEPT SELECT country FROM stadium WHERE opening_year  >  2006]-----------------
+convert time:1.234695 s
+---------------------------Execute Target Query:MATCH (s:stadium)
+WHERE NOT s.opening_year > 2006
+RETURN s.country as country-----------------
+MATCH (s:stadium)
+WHERE NOT s.opening_year > 2006
+RETURN s.country as country
+mysql res: ['{"country": "Spain"}', '{"country": "Azerbaijan"}', '{"country": "Hungary"}', '{"country": "France"}', '{"country": "England"}']
+target res: ['{"country": "Spain"}', '{"country": "Russia"}', '{"country": "Azerbaijan"}', '{"country": "Spain"}', '{"country": "Hungary"}', '{"country": "France"}', '{"country": "England"}', '{"country": "Russia"}', '{"country": "Russia"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM stadium WHERE country != 'Russia']-----------------
+convert time:1.557973 s
+---------------------------Execute Target Query:MATCH (s:stadium) WHERE s.country <> 'Russia' RETURN count(*) as count-----------------
+MATCH (s:stadium) WHERE s.country <> 'Russia' RETURN count(*) as count
+mysql res: ['{"count_*": 6}']
+target res: ['{"count": 6}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM swimmer ORDER BY meter_100]-----------------
+convert time:1.468573 s
+---------------------------Execute Target Query:MATCH (s:swimmer) RETURN s.name as name ORDER BY s.meter_100-----------------
+MATCH (s:swimmer) RETURN s.name as name ORDER BY s.meter_100
+mysql res: ['{"name": "S\\u00e9bastien Rouault"}', '{"name": "Oussama Mellouli"}', '{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+target res: ['{"name": "S\\u00e9bastien Rouault"}', '{"name": "Oussama Mellouli"}', '{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+translate SELECT name FROM swimmer ORDER BY meter_100 success
+
+--------------------------15-----------------
+schema:['count_DISTINCT nationality']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT nationality) FROM swimmer]-----------------
+convert time:5.014919 s
+---------------------------Execute Target Query:MATCH (s:swimmer) RETURN count(DISTINCT s.nationality) as count_distinct_nationality-----------------
+MATCH (s:swimmer) RETURN count(DISTINCT s.nationality) as count_distinct_nationality
+mysql res: ['{"count_DISTINCT nationality": 7}']
+target res: ['{"count_distinct_nationality": 7}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['nationality', 'count_*']
+---------------------------Execute SQL Query:[SELECT nationality ,  count(*) FROM swimmer GROUP BY nationality HAVING count(*)  >  1]-----------------
+convert time:2.595397 s
+---------------------------Execute Target Query:MATCH (s:swimmer)
+WITH s.nationality AS nationality, count(*) AS count_star
+WHERE count_star > 1
+RETURN nationality, count_star-----------------
+MATCH (s:swimmer)
+WITH s.nationality AS nationality, count(*) AS count_star
+WHERE count_star > 1
+RETURN nationality, count_star
+mysql res: ['{"nationality": "Australia", "count_*": 2}']
+target res: ['{"nationality": "Australia", "count_star": 2}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['meter_200', 'meter_300']
+---------------------------Execute SQL Query:[SELECT meter_200 ,  meter_300 FROM swimmer WHERE nationality  =  'Australia']-----------------
+convert time:2.433509 s
+---------------------------Execute Target Query:MATCH (s:swimmer) WHERE s.nationality = 'Australia' RETURN s.meter_200 AS meter_200, s.meter_300 AS meter_300-----------------
+MATCH (s:swimmer) WHERE s.nationality = 'Australia' RETURN s.meter_200 AS meter_200, s.meter_300 AS meter_300
+mysql res: ['{"meter_200": "1:57.21", "meter_300": "2:56.95"}', '{"meter_200": "1:56.34", "meter_300": "2:55.90"}']
+target res: ['{"meter_200": "1:57.21", "meter_300": "2:56.95"}', '{"meter_200": "1:56.34", "meter_300": "2:55.90"}']
+translate SELECT meter_200 ,  meter_300 FROM swimmer WHERE nationality  =  'Australia' success
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win']-----------------
+convert time:2.283832 s
+---------------------------Execute Target Query:MATCH (s:swimmer), (r:record) WHERE s.id = r.swimmer_id AND r.RESULT = 'Win' RETURN s.name as name-----------------
+MATCH (s:swimmer), (r:record) WHERE s.id = r.swimmer_id AND r.RESULT = 'Win' RETURN s.name as name
+mysql res: ['{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Oussama Mellouli"}', '{"name": "Oussama Mellouli"}', '{"name": "Craig Stevens"}', '{"name": "Craig Stevens"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM stadium AS t1 JOIN event AS t2 ON t1.id  =  t2.stadium_id GROUP BY t2.stadium_id ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:3.798761 s
+---------------------------Execute Target Query:MATCH (s:stadium), (e:event) WHERE s.id = e.stadium_id RETURN s.name as name, count(*) as count_star ORDER BY count_star DESC LIMIT 1-----------------
+MATCH (s:stadium), (e:event) WHERE s.id = e.stadium_id RETURN s.name as name, count(*) as count_star ORDER BY count_star DESC LIMIT 1
+mysql res: ['{"name": "Estadio La Peineta"}']
+target res: ['{"name": "Nou Mestalla", "count_star": 1}']
+mismatch between MySQL and target
+
+--------------------------20-----------------
+schema:['name', 'capacity']
+---------------------------Execute SQL Query:[SELECT t1.name ,  t1.capacity FROM stadium AS t1 JOIN event AS t2 ON t1.id  =  t2.stadium_id WHERE t2.name  =  'World Junior']-----------------
+convert time:2.438048 s
+---------------------------Execute Target Query:MATCH (s:stadium), (e:event) WHERE s.id = e.stadium_id AND e.name = 'World Junior' RETURN s.name AS name, s.capacity AS capacity-----------------
+MATCH (s:stadium), (e:event) WHERE s.id = e.stadium_id AND e.name = 'World Junior' RETURN s.name AS name, s.capacity AS capacity
+mysql res: ['{"name": "Baku Olympic Stadium", "capacity": 68000}']
+target res: ['{"name": "Baku Olympic Stadium", "capacity": 68000}']
+translate SELECT t1.name ,  t1.capacity FROM stadium AS t1 JOIN event AS t2 ON t1.id  =  t2.stadium_id WHERE t2.name  =  'World Junior' success
+
+--------------------------21-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium WHERE id NOT IN (SELECT stadium_id FROM event)]-----------------
+convert time:2.070096 s
+---------------------------Execute Target Query:MATCH (s:stadium) WHERE NOT EXISTS (MATCH (e:event) WHERE e.stadium_id = s.id) RETURN s.name as name-----------------
+MATCH (s:stadium) WHERE NOT EXISTS (MATCH (e:event) WHERE e.stadium_id = s.id) RETURN s.name as name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 53 (offset: 52))
+"MATCH (s:stadium) WHERE NOT EXISTS (MATCH (e:event) WHERE e.stadium_id = s.id) RETURN s.name as name"
+                                                     ^}
+
+--------------------------22-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id GROUP BY t2.swimmer_id ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:3.660805 s
+---------------------------Execute Target Query:MATCH (s:swimmer), (r:record) WHERE s.id = r.swimmer_id RETURN s.name as name, count(*) as count_star ORDER BY count_star DESC LIMIT 1-----------------
+MATCH (s:swimmer), (r:record) WHERE s.id = r.swimmer_id RETURN s.name as name, count(*) as count_star ORDER BY count_star DESC LIMIT 1
+mysql res: ['{"name": "Craig Stevens"}']
+target res: ['{"name": "Craig Stevens", "count_star": 4}']
+mismatch between MySQL and target
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id GROUP BY t2.swimmer_id HAVING count(*)  >=  2]-----------------
+convert time:3.565686 s
+---------------------------Execute Target Query:MATCH (t1:swimmer), (t2:record) WHERE t1.id = t2.swimmer_id WITH t2.swimmer_id AS swimmer_id, count(*) AS count_star GROUP BY swimmer_id HAVING count_star >= 2 RETURN t1.name AS name-----------------
+MATCH (t1:swimmer), (t2:record) WHERE t1.id = t2.swimmer_id WITH t2.swimmer_id AS swimmer_id, count(*) AS count_star GROUP BY swimmer_id HAVING count_star >= 2 RETURN t1.name AS name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WHERE"
+  "WITH"
+  <EOF> (line 1, column 118 (offset: 117))
+"MATCH (t1:swimmer), (t2:record) WHERE t1.id = t2.swimmer_id WITH t2.swimmer_id AS swimmer_id, count(*) AS count_star GROUP BY swimmer_id HAVING count_star >= 2 RETURN t1.name AS name"
+                                                                                                                      ^}
+
+--------------------------24-----------------
+schema:['name', 'nationality']
+---------------------------Execute SQL Query:[SELECT t1.name ,  t1.nationality FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win' GROUP BY t2.swimmer_id HAVING count(*)  >  1]-----------------
+convert time:3.307411 s
+---------------------------Execute Target Query:MATCH (s:swimmer), (r:record) WHERE s.id = r.swimmer_id AND r.RESULT = 'Win' RETURN s.name AS name, s.nationality AS nationality, count(*) AS count GROUP BY r.swimmer_id HAVING count > 1-----------------
+MATCH (s:swimmer), (r:record) WHERE s.id = r.swimmer_id AND r.RESULT = 'Win' RETURN s.name AS name, s.nationality AS nationality, count(*) AS count GROUP BY r.swimmer_id HAVING count > 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 1, column 149 (offset: 148))
+"MATCH (s:swimmer), (r:record) WHERE s.id = r.swimmer_id AND r.RESULT = 'Win' RETURN s.name AS name, s.nationality AS nationality, count(*) AS count GROUP BY r.swimmer_id HAVING count > 1"
+                                                                                                                                                     ^}
+
+--------------------------25-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM swimmer WHERE id NOT IN (SELECT swimmer_id FROM record)]-----------------
+convert time:2.521449 s
+---------------------------Execute Target Query:MATCH (s:swimmer) WHERE NOT EXISTS (MATCH (r:record) WHERE r.swimmer_id = s.id) RETURN s.name as name-----------------
+MATCH (s:swimmer) WHERE NOT EXISTS (MATCH (r:record) WHERE r.swimmer_id = s.id) RETURN s.name as name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 54 (offset: 53))
+"MATCH (s:swimmer) WHERE NOT EXISTS (MATCH (r:record) WHERE r.swimmer_id = s.id) RETURN s.name as name"
+                                                      ^}
+
+--------------------------26-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win' INTERSECT SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Loss']-----------------
+convert time:5.068614 s
+---------------------------Execute Target Query:MATCH (s1:swimmer), (r1:record), (s2:swimmer), (r2:record)
+WHERE s1.id = r1.swimmer_id AND r1.RESULT = 'Win' AND s2.id = r2.swimmer_id AND r2.RESULT = 'Loss' AND s1.name = s2.name
+RETURN DISTINCT s1.name as name-----------------
+MATCH (s1:swimmer), (r1:record), (s2:swimmer), (r2:record)
+WHERE s1.id = r1.swimmer_id AND r1.RESULT = 'Win' AND s2.id = r2.swimmer_id AND r2.RESULT = 'Loss' AND s1.name = s2.name
+RETURN DISTINCT s1.name as name
+mysql res: ['{"name": "Sergiy Fesenko"}', '{"name": "Oussama Mellouli"}', '{"name": "Craig Stevens"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------27-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t4.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id JOIN event AS t3 ON t2.event_id  =  t3.id JOIN stadium AS t4 ON t4.id  =  t3.stadium_id WHERE t1.nationality  =  'Australia']-----------------
+convert time:3.807404 s
+---------------------------Execute Target Query:MATCH (t1:swimmer), (t2:record), (t3:event), (t4:stadium)
+WHERE t1.id = t2.swimmer_id AND t2.event_id = t3.id AND t3.stadium_id = t4.id AND t1.nationality = 'Australia'
+RETURN t4.name as name-----------------
+MATCH (t1:swimmer), (t2:record), (t3:event), (t4:stadium)
+WHERE t1.id = t2.swimmer_id AND t2.event_id = t3.id AND t3.stadium_id = t4.id AND t1.nationality = 'Australia'
+RETURN t4.name as name
+mysql res: ['{"name": "Nou Mestalla"}', '{"name": "Nou Mestalla"}', '{"name": "Yubileyniy Stadium"}', '{"name": "Gazprom Arena"}', '{"name": "Baku Olympic Stadium"}']
+target res: ['{"name": "Nou Mestalla"}', '{"name": "Nou Mestalla"}', '{"name": "Yubileyniy Stadium"}', '{"name": "Gazprom Arena"}', '{"name": "Baku Olympic Stadium"}']
+translate SELECT t4.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id JOIN event AS t3 ON t2.event_id  =  t3.id JOIN stadium AS t4 ON t4.id  =  t3.stadium_id WHERE t1.nationality  =  'Australia' success
+
+--------------------------28-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t3.name FROM record AS t1 JOIN event AS t2 ON t1.event_id  =  t2.id JOIN stadium AS t3 ON t3.id  =  t2.stadium_id GROUP BY t2.stadium_id ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:4.167651 s
+---------------------------Execute Target Query:MATCH (t1:record), (t2:event), (t3:stadium)
+WHERE t1.event_id = t2.id AND t2.stadium_id = t3.id
+RETURN t3.name as name
+ORDER BY count(*) DESC LIMIT 1-----------------
+MATCH (t1:record), (t2:event), (t3:stadium)
+WHERE t1.event_id = t2.id AND t2.stadium_id = t3.id
+RETURN t3.name as name
+ORDER BY count(*) DESC LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Cannot use aggregation in ORDER BY if there are no aggregate expressions in the preceding RETURN (line 3, column 1 (offset: 96))
+"RETURN t3.name as name"
+ ^}
+
+--------------------------29-----------------
+schema:['ID', 'name', 'Nationality', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'Time']
+---------------------------Execute SQL Query:[SELECT * FROM swimmer]-----------------
+convert time:0.85351 s
+---------------------------Execute Target Query:MATCH (s:swimmer) RETURN s-----------------
+MATCH (s:swimmer) RETURN s
+execute target query error:Object of type Node is not JSON serializable
+
+--------------------------30-----------------
+schema:['avg_capacity']
+---------------------------Execute SQL Query:[SELECT avg(capacity) FROM stadium WHERE opening_year  =  2005]-----------------
+convert time:2.420114 s
+---------------------------Execute Target Query:MATCH (s:stadium) WHERE s.opening_year = 2005 RETURN avg(s.capacity) as avg_capacity-----------------
+MATCH (s:stadium) WHERE s.opening_year = 2005 RETURN avg(s.capacity) as avg_capacity
+mysql res: ['{"avg_capacity": 62504.0000}']
+target res: ['{"avg_capacity": 62504.0}']
+mismatch between MySQL and target
+success_query_count: 8
+valid_count: 30
+accuracy: 0.26666666666666666

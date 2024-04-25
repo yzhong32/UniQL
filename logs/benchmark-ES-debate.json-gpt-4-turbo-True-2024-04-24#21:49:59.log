@@ -1,0 +1,553 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM debate]-----------------
+target_db_schema: ['Date', 'Debate_ID', 'Num_of_Audience', 'Venue']
+convert time:5.191715 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_debates": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["debate"],
+    "code": {
+        "total_debates": "response['aggregations']['total_debates']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_debates': {'value_count': {'field': '_index'}}}, 'code': {'total_debates': "response['aggregations']['total_debates']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_debates': {'value': 6}}}
+
+exec_result_dict: {'total_debates': 6}
+mysql res: ['{"count_*": 6}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['Venue']
+---------------------------Execute SQL Query:[SELECT Venue FROM debate ORDER BY Num_of_Audience ASC]-----------------
+target_db_schema: ['Date', 'Debate_ID', 'Num_of_Audience', 'Venue']
+convert time:2.69367 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "sort": [
+        {"Num_of_Audience": {"order": "asc"}}
+    ],
+    "_source": ["Venue"],
+    "inner_index": ["debate"]
+}-----------------
+**************************************************
+{'size': 0, 'sort': [{'Num_of_Audience': {'order': 'asc'}}], '_source': ['Venue']}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"Venue": "Manama , Bahrain"}', '{"Venue": "Doha , Qatar"}', '{"Venue": "Abu Dhabi , UAE"}', '{"Venue": "Manama , Bahrain"}', '{"Venue": "Dubai , UAE"}', '{"Venue": "Manama , Bahrain"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------3-----------------
+schema:['Date', 'Venue']
+---------------------------Execute SQL Query:[SELECT Date ,  Venue FROM debate]-----------------
+target_db_schema: ['Date', 'Debate_ID', 'Num_of_Audience', 'Venue']
+convert time:1.80101 s
+---------------------------Execute Target Query:{
+    "_source": ["Date", "Venue"],
+    "inner_index": ["debate"]
+}-----------------
+**************************************************
+{'_source': ['Date', 'Venue'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'debate_debate', '_id': 'a1cWEo8BsHbYzo2oC3Rk', '_score': 1.0, '_source': {'Date': 'October 21, 2011', 'Venue': 'Manama , Bahrain'}}, {'_index': 'debate_debate', '_id': 'bFcWEo8BsHbYzo2oC3Rk', '_score': 1.0, '_source': {'Date': 'December 17, 2014', 'Venue': 'Doha , Qatar'}}, {'_index': 'debate_debate', '_id': 'bVcWEo8BsHbYzo2oC3Rk', '_score': 1.0, '_source': {'Date': 'August 3, 2015', 'Venue': 'Manama , Bahrain'}}, {'_index': 'debate_debate', '_id': 'blcWEo8BsHbYzo2oC3Rk', '_score': 1.0, '_source': {'Date': 'October 27, 2015', 'Venue': 'Manama , Bahrain'}}, {'_index': 'debate_debate', '_id': 'b1cWEo8BsHbYzo2oC3Rk', '_score': 1.0, '_source': {'Date': 'January 12, 2017', 'Venue': 'Dubai , UAE'}}, {'_index': 'debate_debate', '_id': 'cFcWEo8BsHbYzo2oC3Rk', '_score': 1.0, '_source': {'Date': 'January 21, 2017', 'Venue': 'Abu Dhabi , UAE'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Date": "October 21, 2011", "Venue": "Manama , Bahrain"}', '{"Date": "December 17, 2014", "Venue": "Doha , Qatar"}', '{"Date": "August 3, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "October 27, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "January 12, 2017", "Venue": "Dubai , UAE"}', '{"Date": "January 21, 2017", "Venue": "Abu Dhabi , UAE"}']
+target res: ['{"Date": "October 21, 2011", "Venue": "Manama , Bahrain"}', '{"Date": "December 17, 2014", "Venue": "Doha , Qatar"}', '{"Date": "August 3, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "October 27, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "January 12, 2017", "Venue": "Dubai , UAE"}', '{"Date": "January 21, 2017", "Venue": "Abu Dhabi , UAE"}']
+translate SELECT Date ,  Venue FROM debate success
+
+--------------------------4-----------------
+schema:['Date']
+---------------------------Execute SQL Query:[SELECT Date FROM debate WHERE Num_of_Audience  >  150]-----------------
+target_db_schema: ['Date', 'Debate_ID', 'Num_of_Audience', 'Venue']
+convert time:5.02039 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "Num_of_Audience": {
+                            "gt": 150
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Date"],
+    "inner_index": ["debate"]
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'Num_of_Audience': {'gt': 150}}}]}}, '_source': ['Date'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 4, 'relation': 'eq'}, 'max_score': 0.0, 'hits': [{'_index': 'debate_debate', '_id': 'a1cWEo8BsHbYzo2oC3Rk', '_score': 0.0, '_source': {'Date': 'October 21, 2011'}}, {'_index': 'debate_debate', '_id': 'blcWEo8BsHbYzo2oC3Rk', '_score': 0.0, '_source': {'Date': 'October 27, 2015'}}, {'_index': 'debate_debate', '_id': 'b1cWEo8BsHbYzo2oC3Rk', '_score': 0.0, '_source': {'Date': 'January 12, 2017'}}, {'_index': 'debate_debate', '_id': 'cFcWEo8BsHbYzo2oC3Rk', '_score': 0.0, '_source': {'Date': 'January 21, 2017'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Date": "October 21, 2011"}', '{"Date": "October 27, 2015"}', '{"Date": "January 12, 2017"}', '{"Date": "January 21, 2017"}']
+target res: ['{"Date": "October 21, 2011"}', '{"Date": "October 27, 2015"}', '{"Date": "January 12, 2017"}', '{"Date": "January 21, 2017"}']
+translate SELECT Date FROM debate WHERE Num_of_Audience  >  150 success
+
+--------------------------5-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT Name FROM  people WHERE Age  =  35 OR Age  =  36]-----------------
+target_db_schema: ['Age', 'District', 'Name', 'Party', 'People_ID']
+convert time:4.442263 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "term": {
+                        "Age": 35
+                    }
+                },
+                {
+                    "term": {
+                        "Age": 36
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Name"],
+    "inner_index": ["people"]
+}-----------------
+**************************************************
+{'query': {'bool': {'should': [{'term': {'Age': 35}}, {'term': {'Age': 36}}]}}, '_source': ['Name'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 3, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'debate_people', '_id': 'dlcWEo8BsHbYzo2oDnTn', '_score': 1.0, '_source': {'Name': 'Luther C. Carter'}}, {'_index': 'debate_people', '_id': 'elcWEo8BsHbYzo2oDnTn', '_score': 1.0, '_source': {'Name': 'William B. Maclay'}}, {'_index': 'debate_people', '_id': 'f1cWEo8BsHbYzo2oDnTn', '_score': 1.0, '_source': {'Name': 'Charles Van Wyck'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Name": "Luther C. Carter"}', '{"Name": "William B. Maclay"}', '{"Name": "Charles Van Wyck"}']
+target res: ['{"Name": "Luther C. Carter"}', '{"Name": "William B. Maclay"}', '{"Name": "Charles Van Wyck"}']
+translate SELECT Name FROM  people WHERE Age  =  35 OR Age  =  36 success
+
+--------------------------6-----------------
+schema:['Party']
+---------------------------Execute SQL Query:[SELECT Party FROM people ORDER BY Age ASC LIMIT 1]-----------------
+target_db_schema: ['Age', 'District', 'Name', 'Party', 'People_ID']
+convert time:2.663749 s
+---------------------------Execute Target Query:{
+  "size": 1,
+  "sort": [
+    {
+      "Age": {
+        "order": "asc"
+      }
+    }
+  ],
+  "_source": ["Party"],
+  "inner_index": ["people"]
+}-----------------
+**************************************************
+{'size': 1, 'sort': [{'Age': {'order': 'asc'}}], '_source': ['Party']}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'debate_people', '_id': 'dlcWEo8BsHbYzo2oDnTn', '_score': None, '_source': {'Party': 'Republican'}, 'sort': [35]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Party": "Republican"}']
+target res: ['{"Party": "Republican"}']
+translate SELECT Party FROM people ORDER BY Age ASC LIMIT 1 success
+
+--------------------------7-----------------
+schema:['Party', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT Party ,  COUNT(*) FROM people GROUP BY Party]-----------------
+target_db_schema: ['Age', 'District', 'Name', 'Party', 'People_ID']
+convert time:4.317242 s
+---------------------------Execute Target Query:{
+    "inner_index": ["people"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "party_count": {
+            "terms": {
+                "field": "Party.keyword",
+                "size": 10
+            }
+        }
+    },
+    "code": {
+        "party_result": "response['aggregations']['party_count']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'party_count': {'terms': {'field': 'Party.keyword', 'size': 10}}}, 'code': {'party_result': "response['aggregations']['party_count']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'party_count': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'Republican', 'doc_count': 4}, {'key': 'Democratic', 'doc_count': 3}, {'key': 'Anti-Lecompton Democrat', 'doc_count': 2}, {'key': 'Independent Democrat', 'doc_count': 1}]}}}
+
+exec_result_dict: {'party_result': [{'key': 'Republican', 'doc_count': 4}, {'key': 'Democratic', 'doc_count': 3}, {'key': 'Anti-Lecompton Democrat', 'doc_count': 2}, {'key': 'Independent Democrat', 'doc_count': 1}]}
+mysql res: ['{"Party": "Republican", "COUNT_*": 4}', '{"Party": "Democratic", "COUNT_*": 3}', '{"Party": "Independent Democrat", "COUNT_*": 1}', '{"Party": "Anti-Lecompton Democrat", "COUNT_*": 2}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['Party']
+---------------------------Execute SQL Query:[SELECT Party FROM people GROUP BY Party ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Age', 'District', 'Name', 'Party', 'People_ID']
+convert time:5.667786 s
+---------------------------Execute Target Query:{
+  "inner_index": ["people"],
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "group_by_party": {
+      "terms": {
+        "field": "Party.keyword",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "code": {
+    "Party": "response['aggregations']['group_by_party']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'aggs': {'group_by_party': {'terms': {'field': 'Party.keyword', 'size': 1, 'order': {'_count': 'desc'}}}}, 'size': 0, 'code': {'Party': "response['aggregations']['group_by_party']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_party': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 6, 'buckets': [{'key': 'Republican', 'doc_count': 4}]}}}
+
+exec_result_dict: {'Party': 'Republican'}
+mysql res: ['{"Party": "Republican"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['Venue']
+---------------------------Execute SQL Query:[SELECT DISTINCT Venue FROM debate]-----------------
+target_db_schema: ['Date', 'Debate_ID', 'Num_of_Audience', 'Venue']
+convert time:7.255404 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_venues": {
+            "terms": {
+                "field": "Venue.keyword"
+            }
+        }
+    },
+    "inner_index": ["debate"],
+    "code": {
+        "distinct_venue_result": "response['aggregations']['unique_venues']['buckets']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_venues': {'terms': {'field': 'Venue.keyword'}}}, 'code': {'distinct_venue_result': "response['aggregations']['unique_venues']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_venues': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'Manama , Bahrain', 'doc_count': 3}, {'key': 'Abu Dhabi , UAE', 'doc_count': 1}, {'key': 'Doha , Qatar', 'doc_count': 1}, {'key': 'Dubai , UAE', 'doc_count': 1}]}}}
+
+exec_result_dict: {'distinct_venue_result': [{'key': 'Manama , Bahrain', 'doc_count': 3}, {'key': 'Abu Dhabi , UAE', 'doc_count': 1}, {'key': 'Doha , Qatar', 'doc_count': 1}, {'key': 'Dubai , UAE', 'doc_count': 1}]}
+mysql res: ['{"Venue": "Manama , Bahrain"}', '{"Venue": "Doha , Qatar"}', '{"Venue": "Dubai , UAE"}', '{"Venue": "Abu Dhabi , UAE"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['Name', 'Date', 'Venue']
+---------------------------Execute SQL Query:[SELECT T3.Name ,  T2.Date ,  T2.Venue FROM debate_people AS T1 JOIN debate AS T2 ON T1.Debate_ID  =  T2.Debate_ID JOIN people AS T3 ON T1.Affirmative  =  T3.People_ID]-----------------
+target_db_schema: ['Date', 'Debate_ID', 'Num_of_Audience', 'Venue', 'd', 'e', 'b', 'a', 't', 'e', '_', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', "'", ',', ' ', "'", 'D', 'e', 'b', 'a', 't', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'I', 'f', '_', 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', '_', 'W', 'i', 'n', "'", ',', ' ', "'", 'N', 'e', 'g', 'a', 't', 'i', 'v', 'e', "'", ']', '\n', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'g', 'e', "'", ',', ' ', "'", 'D', 'i', 's', 't', 'r', 'i', 'c', 't', "'", ',', ' ', "'", 'N', 'a', 'm', 'e', "'", ',', ' ', "'", 'P', 'a', 'r', 't', 'y', "'", ',', ' ', "'", 'P', 'e', 'o', 'p', 'l', 'e', '_', 'I', 'D', "'", ']', '\n']
+convert time:11.03323 s
+---------------------------Execute Target Query:{
+    "size": 10,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "nested": {
+                        "path": "debate_people",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "nested": {
+                                            "path": "debate_people.people",
+                                            "query": {
+                                                "match": {
+                                                    "debate_people.people.People_ID": "debate_people.Affirmative"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "debate",
+                        "query": {
+                            "match": {
+                                "debate.Debate_ID": "debate_people.Debate_ID"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["debate_people.people.Name", "debate.Date", "debate.Venue"],
+    "inner_index": ["debate_people", "debate", "people"]
+}-----------------
+**************************************************
+{'size': 10, 'query': {'bool': {'must': [{'nested': {'path': 'debate_people', 'query': {'bool': {'must': [{'nested': {'path': 'debate_people.people', 'query': {'match': {'debate_people.people.People_ID': 'debate_people.Affirmative'}}}}]}}}}, {'nested': {'path': 'debate', 'query': {'match': {'debate.Debate_ID': 'debate_people.Debate_ID'}}}}]}}, '_source': ['debate_people.people.Name', 'debate.Date', 'debate.Venue']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [debate_people]')
+
+--------------------------11-----------------
+schema:['Name', 'Date', 'Venue']
+---------------------------Execute SQL Query:[SELECT T3.Name ,  T2.Date ,  T2.Venue FROM debate_people AS T1 JOIN debate AS T2 ON T1.Debate_ID  =  T2.Debate_ID JOIN people AS T3 ON T1.Negative  =  T3.People_ID ORDER BY T3.Name ASC]-----------------
+target_db_schema: ['Date', 'Debate_ID', 'Num_of_Audience', 'Venue', 'd', 'e', 'b', 'a', 't', 'e', '_', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', "'", ',', ' ', "'", 'D', 'e', 'b', 'a', 't', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'I', 'f', '_', 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', '_', 'W', 'i', 'n', "'", ',', ' ', "'", 'N', 'e', 'g', 'a', 't', 'i', 'v', 'e', "'", ']', '\n', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'g', 'e', "'", ',', ' ', "'", 'D', 'i', 's', 't', 'r', 'i', 'c', 't', "'", ',', ' ', "'", 'N', 'a', 'm', 'e', "'", ',', ' ', "'", 'P', 'a', 'r', 't', 'y', "'", ',', ' ', "'", 'P', 'e', 'o', 'p', 'l', 'e', '_', 'I', 'D', "'", ']', '\n']
+convert time:8.375662 s
+---------------------------Execute Target Query:{
+    "size": 1000,
+    "sort": [
+        {"Name": {"order": "asc"}}
+    ],
+    "_source": ["Name", "Date", "Venue"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "debate_people",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "has_parent": {
+                                            "parent_type": "debate",
+                                            "query": {
+                                                "match_all": {}
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "has_parent": {
+                                            "parent_type": "people",
+                                            "query": {
+                                                "match_all": {}
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "inner_index": ["debate", "people", "debate_people"]
+}-----------------
+**************************************************
+{'size': 1000, 'sort': [{'Name': {'order': 'asc'}}], '_source': ['Name', 'Date', 'Venue'], 'query': {'bool': {'must': [{'has_child': {'type': 'debate_people', 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'debate', 'query': {'match_all': {}}}}, {'has_parent': {'parent_type': 'people', 'query': {'match_all': {}}}}]}}}}]}}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------12-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT T3.Name FROM debate_people AS T1 JOIN debate AS T2 ON T1.Debate_ID  =  T2.Debate_ID JOIN people AS T3 ON T1.Affirmative  =  T3.People_ID WHERE T2.Num_of_Audience  >  200]-----------------
+target_db_schema: ['Date', 'Debate_ID', 'Num_of_Audience', 'Venue', 'd', 'e', 'b', 'a', 't', 'e', '_', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', "'", ',', ' ', "'", 'D', 'e', 'b', 'a', 't', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'I', 'f', '_', 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', '_', 'W', 'i', 'n', "'", ',', ' ', "'", 'N', 'e', 'g', 'a', 't', 'i', 'v', 'e', "'", ']', '\n', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'g', 'e', "'", ',', ' ', "'", 'D', 'i', 's', 't', 'r', 'i', 'c', 't', "'", ',', ' ', "'", 'N', 'a', 'm', 'e', "'", ',', ' ', "'", 'P', 'a', 'r', 't', 'y', "'", ',', ' ', "'", 'P', 'e', 'o', 'p', 'l', 'e', '_', 'I', 'D', "'", ']', '\n']
+convert time:8.819142 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "nested": {
+                        "path": "debate_people",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "nested": {
+                                            "path": "debate_people.people",
+                                            "query": {
+                                                "match": {
+                                                    "debate_people.people.People_ID": "debate_people.Affirmative"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "range": {
+                        "Num_of_Audience": {
+                            "gt": 200
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["debate_people.people.Name"],
+    "inner_index": ["debate", "people"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'nested': {'path': 'debate_people', 'query': {'bool': {'must': [{'nested': {'path': 'debate_people.people', 'query': {'match': {'debate_people.people.People_ID': 'debate_people.Affirmative'}}}}]}}}}, {'range': {'Num_of_Audience': {'gt': 200}}}]}}, '_source': ['debate_people.people.Name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [debate_people]')
+
+--------------------------13-----------------
+schema:['Name', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT T2.Name ,  COUNT(*) FROM debate_people AS T1 JOIN people AS T2 ON T1.Affirmative  =  T2.People_ID GROUP BY T2.Name]-----------------
+target_db_schema: ['Age', 'District', 'Name', 'Party', 'People_ID', 'd', 'e', 'b', 'a', 't', 'e', '_', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', "'", ',', ' ', "'", 'D', 'e', 'b', 'a', 't', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'I', 'f', '_', 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', '_', 'W', 'i', 'n', "'", ',', ' ', "'", 'N', 'e', 'g', 'a', 't', 'i', 'v', 'e', "'", ']', '\n']
+convert time:11.486255 s
+---------------------------Execute Target Query:{
+    "inner_index": ["debate_people", "people"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "people",
+                        "query": {
+                            "match": {
+                                "Affirmative": "People_ID"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_name": {
+            "terms": {
+                "field": "Name.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "People_ID"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "Name_result": "response['aggregations']['group_by_name']['buckets']",
+        "count_result": "response['aggregations']['group_by_name']['buckets'][*]['count']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'people', 'query': {'match': {'Affirmative': 'People_ID'}}}}]}}, 'aggs': {'group_by_name': {'terms': {'field': 'Name.keyword', 'size': 10}, 'aggs': {'count': {'value_count': {'field': 'People_ID'}}}}}, 'code': {'Name_result': "response['aggregations']['group_by_name']['buckets']", 'count_result': "response['aggregations']['group_by_name']['buckets'][*]['count']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------14-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT T2.Name FROM debate_people AS T1 JOIN people AS T2 ON T1.Negative  =  T2.People_ID GROUP BY T2.Name HAVING COUNT(*)  >=  2]-----------------
+target_db_schema: ['Age', 'District', 'Name', 'Party', 'People_ID', 'd', 'e', 'b', 'a', 't', 'e', '_', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', "'", ',', ' ', "'", 'D', 'e', 'b', 'a', 't', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'I', 'f', '_', 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', '_', 'W', 'i', 'n', "'", ',', ' ', "'", 'N', 'e', 'g', 'a', 't', 'i', 'v', 'e', "'", ']', '\n']
+convert time:10.519969 s
+---------------------------Execute Target Query:{
+    "inner_index": ["debate_people", "people"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "people",
+                        "query": {
+                            "match": {
+                                "Negative": "People_ID"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_name": {
+            "terms": {
+                "field": "Name.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "Name.keyword"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "Name_result": "response['aggregations']['group_by_name']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'people', 'query': {'match': {'Negative': 'People_ID'}}}}]}}, 'aggs': {'group_by_name': {'terms': {'field': 'Name.keyword', 'size': 10}, 'aggs': {'count': {'value_count': {'field': 'Name.keyword'}}}}}, 'code': {'Name_result': "response['aggregations']['group_by_name']['buckets']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------15-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT Name FROM people WHERE People_id NOT IN (SELECT Affirmative FROM debate_people)]-----------------
+target_db_schema: ['Age', 'District', 'Name', 'Party', 'People_ID', 'd', 'e', 'b', 'a', 't', 'e', '_', 'p', 'e', 'o', 'p', 'l', 'e', ':', ' ', '[', "'", 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', "'", ',', ' ', "'", 'D', 'e', 'b', 'a', 't', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'I', 'f', '_', 'A', 'f', 'f', 'i', 'r', 'm', 'a', 't', 'i', 'v', 'e', '_', 'W', 'i', 'n', "'", ',', ' ', "'", 'N', 'e', 'g', 'a', 't', 'i', 'v', 'e', "'", ']', '\n']
+convert time:6.793412 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": {
+                "terms": {
+                    "People_ID": {
+                        "index": "debate_people",
+                        "id": "Affirmative",
+                        "path": "Affirmative"
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["Name"],
+    "inner_index": ["people", "debate_people"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'People_ID': {'index': 'debate_people', 'id': 'Affirmative', 'path': 'Affirmative'}}}}}, '_source': ['Name'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 20, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': 0.0, 'hits': [{'_index': 'debate_people', '_id': 'dlcWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'Luther C. Carter'}}, {'_index': 'debate_people', '_id': 'd1cWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'James Humphrey'}}, {'_index': 'debate_people', '_id': 'eFcWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'Daniel Sickles'}}, {'_index': 'debate_people', '_id': 'eVcWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'Thomas J. Barr'}}, {'_index': 'debate_people', '_id': 'elcWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'William B. Maclay'}}, {'_index': 'debate_people', '_id': 'e1cWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'John Cochrane'}}, {'_index': 'debate_people', '_id': 'fFcWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'George Briggs'}}, {'_index': 'debate_people', '_id': 'fVcWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'Horace F. Clark'}}, {'_index': 'debate_people', '_id': 'flcWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'John B. Haskin'}}, {'_index': 'debate_people', '_id': 'f1cWEo8BsHbYzo2oDnTn', '_score': 0.0, '_source': {'Name': 'Charles Van Wyck'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Name": "Daniel Sickles"}', '{"Name": "John Cochrane"}', '{"Name": "George Briggs"}', '{"Name": "Horace F. Clark"}', '{"Name": "John B. Haskin"}', '{"Name": "Charles Van Wyck"}']
+target res: ['{"Name": "Luther C. Carter"}', '{"Name": "James Humphrey"}', '{"Name": "Daniel Sickles"}', '{"Name": "Thomas J. Barr"}', '{"Name": "William B. Maclay"}', '{"Name": "John Cochrane"}', '{"Name": "George Briggs"}', '{"Name": "Horace F. Clark"}', '{"Name": "John B. Haskin"}', '{"Name": "Charles Van Wyck"}']
+Exception raised during comparison: Row number mismatch
+success_query_count: 4
+valid_count: 15
+accuracy: 0.26666666666666666

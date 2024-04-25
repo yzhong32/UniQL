@@ -36,6 +36,40 @@ def process_datetime_fields(row):
             row[key] = value.isoformat()
     return row
 
+def enable_fielddata_for_text_fields(es, index_name): 
+    # 获取索引的当前映射
+    mapping = es.indices.get_mapping(index=index_name)
+    print(f"Current Mapping for '{index_name}':", mapping)
+
+    # 解析映射以找到所有 text 类型的字段
+    text_fields = []
+    properties = mapping[index_name]['mappings']['properties']
+    for field, field_props in properties.items():
+        if field_props.get('type') == 'text' and not field_props.get('fielddata'):
+            text_fields.append(field)
+
+    # 如果没有 text 字段需要更新，就退出
+    if not text_fields:
+        print("No text fields need fielddata enabled.")
+        return
+
+    # 为所有 text 字段开启 fielddata
+    for field in text_fields:
+        try:
+            response = es.indices.put_mapping(
+                index=index_name,
+                body={
+                    "properties": {
+                        field: {
+                            "type": "text",
+                            "fielddata": True
+                        }
+                    }
+                }
+            )
+            print(f"Fielddata enabled for '{field}':", response)
+        except Exception as e:
+            print(f"An error occurred while updating field '{field}':", e)
 
 def migrate_es(mysql_database_name):
     # get es and mysql conn
@@ -119,6 +153,8 @@ def migrate_es(mysql_database_name):
 
         es_total_rows = es.count(index=target_es_index_name)['count']
         print("Total es rows:", es_total_rows)
+
+        enable_fielddata_for_text_fields(es, target_es_index_name)
 
 
 if __name__ == '__main__':

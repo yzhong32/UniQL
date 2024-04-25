@@ -1,0 +1,1608 @@
+--------
+
+--------------------------1-----------------
+schema:['count_DISTINCT allergy']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT allergy) FROM allergy_type]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:14.371912 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_allergies": {
+            "cardinality": {
+                "field": "allergy"
+            }
+        }
+    },
+    "inner_index": ["allergy_type"],
+    "code": {
+        "count_distinct_allergy": "response['aggregations']['unique_allergies']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_allergies': {'cardinality': {'field': 'allergy'}}}, 'code': {'count_distinct_allergy': "response['aggregations']['unique_allergies']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_allergies': {'value': 0}}}
+
+exec_result_dict: {'count_distinct_allergy': 0}
+mysql res: ['{"count_DISTINCT allergy": 14}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['count_DISTINCT allergytype']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT allergytype) FROM allergy_type]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:6.268184 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_allergytypes": {
+            "cardinality": {
+                "field": "allergytype" #comment: AllergyType
+            }
+        }
+    },
+    "inner_index": ["allergy_type"],
+    "code": {
+        "count_distinct_allergytype": "response['aggregations']['unique_allergytypes']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_allergytypes': {'cardinality': {'field': 'allergytype'}}}, 'code': {'count_distinct_allergytype': "response['aggregations']['unique_allergytypes']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_allergytypes': {'value': 0}}}
+
+exec_result_dict: {'count_distinct_allergytype': 0}
+mysql res: ['{"count_DISTINCT allergytype": 3}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------3-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT DISTINCT allergytype FROM allergy_type]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:4.581882 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "distinct_allergytypes": {
+            "terms": {
+                "field": "AllergyType.keyword"
+            }
+        }
+    },
+    "inner_index": ["allergy_type"],
+    "code": {
+        "allergytype_result": "response['aggregations']['distinct_allergytypes']['buckets']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'distinct_allergytypes': {'terms': {'field': 'AllergyType.keyword'}}}, 'code': {'allergytype_result': "response['aggregations']['distinct_allergytypes']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'distinct_allergytypes': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'food', 'doc_count': 7}, {'key': 'animal', 'doc_count': 4}, {'key': 'environmental', 'doc_count': 3}]}}}
+
+exec_result_dict: {'allergytype_result': [{'key': 'food', 'doc_count': 7}, {'key': 'animal', 'doc_count': 4}, {'key': 'environmental', 'doc_count': 3}]}
+mysql res: ['{"allergytype": "food"}', '{"allergytype": "animal"}', '{"allergytype": "environmental"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------4-----------------
+schema:['allergy', 'allergytype']
+---------------------------Execute SQL Query:[SELECT allergy ,  allergytype FROM allergy_type]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:2.153835 s
+---------------------------Execute Target Query:{
+    "_source": ["allergy", "allergytype"], #comment: AllergyType, Allergy
+    "inner_index": ["allergy_type"]
+}-----------------
+**************************************************
+{'_source': ['allergy', 'allergytype'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'allergy_1_allergy_type', '_id': 'a1fJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'bFfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'bVfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'blfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'b1fJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'cFfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'cVfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'clfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'c1fJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'dFfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'dVfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'dlfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'd1fJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}, {'_index': 'allergy_1_allergy_type', '_id': 'eFfJEY8BsHbYzo2oKnOo', '_score': 1.0, '_source': {}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"allergy": "Anchovies", "allergytype": "food"}', '{"allergy": "Bee Stings", "allergytype": "animal"}', '{"allergy": "Cat", "allergytype": "animal"}', '{"allergy": "Dog", "allergytype": "animal"}', '{"allergy": "Eggs", "allergytype": "food"}', '{"allergy": "Grass Pollen", "allergytype": "environmental"}', '{"allergy": "Milk", "allergytype": "food"}', '{"allergy": "Nuts", "allergytype": "food"}', '{"allergy": "Ragweed", "allergytype": "environmental"}', '{"allergy": "Rodent", "allergytype": "animal"}', '{"allergy": "Shellfish", "allergytype": "food"}', '{"allergy": "Soy", "allergytype": "food"}', '{"allergy": "Tree Pollen", "allergytype": "environmental"}', '{"allergy": "Wheat", "allergytype": "food"}']
+target res: ['{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['allergy']
+---------------------------Execute SQL Query:[SELECT DISTINCT allergy FROM allergy_type WHERE allergytype  =  "food"]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:4.034482 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "AllergyType": "food"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Allergy"],
+    "inner_index": ["allergy_type"],
+}-----------------
+execute target query error:Expecting property name enclosed in double quotes: line 15 column 1 (char 289)
+
+--------------------------6-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type WHERE allergy  =  "Cat"]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:3.854101 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "allergy": "Cat"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["allergytype"],
+    "inner_index": ["allergy_type"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'allergy': 'Cat'}}]}}, '_source': ['allergytype'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"allergytype": "animal"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------7-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM allergy_type WHERE allergytype  =  "animal"]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:9.02251 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "allergytype": "animal" #comment:AllergyType
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_allergies": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["allergy_type"],
+    "code": {
+        "total_allergies": "response['aggregations']['total_allergies']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'allergytype': 'animal'}}]}}, 'size': 0, 'aggs': {'total_allergies': {'value_count': {'field': '_index'}}}, 'code': {'total_allergies': "response['aggregations']['total_allergies']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_allergies': {'value': 0}}}
+
+exec_result_dict: {'total_allergies': 0}
+mysql res: ['{"count_*": 4}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['allergytype', 'count_*']
+---------------------------Execute SQL Query:[SELECT allergytype ,  count(*) FROM allergy_type GROUP BY allergytype]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:7.466489 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "allergytype": {
+            "terms": {
+                "field": "AllergyType",
+                "size": 10
+            },
+            "aggs": {
+                "count_allergytype": {
+                    "value_count": {
+                        "field": "AllergyType"
+                    }
+                }
+            }
+        }
+    },
+    "inner_index": ["allergy_type"],
+    "code": {
+        "allergytype_result": "response['aggregations']['allergytype']['buckets']",
+        "count_allergytype": "bucket['count_allergytype']['value'] for bucket in response['aggregations']['allergytype']['buckets']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'allergytype': {'terms': {'field': 'AllergyType', 'size': 10}, 'aggs': {'count_allergytype': {'value_count': {'field': 'AllergyType'}}}}}, 'code': {'allergytype_result': "response['aggregations']['allergytype']['buckets']", 'count_allergytype': "bucket['count_allergytype']['value'] for bucket in response['aggregations']['allergytype']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'allergytype': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'food', 'doc_count': 7, 'count_allergytype': {'value': 7}}, {'key': 'animal', 'doc_count': 4, 'count_allergytype': {'value': 4}}, {'key': 'environmental', 'doc_count': 3, 'count_allergytype': {'value': 3}}]}}}
+
+exec_result_dict: {'allergytype_result': [{'key': 'food', 'doc_count': 7, 'count_allergytype': {'value': 7}}, {'key': 'animal', 'doc_count': 4, 'count_allergytype': {'value': 4}}, {'key': 'environmental', 'doc_count': 3, 'count_allergytype': {'value': 3}}]}
+mysql res: ['{"allergytype": "food", "count_*": 7}', '{"allergytype": "animal", "count_*": 4}', '{"allergytype": "environmental", "count_*": 3}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type GROUP BY allergytype ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:6.181861 s
+---------------------------Execute Target Query:{
+  "inner_index": ["allergy_type"],
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "group_by_allergytype": {
+      "terms": {
+        "field": "allergytype", #comment: AllergyType1
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "code": {
+    "allergytype": "response['aggregations']['group_by_allergytype']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'aggs': {'group_by_allergytype': {'terms': {'field': 'allergytype', 'size': 1, 'order': {'_count': 'desc'}}}}, 'size': 0, 'code': {'allergytype': "response['aggregations']['group_by_allergytype']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_allergytype': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {}
+mysql res: ['{"allergytype": "food"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type GROUP BY allergytype ORDER BY count(*) ASC LIMIT 1]-----------------
+target_db_schema: ['Allergy', 'AllergyType']
+convert time:5.411888 s
+---------------------------Execute Target Query:{
+  "size": 0,
+  "aggs": {
+    "group_by_allergytype": {
+      "terms": {
+        "field": "AllergyType",
+        "size": 1,
+        "order": {
+          "_count": "asc"
+        }
+      }
+    }
+  },
+  "inner_index": ["allergy_type"],
+  "code": {
+    "allergytype": "response['aggregations']['group_by_allergytype']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'aggs': {'group_by_allergytype': {'terms': {'field': 'AllergyType', 'size': 1, 'order': {'_count': 'asc'}}}}, 'code': {'allergytype': "response['aggregations']['group_by_allergytype']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_allergytype': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 11, 'buckets': [{'key': 'environmental', 'doc_count': 3}]}}}
+
+exec_result_dict: {'allergytype': 'environmental'}
+mysql res: ['{"allergytype": "environmental"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:5.526137 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_students": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["student"],
+    "code": {
+        "total_students": "response['aggregations']['total_students']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_students': {'value_count': {'field': '_index'}}}, 'code': {'total_students': "response['aggregations']['total_students']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_students': {'value': 34}}}
+
+exec_result_dict: {'total_students': 34}
+mysql res: ['{"count_*": 34}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['Fname', 'Lname']
+---------------------------Execute SQL Query:[SELECT Fname ,  Lname FROM student]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:2.4469 s
+---------------------------Execute Target Query:{
+    "size": 10,
+    "_source": ["Fname", "LName"],
+    "inner_index": ["student"]
+}-----------------
+**************************************************
+{'size': 10, '_source': ['Fname', 'LName']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'allergy_1_student', '_id': 'tFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Smith', 'Fname': 'Linda'}}, {'_index': 'allergy_1_student', '_id': 'tVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Kim', 'Fname': 'Tracy'}}, {'_index': 'allergy_1_student', '_id': 'tlfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Jones', 'Fname': 'Shiela'}}, {'_index': 'allergy_1_student', '_id': 't1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Kumar', 'Fname': 'Dinesh'}}, {'_index': 'allergy_1_student', '_id': 'uFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Gompers', 'Fname': 'Paul'}}, {'_index': 'allergy_1_student', '_id': 'uVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Schultz', 'Fname': 'Andy'}}, {'_index': 'allergy_1_student', '_id': 'ulfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Apap', 'Fname': 'Lisa'}}, {'_index': 'allergy_1_student', '_id': 'u1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Nelson', 'Fname': 'Jandy'}}, {'_index': 'allergy_1_student', '_id': 'vFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Tai', 'Fname': 'Eric'}}, {'_index': 'allergy_1_student', '_id': 'vVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'LName': 'Lee', 'Fname': 'Derek'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Fname": "Linda", "Lname": "Smith"}', '{"Fname": "Tracy", "Lname": "Kim"}', '{"Fname": "Shiela", "Lname": "Jones"}', '{"Fname": "Dinesh", "Lname": "Kumar"}', '{"Fname": "Paul", "Lname": "Gompers"}', '{"Fname": "Andy", "Lname": "Schultz"}', '{"Fname": "Lisa", "Lname": "Apap"}', '{"Fname": "Jandy", "Lname": "Nelson"}', '{"Fname": "Eric", "Lname": "Tai"}', '{"Fname": "Derek", "Lname": "Lee"}', '{"Fname": "David", "Lname": "Adams"}', '{"Fname": "Steven", "Lname": "Davis"}', '{"Fname": "Charles", "Lname": "Norris"}', '{"Fname": "Susan", "Lname": "Lee"}', '{"Fname": "Mark", "Lname": "Schwartz"}', '{"Fname": "Bruce", "Lname": "Wilson"}', '{"Fname": "Michael", "Lname": "Leighton"}', '{"Fname": "Arthur", "Lname": "Pang"}', '{"Fname": "Ian", "Lname": "Thornton"}', '{"Fname": "George", "Lname": "Andreou"}', '{"Fname": "Michael", "Lname": "Woods"}', '{"Fname": "David", "Lname": "Shieber"}', '{"Fname": "Stacy", "Lname": "Prater"}', '{"Fname": "Mark", "Lname": "Goldman"}', '{"Fname": "Eric", "Lname": "Pang"}', '{"Fname": "Paul", "Lname": "Brody"}', '{"Fname": "Eric", "Lname": "Rugh"}', '{"Fname": "Jun", "Lname": "Han"}', '{"Fname": "Lisa", "Lname": "Cheng"}', '{"Fname": "Sarah", "Lname": "Smith"}', '{"Fname": "Eric", "Lname": "Brown"}', '{"Fname": "William", "Lname": "Simms"}', '{"Fname": "Eric", "Lname": "Epp"}', '{"Fname": "Sarah", "Lname": "Schmidt"}']
+target res: ['{"Fname": "Linda", "Lname": null}', '{"Fname": "Tracy", "Lname": null}', '{"Fname": "Shiela", "Lname": null}', '{"Fname": "Dinesh", "Lname": null}', '{"Fname": "Paul", "Lname": null}', '{"Fname": "Andy", "Lname": null}', '{"Fname": "Lisa", "Lname": null}', '{"Fname": "Jandy", "Lname": null}', '{"Fname": "Eric", "Lname": null}', '{"Fname": "Derek", "Lname": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['count_DISTINCT advisor']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT advisor) FROM student]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:4.741784 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_advisors": {
+            "cardinality": {
+                "field": "Advisor"
+            }
+        }
+    },
+    "inner_index": ["student"],
+    "code": {
+        "count_distinct_advisor": "response['aggregations']['unique_advisors']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_advisors': {'cardinality': {'field': 'Advisor'}}}, 'code': {'count_distinct_advisor': "response['aggregations']['unique_advisors']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_advisors': {'value': 18}}}
+
+exec_result_dict: {'count_distinct_advisor': 18}
+mysql res: ['{"count_DISTINCT advisor": 18}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------14-----------------
+schema:['Major']
+---------------------------Execute SQL Query:[SELECT DISTINCT Major FROM student]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:6.978798 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "distinct_majors": {
+            "terms": {
+                "field": "Major.keyword",
+                "size": 10000
+            }
+        }
+    },
+    "code": {
+        "distinct_major_result": "response['aggregations']['distinct_majors']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'distinct_majors': {'terms': {'field': 'Major.keyword', 'size': 10000}}}, 'code': {'distinct_major_result': "response['aggregations']['distinct_majors']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'distinct_majors': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'distinct_major_result': []}
+mysql res: ['{"Major": 600}', '{"Major": 520}', '{"Major": 540}', '{"Major": 550}', '{"Major": 100}', '{"Major": 50}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------15-----------------
+schema:['city_code']
+---------------------------Execute SQL Query:[SELECT DISTINCT city_code FROM student]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:6.646018 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student"],
+    "size": 0,
+    "query": {
+        "exists": {
+            "field": "city_code"
+        }
+    },
+    "aggs": {
+        "unique_city_codes": {
+            "terms": {
+                "field": "city_code",
+                "size": 10000
+            }
+        }
+    },
+    "code": {
+        "city_code_result": "response['aggregations']['unique_city_codes']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'exists': {'field': 'city_code'}}, 'aggs': {'unique_city_codes': {'terms': {'field': 'city_code', 'size': 10000}}}, 'code': {'city_code_result': "response['aggregations']['unique_city_codes']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 5, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_city_codes': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'bal', 'doc_count': 4}, {'key': 'pit', 'doc_count': 4}, {'key': 'hkg', 'doc_count': 3}, {'key': 'nyc', 'doc_count': 3}, {'key': 'phl', 'doc_count': 3}, {'key': 'was', 'doc_count': 3}, {'key': 'yyz', 'doc_count': 2}, {'key': 'atl', 'doc_count': 1}, {'key': 'bos', 'doc_count': 1}, {'key': 'chi', 'doc_count': 1}, {'key': 'dal', 'doc_count': 1}, {'key': 'det', 'doc_count': 1}, {'key': 'hou', 'doc_count': 1}, {'key': 'lon', 'doc_count': 1}, {'key': 'los', 'doc_count': 1}, {'key': 'nar', 'doc_count': 1}, {'key': 'pek', 'doc_count': 1}, {'key': 'roc', 'doc_count': 1}, {'key': 'sfo', 'doc_count': 1}]}}}
+
+exec_result_dict: {'city_code_result': [{'key': 'bal', 'doc_count': 4}, {'key': 'pit', 'doc_count': 4}, {'key': 'hkg', 'doc_count': 3}, {'key': 'nyc', 'doc_count': 3}, {'key': 'phl', 'doc_count': 3}, {'key': 'was', 'doc_count': 3}, {'key': 'yyz', 'doc_count': 2}, {'key': 'atl', 'doc_count': 1}, {'key': 'bos', 'doc_count': 1}, {'key': 'chi', 'doc_count': 1}, {'key': 'dal', 'doc_count': 1}, {'key': 'det', 'doc_count': 1}, {'key': 'hou', 'doc_count': 1}, {'key': 'lon', 'doc_count': 1}, {'key': 'los', 'doc_count': 1}, {'key': 'nar', 'doc_count': 1}, {'key': 'pek', 'doc_count': 1}, {'key': 'roc', 'doc_count': 1}, {'key': 'sfo', 'doc_count': 1}]}
+mysql res: ['{"city_code": "BAL"}', '{"city_code": "HKG"}', '{"city_code": "WAS"}', '{"city_code": "CHI"}', '{"city_code": "YYZ"}', '{"city_code": "PIT"}', '{"city_code": "HOU"}', '{"city_code": "PHL"}', '{"city_code": "DAL"}', '{"city_code": "DET"}', '{"city_code": "LON"}', '{"city_code": "NYC"}', '{"city_code": "LOS"}', '{"city_code": "ROC"}', '{"city_code": "PEK"}', '{"city_code": "SFO"}', '{"city_code": "ATL"}', '{"city_code": "NAR"}', '{"city_code": "BOS"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------16-----------------
+schema:['Fname', 'Lname', 'Age']
+---------------------------Execute SQL Query:[SELECT Fname ,  Lname ,  Age FROM student WHERE Sex  =  'F']-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:5.019201 s
+---------------------------Execute Target Query:1-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'term': {'Sex': 'F'}}]}}, '_source': ['Fname', 'LName', 'Age'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"Fname": "Linda", "Lname": "Smith", "Age": 18}', '{"Fname": "Tracy", "Lname": "Kim", "Age": 19}', '{"Fname": "Shiela", "Lname": "Jones", "Age": 21}', '{"Fname": "Lisa", "Lname": "Apap", "Age": 18}', '{"Fname": "Jandy", "Lname": "Nelson", "Age": 20}', '{"Fname": "Susan", "Lname": "Lee", "Age": 16}', '{"Fname": "Stacy", "Lname": "Prater", "Age": 18}', '{"Fname": "Lisa", "Lname": "Cheng", "Age": 21}', '{"Fname": "Sarah", "Lname": "Smith", "Age": 20}', '{"Fname": "Sarah", "Lname": "Schmidt", "Age": 26}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------17-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM student WHERE Sex  =  'M']-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:3.619108 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "Sex": "M"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["StuID"],
+    "inner_index": ["student"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'Sex': 'M'}}]}}, '_source': ['StuID'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 24, 'relation': 'eq'}, 'max_score': 0.35667494, 'hits': [{'_index': 'allergy_1_student', '_id': 't1fJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1004}}, {'_index': 'allergy_1_student', '_id': 'uFfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1005}}, {'_index': 'allergy_1_student', '_id': 'uVfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1006}}, {'_index': 'allergy_1_student', '_id': 'vFfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1009}}, {'_index': 'allergy_1_student', '_id': 'vVfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1010}}, {'_index': 'allergy_1_student', '_id': 'vlfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1011}}, {'_index': 'allergy_1_student', '_id': 'v1fJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1012}}, {'_index': 'allergy_1_student', '_id': 'wFfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1014}}, {'_index': 'allergy_1_student', '_id': 'wlfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1016}}, {'_index': 'allergy_1_student', '_id': 'w1fJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1017}}, {'_index': 'allergy_1_student', '_id': 'xFfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1018}}, {'_index': 'allergy_1_student', '_id': 'xVfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1019}}, {'_index': 'allergy_1_student', '_id': 'xlfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1020}}, {'_index': 'allergy_1_student', '_id': 'x1fJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1021}}, {'_index': 'allergy_1_student', '_id': 'yFfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1022}}, {'_index': 'allergy_1_student', '_id': 'yVfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1023}}, {'_index': 'allergy_1_student', '_id': 'y1fJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1025}}, {'_index': 'allergy_1_student', '_id': 'zFfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1026}}, {'_index': 'allergy_1_student', '_id': 'zVfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1027}}, {'_index': 'allergy_1_student', '_id': 'zlfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1028}}, {'_index': 'allergy_1_student', '_id': 'z1fJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1029}}, {'_index': 'allergy_1_student', '_id': '0lfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1032}}, {'_index': 'allergy_1_student', '_id': '01fJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1033}}, {'_index': 'allergy_1_student', '_id': '1FfJEY8BsHbYzo2oLnOw', '_score': 0.35667494, '_source': {'StuID': 1034}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"StuID": 1004}', '{"StuID": 1005}', '{"StuID": 1006}', '{"StuID": 1009}', '{"StuID": 1010}', '{"StuID": 1011}', '{"StuID": 1012}', '{"StuID": 1014}', '{"StuID": 1016}', '{"StuID": 1017}', '{"StuID": 1018}', '{"StuID": 1019}', '{"StuID": 1020}', '{"StuID": 1021}', '{"StuID": 1022}', '{"StuID": 1023}', '{"StuID": 1025}', '{"StuID": 1026}', '{"StuID": 1027}', '{"StuID": 1028}', '{"StuID": 1029}', '{"StuID": 1032}', '{"StuID": 1033}', '{"StuID": 1034}']
+target res: ['{"StuID": 1004}', '{"StuID": 1005}', '{"StuID": 1006}', '{"StuID": 1009}', '{"StuID": 1010}', '{"StuID": 1011}', '{"StuID": 1012}', '{"StuID": 1014}', '{"StuID": 1016}', '{"StuID": 1017}', '{"StuID": 1018}', '{"StuID": 1019}', '{"StuID": 1020}', '{"StuID": 1021}', '{"StuID": 1022}', '{"StuID": 1023}', '{"StuID": 1025}', '{"StuID": 1026}', '{"StuID": 1027}', '{"StuID": 1028}', '{"StuID": 1029}', '{"StuID": 1032}', '{"StuID": 1033}', '{"StuID": 1034}']
+translate SELECT StuID FROM student WHERE Sex  =  'M' success
+
+--------------------------18-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE age  =  18]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:8.34807 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "Age": 18
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_students": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["student"],
+    "code": {
+        "total_students": "response['aggregations']['total_students']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'Age': 18}}]}}, 'size': 0, 'aggs': {'total_students': {'value_count': {'field': '_index'}}}, 'code': {'total_students': "response['aggregations']['total_students']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_students': {'value': 10}}}
+
+exec_result_dict: {'total_students': 10}
+mysql res: ['{"count_*": 10}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM student WHERE age  >  20]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:4.10251 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "Age": {
+                            "gt": 20
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["StuID"],
+    "inner_index": ["student"]
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'Age': {'gt': 20}}}]}}, '_source': ['StuID'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': 0.0, 'hits': [{'_index': 'allergy_1_student', '_id': 'tlfJEY8BsHbYzo2oLnOw', '_score': 0.0, '_source': {'StuID': 1003}}, {'_index': 'allergy_1_student', '_id': 'uFfJEY8BsHbYzo2oLnOw', '_score': 0.0, '_source': {'StuID': 1005}}, {'_index': 'allergy_1_student', '_id': 'vlfJEY8BsHbYzo2oLnOw', '_score': 0.0, '_source': {'StuID': 1011}}, {'_index': 'allergy_1_student', '_id': 'w1fJEY8BsHbYzo2oLnOw', '_score': 0.0, '_source': {'StuID': 1017}}, {'_index': 'allergy_1_student', '_id': 'xlfJEY8BsHbYzo2oLnOw', '_score': 0.0, '_source': {'StuID': 1020}}, {'_index': 'allergy_1_student', '_id': '0FfJEY8BsHbYzo2oLnOw', '_score': 0.0, '_source': {'StuID': 1030}}, {'_index': 'allergy_1_student', '_id': '1VfJEY8BsHbYzo2oLnOw', '_score': 0.0, '_source': {'StuID': 1035}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"StuID": 1003}', '{"StuID": 1005}', '{"StuID": 1011}', '{"StuID": 1017}', '{"StuID": 1020}', '{"StuID": 1030}', '{"StuID": 1035}']
+target res: ['{"StuID": 1003}', '{"StuID": 1005}', '{"StuID": 1011}', '{"StuID": 1017}', '{"StuID": 1020}', '{"StuID": 1030}', '{"StuID": 1035}']
+translate SELECT StuID FROM student WHERE age  >  20 success
+
+--------------------------20-----------------
+schema:['city_code']
+---------------------------Execute SQL Query:[SELECT city_code FROM student WHERE LName  =  "Kim"]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:2.6089 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "LName": "Kim"
+                    }
+                }
+            ]
+        }
+    },
+    "inner_index": ["student"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'LName': 'Kim'}}]}}, 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 3.149883, 'hits': [{'_index': 'allergy_1_student', '_id': 'tVfJEY8BsHbYzo2oLnOw', '_score': 3.149883, '_source': {'StuID': 1002, 'LName': 'Kim', 'Fname': 'Tracy', 'Age': 19, 'Sex': 'F', 'Major': 600, 'Advisor': 7712, 'city_code': 'HKG'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"city_code": "HKG"}']
+target res: ['{"city_code": "HKG"}']
+translate SELECT city_code FROM student WHERE LName  =  "Kim" success
+
+--------------------------21-----------------
+schema:['Advisor']
+---------------------------Execute SQL Query:[SELECT Advisor FROM student WHERE StuID  =  1004]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:5.436355 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "StuID": 1004
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Advisor"],
+    "inner_index": ["student"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'StuID': 1004}}]}}, '_source': ['Advisor'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'allergy_1_student', '_id': 't1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'Advisor': 8423}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Advisor": 8423}']
+target res: ['{"Advisor": 8423}']
+translate SELECT Advisor FROM student WHERE StuID  =  1004 success
+
+--------------------------22-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE city_code  =  "HKG" OR city_code  =  "CHI"]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:7.283253 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "match": {
+                        "city_code": "HKG"
+                    }
+                },
+                {
+                    "match": {
+                        "city_code": "CHI"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_students": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["student"],
+    "code": {
+        "total_students": "response['aggregations']['total_students']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'should': [{'match': {'city_code': 'HKG'}}, {'match': {'city_code': 'CHI'}}]}}, 'size': 0, 'aggs': {'total_students': {'value_count': {'field': '_index'}}}, 'code': {'total_students': "response['aggregations']['total_students']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 4, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_students': {'value': 4}}}
+
+exec_result_dict: {'total_students': 4}
+mysql res: ['{"count_*": 4}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------23-----------------
+schema:['min_age', 'avg_age', 'max_age']
+---------------------------Execute SQL Query:[SELECT min(age) ,  avg(age) ,  max(age) FROM student]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:7.567366 s
+---------------------------Execute Target Query:{
+  "inner_index": ["student"],
+  "size": 0,
+  "aggs": {
+    "min_age": {
+      "min": {
+        "field": "Age"
+      }
+    },
+    "avg_age": {
+      "avg": {
+        "field": "Age"
+      }
+    },
+    "max_age": {
+      "max": {
+        "field": "Age"
+      }
+    }
+  },
+  "code": {
+    "min_age": "response['aggregations']['min_age']['value']",
+    "avg_age": "response['aggregations']['avg_age']['value']",
+    "max_age": "response['aggregations']['max_age']['value']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'aggs': {'min_age': {'min': {'field': 'Age'}}, 'avg_age': {'avg': {'field': 'Age'}}, 'max_age': {'max': {'field': 'Age'}}}, 'code': {'min_age': "response['aggregations']['min_age']['value']", 'avg_age': "response['aggregations']['avg_age']['value']", 'max_age': "response['aggregations']['max_age']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'min_age': {'value': 16.0}, 'avg_age': {'value': 19.558823529411764}, 'max_age': {'value': 27.0}}}
+
+exec_result_dict: {'min_age': 16.0, 'avg_age': 19.558823529411764, 'max_age': 27.0}
+mysql res: ['{"min_age": 16, "avg_age": 19.5588, "max_age": 27}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------24-----------------
+schema:['LName']
+---------------------------Execute SQL Query:[SELECT LName FROM student WHERE age  =  (SELECT min(age) FROM student)]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:5.810724 s
+---------------------------Execute Target Query:{
+  "inner_index": ["student"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "age": {
+              "query": {
+                "min": {
+                  "field": "age"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "youngest_students": {
+      "terms": {
+        "field": "LName.keyword",
+        "size": 10
+      }
+    }
+  },
+  "code": {
+    "LName_result": "response['aggregations']['youngest_students']['buckets']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'age': {'query': {'min': {'field': 'age'}}}}}]}}, 'aggs': {'youngest_students': {'terms': {'field': 'LName.keyword', 'size': 10}}}, 'code': {'LName_result': "response['aggregations']['youngest_students']['buckets']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[match] unknown token [START_OBJECT] after [query]')
+
+--------------------------25-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM student WHERE age  =  (SELECT max(age) FROM student)]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:8.819223 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "age": {
+                            "query": {
+                                "max": {
+                                    "field": "age"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "max_age": {
+            "max": {
+                "field": "age"
+            }
+        }
+    },
+    "_source": ["StuID"],
+    "code": {
+        "StuID_result": "response['hits']['hits']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'age': {'query': {'max': {'field': 'age'}}}}}]}}, 'aggs': {'max_age': {'max': {'field': 'age'}}}, '_source': ['StuID'], 'code': {'StuID_result': "response['hits']['hits']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[match] unknown token [START_OBJECT] after [query]')
+
+--------------------------26-----------------
+schema:['major', 'count_*']
+---------------------------Execute SQL Query:[SELECT major ,  count(*) FROM student GROUP BY major]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:5.835093 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "major_count": {
+            "terms": {
+                "field": "Major.keyword",
+                "size": 10
+            }
+        }
+    },
+    "code": {
+        "major_result": "response['aggregations']['major_count']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'major_count': {'terms': {'field': 'Major.keyword', 'size': 10}}}, 'code': {'major_result': "response['aggregations']['major_count']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'major_count': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'major_result': []}
+mysql res: ['{"major": 600, "count_*": 18}', '{"major": 520, "count_*": 6}', '{"major": 540, "count_*": 2}', '{"major": 550, "count_*": 5}', '{"major": 100, "count_*": 1}', '{"major": 50, "count_*": 2}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------27-----------------
+schema:['major']
+---------------------------Execute SQL Query:[SELECT major FROM student GROUP BY major ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:8.317455 s
+---------------------------Execute Target Query:{
+  "size": 0,
+  "aggs": {
+    "majors": {
+      "terms": {
+        "field": "Major.keyword",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "inner_index": ["student"],
+  "code": {
+    "major": "response['aggregations']['majors']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'aggs': {'majors': {'terms': {'field': 'Major.keyword', 'size': 1, 'order': {'_count': 'desc'}}}}, 'code': {'major': "response['aggregations']['majors']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'majors': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {}
+mysql res: ['{"major": 600}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------28-----------------
+schema:['age', 'count_*']
+---------------------------Execute SQL Query:[SELECT age ,  count(*) FROM student GROUP BY age]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:12.11613 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "group_by_age": {
+            "terms": {
+                "field": "Age",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "Age"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "age_result": "response['aggregations']['group_by_age']['buckets']",
+        "count_result": "[bucket['doc_count'] for bucket in response['aggregations']['group_by_age']['buckets']]"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'group_by_age': {'terms': {'field': 'Age', 'size': 10}, 'aggs': {'count': {'value_count': {'field': 'Age'}}}}}, 'code': {'age_result': "response['aggregations']['group_by_age']['buckets']", 'count_result': "[bucket['doc_count'] for bucket in response['aggregations']['group_by_age']['buckets']]"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_age': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 18, 'doc_count': 10, 'count': {'value': 10}}, {'key': 20, 'doc_count': 8, 'count': {'value': 8}}, {'key': 17, 'doc_count': 4, 'count': {'value': 4}}, {'key': 19, 'doc_count': 4, 'count': {'value': 4}}, {'key': 21, 'doc_count': 2, 'count': {'value': 2}}, {'key': 22, 'doc_count': 2, 'count': {'value': 2}}, {'key': 26, 'doc_count': 2, 'count': {'value': 2}}, {'key': 16, 'doc_count': 1, 'count': {'value': 1}}, {'key': 27, 'doc_count': 1, 'count': {'value': 1}}]}}}
+
+exec_result_dict: {'age_result': [{'key': 18, 'doc_count': 10, 'count': {'value': 10}}, {'key': 20, 'doc_count': 8, 'count': {'value': 8}}, {'key': 17, 'doc_count': 4, 'count': {'value': 4}}, {'key': 19, 'doc_count': 4, 'count': {'value': 4}}, {'key': 21, 'doc_count': 2, 'count': {'value': 2}}, {'key': 22, 'doc_count': 2, 'count': {'value': 2}}, {'key': 26, 'doc_count': 2, 'count': {'value': 2}}, {'key': 16, 'doc_count': 1, 'count': {'value': 1}}, {'key': 27, 'doc_count': 1, 'count': {'value': 1}}], 'count_result': [10, 8, 4, 4, 2, 2, 2, 1, 1]}
+mysql res: ['{"age": 18, "count_*": 10}', '{"age": 19, "count_*": 4}', '{"age": 21, "count_*": 2}', '{"age": 20, "count_*": 8}', '{"age": 26, "count_*": 2}', '{"age": 17, "count_*": 4}', '{"age": 22, "count_*": 2}', '{"age": 16, "count_*": 1}', '{"age": 27, "count_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------29-----------------
+schema:['avg_age', 'sex']
+---------------------------Execute SQL Query:[SELECT avg(age) ,  sex FROM student GROUP BY sex]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:6.756817 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "group_by_sex": {
+            "terms": {
+                "field": "Sex",
+                "size": 10
+            },
+            "aggs": {
+                "avg_age": {
+                    "avg": {
+                        "field": "Age"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "sex_result": "response['aggregations']['group_by_sex']['buckets']",
+        "avg_age": "bucket['avg_age']['value'] for bucket in response['aggregations']['group_by_sex']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'group_by_sex': {'terms': {'field': 'Sex', 'size': 10}, 'aggs': {'avg_age': {'avg': {'field': 'Age'}}}}}, 'code': {'sex_result': "response['aggregations']['group_by_sex']['buckets']", 'avg_age': "bucket['avg_age']['value'] for bucket in response['aggregations']['group_by_sex']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_sex': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'm', 'doc_count': 24, 'avg_age': {'value': 19.5}}, {'key': 'f', 'doc_count': 10, 'avg_age': {'value': 19.7}}]}}}
+
+exec_result_dict: {'sex_result': [{'key': 'm', 'doc_count': 24, 'avg_age': {'value': 19.5}}, {'key': 'f', 'doc_count': 10, 'avg_age': {'value': 19.7}}]}
+mysql res: ['{"avg_age": 19.7000, "sex": "F"}', '{"avg_age": 19.5000, "sex": "M"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------30-----------------
+schema:['city_code', 'count_*']
+---------------------------Execute SQL Query:[SELECT city_code ,  count(*) FROM student GROUP BY city_code]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:6.354342 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "city_code_count": {
+            "terms": {
+                "field": "city_code"
+            }
+        }
+    },
+    "code": {
+        "city_code_result": "response['aggregations']['city_code_count']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'city_code_count': {'terms': {'field': 'city_code'}}}, 'code': {'city_code_result': "response['aggregations']['city_code_count']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'city_code_count': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 9, 'buckets': [{'key': 'bal', 'doc_count': 4}, {'key': 'pit', 'doc_count': 4}, {'key': 'hkg', 'doc_count': 3}, {'key': 'nyc', 'doc_count': 3}, {'key': 'phl', 'doc_count': 3}, {'key': 'was', 'doc_count': 3}, {'key': 'yyz', 'doc_count': 2}, {'key': 'atl', 'doc_count': 1}, {'key': 'bos', 'doc_count': 1}, {'key': 'chi', 'doc_count': 1}]}}}
+
+exec_result_dict: {'city_code_result': [{'key': 'bal', 'doc_count': 4}, {'key': 'pit', 'doc_count': 4}, {'key': 'hkg', 'doc_count': 3}, {'key': 'nyc', 'doc_count': 3}, {'key': 'phl', 'doc_count': 3}, {'key': 'was', 'doc_count': 3}, {'key': 'yyz', 'doc_count': 2}, {'key': 'atl', 'doc_count': 1}, {'key': 'bos', 'doc_count': 1}, {'key': 'chi', 'doc_count': 1}]}
+mysql res: ['{"city_code": "BAL", "count_*": 4}', '{"city_code": "HKG", "count_*": 3}', '{"city_code": "WAS", "count_*": 3}', '{"city_code": "CHI", "count_*": 1}', '{"city_code": "YYZ", "count_*": 2}', '{"city_code": "PIT", "count_*": 4}', '{"city_code": "HOU", "count_*": 1}', '{"city_code": "PHL", "count_*": 3}', '{"city_code": "DAL", "count_*": 1}', '{"city_code": "DET", "count_*": 1}', '{"city_code": "LON", "count_*": 1}', '{"city_code": "NYC", "count_*": 3}', '{"city_code": "LOS", "count_*": 1}', '{"city_code": "ROC", "count_*": 1}', '{"city_code": "PEK", "count_*": 1}', '{"city_code": "SFO", "count_*": 1}', '{"city_code": "ATL", "count_*": 1}', '{"city_code": "NAR", "count_*": 1}', '{"city_code": "BOS", "count_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------31-----------------
+schema:['advisor', 'count_*']
+---------------------------Execute SQL Query:[SELECT advisor ,  count(*) FROM student GROUP BY advisor]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:11.01611 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "group_by_advisor": {
+            "terms": {
+                "field": "Advisor.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count_students": {
+                    "value_count": {
+                        "field": "StuID"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "advisor_result": "response['aggregations']['group_by_advisor']['buckets']",
+        "count_students": "bucket['count_students']['value'] for bucket in response['aggregations']['group_by_advisor']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'group_by_advisor': {'terms': {'field': 'Advisor.keyword', 'size': 10}, 'aggs': {'count_students': {'value_count': {'field': 'StuID'}}}}}, 'code': {'advisor_result': "response['aggregations']['group_by_advisor']['buckets']", 'count_students': "bucket['count_students']['value'] for bucket in response['aggregations']['group_by_advisor']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_advisor': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'advisor_result': []}
+mysql res: ['{"advisor": 1121, "count_*": 3}', '{"advisor": 7712, "count_*": 1}', '{"advisor": 7792, "count_*": 1}', '{"advisor": 8423, "count_*": 1}', '{"advisor": 1148, "count_*": 3}', '{"advisor": 8918, "count_*": 1}', '{"advisor": 9172, "count_*": 1}', '{"advisor": 2192, "count_*": 4}', '{"advisor": 7723, "count_*": 1}', '{"advisor": 8741, "count_*": 1}', '{"advisor": 8721, "count_*": 1}', '{"advisor": 7271, "count_*": 2}', '{"advisor": 8722, "count_*": 3}', '{"advisor": 7134, "count_*": 2}', '{"advisor": 8723, "count_*": 1}', '{"advisor": 2311, "count_*": 3}', '{"advisor": 8772, "count_*": 3}', '{"advisor": 5718, "count_*": 2}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------32-----------------
+schema:['advisor']
+---------------------------Execute SQL Query:[SELECT advisor FROM student GROUP BY advisor ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code']
+convert time:8.039062 s
+---------------------------Execute Target Query:{
+  "inner_index": ["student"],
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "group_by_advisor": {
+      "terms": {
+        "field": "Advisor",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "code": {
+    "advisor": "response['aggregations']['group_by_advisor']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'aggs': {'group_by_advisor': {'terms': {'field': 'Advisor', 'size': 1, 'order': {'_count': 'desc'}}}}, 'size': 0, 'code': {'advisor': "response['aggregations']['group_by_advisor']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_advisor': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 30, 'buckets': [{'key': 2192, 'doc_count': 4}]}}}
+
+exec_result_dict: {'advisor': 2192}
+mysql res: ['{"advisor": 2192}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------33-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy WHERE Allergy  =  "Cat"]-----------------
+target_db_schema: ['Allergy', 'StuID']
+convert time:7.050886 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "Allergy": "Cat"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_allergies": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["has_allergy"],
+    "code": {
+        "total_allergies": "response['aggregations']['total_allergies']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'Allergy': 'Cat'}}]}}, 'size': 0, 'aggs': {'total_allergies': {'value_count': {'field': '_index'}}}, 'code': {'total_allergies': "response['aggregations']['total_allergies']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 4, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_allergies': {'value': 4}}}
+
+exec_result_dict: {'total_allergies': 4}
+mysql res: ['{"count_*": 4}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------34-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM has_allergy GROUP BY StuID HAVING count(*)  >=  2]-----------------
+target_db_schema: ['Allergy', 'StuID']
+convert time:10.803288 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "group_by_StuID": {
+            "terms": {
+                "field": "StuID",
+                "min_doc_count": 2
+            }
+        }
+    },
+    "_source": ["StuID"],
+    "inner_index": ["has_allergy"],
+    "code": {
+        "StuID_result": "response['aggregations']['group_by_StuID']['buckets']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'group_by_StuID': {'terms': {'field': 'StuID', 'min_doc_count': 2}}}, '_source': ['StuID'], 'code': {'StuID_result': "response['aggregations']['group_by_StuID']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 59, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_StuID': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 9, 'buckets': [{'key': 1007, 'doc_count': 9}, {'key': 1010, 'doc_count': 9}, {'key': 1023, 'doc_count': 3}, {'key': 1029, 'doc_count': 3}, {'key': 1031, 'doc_count': 3}, {'key': 1002, 'doc_count': 2}, {'key': 1005, 'doc_count': 2}, {'key': 1015, 'doc_count': 2}, {'key': 1016, 'doc_count': 2}, {'key': 1018, 'doc_count': 2}]}}}
+
+exec_result_dict: {'StuID_result': [{'key': 1007, 'doc_count': 9}, {'key': 1010, 'doc_count': 9}, {'key': 1023, 'doc_count': 3}, {'key': 1029, 'doc_count': 3}, {'key': 1031, 'doc_count': 3}, {'key': 1002, 'doc_count': 2}, {'key': 1005, 'doc_count': 2}, {'key': 1015, 'doc_count': 2}, {'key': 1016, 'doc_count': 2}, {'key': 1018, 'doc_count': 2}]}
+mysql res: ['{"StuID": 1002}', '{"StuID": 1005}', '{"StuID": 1007}', '{"StuID": 1010}', '{"StuID": 1015}', '{"StuID": 1016}', '{"StuID": 1018}', '{"StuID": 1022}', '{"StuID": 1023}', '{"StuID": 1024}', '{"StuID": 1029}', '{"StuID": 1031}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------35-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM student EXCEPT SELECT StuID FROM has_allergy]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code', 'h', 'a', 's', '_', 'a', 'l', 'l', 'e', 'r', 'g', 'y', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'S', 't', 'u', 'I', 'D', "'", ']', '\n']
+convert time:4.573068 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": {
+                "exists": {
+                    "field": "StuID"
+                }
+            },
+            "must_not": {
+                "exists": {
+                    "field": "allergy"
+                }
+            }
+        }
+    },
+    "_source": ["StuID"],
+    "inner_index": ["student", "has_allergy"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': {'exists': {'field': 'StuID'}}, 'must_not': {'exists': {'field': 'allergy'}}}}, '_source': ['StuID'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 34, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'allergy_1_student', '_id': 'tFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1001}}, {'_index': 'allergy_1_student', '_id': 'tVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1002}}, {'_index': 'allergy_1_student', '_id': 'tlfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1003}}, {'_index': 'allergy_1_student', '_id': 't1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1004}}, {'_index': 'allergy_1_student', '_id': 'uFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1005}}, {'_index': 'allergy_1_student', '_id': 'uVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1006}}, {'_index': 'allergy_1_student', '_id': 'ulfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1007}}, {'_index': 'allergy_1_student', '_id': 'u1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1008}}, {'_index': 'allergy_1_student', '_id': 'vFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1009}}, {'_index': 'allergy_1_student', '_id': 'vVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1010}}, {'_index': 'allergy_1_student', '_id': 'vlfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1011}}, {'_index': 'allergy_1_student', '_id': 'v1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1012}}, {'_index': 'allergy_1_student', '_id': 'wFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1014}}, {'_index': 'allergy_1_student', '_id': 'wVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1015}}, {'_index': 'allergy_1_student', '_id': 'wlfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1016}}, {'_index': 'allergy_1_student', '_id': 'w1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1017}}, {'_index': 'allergy_1_student', '_id': 'xFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1018}}, {'_index': 'allergy_1_student', '_id': 'xVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1019}}, {'_index': 'allergy_1_student', '_id': 'xlfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1020}}, {'_index': 'allergy_1_student', '_id': 'x1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1021}}, {'_index': 'allergy_1_student', '_id': 'yFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1022}}, {'_index': 'allergy_1_student', '_id': 'yVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1023}}, {'_index': 'allergy_1_student', '_id': 'ylfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1024}}, {'_index': 'allergy_1_student', '_id': 'y1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1025}}, {'_index': 'allergy_1_student', '_id': 'zFfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1026}}, {'_index': 'allergy_1_student', '_id': 'zVfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1027}}, {'_index': 'allergy_1_student', '_id': 'zlfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1028}}, {'_index': 'allergy_1_student', '_id': 'z1fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1029}}, {'_index': 'allergy_1_student', '_id': '0FfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1030}}, {'_index': 'allergy_1_student', '_id': '0VfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1031}}, {'_index': 'allergy_1_student', '_id': '0lfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1032}}, {'_index': 'allergy_1_student', '_id': '01fJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1033}}, {'_index': 'allergy_1_student', '_id': '1FfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1034}}, {'_index': 'allergy_1_student', '_id': '1VfJEY8BsHbYzo2oLnOw', '_score': 1.0, '_source': {'StuID': 1035}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"StuID": 1008}', '{"StuID": 1032}', '{"StuID": 1033}', '{"StuID": 1034}', '{"StuID": 1035}']
+target res: ['{"StuID": 1001}', '{"StuID": 1002}', '{"StuID": 1003}', '{"StuID": 1004}', '{"StuID": 1005}', '{"StuID": 1006}', '{"StuID": 1007}', '{"StuID": 1008}', '{"StuID": 1009}', '{"StuID": 1010}', '{"StuID": 1011}', '{"StuID": 1012}', '{"StuID": 1014}', '{"StuID": 1015}', '{"StuID": 1016}', '{"StuID": 1017}', '{"StuID": 1018}', '{"StuID": 1019}', '{"StuID": 1020}', '{"StuID": 1021}', '{"StuID": 1022}', '{"StuID": 1023}', '{"StuID": 1024}', '{"StuID": 1025}', '{"StuID": 1026}', '{"StuID": 1027}', '{"StuID": 1028}', '{"StuID": 1029}', '{"StuID": 1030}', '{"StuID": 1031}', '{"StuID": 1032}', '{"StuID": 1033}', '{"StuID": 1034}', '{"StuID": 1035}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------36-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy AS T1 JOIN student AS T2 ON T1.StuID  =  T2.StuID WHERE T2.sex  =  "F" AND T1.allergy  =  "Milk" OR T1.allergy  =  "Eggs"]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code', 'h', 'a', 's', '_', 'a', 'l', 'l', 'e', 'r', 'g', 'y', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'S', 't', 'u', 'I', 'D', "'", ']', '\n']
+convert time:16.802714 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {"match": {"allergy": "Milk"}},
+                            {"match": {"allergy": "Eggs"}}
+                        ]
+                    }
+                },
+                {
+                    "match": {"sex": "F"}
+                }
+            ],
+            "filter": [
+                {
+                    "term": {
+                        "StuID": {
+                            "index": "has_allergy",
+                            "path": "StuID"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_count": {
+            "value_count": {
+                "field": "_id"
+            }
+        }
+    },
+    "inner_index": ["has_allergy", "student"],
+    "code": {
+        "count": "response['aggregations']['total_count']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'should': [{'match': {'allergy': 'Milk'}}, {'match': {'allergy': 'Eggs'}}]}}, {'match': {'sex': 'F'}}], 'filter': [{'term': {'StuID': {'index': 'has_allergy', 'path': 'StuID'}}}]}}, 'size': 0, 'aggs': {'total_count': {'value_count': {'field': '_id'}}}, 'code': {'count': "response['aggregations']['total_count']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[term] query does not support [index]')
+
+--------------------------37-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy AS T1 JOIN allergy_type AS T2 ON T1.allergy  =  T2.allergy WHERE T2.allergytype  =  "food"]-----------------
+target_db_schema: ['Allergy', 'AllergyType', 'h', 'a', 's', '_', 'a', 'l', 'l', 'e', 'r', 'g', 'y', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'S', 't', 'u', 'I', 'D', "'", ']', '\n']
+convert time:13.555862 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "AllergyType.allergytype": "food"
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "term": {
+                        "Allergy.allergy": {
+                            "path": "AllergyType.allergy"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_count": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["has_allergy", "allergy_type"],
+    "code": {
+        "total_count": "response['aggregations']['total_count']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'AllergyType.allergytype': 'food'}}], 'filter': [{'term': {'Allergy.allergy': {'path': 'AllergyType.allergy'}}}]}}, 'size': 0, 'aggs': {'total_count': {'value_count': {'field': '_index'}}}, 'code': {'total_count': "response['aggregations']['total_count']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[term] query does not support [path]')
+
+--------------------------38-----------------
+schema:['Allergy']
+---------------------------Execute SQL Query:[SELECT Allergy FROM has_allergy GROUP BY Allergy ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Allergy', 'StuID']
+convert time:10.283123 s
+---------------------------Execute Target Query:{
+  "inner_index": ["has_allergy"],
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "group_by_allergy": {
+      "terms": {
+        "field": "Allergy.keyword",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "code": {
+    "Allergy": "response['aggregations']['group_by_allergy']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'aggs': {'group_by_allergy': {'terms': {'field': 'Allergy.keyword', 'size': 1, 'order': {'_count': 'desc'}}}}, 'size': 0, 'code': {'Allergy': "response['aggregations']['group_by_allergy']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 59, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_allergy': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 46, 'buckets': [{'key': 'Tree Pollen', 'doc_count': 13}]}}}
+
+exec_result_dict: {'Allergy': 'Tree Pollen'}
+mysql res: ['{"Allergy": "Tree Pollen"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------39-----------------
+schema:['Allergy', 'count_*']
+---------------------------Execute SQL Query:[SELECT Allergy ,  count(*) FROM has_allergy GROUP BY Allergy]-----------------
+target_db_schema: ['Allergy', 'StuID']
+convert time:8.135101 s
+---------------------------Execute Target Query:{
+    "inner_index": ["has_allergy"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "allergies": {
+            "terms": {
+                "field": "Allergy.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "Allergy"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "Allergy_result": "response['aggregations']['allergies']['buckets']",
+        "count": "bucket['count']['value'] for bucket in response['aggregations']['allergies']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'allergies': {'terms': {'field': 'Allergy.keyword', 'size': 10}, 'aggs': {'count': {'value_count': {'field': 'Allergy'}}}}}, 'code': {'Allergy_result': "response['aggregations']['allergies']['buckets']", 'count': "bucket['count']['value'] for bucket in response['aggregations']['allergies']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 5, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 59, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'allergies': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 4, 'buckets': [{'key': 'Tree Pollen', 'doc_count': 13, 'count': {'value': 26}}, {'key': 'Nuts', 'doc_count': 11, 'count': {'value': 11}}, {'key': 'Ragweed', 'doc_count': 6, 'count': {'value': 6}}, {'key': 'Cat', 'doc_count': 4, 'count': {'value': 4}}, {'key': 'Grass Pollen', 'doc_count': 4, 'count': {'value': 8}}, {'key': 'Shellfish', 'doc_count': 4, 'count': {'value': 4}}, {'key': 'Soy', 'doc_count': 4, 'count': {'value': 4}}, {'key': 'Anchovies', 'doc_count': 3, 'count': {'value': 3}}, {'key': 'Dog', 'doc_count': 3, 'count': {'value': 3}}, {'key': 'Eggs', 'doc_count': 3, 'count': {'value': 3}}]}}}
+
+exec_result_dict: {'Allergy_result': [{'key': 'Tree Pollen', 'doc_count': 13, 'count': {'value': 26}}, {'key': 'Nuts', 'doc_count': 11, 'count': {'value': 11}}, {'key': 'Ragweed', 'doc_count': 6, 'count': {'value': 6}}, {'key': 'Cat', 'doc_count': 4, 'count': {'value': 4}}, {'key': 'Grass Pollen', 'doc_count': 4, 'count': {'value': 8}}, {'key': 'Shellfish', 'doc_count': 4, 'count': {'value': 4}}, {'key': 'Soy', 'doc_count': 4, 'count': {'value': 4}}, {'key': 'Anchovies', 'doc_count': 3, 'count': {'value': 3}}, {'key': 'Dog', 'doc_count': 3, 'count': {'value': 3}}, {'key': 'Eggs', 'doc_count': 3, 'count': {'value': 3}}]}
+mysql res: ['{"Allergy": "Anchovies", "count_*": 3}', '{"Allergy": "Cat", "count_*": 4}', '{"Allergy": "Dog", "count_*": 3}', '{"Allergy": "Eggs", "count_*": 3}', '{"Allergy": "Grass Pollen", "count_*": 4}', '{"Allergy": "Milk", "count_*": 3}', '{"Allergy": "Nuts", "count_*": 11}', '{"Allergy": "Ragweed", "count_*": 6}', '{"Allergy": "Rodent", "count_*": 1}', '{"Allergy": "Shellfish", "count_*": 4}', '{"Allergy": "Soy", "count_*": 4}', '{"Allergy": "Tree Pollen", "count_*": 13}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------40-----------------
+schema:['allergytype', 'count_*']
+---------------------------Execute SQL Query:[SELECT T2.allergytype ,  count(*) FROM has_allergy AS T1 JOIN allergy_type AS T2 ON T1.allergy  =  T2.allergy GROUP BY T2.allergytype]-----------------
+target_db_schema: ['Allergy', 'AllergyType', 'h', 'a', 's', '_', 'a', 'l', 'l', 'e', 'r', 'g', 'y', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'S', 't', 'u', 'I', 'D', "'", ']', '\n']
+convert time:10.284983 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "allergy"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "group_by_allergytype": {
+            "terms": {
+                "field": "allergytype"
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "allergy"
+                    }
+                }
+            }
+        }
+    },
+    "inner_index": ["has_allergy", "allergy_type"],
+    "code": {
+        "allergytype_result": "response['aggregations']['group_by_allergytype']['buckets']",
+        "count_result": "response['aggregations']['group_by_allergytype']['buckets']"
+    }
+}-----------------
+****************************{'query': {'bool': {'must': [{'exists': {'field': 'allergy'}}]}}, 'size': 0, 'aggs': {'group_by_allergytype': {'terms': {'field': 'allergytype'}, 'aggs': {'count': {'value_count': {'field': 'allergy'}}}}}, 'code': {'allergytype_result': "response['aggregations']['group_by_allergytype']['buckets']", 'count_result': "response['aggregations']['group_by_allergytype']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_allergytype': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'allergytype_result': [], 'count_result': []}
+mysql res: ['{"allergytype": "food", "count_*": 28}', '{"allergytype": "animal", "count_*": 8}', '{"allergytype": "environmental", "count_*": 23}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------41-----------------
+schema:['lname', 'age']
+---------------------------Execute SQL Query:[SELECT lname ,  age FROM student WHERE StuID IN (SELECT StuID FROM has_allergy WHERE Allergy  =  "Milk" INTERSECT SELECT StuID FROM has_allergy WHERE Allergy  =  "Cat")]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code', 'h', 'a', 's', '_', 'a', 'l', 'l', 'e', 'r', 'g', 'y', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'S', 't', 'u', 'I', 'D', "'", ']', '\n']
+convert time:8.12006 s
+---------------------------Execute Target Query:{
+    "inner_index": ["student", "has_allergy"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "terms": {
+                        "StuID": {
+                            "index": "has_allergy",
+                            "type": "_doc",
+                            "id": "allergy_search",
+                            "path": "StuID",
+                            "query": {
+                                "bool": {
+                                    "should": [
+                                        {"match": {"Allergy": "Milk"}},
+                                        {"match": {"Allergy": "Cat"}}
+                                    ],
+                                    "minimum_should_match": 2
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["LName", "Age"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'terms': {'StuID': {'index': 'has_allergy', 'type': '_doc', 'id': 'allergy_search', 'path': 'StuID', 'query': {'bool': {'should': [{'match': {'Allergy': 'Milk'}}, {'match': {'Allergy': 'Cat'}}], 'minimum_should_match': 2}}}}}]}}, '_source': ['LName', 'Age'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:68] [terms_lookup] unknown field [type]')
+
+--------------------------42-----------------
+schema:['Allergy', 'AllergyType']
+---------------------------Execute SQL Query:[SELECT T1.Allergy ,  T1.AllergyType FROM allergy_type AS T1 JOIN has_allergy AS T2 ON T1.Allergy  =  T2.Allergy JOIN student AS T3 ON T3.StuID  =  T2.StuID WHERE T3.Fname  =  "Lisa" ORDER BY T1.Allergy]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code', 'a', 'l', 'l', 'e', 'r', 'g', 'y', '_', 't', 'y', 'p', 'e', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', 'T', 'y', 'p', 'e', "'", ']', '\n', 'h', 'a', 's', '_', 'a', 'l', 'l', 'e', 'r', 'g', 'y', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'S', 't', 'u', 'I', 'D', "'", ']', '\n']
+convert time:11.094879 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "Fname": "Lisa"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "has_allergy",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "has_allergy.Allergy": {
+                                                "query": "allergy_type.Allergy",
+                                                "type": "phrase"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {
+            "Allergy": {
+                "order": "asc"
+            }
+        }
+    ],
+    "_source": ["Allergy", "AllergyType"],
+    "inner_index": ["allergy_type", "has_allergy", "student"]
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'Fname': 'Lisa'}}, {'nested': {'path': 'has_allergy', 'query': {'bool': {'must': [{'match': {'has_allergy.Allergy': {'query': 'allergy_type.Allergy', 'type': 'phrase'}}}]}}}}]}}, 'sort': [{'Allergy': {'order': 'asc'}}], '_source': ['Allergy', 'AllergyType']}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[match] query does not support [type]')
+
+--------------------------43-----------------
+schema:['fname', 'sex']
+---------------------------Execute SQL Query:[SELECT fname ,  sex FROM student WHERE StuID IN (SELECT StuID FROM has_allergy WHERE Allergy  =  "Milk" EXCEPT SELECT StuID FROM has_allergy WHERE Allergy  =  "Cat")]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code', 'h', 'a', 's', '_', 'a', 'l', 'l', 'e', 'r', 'g', 'y', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'S', 't', 'u', 'I', 'D', "'", ']', '\n']
+convert time:11.880141 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "terms": {
+                        "StuID": {
+                            "index": "has_allergy",
+                            "type": "_doc",
+                            "id": "milk_allergy",
+                            "path": "StuID",
+                            "query": {
+                                "match": {
+                                    "Allergy": "Milk"
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "must_not": [
+                {
+                    "terms": {
+                        "StuID": {
+                            "index": "has_allergy",
+                            "type": "_doc",
+                            "id": "cat_allergy",
+                            "path": "StuID",
+                            "query": {
+                                "match": {
+                                    "Allergy": "Cat"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Fname", "Sex"],
+    "inner_index": ["student", "has_allergy"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'terms': {'StuID': {'index': 'has_allergy', 'type': '_doc', 'id': 'milk_allergy', 'path': 'StuID', 'query': {'match': {'Allergy': 'Milk'}}}}}], 'must_not': [{'terms': {'StuID': {'index': 'has_allergy', 'type': '_doc', 'id': 'cat_allergy', 'path': 'StuID', 'query': {'match': {'Allergy': 'Cat'}}}}}]}}, '_source': ['Fname', 'Sex'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:68] [terms_lookup] unknown field [type]')
+
+--------------------------44-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT avg(age) FROM student WHERE StuID IN ( SELECT T1.StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "food" INTERSECT SELECT T1.StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "animal")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Allergy_Type' doesn't exist")
+
+--------------------------45-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT fname ,  lname FROM student WHERE StuID NOT IN (SELECT T1.StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "food")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Allergy_Type' doesn't exist")
+
+--------------------------46-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE sex  =  "M" AND StuID IN (SELECT StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "food")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Allergy_Type' doesn't exist")
+
+--------------------------47-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Has_Allergy' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT DISTINCT T1.fname ,  T1.city_code FROM student AS T1 JOIN Has_Allergy AS T2 ON T1.stuid  =  T2.stuid WHERE T2.Allergy  =  "Milk" OR T2.Allergy  =  "Cat"]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Has_Allergy' doesn't exist")
+
+--------------------------48-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE age  >  18 AND StuID NOT IN ( SELECT StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "food" OR T2.allergytype  =  "animal")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Allergy_Type' doesn't exist")
+
+--------------------------49-----------------
+schema:['fname', 'major']
+---------------------------Execute SQL Query:[SELECT fname ,  major FROM student WHERE StuID NOT IN (SELECT StuID FROM has_allergy WHERE Allergy  =  "Soy")]-----------------
+target_db_schema: ['Advisor', 'Age', 'Fname', 'LName', 'Major', 'Sex', 'StuID', 'city_code', 'h', 'a', 's', '_', 'a', 'l', 'l', 'e', 'r', 'g', 'y', ':', ' ', '[', "'", 'A', 'l', 'l', 'e', 'r', 'g', 'y', "'", ',', ' ', "'", 'S', 't', 'u', 'I', 'D', "'", ']', '\n']
+convert time:7.434578 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "terms": {
+                        "StuID": {
+                            "index": "has_allergy",
+                            "type": "_doc",
+                            "id": "Soy",
+                            "path": "StuID"
+                        }
+                    }
+                }
+            ],
+            "must": [
+                {
+                    "exists": {
+                        "field": "StuID"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["fname", "major"],
+    "inner_index": ["student", "has_allergy"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': [{'terms': {'StuID': {'index': 'has_allergy', 'type': '_doc', 'id': 'Soy', 'path': 'StuID'}}}], 'must': [{'exists': {'field': 'StuID'}}]}}, '_source': ['fname', 'major'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:72] [terms_lookup] unknown field [type]')
+success_query_count: 4
+valid_count: 44
+accuracy: 0.09090909090909091

@@ -1,0 +1,980 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM scientists]-----------------
+target_db_schema: ['name', 'ssn']
+convert time:4.659258 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_scientists": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["scientists"],
+    "code": {
+        "total_scientists": "response['aggregations']['total_scientists']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_scientists': {'value_count': {'field': '_index'}}}, 'code': {'total_scientists': "response['aggregations']['total_scientists']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 12, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_scientists': {'value': 12}}}
+
+exec_result_dict: {'total_scientists': 12}
+mysql res: ['{"count_*": 12}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['sum_hours']
+---------------------------Execute SQL Query:[SELECT sum(hours) FROM projects]-----------------
+target_db_schema: ['code', 'hours', 'name']
+convert time:12.615342 s
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "size": 0,
+  "aggs": {
+    "total_hours": {
+      "sum": {
+        "field": "hours"
+      }
+    }
+  },
+  "inner_index": ["projects"],
+  "code": {
+    "total_hours": "response['aggregations']['total_hours']['value']"
+  }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_hours': {'sum': {'field': 'hours'}}}, 'code': {'total_hours': "response['aggregations']['total_hours']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_hours': {'value': 20183.0}}}
+
+exec_result_dict: {'total_hours': 20183.0}
+mysql res: ['{"sum_hours": 20183}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------3-----------------
+schema:['count_DISTINCT scientist']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT scientist) FROM assignedto]-----------------
+target_db_schema: ['project', 'scientist']
+convert time:6.410801 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_scientists": {
+            "cardinality": {
+                "field": "scientist"
+            }
+        }
+    },
+    "inner_index": ["assignedto"],
+    "code": {
+        "count_distinct_scientist": "response['aggregations']['unique_scientists']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_scientists': {'cardinality': {'field': 'scientist'}}}, 'code': {'count_distinct_scientist': "response['aggregations']['unique_scientists']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 12, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_scientists': {'value': 12}}}
+
+exec_result_dict: {'count_distinct_scientist': 12}
+mysql res: ['{"count_DISTINCT scientist": 12}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------4-----------------
+schema:['count_DISTINCT name']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT name) FROM projects]-----------------
+target_db_schema: ['code', 'hours', 'name']
+convert time:4.054379 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_names": {
+            "cardinality": {
+                "field": "name"
+            }
+        }
+    },
+    "inner_index": ["projects"],
+    "code": {
+        "count_distinct_name": "response['aggregations']['unique_names']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_names': {'cardinality': {'field': 'name'}}}, 'code': {'count_distinct_name': "response['aggregations']['unique_names']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_names': {'value': 42}}}
+
+exec_result_dict: {'count_distinct_name': 42}
+mysql res: ['{"count_DISTINCT name": 14}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------5-----------------
+schema:['avg_hours']
+---------------------------Execute SQL Query:[SELECT avg(hours) FROM projects]-----------------
+target_db_schema: ['code', 'hours', 'name']
+convert time:6.091272 s
+---------------------------Execute Target Query:{
+  "inner_index": ["projects"],
+  "size": 0,
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "avg_hours": {
+      "avg": {
+        "field": "hours"
+      }
+    }
+  },
+  "code": {
+    "avg_hours": "response['aggregations']['avg_hours']['value']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'avg_hours': {'avg': {'field': 'hours'}}}, 'code': {'avg_hours': "response['aggregations']['avg_hours']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'avg_hours': {'value': 1441.642857142857}}}
+
+exec_result_dict: {'avg_hours': 1441.642857142857}
+mysql res: ['{"avg_hours": 1441.6429}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------6-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects ORDER BY hours DESC LIMIT 1]-----------------
+target_db_schema: ['code', 'hours', 'name']
+convert time:5.134627 s
+---------------------------Execute Target Query:{
+  "size": 1,
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "hours": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": ["name"],
+  "inner_index": ["projects"]
+}-----------------
+**************************************************
+{'size': 1, 'query': {'match_all': {}}, 'sort': [{'hours': {'order': 'desc'}}], '_source': ['name']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 14, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'scientist_1_projects', '_id': 'GFf8EY8BsHbYzo2o6nRR', '_score': None, '_source': {'name': 'A Magnetic Primer Designer'}, 'sort': [9684]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "A Magnetic Primer Designer"}']
+target res: ['{"name": "A Magnetic Primer Designer"}']
+translate SELECT name FROM projects ORDER BY hours DESC LIMIT 1 success
+
+--------------------------7-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE hours  >  (SELECT avg(hours) FROM projects)]-----------------
+target_db_schema: ['code', 'hours', 'name']
+convert time:6.324967 s
+---------------------------Execute Target Query:{
+    "inner_index": ["projects"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "hours": {
+                            "gt": {
+                                "script": {
+                                    "source": "doc['hours'].value > params.avg_hours",
+                                    "params": {
+                                        "avg_hours": "ctx._source.hours.avg()"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'range': {'hours': {'gt': {'script': {'source': "doc['hours'].value > params.avg_hours", 'params': {'avg_hours': 'ctx._source.hours.avg()'}}}}}}]}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[range] query does not support [script]')
+
+--------------------------8-----------------
+schema:['name', 'hours']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.hours FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T2.project ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['project', 'scientist', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:16.60688 s
+---------------------------Execute Target Query:{
+  "inner_index": ["projects", "assignedto"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_parent": {
+            "parent_type": "assignedto",
+            "query": {
+              "match_all": {}
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "top_projects": {
+      "terms": {
+        "field": "assignedto.project.keyword",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      },
+      "aggs": {
+        "top_project_details": {
+          "top_hits": {
+            "size": 1,
+            "_source": {
+              "includes": ["name", "hours"]
+            }
+          }
+        }
+      }
+    }
+  },
+  "code": {
+    "name": "response['aggregations']['top_projects']['buckets'][0]['top_project_details']['hits']['hits'][0]['_source']['name']",
+    "hours": "response['aggregations']['top_projects']['buckets'][0]['top_project_details']['hits']['hits'][0]['_source']['hours']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'assignedto', 'query': {'match_all': {}}}}]}}, 'aggs': {'top_projects': {'terms': {'field': 'assignedto.project.keyword', 'size': 1, 'order': {'_count': 'desc'}}, 'aggs': {'top_project_details': {'top_hits': {'size': 1, '_source': {'includes': ['name', 'hours']}}}}}}, 'code': {'name': "response['aggregations']['top_projects']['buckets'][0]['top_project_details']['hits']['hits'][0]['_source']['name']", 'hours': "response['aggregations']['top_projects']['buckets'][0]['top_project_details']['hits']['hits'][0]['_source']['hours']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T3.name LIKE '%Smith%']-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:12.771212 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "nested": {
+                        "path": "assignedto",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "nested": {
+                                            "path": "assignedto.projects",
+                                            "query": {
+                                                "match": {
+                                                    "assignedto.projects.code": "assignedto.project"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "assignedto.scientists",
+                                            "query": {
+                                                "match": {
+                                                    "assignedto.scientists.ssn": "assignedto.scientist"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "assignedto.scientists.name": {
+                                                "query": "Smith",
+                                                "operator": "and"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["projects.name"],
+    "inner_index": ["assignedto", "projects", "scientists"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'nested': {'path': 'assignedto', 'query': {'bool': {'must': [{'nested': {'path': 'assignedto.projects', 'query': {'match': {'assignedto.projects.code': 'assignedto.project'}}}}, {'nested': {'path': 'assignedto.scientists', 'query': {'match': {'assignedto.scientists.ssn': 'assignedto.scientist'}}}}, {'match': {'assignedto.scientists.name': {'query': 'Smith', 'operator': 'and'}}}]}}}}]}}, '_source': ['projects.name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [assignedto]')
+
+--------------------------10-----------------
+schema:['sum_T2_hours']
+---------------------------Execute SQL Query:[SELECT sum(T2.hours) FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T3.name  =  'Michael Rogers' OR T3.name  =  'Carol Smith']-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:9.614064 s
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "name": "Michael Rogers"
+          }
+        },
+        {
+          "match": {
+            "name": "Carol Smith"
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "size": 0,
+  "aggs": {
+    "total_hours": {
+      "sum": {
+        "field": "hours"
+      }
+    }
+  },
+  "inner_index": ["assignedto", "projects", "scientists"],
+  "code": {
+    "total_hours": "response['aggregations']['total_hours']['value']"
+  }
+}-----------------
+**************************************************
+{'query': {'bool': {'should': [{'match': {'name': 'Michael Rogers'}}, {'match': {'name': 'Carol Smith'}}], 'minimum_should_match': 1}}, 'size': 0, 'aggs': {'total_hours': {'sum': {'field': 'hours'}}}, 'code': {'total_hours': "response['aggregations']['total_hours']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_hours': {'value': 0.0}}}
+
+exec_result_dict: {'total_hours': 0.0}
+mysql res: ['{"sum_T2_hours": 6702}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE hours BETWEEN 100 AND 300]-----------------
+target_db_schema: ['code', 'hours', 'name']
+convert time:4.350993 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "hours": {
+                            "gte": 100,
+                            "lte": 300
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["projects"]
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'hours': {'gte': 100, 'lte': 300}}}]}}, '_source': ['name'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 5, 'relation': 'eq'}, 'max_score': 0.0, 'hits': [{'_index': 'scientist_1_projects', '_id': 'Dlf8EY8BsHbYzo2o6nRR', '_score': 0.0, '_source': {'name': 'Winds: Studying Bernoullis Principle'}}, {'_index': 'scientist_1_projects', '_id': 'D1f8EY8BsHbYzo2o6nRR', '_score': 0.0, '_source': {'name': 'Aerodynamics and Bridge Design'}}, {'_index': 'scientist_1_projects', '_id': 'EFf8EY8BsHbYzo2o6nRR', '_score': 0.0, '_source': {'name': 'Aerodynamics and Gas Mileage'}}, {'_index': 'scientist_1_projects', '_id': 'FFf8EY8BsHbYzo2o6nRR', '_score': 0.0, '_source': {'name': 'A Matter of Time'}}, {'_index': 'scientist_1_projects', '_id': 'FVf8EY8BsHbYzo2o6nRR', '_score': 0.0, '_source': {'name': 'A Puzzling Parallax'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+target res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+translate SELECT name FROM projects WHERE hours BETWEEN 100 AND 300 success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'Matter of Time' INTERSECT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'A Puzzling Parallax']-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:9.81403 s
+---------------------------Execute Target Query:{
+    "inner_index": ["assignedto", "projects", "scientists"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {
+                                "bool": {
+                                    "must": [
+                                        {"term": {"projects.name": "Matter of Time"}},
+                                        {"term": {"assignedto.project": "projects.code"}},
+                                        {"term": {"assignedto.scientist": "scientists.ssn"}}
+                                    ]
+                                }
+                            },
+                            {
+                                "bool": {
+                                    "must": [
+                                        {"term": {"projects.name": "A Puzzling Parallax"}},
+                                        {"term": {"assignedto.project": "projects.code"}},
+                                        {"term": {"assignedto.scientist": "scientists.ssn"}}
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["scientists.name"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'should': [{'bool': {'must': [{'term': {'projects.name': 'Matter of Time'}}, {'term': {'assignedto.project': 'projects.code'}}, {'term': {'assignedto.scientist': 'scientists.ssn'}}]}}, {'bool': {'must': [{'term': {'projects.name': 'A Puzzling Parallax'}}, {'term': {'assignedto.project': 'projects.code'}}, {'term': {'assignedto.scientist': 'scientists.ssn'}}]}}]}}]}}, '_source': ['scientists.name'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: []
+target res: []
+translate SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'Matter of Time' INTERSECT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'A Puzzling Parallax' success
+
+--------------------------13-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists ORDER BY name]-----------------
+target_db_schema: ['name', 'ssn']
+convert time:2.73358 s
+---------------------------Execute Target Query:{
+    "size": 1000,  
+    "sort": [
+        {"name": {"order": "asc"}}
+    ],
+    "_source": ["name"],
+    "inner_index": ["scientists"]
+}-----------------
+**************************************************
+{'size': 1000, 'sort': [{'name': {'order': 'asc'}}], '_source': ['name']}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 12, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'scientist_1_scientists', '_id': 'HVf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Anand Manikutty'}, 'sort': ['anand']}, {'_index': 'scientist_1_scientists', '_id': 'IFf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Mary-Anne Foster'}, 'sort': ['anne']}, {'_index': 'scientist_1_scientists', '_id': 'Hlf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Carol Smith'}, 'sort': ['carol']}, {'_index': 'scientist_1_scientists', '_id': 'I1f8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'David Smith'}, 'sort': ['david']}, {'_index': 'scientist_1_scientists', '_id': 'Ilf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'John Doe'}, 'sort': ['doe']}, {'_index': 'scientist_1_scientists', '_id': 'Jlf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Elizabeth Doe'}, 'sort': ['doe']}, {'_index': 'scientist_1_scientists', '_id': 'JFf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Zacary Efron'}, 'sort': ['efron']}, {'_index': 'scientist_1_scientists', '_id': 'JVf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Eric Goldsmith'}, 'sort': ['eric']}, {'_index': 'scientist_1_scientists', '_id': 'IVf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'George ODonnell'}, 'sort': ['george']}, {'_index': 'scientist_1_scientists', '_id': 'H1f8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Joe Stevens'}, 'sort': ['joe']}, {'_index': 'scientist_1_scientists', '_id': 'J1f8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Kumar Swamy'}, 'sort': ['kumar']}, {'_index': 'scientist_1_scientists', '_id': 'HFf8EY8BsHbYzo2o7HR3', '_score': None, '_source': {'name': 'Michael Rogers'}, 'sort': ['michael']}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "Elizabeth Doe"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "John Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Mary-Anne Foster"}', '{"name": "Michael Rogers"}', '{"name": "Zacary Efron"}']
+target res: ['{"name": "Anand Manikutty"}', '{"name": "Mary-Anne Foster"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "John Doe"}', '{"name": "Elizabeth Doe"}', '{"name": "Zacary Efron"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "Kumar Swamy"}', '{"name": "Michael Rogers"}']
+translate SELECT name FROM scientists ORDER BY name success
+
+--------------------------14-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T1.name]-----------------
+target_db_schema: ['project', 'scientist', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:10.136432 s
+---------------------------Execute Target Query:{
+    "inner_index": ["projects", "assignedto"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "projects",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_name": {
+            "terms": {
+                "field": "name.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "_id"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['aggregations']['group_by_name']['buckets']",
+        "count_result": "[bucket['count']['value'] for bucket in response['aggregations']['group_by_name']['buckets']]"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'projects', 'query': {'match_all': {}}}}]}}, 'aggs': {'group_by_name': {'terms': {'field': 'name.keyword', 'size': 10}, 'aggs': {'count': {'value_count': {'field': '_id'}}}}}, 'code': {'name_result': "response['aggregations']['group_by_name']['buckets']", 'count_result': "[bucket['count']['value'] for bucket in response['aggregations']['group_by_name']['buckets']]"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------15-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project WHERE T1.hours  >  300 GROUP BY T1.name]-----------------
+target_db_schema: ['project', 'scientist', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:11.255259 s
+---------------------------Execute Target Query:{
+    "inner_index": ["projects", "assignedto"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "hours": {
+                            "gt": 300
+                        }
+                    }
+                },
+                {
+                    "has_child": {
+                        "type": "assignedto",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "_source": ["project"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_name": {
+            "terms": {
+                "field": "name.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "_index"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['aggregations']['group_by_name']['buckets']",
+        "count_result": "response['aggregations']['group_by_name']['buckets'][*]['count']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'range': {'hours': {'gt': 300}}}, {'has_child': {'type': 'assignedto', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['project']}}}]}}, 'aggs': {'group_by_name': {'terms': {'field': 'name.keyword', 'size': 10}, 'aggs': {'count': {'value_count': {'field': '_index'}}}}}, 'code': {'name_result': "response['aggregations']['group_by_name']['buckets']", 'count_result': "response['aggregations']['group_by_name']['buckets'][*]['count']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------16-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM scientists AS T1 JOIN assignedto AS T2 ON T1.ssn  =  T2.scientist GROUP BY T1.name]-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n']
+convert time:10.979548 s
+---------------------------Execute Target Query:{
+    "inner_index": ["scientists", "assignedto"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "scientists",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_name": {
+            "terms": {
+                "field": "name.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "_id"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['aggregations']['group_by_name']['buckets']",
+        "count_result": "[bucket['count']['value'] for bucket in response['aggregations']['group_by_name']['buckets']]"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'scientists', 'query': {'match_all': {}}}}]}}, 'aggs': {'group_by_name': {'terms': {'field': 'name.keyword', 'size': 10}, 'aggs': {'count': {'value_count': {'field': '_id'}}}}}, 'code': {'name_result': "response['aggregations']['group_by_name']['buckets']", 'count_result': "[bucket['count']['value'] for bucket in response['aggregations']['group_by_name']['buckets']]"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------17-----------------
+schema:['ssn', 'name']
+---------------------------Execute SQL Query:[SELECT T3.ssn ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects)]-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:7.319527 s
+---------------------------Execute Target Query:{
+  "inner_index": ["assignedto", "projects", "scientists"],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_parent": {
+            "parent_type": "projects",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "size": 1,
+              "sort": [
+                {
+                  "hours": {
+                    "order": "desc"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "has_parent": {
+            "parent_type": "scientists",
+            "query": {
+              "match_all": {}
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["ssn", "name"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_parent': {'parent_type': 'projects', 'query': {'match_all': {}}, 'inner_hits': {'size': 1, 'sort': [{'hours': {'order': 'desc'}}]}}}, {'has_parent': {'parent_type': 'scientists', 'query': {'match_all': {}}}}]}}, '_source': ['ssn', 'name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM assignedto AS T1 JOIN scientists AS T2 ON T1.scientist  =  T2.ssn]-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n']
+convert time:5.426923 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "scientist": "ssn"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["assignedto", "scientists"]
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'scientist': 'ssn'}}]}}, '_source': ['name']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: For input string: "ssn"')
+
+--------------------------19-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE code NOT IN (SELECT project FROM assignedto)]-----------------
+target_db_schema: ['project', 'scientist', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:6.303879 s
+---------------------------Execute Target Query:{
+    "inner_index": ["projects", "assignedto"],
+    "query": {
+        "bool": {
+            "must_not": {
+                "terms": {
+                    "code": {
+                        "index": "assignedto",
+                        "path": "project"
+                    }
+                }
+            }
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "project_names": {
+            "terms": {
+                "field": "name",
+                "size": 10000
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['aggregations']['project_names']['buckets']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'code': {'index': 'assignedto', 'path': 'project'}}}}}, 'size': 0, 'aggs': {'project_names': {'terms': {'field': 'name', 'size': 10000}}}, 'code': {'name_result': "response['aggregations']['project_names']['buckets']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:85] [bool] failed to parse field [must_not]')
+
+--------------------------20-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto)]-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n']
+convert time:4.273196 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": {
+                "terms": {
+                    "ssn": {
+                        "index": "assignedto",
+                        "path": "scientist"
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["scientists", "assignedto"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'ssn': {'index': 'assignedto', 'path': 'scientist'}}}}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:86] [bool] failed to parse field [must_not]')
+
+--------------------------21-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto)]-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n']
+convert time:6.698148 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "terms": {
+                        "ssn": {
+                            "index": "assignedto",
+                            "path": "scientist",
+                            "id": "_id"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_scientists": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["scientists", "assignedto"],
+    "code": {
+        "total_scientists": "response['aggregations']['total_scientists']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': [{'terms': {'ssn': {'index': 'assignedto', 'path': 'scientist', 'id': '_id'}}}]}}, 'size': 0, 'aggs': {'total_scientists': {'value_count': {'field': '_index'}}}, 'code': {'total_scientists': "response['aggregations']['total_scientists']['value']"}}
+**************************************************
+execute target query error:NotFoundError(404, 'index_not_found_exception', 'no such index [assignedto]', assignedto, index_or_alias)
+
+--------------------------22-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists EXCEPT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects)]-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:9.172037 s
+---------------------------Execute Target Query:{
+    "inner_index": ["scientists", "projects", "assignedto"],
+    "query": {
+        "bool": {
+            "must_not": {
+                "bool": {
+                    "must": [
+                        {
+                            "terms": {
+                                "scientists.name": {
+                                    "index": "assignedto",
+                                    "path": "scientist",
+                                    "id": {
+                                        "index": "projects",
+                                        "path": "code",
+                                        "query": {
+                                            "match": {
+                                                "hours": {
+                                                    "query": {
+                                                        "max": {
+                                                            "field": "hours"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "_source": ["name"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'bool': {'must': [{'terms': {'scientists.name': {'index': 'assignedto', 'path': 'scientist', 'id': {'index': 'projects', 'path': 'code', 'query': {'match': {'hours': {'query': {'max': {'field': 'hours'}}}}}}}}}]}}}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', "[1:121] [terms_lookup] id doesn't support values of type: START_OBJECT")
+
+--------------------------23-----------------
+schema:['name', 'name', 'hours']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T3.name ,  T3.hours FROM scientists AS T1 JOIN assignedto AS T2 ON T1.ssn = T2.scientist JOIN projects AS T3 ON T2.project = T3.code ORDER BY T3.name ,  T1.name]-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:11.226818 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "nested": {
+                        "path": "assignedto",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "assignedto.scientist": {
+                                                "query": "scientists.ssn"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "assignedto.project": {
+                                                "query": "projects.code"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {"projects.name": {"order": "asc"}},
+        {"scientists.name": {"order": "asc"}}
+    ],
+    "_source": ["scientists.name", "projects.name", "projects.hours"],
+    "inner_index": ["scientists", "assignedto", "projects"]
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'nested': {'path': 'assignedto', 'query': {'bool': {'must': [{'match': {'assignedto.scientist': {'query': 'scientists.ssn'}}}, {'match': {'assignedto.project': {'query': 'projects.code'}}}]}}}}]}}, 'sort': [{'projects.name': {'order': 'asc'}}, {'scientists.name': {'order': 'asc'}}], '_source': ['scientists.name', 'projects.name', 'projects.hours']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [assignedto]')
+
+--------------------------24-----------------
+schema:['name', 'name']
+---------------------------Execute SQL Query:[SELECT T2.name ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT min(hours) FROM projects)]-----------------
+target_db_schema: ['name', 'ssn', 'a', 's', 's', 'i', 'g', 'n', 'e', 'd', 't', 'o', ':', ' ', '[', "'", 'p', 'r', 'o', 'j', 'e', 'c', 't', "'", ',', ' ', "'", 's', 'c', 'i', 'e', 'n', 't', 'i', 's', 't', "'", ']', '\n', 'p', 'r', 'o', 'j', 'e', 'c', 't', 's', ':', ' ', '[', "'", 'c', 'o', 'd', 'e', "'", ',', ' ', "'", 'h', 'o', 'u', 'r', 's', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:14.75353 s
+---------------------------Execute Target Query:{
+    "inner_index": ["assignedto", "projects", "scientists"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "script": {
+                        "script": {
+                            "source": "doc['projects.hours'].value == params.min_hours",
+                            "params": {
+                                "min_hours": {
+                                    "script": {
+                                        "source": "Math.min(params.hours)",
+                                        "params": {
+                                            "hours": "doc['projects.hours'].values"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "should": [
+                {
+                    "match": {
+                        "assignedto.project": "projects.code"
+                    }
+                },
+                {
+                    "match": {
+                        "assignedto.scientist": "scientists.ssn"
+                    }
+                }
+            ],
+            "minimum_should_match": 2
+        }
+    },
+    "_source": ["projects.name", "scientists.name"],
+    "aggs": {
+        "min_hours": {
+            "min": {
+                "field": "projects.hours"
+            }
+        }
+    },
+    "code": {
+        "project_name_result": "response['hits']['hits'][*]['_source']['projects.name']",
+        "scientist_name_result": "response['hits']['hits'][*]['_source']['scientists.name']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'script': {'script': {'source': "doc['projects.hours'].value == params.min_hours", 'params': {'min_hours': {'script': {'source': 'Math.min(params.hours)', 'params': {'hours': "doc['projects.hours'].values"}}}}}}}], 'should': [{'match': {'assignedto.project': 'projects.code'}}, {'match': {'assignedto.scientist': 'scientists.ssn'}}], 'minimum_should_match': 2}}, '_source': ['projects.name', 'scientists.name'], 'aggs': {'min_hours': {'min': {'field': 'projects.hours'}}}, 'code': {'project_name_result': "response['hits']['hits'][*]['_source']['projects.name']", 'scientist_name_result': "response['hits']['hits'][*]['_source']['scientists.name']"}}
+**************************************************
+response of elasticsearch: {'took': 6, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'min_hours': {'value': None}}}
+
+exec_result_dict: {}
+mysql res: []
+target res: []
+translate SELECT T2.name ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT min(hours) FROM projects) success
+success_query_count: 5
+valid_count: 24
+accuracy: 0.20833333333333334

@@ -1,0 +1,378 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM device]-----------------
+convert time:1.275462 s
+---------------------------Execute Target Query:MATCH (d:device) RETURN count(d) as count-----------------
+MATCH (d:device) RETURN count(d) as count
+mysql res: ['{"count_*": 6}']
+target res: ['{"count": 6}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['carrier']
+---------------------------Execute SQL Query:[SELECT carrier FROM device ORDER BY carrier ASC]-----------------
+convert time:1.898956 s
+---------------------------Execute Target Query:MATCH (d:device) RETURN d.carrier as carrier ORDER BY d.carrier ASC-----------------
+MATCH (d:device) RETURN d.carrier as carrier ORDER BY d.carrier ASC
+mysql res: ['{"carrier": "Bell Mobility"}', '{"carrier": "Iusacell"}', '{"carrier": "MTS Mobility"}', '{"carrier": "Telus Mobility"}', '{"carrier": "Verizon Wireless"}', '{"carrier": "Vodafone AU"}']
+target res: ['{"carrier": "Bell Mobility"}', '{"carrier": "Iusacell"}', '{"carrier": "MTS Mobility"}', '{"carrier": "Telus Mobility"}', '{"carrier": "Verizon Wireless"}', '{"carrier": "Vodafone AU"}']
+translate SELECT carrier FROM device ORDER BY carrier ASC success
+
+--------------------------3-----------------
+schema:['carrier']
+---------------------------Execute SQL Query:[SELECT carrier FROM device WHERE software_platform != 'Android']-----------------
+convert time:2.014196 s
+---------------------------Execute Target Query:MATCH (d:device) WHERE d.software_platform <> 'Android' RETURN d.carrier as carrier-----------------
+MATCH (d:device) WHERE d.software_platform <> 'Android' RETURN d.carrier as carrier
+mysql res: ['{"carrier": "Verizon Wireless"}']
+target res: ['{"carrier": "Verizon Wireless"}']
+translate SELECT carrier FROM device WHERE software_platform != 'Android' success
+
+--------------------------4-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT shop_name FROM shop ORDER BY open_year ASC]-----------------
+convert time:1.299816 s
+---------------------------Execute Target Query:MATCH (s:shop) RETURN s.shop_name as shop_name ORDER BY s.open_year ASC-----------------
+MATCH (s:shop) RETURN s.shop_name as shop_name ORDER BY s.open_year ASC
+mysql res: ['{"shop_name": "Best Buy"}', '{"shop_name": "Tynewydd repair"}', '{"shop_name": "Ferndale"}', '{"shop_name": "Apple"}', '{"shop_name": "Dinas store"}', '{"shop_name": "Naval repair"}', '{"shop_name": "Pentre store"}', '{"shop_name": "Gelli repair"}', '{"shop_name": "Dinas Device"}', '{"shop_name": "Naval\'s shop"}', '{"shop_name": "ATnT"}', '{"shop_name": "National Cellphone"}']
+target res: ['{"shop_name": "Best Buy"}', '{"shop_name": "Tynewydd repair"}', '{"shop_name": "Ferndale"}', '{"shop_name": "Apple"}', '{"shop_name": "Dinas store"}', '{"shop_name": "Naval repair"}', '{"shop_name": "Pentre store"}', '{"shop_name": "Gelli repair"}', '{"shop_name": "Dinas Device"}', '{"shop_name": "Naval\'s shop"}', '{"shop_name": "ATnT"}', '{"shop_name": "National Cellphone"}']
+translate SELECT shop_name FROM shop ORDER BY open_year ASC success
+
+--------------------------5-----------------
+schema:['avg_quantity']
+---------------------------Execute SQL Query:[SELECT avg(quantity) FROM stock]-----------------
+convert time:1.204561 s
+---------------------------Execute Target Query:MATCH (s:stock) RETURN avg(s.quantity) AS avg_quantity-----------------
+MATCH (s:stock) RETURN avg(s.quantity) AS avg_quantity
+mysql res: ['{"avg_quantity": 110.8750}']
+target res: ['{"avg_quantity": 110.875}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['shop_name', 'LOCATION']
+---------------------------Execute SQL Query:[SELECT shop_name ,  LOCATION FROM shop ORDER BY shop_name ASC]-----------------
+convert time:5.388901 s
+---------------------------Execute Target Query:MATCH (s:shop) RETURN s.shop_name AS shop_name, s.LOCATION AS LOCATION ORDER BY s.shop_name ASC-----------------
+MATCH (s:shop) RETURN s.shop_name AS shop_name, s.LOCATION AS LOCATION ORDER BY s.shop_name ASC
+mysql res: ['{"shop_name": "Apple", "LOCATION": "Blaenllechau"}', '{"shop_name": "ATnT", "LOCATION": "Maerdy"}', '{"shop_name": "Best Buy", "LOCATION": "Cymmer"}', '{"shop_name": "Dinas Device", "LOCATION": "Dinas"}', '{"shop_name": "Dinas store", "LOCATION": "Dinas"}', '{"shop_name": "Ferndale", "LOCATION": "Blaenllechau"}', '{"shop_name": "Gelli repair", "LOCATION": "Gelli"}', '{"shop_name": "National Cellphone", "LOCATION": "Wattstown"}', '{"shop_name": "Naval repair", "LOCATION": "Penygraig"}', '{"shop_name": "Naval\'s shop", "LOCATION": "Penygraig"}', '{"shop_name": "Pentre store", "LOCATION": "Pentre"}', '{"shop_name": "Tynewydd repair", "LOCATION": "Porth"}']
+target res: ['{"shop_name": "ATnT", "LOCATION": null}', '{"shop_name": "Apple", "LOCATION": null}', '{"shop_name": "Best Buy", "LOCATION": null}', '{"shop_name": "Dinas Device", "LOCATION": null}', '{"shop_name": "Dinas store", "LOCATION": null}', '{"shop_name": "Ferndale", "LOCATION": null}', '{"shop_name": "Gelli repair", "LOCATION": null}', '{"shop_name": "National Cellphone", "LOCATION": null}', '{"shop_name": "Naval repair", "LOCATION": null}', '{"shop_name": "Naval\'s shop", "LOCATION": null}', '{"shop_name": "Pentre store", "LOCATION": null}', '{"shop_name": "Tynewydd repair", "LOCATION": null}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['count_DISTINCT software_platform']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT software_platform) FROM device]-----------------
+convert time:1.44983 s
+---------------------------Execute Target Query:MATCH (d:device) RETURN count(DISTINCT d.software_platform) as count_distinct_software_platform-----------------
+MATCH (d:device) RETURN count(DISTINCT d.software_platform) as count_distinct_software_platform
+mysql res: ['{"count_DISTINCT software_platform": 2}']
+target res: ['{"count_distinct_software_platform": 2}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['open_date', 'open_year']
+---------------------------Execute SQL Query:[SELECT open_date ,  open_year FROM shop WHERE shop_name  =  "Apple"]-----------------
+convert time:1.495563 s
+---------------------------Execute Target Query:MATCH (s:shop) WHERE s.shop_name = "Apple" RETURN s.open_date as open_date, s.open_year as open_year-----------------
+MATCH (s:shop) WHERE s.shop_name = "Apple" RETURN s.open_date as open_date, s.open_year as open_year
+mysql res: ['{"open_date": "10 June", "open_year": 2009}']
+target res: ['{"open_date": "10 June", "open_year": 2009}']
+translate SELECT open_date ,  open_year FROM shop WHERE shop_name  =  "Apple" success
+
+--------------------------9-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT shop_name FROM shop ORDER BY open_year DESC LIMIT 1]-----------------
+convert time:2.603716 s
+---------------------------Execute Target Query:MATCH (s:shop) RETURN s.shop_name as shop_name ORDER BY s.open_year DESC LIMIT 1-----------------
+MATCH (s:shop) RETURN s.shop_name as shop_name ORDER BY s.open_year DESC LIMIT 1
+mysql res: ['{"shop_name": "National Cellphone"}']
+target res: ['{"shop_name": "National Cellphone"}']
+translate SELECT shop_name FROM shop ORDER BY open_year DESC LIMIT 1 success
+
+--------------------------10-----------------
+schema:['shop_name', 'carrier']
+---------------------------Execute SQL Query:[SELECT T3.shop_name ,  T2.carrier FROM stock AS T1 JOIN device AS T2 ON T1.device_id  =  T2.device_id JOIN shop AS T3 ON T1.shop_id  =  T3.shop_id]-----------------
+convert time:3.201003 s
+---------------------------Execute Target Query:MATCH (s:shop), (d:device), (st:stock)
+WHERE st.device_id = d.device_id AND st.shop_id = s.shop_id
+RETURN s.shop_name AS shop_name, d.carrier AS carrier-----------------
+MATCH (s:shop), (d:device), (st:stock)
+WHERE st.device_id = d.device_id AND st.shop_id = s.shop_id
+RETURN s.shop_name AS shop_name, d.carrier AS carrier
+mysql res: ['{"shop_name": "Dinas Device", "carrier": "Bell Mobility"}', '{"shop_name": "Ferndale", "carrier": "Bell Mobility"}', '{"shop_name": "Gelli repair", "carrier": "Bell Mobility"}', '{"shop_name": "Dinas Device", "carrier": "Vodafone AU"}', '{"shop_name": "Best Buy", "carrier": "Vodafone AU"}', '{"shop_name": "Ferndale", "carrier": "Vodafone AU"}', '{"shop_name": "Apple", "carrier": "Vodafone AU"}', '{"shop_name": "ATnT", "carrier": "Vodafone AU"}']
+target res: ['{"shop_name": "Dinas Device", "carrier": "Bell Mobility"}', '{"shop_name": "Dinas Device", "carrier": "Vodafone AU"}', '{"shop_name": "Best Buy", "carrier": "Vodafone AU"}', '{"shop_name": "Ferndale", "carrier": "Bell Mobility"}', '{"shop_name": "Ferndale", "carrier": "Vodafone AU"}', '{"shop_name": "Apple", "carrier": "Vodafone AU"}', '{"shop_name": "Gelli repair", "carrier": "Bell Mobility"}', '{"shop_name": "ATnT", "carrier": "Vodafone AU"}']
+translate SELECT T3.shop_name ,  T2.carrier FROM stock AS T1 JOIN device AS T2 ON T1.device_id  =  T2.device_id JOIN shop AS T3 ON T1.shop_id  =  T3.shop_id success
+
+--------------------------11-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT T2.shop_name FROM stock AS T1 JOIN shop AS T2 ON T1.shop_id  =  T2.shop_id GROUP BY T1.shop_id HAVING COUNT(*)  >  1]-----------------
+convert time:4.519345 s
+---------------------------Execute Target Query:MATCH (s:stock), (sh:shop) WHERE s.shop_id = sh.shop_id WITH sh.shop_name AS shop_name, COUNT(*) AS count_star GROUP BY shop_name HAVING count_star > 1 RETURN shop_name-----------------
+MATCH (s:stock), (sh:shop) WHERE s.shop_id = sh.shop_id WITH sh.shop_name AS shop_name, COUNT(*) AS count_star GROUP BY shop_name HAVING count_star > 1 RETURN shop_name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WHERE"
+  "WITH"
+  <EOF> (line 1, column 112 (offset: 111))
+"MATCH (s:stock), (sh:shop) WHERE s.shop_id = sh.shop_id WITH sh.shop_name AS shop_name, COUNT(*) AS count_star GROUP BY shop_name HAVING count_star > 1 RETURN shop_name"
+                                                                                                                ^}
+
+--------------------------12-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT T2.shop_name FROM stock AS T1 JOIN shop AS T2 ON T1.shop_id  =  T2.shop_id GROUP BY T1.shop_id ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+convert time:4.556099 s
+---------------------------Execute Target Query:MATCH (s:stock), (sh:shop) WHERE s.shop_id = sh.shop_id WITH sh.shop_name AS shop_name, COUNT(*) AS count_star GROUP BY shop_name ORDER BY count_star DESC LIMIT 1 RETURN shop_name-----------------
+MATCH (s:stock), (sh:shop) WHERE s.shop_id = sh.shop_id WITH sh.shop_name AS shop_name, COUNT(*) AS count_star GROUP BY shop_name ORDER BY count_star DESC LIMIT 1 RETURN shop_name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WHERE"
+  "WITH"
+  <EOF> (line 1, column 112 (offset: 111))
+"MATCH (s:stock), (sh:shop) WHERE s.shop_id = sh.shop_id WITH sh.shop_name AS shop_name, COUNT(*) AS count_star GROUP BY shop_name ORDER BY count_star DESC LIMIT 1 RETURN shop_name"
+                                                                                                                ^}
+
+--------------------------13-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT T2.shop_name FROM stock AS T1 JOIN shop AS T2 ON T1.shop_id  =  T2.shop_id GROUP BY T1.shop_id ORDER BY SUM(T1.quantity) DESC LIMIT 1]-----------------
+convert time:3.253081 s
+---------------------------Execute Target Query:MATCH (s:stock), (sh:shop) WHERE s.shop_id = sh.shop_id
+RETURN sh.shop_name AS shop_name, SUM(s.quantity) AS sum_quantity
+ORDER BY sum_quantity DESC LIMIT 1-----------------
+MATCH (s:stock), (sh:shop) WHERE s.shop_id = sh.shop_id
+RETURN sh.shop_name AS shop_name, SUM(s.quantity) AS sum_quantity
+ORDER BY sum_quantity DESC LIMIT 1
+mysql res: ['{"shop_name": "Dinas Device"}']
+target res: ['{"shop_name": "Dinas Device", "sum_quantity": 300}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['software_platform', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT software_platform ,  COUNT(*) FROM device GROUP BY software_platform]-----------------
+convert time:1.423671 s
+---------------------------Execute Target Query:MATCH (d:device)
+RETURN d.software_platform AS software_platform, count(*) AS count_software_platform-----------------
+MATCH (d:device)
+RETURN d.software_platform AS software_platform, count(*) AS count_software_platform
+mysql res: ['{"software_platform": "Android", "COUNT_*": 5}', '{"software_platform": "iOS", "COUNT_*": 1}']
+target res: ['{"software_platform": "Android", "count_software_platform": 5}', '{"software_platform": "iOS", "count_software_platform": 1}']
+mismatch between MySQL and target
+
+--------------------------15-----------------
+schema:['software_platform']
+---------------------------Execute SQL Query:[SELECT software_platform FROM device GROUP BY software_platform ORDER BY COUNT(*) DESC]-----------------
+convert time:1.885745 s
+---------------------------Execute Target Query:MATCH (d:device)
+RETURN d.software_platform AS software_platform, COUNT(*) AS count
+ORDER BY count DESC-----------------
+MATCH (d:device)
+RETURN d.software_platform AS software_platform, COUNT(*) AS count
+ORDER BY count DESC
+mysql res: ['{"software_platform": "Android"}', '{"software_platform": "iOS"}']
+target res: ['{"software_platform": "Android", "count": 5}', '{"software_platform": "iOS", "count": 1}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['software_platform']
+---------------------------Execute SQL Query:[SELECT software_platform FROM device GROUP BY software_platform ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+convert time:1.889277 s
+---------------------------Execute Target Query:MATCH (d:device)
+RETURN d.software_platform as software_platform, COUNT(*) as count
+GROUP BY d.software_platform
+ORDER BY count DESC
+LIMIT 1-----------------
+MATCH (d:device)
+RETURN d.software_platform as software_platform, COUNT(*) as count
+GROUP BY d.software_platform
+ORDER BY count DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 84))
+"GROUP BY d.software_platform"
+ ^}
+
+--------------------------17-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT shop_name FROM shop WHERE shop_id NOT IN (SELECT shop_id FROM stock)]-----------------
+convert time:2.296054 s
+---------------------------Execute Target Query:MATCH (s:shop) WHERE NOT EXISTS (MATCH (st:stock) WHERE st.shop_id = s.shop_id) RETURN s.shop_name as shop_name-----------------
+MATCH (s:shop) WHERE NOT EXISTS (MATCH (st:stock) WHERE st.shop_id = s.shop_id) RETURN s.shop_name as shop_name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 51 (offset: 50))
+"MATCH (s:shop) WHERE NOT EXISTS (MATCH (st:stock) WHERE st.shop_id = s.shop_id) RETURN s.shop_name as shop_name"
+                                                   ^}
+
+--------------------------18-----------------
+schema:['LOCATION']
+---------------------------Execute SQL Query:[SELECT LOCATION FROM shop WHERE open_year  >  2012 INTERSECT SELECT LOCATION FROM shop WHERE open_year  <  2008]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 19, column 110
+convert time:4.261883 s
+---------------------------Execute Target Query:MATCH (s1:shop) WHERE s1.open_year > 2012
+WITH s1
+MATCH (s2:shop) WHERE s2.open_year < 2008 AND s1.LOCATION = s2.LOCATION
+RETURN s1.LOCATION as LOCATION-----------------
+MATCH (s1:shop) WHERE s1.open_year > 2012
+WITH s1
+MATCH (s2:shop) WHERE s2.open_year < 2008 AND s1.LOCATION = s2.LOCATION
+RETURN s1.LOCATION as LOCATION
+mysql res: []
+target res: []
+translate SELECT LOCATION FROM shop WHERE open_year  >  2012 INTERSECT SELECT LOCATION FROM shop WHERE open_year  <  2008 success
+
+--------------------------19-----------------
+schema:['carrier']
+---------------------------Execute SQL Query:[SELECT carrier FROM device WHERE device_id NOT IN (SELECT device_id FROM stock)]-----------------
+convert time:2.672658 s
+---------------------------Execute Target Query:MATCH (d:device) WHERE NOT EXISTS (MATCH (s:stock) WHERE s.device_id = d.device_id) RETURN d.carrier as carrier-----------------
+MATCH (d:device) WHERE NOT EXISTS (MATCH (s:stock) WHERE s.device_id = d.device_id) RETURN d.carrier as carrier
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 52 (offset: 51))
+"MATCH (d:device) WHERE NOT EXISTS (MATCH (s:stock) WHERE s.device_id = d.device_id) RETURN d.carrier as carrier"
+                                                    ^}
+
+--------------------------20-----------------
+schema:['carrier']
+---------------------------Execute SQL Query:[SELECT T2.carrier FROM stock AS T1 JOIN device AS T2 ON T1.device_id  =  T2.device_id GROUP BY T1.device_id HAVING COUNT(*)  >  1]-----------------
+convert time:2.470663 s
+---------------------------Execute Target Query:MATCH (s:stock), (d:device) WHERE s.device_id = d.device_id WITH d.carrier AS carrier, COUNT(*) AS count GROUP BY carrier HAVING count > 1 RETURN carrier-----------------
+MATCH (s:stock), (d:device) WHERE s.device_id = d.device_id WITH d.carrier AS carrier, COUNT(*) AS count GROUP BY carrier HAVING count > 1 RETURN carrier
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WHERE"
+  "WITH"
+  <EOF> (line 1, column 106 (offset: 105))
+"MATCH (s:stock), (d:device) WHERE s.device_id = d.device_id WITH d.carrier AS carrier, COUNT(*) AS count GROUP BY carrier HAVING count > 1 RETURN carrier"
+                                                                                                          ^}
+success_query_count: 7
+valid_count: 20
+accuracy: 0.35

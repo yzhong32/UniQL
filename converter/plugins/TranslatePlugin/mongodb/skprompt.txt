@@ -1,11 +1,11 @@
-Translate the following query SQL query to MongoDB Query. Such MongoDB query should act as parameter in "db.users.find()".
+Translate the following query SQL query to MongoDB Query. 
 When doing the conversion, there are some rules:
-1. You should keep the query returned in one line, do not include '\n' in the beginning adn end in your response.
-2. When handling floating-point numbers, truncate to 4 decimal places.
+1. You should keep the query returned in one line, do not include any '\n' in your response.
 3. For SQL aggregation functions, link the operation and field with an underscore. For instance, convert max(score) in SQL to max_score in MongoDB.
 4. In the case of SQL joins, where fields are referenced as Table.Field, replace the period (.) with an underscore (_) to form Table_Field in the MongoDB query. For example, "student.score" in SQL query to "student_score" in MongoDB query.
-5. Do not use _id as returned field. Instead, use the original field name. As example 3 shows.
+5. Do not use _id as returned field. Instead, use the original field name.
 6. Use None to replace null
+7. IMPORTANT: Only return the executable mongodb query! Not any description like "mongodb:".
 
 ---------------------------------------------------------------------------
 Here are some examples:

@@ -1,0 +1,277 @@
+--------
+
+--------------------------1-----------------
+schema:['sum_T2_balance']
+---------------------------Execute SQL Query:[SELECT sum(T2.balance) FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T1.name != 'Brown']-----------------
+convert time:5.148712 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$match": { "name": { "$ne": "Brown" } } }, { "$unwind": "$savings" }, { "$group": { "_id": None, "sum_balance": { "$sum": "$savings_balance" } } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$match": { "name": { "$ne": "Brown" } } }, { "$unwind": "$savings" }, { "$group": { "_id": None, "sum_balance": { "$sum": "$savings_balance" } } } ])
+result of mongodb: ['{"_id": null, "sum_balance": 0}']
+mysql res: ['{"sum_T2_balance": 1000310300.0}']
+target res: ['{"sum_T2_balance": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM accounts]-----------------
+convert time:0.892227 s
+---------------------------Execute Target Query:db.accounts.aggregate([{ "$count": "count" }])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{ "$count": "count" }])
+result of mongodb: ['{"count": 7}']
+mysql res: ['{"count_*": 7}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['sum_balance']
+---------------------------Execute SQL Query:[SELECT sum(balance) FROM checking]-----------------
+convert time:6.246998 s
+---------------------------Execute Target Query:db.checking.aggregate([{ "$group": { "_id": None, "sum_balance": { "$sum": "$balance" } } }])-----------------
+here we are in executor, and the query is:  db.checking.aggregate([{ "$group": { "_id": None, "sum_balance": { "$sum": "$balance" } } }])
+result of mongodb: ['{"_id": null, "sum_balance": 32084.0}']
+mysql res: ['{"sum_balance": 32084.0}']
+target res: ['{"sum_balance": 32084.0}']
+translate SELECT sum(balance) FROM checking success
+
+--------------------------4-----------------
+schema:['avg_balance']
+---------------------------Execute SQL Query:[SELECT avg(balance) FROM checking]-----------------
+convert time:2.104112 s
+---------------------------Execute Target Query:db.checking.aggregate([{ "$group": { "_id": None, "avg_balance": { "$avg": "$balance" } } }])-----------------
+here we are in executor, and the query is:  db.checking.aggregate([{ "$group": { "_id": None, "avg_balance": { "$avg": "$balance" } } }])
+result of mongodb: ['{"_id": null, "avg_balance": 4583.428571428572}']
+mysql res: ['{"avg_balance": 4583.428571428572}']
+target res: ['{"avg_balance": 4583.428571428572}']
+translate SELECT avg(balance) FROM checking success
+
+--------------------------5-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM savings WHERE balance  >  (SELECT avg(balance) FROM savings)]-----------------
+convert time:8.393372 s
+---------------------------Execute Target Query:db.savings.aggregate([ { "$group": { "_id": None, "avg_balance": { "$avg": "$balance" } } }, { "$lookup": { "from": "savings", "let": { "avgBal": "$avg_balance" }, "pipeline": [ { "$match": { "$expr": { "$gt": [ "$balance", "$$avgBal" ] } } }, { "$count": "count" } ], "as": "results" } }, { "$unwind": "$results" }, { "$project": { "count": "$results.count", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.savings.aggregate([ { "$group": { "_id": None, "avg_balance": { "$avg": "$balance" } } }, { "$lookup": { "from": "savings", "let": { "avgBal": "$avg_balance" }, "pipeline": [ { "$match": { "$expr": { "$gt": [ "$balance", "$$avgBal" ] } } }, { "$count": "count" } ], "as": "results" } }, { "$unwind": "$results" }, { "$project": { "count": "$results.count", "_id": 0 } } ])
+result of mongodb: ['{"count": 1}']
+mysql res: ['{"count_*": 1}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['custid', 'name']
+---------------------------Execute SQL Query:[SELECT T1.custid ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT max(balance) FROM checking)]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 18, column 119
+convert time:7.971318 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$match": { "T2_balance": { "$lt": { "$max": "$T2_balance" } } } }, { "$project": { "custid": 1, "name": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$match": { "T2_balance": { "$lt": { "$max": "$T2_balance" } } } }, { "$project": { "custid": 1, "name": 1, "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"custid": 2, "name": "Wang"}', '{"custid": 3, "name": "O\'mahony"}', '{"custid": 4, "name": "Weeks"}', '{"custid": 6, "name": "Porter"}', '{"custid": 7, "name": "Wesley"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------7-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T1.name LIKE '%ee%']-----------------
+convert time:6.704967 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$match": { "name": { "$regex": "ee", "$options": "i" } } }, { "$unwind": "$T2" }, { "$project": { "balance": "$T2.balance", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$match": { "name": { "$regex": "ee", "$options": "i" } } }, { "$unwind": "$T2" }, { "$project": { "balance": "$T2.balance", "_id": 0 } } ])
+result of mongodb: ['{"balance": 7000.0}']
+mysql res: ['{"balance": 7000.0}']
+target res: ['{"balance": 7000.0}']
+translate SELECT T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T1.name LIKE '%ee%' success
+
+--------------------------8-----------------
+schema:['balance', 'balance']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T1.name  =  'Brown']-----------------
+convert time:8.245184 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$match": { "name": "Brown" } }, { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$project": { "T2_balance": "$T2.balance", "T3_balance": "$T3.balance", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$match": { "name": "Brown" } }, { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$project": { "T2_balance": "$T2.balance", "T3_balance": "$T3.balance", "_id": 0 } } ])
+result of mongodb: ['{"T2_balance": [10000.0], "T3_balance": [200000.0]}']
+mysql res: ['{"balance": 10000.0}']
+target res: ['{"balance": null}']
+mismatch between MySQL and target
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  >  (SELECT avg(balance) FROM checking) INTERSECT SELECT T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT avg(balance) FROM savings)]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 18, column 254
+convert time:13.963204 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "checking" } }, { "$unwind": "$checking" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$group": { "_id": "$custid", "avg_checking_balance": { "$avg": "$checking_balance" }, "avg_savings_balance": { "$avg": "$savings_balance" } } }, { "$project": { "name": 1, "checking_balance": 1, "savings_balance": 1, "avg_checking_balance": 1, "avg_savings_balance": 1 } }, { "$match": { "$and": [ { "checking_balance": { "$gt": "$avg_checking_balance" } }, { "savings_balance": { "$lt": "$avg_savings_balance" } } ] } }, { "$project": { "name": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "checking" } }, { "$unwind": "$checking" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$group": { "_id": "$custid", "avg_checking_balance": { "$avg": "$checking_balance" }, "avg_savings_balance": { "$avg": "$savings_balance" } } }, { "$project": { "name": 1, "checking_balance": 1, "savings_balance": 1, "avg_checking_balance": 1, "avg_savings_balance": 1 } }, { "$match": { "$and": [ { "checking_balance": { "$gt": "$avg_checking_balance" } }, { "savings_balance": { "$lt": "$avg_savings_balance" } } ] } }, { "$project": { "name": 1, "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"name": "Brown"}', '{"name": "Weeks"}', '{"name": "Granger"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T1.name IN (SELECT T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  >  (SELECT avg(balance) FROM savings))]-----------------
+convert time:11.2805 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$match": { "name": { "$in": db.accounts.aggregate([ { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$group": { "_id": None, "avg_balance": { "$avg": "$T2.balance" } } }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$match": { "T2.balance": { "$gt": "$avg_balance" } } }, { "$project": { "name": 1, "_id": 0 } } ]).toArray().map(function(doc) { return doc.name; }) } } }, { "$unwind": "$T2" }, { "$project": { "balance": "$T2.balance", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$match": { "name": { "$in": db.accounts.aggregate([ { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$group": { "_id": None, "avg_balance": { "$avg": "$T2.balance" } } }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$match": { "T2.balance": { "$gt": "$avg_balance" } } }, { "$project": { "name": 1, "_id": 0 } } ]).toArray().map(function(doc) { return doc.name; }) } } }, { "$unwind": "$T2" }, { "$project": { "balance": "$T2.balance", "_id": 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------11-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM accounts ORDER BY name]-----------------
+convert time:3.117473 s
+---------------------------Execute Target Query:db.accounts.find({}, { "name": 1, "_id": 0 }).sort({ "name": 1 })-----------------
+here we are in executor, and the query is:  db.accounts.find({}, { "name": 1, "_id": 0 }).sort({ "name": 1 })
+result of mongodb: ['{"name": "Brown"}', '{"name": "Granger"}', '{"name": "O\'mahony"}', '{"name": "Porter"}', '{"name": "Wang"}', '{"name": "Weeks"}', '{"name": "Wesley"}']
+mysql res: ['{"name": "Brown"}', '{"name": "Granger"}', '{"name": "O\'mahony"}', '{"name": "Porter"}', '{"name": "Wang"}', '{"name": "Weeks"}', '{"name": "Wesley"}']
+target res: ['{"name": "Brown"}', '{"name": "Granger"}', '{"name": "O\'mahony"}', '{"name": "Porter"}', '{"name": "Wang"}', '{"name": "Weeks"}', '{"name": "Wesley"}']
+translate SELECT name FROM accounts ORDER BY name success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance + T3.balance LIMIT 1]-----------------
+convert time:14.698775 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "name": 1, "_id": 0, "total_balance": { "$add": ["$T2_balance", "$T3_balance"] } } }, { "$sort": { "total_balance": 1 } }, { "$limit": 1 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "name": 1, "_id": 0, "total_balance": { "$add": ["$T2_balance", "$T3_balance"] } } }, { "$sort": { "total_balance": 1 } }, { "$limit": 1 } ])
+result of mongodb: ['{"name": "Brown", "total_balance": null}']
+mysql res: ['{"name": "Porter"}']
+target res: ['{"name": "Brown"}']
+mismatch between MySQL and target
+
+--------------------------13-----------------
+schema:['name', 'T2_balance + T3_balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T2.balance + T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T3.balance  >  (SELECT avg(balance) FROM savings)]-----------------
+convert time:13.492376 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T3_balance": { "$gt": { "$avg": "$T3_balance" } } } }, { "$project": { "name": 1, "total_balance": { "$add": [ "$T2_balance", "$T3_balance" ] }, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T3_balance": { "$gt": { "$avg": "$T3_balance" } } } }, { "$project": { "name": 1, "total_balance": { "$add": [ "$T2_balance", "$T3_balance" ] }, "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"name": "Wang", "T2_balance + T3_balance": 1000002000.0}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------14-----------------
+schema:['name', 'balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T3.balance LIMIT 1]-----------------
+convert time:8.049832 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "checking" } }, { "$unwind": "$checking" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$project": { "name": 1, "checking_balance": "$checking.balance", "_id": 0 } }, { "$sort": { "savings_balance": 1 } }, { "$limit": 1 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "checking" } }, { "$unwind": "$checking" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$project": { "name": 1, "checking_balance": "$checking.balance", "_id": 0 } }, { "$sort": { "savings_balance": 1 } }, { "$limit": 1 } ])
+result of mongodb: ['{"name": "Brown", "checking_balance": 10000.0}']
+mysql res: ['{"name": "Weeks", "balance": 7000.0}']
+target res: ['{"name": "Brown", "balance": null}']
+mismatch between MySQL and target
+
+--------------------------15-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid GROUP BY T1.name]-----------------
+convert time:4.566517 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$lookup":{"from":"checking","localField":"custid","foreignField":"custid","as":"T2"}},{"$unwind":"$T2"},{"$group":{"_id":"$name","count":{"$sum":1}}},{"$project":{"name":"$_id","count":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$lookup":{"from":"checking","localField":"custid","foreignField":"custid","as":"T2"}},{"$unwind":"$T2"},{"$group":{"_id":"$name","count":{"$sum":1}}},{"$project":{"name":"$_id","count":1,"_id":0}}])
+result of mongodb: ['{"count": 1, "name": "Wesley"}', '{"count": 1, "name": "Weeks"}', '{"count": 1, "name": "O\'mahony"}', '{"count": 1, "name": "Brown"}', '{"count": 1, "name": "Wang"}', '{"count": 1, "name": "Granger"}', '{"count": 1, "name": "Porter"}']
+mysql res: ['{"count_*": 1, "name": "Brown"}', '{"count_*": 1, "name": "Wang"}', '{"count_*": 1, "name": "O\'mahony"}', '{"count_*": 1, "name": "Weeks"}', '{"count_*": 1, "name": "Granger"}', '{"count_*": 1, "name": "Porter"}', '{"count_*": 1, "name": "Wesley"}']
+target res: ['{"count_*": null, "name": "Wesley"}', '{"count_*": null, "name": "Weeks"}', '{"count_*": null, "name": "O\'mahony"}', '{"count_*": null, "name": "Brown"}', '{"count_*": null, "name": "Wang"}', '{"count_*": null, "name": "Granger"}', '{"count_*": null, "name": "Porter"}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['sum_T2_balance', 'name']
+---------------------------Execute SQL Query:[SELECT sum(T2.balance) ,  T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid GROUP BY T1.name]-----------------
+convert time:4.088062 s
+---------------------------Execute Target Query:db.accounts.aggregate([{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$unwind":"$savings"},{"$group":{"_id":"$name","sum_balance":{"$sum":"$savings_balance"}}},{"$project":{"name":"$_id","sum_balance":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([{"$lookup":{"from":"savings","localField":"custid","foreignField":"custid","as":"savings"}},{"$unwind":"$savings"},{"$group":{"_id":"$name","sum_balance":{"$sum":"$savings_balance"}}},{"$project":{"name":"$_id","sum_balance":1,"_id":0}}])
+result of mongodb: ['{"sum_balance": 0, "name": "O\'mahony"}', '{"sum_balance": 0, "name": "Brown"}', '{"sum_balance": 0, "name": "Wang"}', '{"sum_balance": 0, "name": "Weeks"}', '{"sum_balance": 0, "name": "Porter"}', '{"sum_balance": 0, "name": "Granger"}']
+mysql res: ['{"sum_T2_balance": 200000.0, "name": "Brown"}', '{"sum_T2_balance": 1000000000.0, "name": "Wang"}', '{"sum_T2_balance": 230000.0, "name": "O\'mahony"}', '{"sum_T2_balance": 60.0, "name": "Weeks"}', '{"sum_T2_balance": 80000.0, "name": "Granger"}', '{"sum_T2_balance": 240.0, "name": "Porter"}']
+target res: ['{"sum_T2_balance": null, "name": "O\'mahony"}', '{"sum_T2_balance": null, "name": "Brown"}', '{"sum_T2_balance": null, "name": "Wang"}', '{"sum_T2_balance": null, "name": "Weeks"}', '{"sum_T2_balance": null, "name": "Porter"}', '{"sum_T2_balance": null, "name": "Granger"}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT avg(balance) FROM checking)]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 18, column 106
+convert time:5.492497 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$match": { "T2_balance": { "$lt": { "$avg": "$T2_balance" } } } }, { "$project": { "name": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$match": { "T2_balance": { "$lt": { "$avg": "$T2_balance" } } } }, { "$project": { "name": 1, "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"name": "Wang"}', '{"name": "O\'mahony"}', '{"name": "Porter"}', '{"name": "Wesley"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------18-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance DESC LIMIT 1]-----------------
+convert time:8.44687 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$sort": { "T2_balance": -1 } }, { "$limit": 1 }, { "$project": { "balance": "$T3_balance", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$sort": { "T2_balance": -1 } }, { "$limit": 1 }, { "$project": { "balance": "$T3_balance", "_id": 0 } } ])
+result of mongodb: ['{}']
+mysql res: ['{"balance": 200000.0}']
+target res: ['{"balance": null}']
+mismatch between MySQL and target
+
+--------------------------19-----------------
+schema:['T1_balance + T2_balance']
+---------------------------Execute SQL Query:[SELECT T1.balance + T2.balance FROM checking AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid ORDER BY T1.balance + T2.balance]-----------------
+convert time:4.73385 s
+---------------------------Execute Target Query:db.checking.aggregate([ { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$project": { "total_balance": { "$add": ["$balance", "$savings_balance"] }, "_id": 0 } }, { "$sort": { "total_balance": 1 } } ])-----------------
+here we are in executor, and the query is:  db.checking.aggregate([ { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$project": { "total_balance": { "$add": ["$balance", "$savings_balance"] }, "_id": 0 } }, { "$sort": { "total_balance": 1 } } ])
+result of mongodb: ['{"total_balance": null}', '{"total_balance": null}', '{"total_balance": null}', '{"total_balance": null}', '{"total_balance": null}', '{"total_balance": null}']
+mysql res: ['{"T1_balance + T2_balance": 317.0}', '{"T1_balance + T2_balance": 7060.0}', '{"T1_balance + T2_balance": 90000.0}', '{"T1_balance + T2_balance": 210000.0}', '{"T1_balance + T2_balance": 233000.0}', '{"T1_balance + T2_balance": 1000002000.0}']
+target res: ['{"T1_balance + T2_balance": null}', '{"T1_balance + T2_balance": null}', '{"T1_balance + T2_balance": null}', '{"T1_balance + T2_balance": null}', '{"T1_balance + T2_balance": null}', '{"T1_balance + T2_balance": null}']
+mismatch between MySQL and target
+
+--------------------------20-----------------
+schema:['balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T3.balance LIMIT 1]-----------------
+convert time:6.767931 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "checking" } }, { "$unwind": "$checking" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$project": { "checking_balance": "$checking.balance", "name": 1, "_id": 0 } }, { "$sort": { "savings_balance": 1 } }, { "$limit": 1 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "checking" } }, { "$unwind": "$checking" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$project": { "checking_balance": "$checking.balance", "name": 1, "_id": 0 } }, { "$sort": { "savings_balance": 1 } }, { "$limit": 1 } ])
+result of mongodb: ['{"name": "Brown", "checking_balance": 10000.0}']
+mysql res: ['{"balance": 7000.0, "name": "Weeks"}']
+target res: ['{"balance": null, "name": "Brown"}']
+mismatch between MySQL and target
+
+--------------------------21-----------------
+schema:['balance', 'balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid]-----------------
+convert time:8.315913 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T2_balance": "$T2.balance", "T3_balance": "$T3.balance", "name": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T2_balance": "$T2.balance", "T3_balance": "$T3.balance", "name": 1, "_id": 0 } } ])
+result of mongodb: ['{"name": "Brown", "T2_balance": 10000.0, "T3_balance": 200000.0}', '{"name": "Wang", "T2_balance": 2000.0, "T3_balance": 1000000000.0}', '{"name": "O\'mahony", "T2_balance": 3000.0, "T3_balance": 230000.0}', '{"name": "Weeks", "T2_balance": 7000.0, "T3_balance": 60.0}', '{"name": "Granger", "T2_balance": 10000.0, "T3_balance": 80000.0}', '{"name": "Porter", "T2_balance": 77.0, "T3_balance": 240.0}']
+mysql res: ['{"balance": 10000.0, "name": "Brown"}', '{"balance": 2000.0, "name": "Wang"}', '{"balance": 3000.0, "name": "O\'mahony"}', '{"balance": 7000.0, "name": "Weeks"}', '{"balance": 10000.0, "name": "Granger"}', '{"balance": 77.0, "name": "Porter"}']
+target res: ['{"balance": null, "name": "Brown"}', '{"balance": null, "name": "Wang"}', '{"balance": null, "name": "O\'mahony"}', '{"balance": null, "name": "Weeks"}', '{"balance": null, "name": "Granger"}', '{"balance": null, "name": "Porter"}']
+mismatch between MySQL and target
+
+--------------------------22-----------------
+schema:['balance', 'balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance + T3.balance DESC]-----------------
+convert time:10.62217 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T2_balance": "$T2.balance", "T3_balance": "$T3.balance", "name": 1, "_id": 0 } }, { "$sort": { "$add": ["$T2.balance", "$T3.balance"]: -1 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T2_balance": "$T2.balance", "T3_balance": "$T3.balance", "name": 1, "_id": 0 } }, { "$sort": { "$add": ["$T2.balance", "$T3.balance"]: -1 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T2.balance  >  T3.balance]-----------------
+convert time:10.258327 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T2_balance": { "$gt": "$T3_balance" } } }, { "$project": { "name": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T2_balance": { "$gt": "$T3_balance" } } }, { "$project": { "name": 1, "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"name": "Weeks"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------24-----------------
+schema:['name', 'T3_balance + T2_balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T3.balance + T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T3.balance  <  T2.balance]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 18, column 179
+convert time:9.639072 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T3_balance": { "$lt": "$T2_balance" } } }, { "$project": { "name": 1, "total_balance": { "$add": ["$T3_balance", "$T2_balance"] }, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "checking", "localField": "custid", "foreignField": "custid", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T3_balance": { "$lt": "$T2_balance" } } }, { "$project": { "name": 1, "total_balance": { "$add": ["$T3_balance", "$T2_balance"] }, "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"name": "Weeks", "T3_balance + T2_balance": 7060.0}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------25-----------------
+schema:['name', 'balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T2.balance FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid ORDER BY T2.balance DESC LIMIT 3]-----------------
+convert time:8.594449 s
+---------------------------Execute Target Query:db.accounts.aggregate([ { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$project": { "name": 1, "savings_balance": "$savings.balance", "_id": 0 } }, { "$sort": { "savings_balance": -1 } }, { "$limit": 3 } ])-----------------
+here we are in executor, and the query is:  db.accounts.aggregate([ { "$lookup": { "from": "savings", "localField": "custid", "foreignField": "custid", "as": "savings" } }, { "$unwind": "$savings" }, { "$project": { "name": 1, "savings_balance": "$savings.balance", "_id": 0 } }, { "$sort": { "savings_balance": -1 } }, { "$limit": 3 } ])
+result of mongodb: ['{"name": "Wang", "savings_balance": 1000000000.0}', '{"name": "O\'mahony", "savings_balance": 230000.0}', '{"name": "Brown", "savings_balance": 200000.0}']
+mysql res: ['{"name": "Wang", "balance": 1000000000.0}', '{"name": "O\'mahony", "balance": 230000.0}', '{"name": "Brown", "balance": 200000.0}']
+target res: ['{"name": "Wang", "balance": null}', '{"name": "O\'mahony", "balance": null}', '{"name": "Brown", "balance": null}']
+mismatch between MySQL and target
+success_query_count: 4
+valid_count: 25
+accuracy: 0.16

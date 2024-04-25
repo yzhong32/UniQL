@@ -16,7 +16,7 @@ class QueryConverter:
         self.kernel.add_service(
             OpenAIChatCompletion(
                 service_id=service_id,
-                ai_model_id=os.getenv('GPT_VERSION'),
+                ai_model_id="gpt-3.5-turbo",
                 api_key=api_key,
                 org_id=org_id
             )
@@ -34,6 +34,7 @@ class QueryConverter:
 
     async def convert_with_knowledge(self, sql_query, target_query_type, knowledge, examples, MySQL_schema, target_db_schema):
         # Invoke the mongodb function from the plugin
+        print("target_db_schema:", target_db_schema)
         result = await self.kernel.invoke(self.translateFunctions[target_query_type], sk.KernelArguments(sql=sql_query, knowledge=knowledge, examples=examples, MySQL_schema=MySQL_schema, target_db_schema=target_db_schema))
         return result
 

@@ -1,0 +1,268 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM scientists]-----------------
+convert time:5.600095 s
+---------------------------Execute Target Query:db.scientists.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])-----------------
+here we are in executor, and the query is:  db.scientists.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])
+result of mongodb: ['{"_id": null, "count": 12}']
+mysql res: ['{"count_*": 12}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['sum_hours']
+---------------------------Execute SQL Query:[SELECT sum(hours) FROM projects]-----------------
+convert time:1.841228 s
+---------------------------Execute Target Query:db.projects.aggregate([{ "$group": { "_id": None, "sum_hours": { "$sum": "$hours" } } }])-----------------
+here we are in executor, and the query is:  db.projects.aggregate([{ "$group": { "_id": None, "sum_hours": { "$sum": "$hours" } } }])
+result of mongodb: ['{"_id": null, "sum_hours": 20183}']
+mysql res: ['{"sum_hours": 20183}']
+target res: ['{"sum_hours": 20183}']
+translate SELECT sum(hours) FROM projects success
+
+--------------------------3-----------------
+schema:['count_DISTINCT scientist']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT scientist) FROM assignedto]-----------------
+convert time:4.49694 s
+---------------------------Execute Target Query:db.assignedto.aggregate([{ "$group": { "_id": "$scientist" } }, { "$count": "count_scientist" }])-----------------
+here we are in executor, and the query is:  db.assignedto.aggregate([{ "$group": { "_id": "$scientist" } }, { "$count": "count_scientist" }])
+result of mongodb: ['{"count_scientist": 12}']
+mysql res: ['{"count_DISTINCT scientist": 12}']
+target res: ['{"count_DISTINCT scientist": null}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['count_DISTINCT name']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT name) FROM projects]-----------------
+convert time:3.147743 s
+---------------------------Execute Target Query:db.projects.aggregate([{ "$group": { "_id": "$name" } }, { "$count": "count_name" }])-----------------
+here we are in executor, and the query is:  db.projects.aggregate([{ "$group": { "_id": "$name" } }, { "$count": "count_name" }])
+result of mongodb: ['{"count_name": 14}']
+mysql res: ['{"count_DISTINCT name": 14}']
+target res: ['{"count_DISTINCT name": null}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['avg_hours']
+---------------------------Execute SQL Query:[SELECT avg(hours) FROM projects]-----------------
+convert time:1.598323 s
+---------------------------Execute Target Query:db.projects.aggregate([{ "$group": { "_id": None, "avg_hours": { "$avg": "$hours" } } }])-----------------
+here we are in executor, and the query is:  db.projects.aggregate([{ "$group": { "_id": None, "avg_hours": { "$avg": "$hours" } } }])
+result of mongodb: ['{"_id": null, "avg_hours": 1441.642857142857}']
+mysql res: ['{"avg_hours": 1441.6429}']
+target res: ['{"avg_hours": 1441.642857142857}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects ORDER BY hours DESC LIMIT 1]-----------------
+convert time:1.730579 s
+---------------------------Execute Target Query:db.projects.find({}, { "name": 1, "_id": 0 }).sort({ "hours": -1 }).limit(1)-----------------
+here we are in executor, and the query is:  db.projects.find({}, { "name": 1, "_id": 0 }).sort({ "hours": -1 }).limit(1)
+result of mongodb: ['{"name": "A Magnetic Primer Designer"}']
+mysql res: ['{"name": "A Magnetic Primer Designer"}']
+target res: ['{"name": "A Magnetic Primer Designer"}']
+translate SELECT name FROM projects ORDER BY hours DESC LIMIT 1 success
+
+--------------------------7-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE hours  >  (SELECT avg(hours) FROM projects)]-----------------
+convert time:8.243135 s
+---------------------------Execute Target Query:db.projects.aggregate([ { "$group": { "_id": None, "avg_hours": { "$avg": "$hours" } } }, { "$lookup": { "from": "projects", "let": { "avg_hours": "$avg_hours" }, "pipeline": [ { "$match": { "$expr": { "$gt": [ "$hours", "$$avg_hours" ] } } }, { "$project": { "name": 1, "_id": 0 } } ], "as": "projects_above_avg" } }, { "$unwind": "$projects_above_avg" }, { "$replaceRoot": { "newRoot": "$projects_above_avg" } } ])-----------------
+here we are in executor, and the query is:  db.projects.aggregate([ { "$group": { "_id": None, "avg_hours": { "$avg": "$hours" } } }, { "$lookup": { "from": "projects", "let": { "avg_hours": "$avg_hours" }, "pipeline": [ { "$match": { "$expr": { "$gt": [ "$hours", "$$avg_hours" ] } } }, { "$project": { "name": 1, "_id": 0 } } ], "as": "projects_above_avg" } }, { "$unwind": "$projects_above_avg" }, { "$replaceRoot": { "newRoot": "$projects_above_avg" } } ])
+result of mongodb: ['{"name": "Build Your Own Telescope"}', '{"name": "A Magnetic Primer Designer"}']
+mysql res: ['{"name": "Build Your Own Telescope"}', '{"name": "A Magnetic Primer Designer"}']
+target res: ['{"name": "Build Your Own Telescope"}', '{"name": "A Magnetic Primer Designer"}']
+translate SELECT name FROM projects WHERE hours  >  (SELECT avg(hours) FROM projects) success
+
+--------------------------8-----------------
+schema:['name', 'hours']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.hours FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T2.project ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:10.223015 s
+---------------------------Execute Target Query:db.projects.aggregate([ { "$lookup": { "from": "assignedto", "localField": "code", "foreignField": "project", "as": "assignedto" } }, { "$unwind": "$assignedto" }, { "$group": { "_id": "$assignedto.project", "name": { "$first": "name" }, "hours": { "$first": "hours" }, "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "name": 1, "hours": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.projects.aggregate([ { "$lookup": { "from": "assignedto", "localField": "code", "foreignField": "project", "as": "assignedto" } }, { "$unwind": "$assignedto" }, { "$group": { "_id": "$assignedto.project", "name": { "$first": "name" }, "hours": { "$first": "hours" }, "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "name": 1, "hours": 1, "_id": 0 } } ])
+result of mongodb: ['{"name": "name", "hours": "hours"}']
+mysql res: ['{"name": "Build Your Own Telescope", "hours": 6546}']
+target res: ['{"name": "name", "hours": "hours"}']
+mismatch between MySQL and target
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T3.name LIKE '%Smith%']-----------------
+convert time:5.713275 s
+---------------------------Execute Target Query:db.assignedto.aggregate([{"$lookup":{"from":"projects","localField":"project","foreignField":"code","as":"T2"}},{"$lookup":{"from":"scientists","localField":"scientist","foreignField":"ssn","as":"T3"}},{"$match":{"T3.name":{"$regex":"Smith"}}},{"$project":{"T2_name":"$T2.name","_id":0}}])-----------------
+here we are in executor, and the query is:  db.assignedto.aggregate([{"$lookup":{"from":"projects","localField":"project","foreignField":"code","as":"T2"}},{"$lookup":{"from":"scientists","localField":"scientist","foreignField":"ssn","as":"T3"}},{"$match":{"T3.name":{"$regex":"Smith"}}},{"$project":{"T2_name":"$T2.name","_id":0}}])
+result of mongodb: ['{"T2_name": ["Build Your Own Telescope"]}', '{"T2_name": ["Build Your Own Telescope"]}']
+mysql res: ['{"name": "Build Your Own Telescope"}', '{"name": "Build Your Own Telescope"}', '{"name": "Aerodynamics and Gas Mileage"}']
+target res: ['{"name": null}', '{"name": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['sum_T2_hours']
+---------------------------Execute SQL Query:[SELECT sum(T2.hours) FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T3.name  =  'Michael Rogers' OR T3.name  =  'Carol Smith']-----------------
+convert time:10.577987 s
+---------------------------Execute Target Query:db.assignedto.aggregate([ { "$lookup": { "from": "projects", "localField": "project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "$or": [ { "T3_name": "Michael Rogers" }, { "T3_name": "Carol Smith" } ] } }, { "$group": { "_id": None, "sum_hours": { "$sum": "$T2_hours" } } } ])-----------------
+here we are in executor, and the query is:  db.assignedto.aggregate([ { "$lookup": { "from": "projects", "localField": "project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "$or": [ { "T3_name": "Michael Rogers" }, { "T3_name": "Carol Smith" } ] } }, { "$group": { "_id": None, "sum_hours": { "$sum": "$T2_hours" } } } ])
+result of mongodb: []
+mysql res: ['{"sum_T2_hours": 6702}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE hours BETWEEN 100 AND 300]-----------------
+convert time:2.2241 s
+---------------------------Execute Target Query:db.projects.find({ "hours": { "$gte": 100, "$lte": 300 } },{ "name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.projects.find({ "hours": { "$gte": 100, "$lte": 300 } },{ "name": 1, "_id": 0 })
+result of mongodb: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+mysql res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+target res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+translate SELECT name FROM projects WHERE hours BETWEEN 100 AND 300 success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'Matter of Time' INTERSECT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'A Puzzling Parallax']-----------------
+convert time:15.235507 s
+---------------------------Execute Target Query:db.assignedto.aggregate([ { "$lookup": { "from": "projects", "localField": "project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T2_name": "Matter of Time" } }, { "$project": { "T3_name": 1, "_id": 0 } }, { "$facet": { "names1": [ { "$project": { "T3_name": 1 } } ], "names2": [ { "$match": { "T2_name": "A Puzzling Parallax" } }, { "$project": { "T3_name": 1 } } ] } }, { "$project": { "intersectedNames": { "$setIntersection": [ "$names1.T3_name", "$names2.T3_name" ] } } } ])-----------------
+here we are in executor, and the query is:  db.assignedto.aggregate([ { "$lookup": { "from": "projects", "localField": "project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T2_name": "Matter of Time" } }, { "$project": { "T3_name": 1, "_id": 0 } }, { "$facet": { "names1": [ { "$project": { "T3_name": 1 } } ], "names2": [ { "$match": { "T2_name": "A Puzzling Parallax" } }, { "$project": { "T3_name": 1 } } ] } }, { "$project": { "intersectedNames": { "$setIntersection": [ "$names1.T3_name", "$names2.T3_name" ] } } } ])
+result of mongodb: ['{"intersectedNames": []}']
+mysql res: []
+target res: ['{"name": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists ORDER BY name]-----------------
+convert time:2.077515 s
+---------------------------Execute Target Query:db.scientists.find({}, { "name": 1, "_id": 0 }).sort({ "name": 1 })-----------------
+here we are in executor, and the query is:  db.scientists.find({}, { "name": 1, "_id": 0 }).sort({ "name": 1 })
+result of mongodb: ['{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "Elizabeth Doe"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "John Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Mary-Anne Foster"}', '{"name": "Michael Rogers"}', '{"name": "Zacary Efron"}']
+mysql res: ['{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "Elizabeth Doe"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "John Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Mary-Anne Foster"}', '{"name": "Michael Rogers"}', '{"name": "Zacary Efron"}']
+target res: ['{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "Elizabeth Doe"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "John Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Mary-Anne Foster"}', '{"name": "Michael Rogers"}', '{"name": "Zacary Efron"}']
+translate SELECT name FROM scientists ORDER BY name success
+
+--------------------------14-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T1.name]-----------------
+convert time:11.489655 s
+---------------------------Execute Target Query:db.projects.aggregate([{"$lookup":{"from":"assignedto","localField":"code","foreignField":"project","as":"T2"}},{"$unwind":"$T2"},{"$group":{"_id":"$name","count":{"$sum":1}}},{"$project":{"name":"$_id","count":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.projects.aggregate([{"$lookup":{"from":"assignedto","localField":"code","foreignField":"project","as":"T2"}},{"$unwind":"$T2"},{"$group":{"_id":"$name","count":{"$sum":1}}},{"$project":{"name":"$_id","count":1,"_id":0}}])
+result of mongodb: ['{"count": 1, "name": "Aerodynamics and Ice Hockey"}', '{"count": 1, "name": "A Puzzling Parallax"}', '{"count": 1, "name": "Winds: Studying Bernoullis Principle"}', '{"count": 1, "name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"count": 2, "name": "A Silver-Cleaning Battery"}', '{"count": 2, "name": "Aerodynamics and Gas Mileage"}', '{"count": 1, "name": "A Matter of Time"}', '{"count": 3, "name": "Build Your Own Telescope"}']
+mysql res: ['{"count_*": 1, "name": "Winds: Studying Bernoullis Principle"}', '{"count_*": 2, "name": "Aerodynamics and Gas Mileage"}', '{"count_*": 1, "name": "Aerodynamics and Ice Hockey"}', '{"count_*": 1, "name": "A Matter of Time"}', '{"count_*": 1, "name": "A Puzzling Parallax"}', '{"count_*": 3, "name": "Build Your Own Telescope"}', '{"count_*": 1, "name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"count_*": 2, "name": "A Silver-Cleaning Battery"}']
+target res: ['{"count_*": null, "name": "Aerodynamics and Ice Hockey"}', '{"count_*": null, "name": "A Puzzling Parallax"}', '{"count_*": null, "name": "Winds: Studying Bernoullis Principle"}', '{"count_*": null, "name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"count_*": null, "name": "A Silver-Cleaning Battery"}', '{"count_*": null, "name": "Aerodynamics and Gas Mileage"}', '{"count_*": null, "name": "A Matter of Time"}', '{"count_*": null, "name": "Build Your Own Telescope"}']
+mismatch between MySQL and target
+
+--------------------------15-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project WHERE T1.hours  >  300 GROUP BY T1.name]-----------------
+convert time:10.183716 s
+---------------------------Execute Target Query:db.projects.aggregate([ { "$lookup": { "from": "assignedto", "localField": "code", "foreignField": "project", "as": "assignedto" } }, { "$unwind": "$assignedto" }, { "$match": { "hours": { "$gt": 300 } } }, { "$group": { "_id": "$name", "count": { "$sum": 1 } } }, { "$project": { "name": "$_id", "count": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.projects.aggregate([ { "$lookup": { "from": "assignedto", "localField": "code", "foreignField": "project", "as": "assignedto" } }, { "$unwind": "$assignedto" }, { "$match": { "hours": { "$gt": 300 } } }, { "$group": { "_id": "$name", "count": { "$sum": 1 } } }, { "$project": { "name": "$_id", "count": 1, "_id": 0 } } ])
+result of mongodb: ['{"count": 3, "name": "Build Your Own Telescope"}', '{"count": 1, "name": "Aerodynamics and Ice Hockey"}', '{"count": 2, "name": "A Silver-Cleaning Battery"}', '{"count": 1, "name": "Juicy: Extracting Apple Juice with Pectinase"}']
+mysql res: ['{"count_*": 1, "name": "Aerodynamics and Ice Hockey"}', '{"count_*": 3, "name": "Build Your Own Telescope"}', '{"count_*": 1, "name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"count_*": 2, "name": "A Silver-Cleaning Battery"}']
+target res: ['{"count_*": null, "name": "Build Your Own Telescope"}', '{"count_*": null, "name": "Aerodynamics and Ice Hockey"}', '{"count_*": null, "name": "A Silver-Cleaning Battery"}', '{"count_*": null, "name": "Juicy: Extracting Apple Juice with Pectinase"}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM scientists AS T1 JOIN assignedto AS T2 ON T1.ssn  =  T2.scientist GROUP BY T1.name]-----------------
+convert time:7.911637 s
+---------------------------Execute Target Query:db.scientists.aggregate([{"$lookup":{"from":"assignedto","localField":"ssn","foreignField":"scientist","as":"assignedto"}},{"$unwind":"$assignedto"},{"$group":{"_id":"$name","count":{"$sum":1}}},{"$project":{"name":"$_id","count":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.scientists.aggregate([{"$lookup":{"from":"assignedto","localField":"ssn","foreignField":"scientist","as":"assignedto"}},{"$unwind":"$assignedto"},{"$group":{"_id":"$name","count":{"$sum":1}}},{"$project":{"name":"$_id","count":1,"_id":0}}])
+result of mongodb: ['{"count": 1, "name": "Carol Smith"}', '{"count": 1, "name": "Anand Manikutty"}', '{"count": 1, "name": "John Doe"}', '{"count": 1, "name": "David Smith"}', '{"count": 1, "name": "Zacary Efron"}', '{"count": 1, "name": "Kumar Swamy"}', '{"count": 1, "name": "Elizabeth Doe"}', '{"count": 1, "name": "George ODonnell"}', '{"count": 1, "name": "Mary-Anne Foster"}', '{"count": 1, "name": "Joe Stevens"}', '{"count": 1, "name": "Eric Goldsmith"}', '{"count": 1, "name": "Michael Rogers"}']
+mysql res: ['{"count_*": 1, "name": "Michael Rogers"}', '{"count_*": 1, "name": "Anand Manikutty"}', '{"count_*": 1, "name": "Carol Smith"}', '{"count_*": 1, "name": "Joe Stevens"}', '{"count_*": 1, "name": "Mary-Anne Foster"}', '{"count_*": 1, "name": "George ODonnell"}', '{"count_*": 1, "name": "John Doe"}', '{"count_*": 1, "name": "David Smith"}', '{"count_*": 1, "name": "Zacary Efron"}', '{"count_*": 1, "name": "Eric Goldsmith"}', '{"count_*": 1, "name": "Elizabeth Doe"}', '{"count_*": 1, "name": "Kumar Swamy"}']
+target res: ['{"count_*": null, "name": "Carol Smith"}', '{"count_*": null, "name": "Anand Manikutty"}', '{"count_*": null, "name": "John Doe"}', '{"count_*": null, "name": "David Smith"}', '{"count_*": null, "name": "Zacary Efron"}', '{"count_*": null, "name": "Kumar Swamy"}', '{"count_*": null, "name": "Elizabeth Doe"}', '{"count_*": null, "name": "George ODonnell"}', '{"count_*": null, "name": "Mary-Anne Foster"}', '{"count_*": null, "name": "Joe Stevens"}', '{"count_*": null, "name": "Eric Goldsmith"}', '{"count_*": null, "name": "Michael Rogers"}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['ssn', 'name']
+---------------------------Execute SQL Query:[SELECT T3.ssn ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects)]-----------------
+convert time:10.873445 s
+---------------------------Execute Target Query:db.assignedto.aggregate([ { "$lookup": { "from": "projects", "localField": "project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$group": { "_id": None, "max_hours": { "$max": "$T2_hours" } } }, { "$match": { "T2_hours": { "$eq": "$max_hours" } } }, { "$project": { "ssn": "$T3_ssn", "name": "$T3_name", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.assignedto.aggregate([ { "$lookup": { "from": "projects", "localField": "project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$group": { "_id": None, "max_hours": { "$max": "$T2_hours" } } }, { "$match": { "T2_hours": { "$eq": "$max_hours" } } }, { "$project": { "ssn": "$T3_ssn", "name": "$T3_name", "_id": 0 } } ])
+result of mongodb: []
+mysql res: []
+target res: []
+translate SELECT T3.ssn ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects) success
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM assignedto AS T1 JOIN scientists AS T2 ON T1.scientist  =  T2.ssn]-----------------
+convert time:12.60957 s
+---------------------------Execute Target Query:db.assignedto.aggregate([ { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "scientist_details" } }, { "$unwind": "$scientist_details" }, { "$project": { "name": "$scientist_details.name", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.assignedto.aggregate([ { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "scientist_details" } }, { "$unwind": "$scientist_details" }, { "$project": { "name": "$scientist_details.name", "_id": 0 } } ])
+result of mongodb: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "David Smith"}', '{"name": "Mary-Anne Foster"}', '{"name": "John Doe"}', '{"name": "Zacary Efron"}']
+mysql res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "David Smith"}', '{"name": "Mary-Anne Foster"}', '{"name": "John Doe"}', '{"name": "Zacary Efron"}']
+target res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "David Smith"}', '{"name": "Mary-Anne Foster"}', '{"name": "John Doe"}', '{"name": "Zacary Efron"}']
+translate SELECT T2.name FROM assignedto AS T1 JOIN scientists AS T2 ON T1.scientist  =  T2.ssn success
+
+--------------------------19-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE code NOT IN (SELECT project FROM assignedto)]-----------------
+convert time:3.285512 s
+---------------------------Execute Target Query:db.projects.find({ "code": { "$nin": db.assignedto.distinct("project") } }, { "name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.projects.find({ "code": { "$nin": db.assignedto.distinct("project") } }, { "name": 1, "_id": 0 })
+result of mongodb: ['{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics of a Football"}', '{"name": "Aerodynamics of Air Hockey"}', '{"name": "A Magnetic Primer Designer"}', '{"name": "Bacterial Transformation Efficiency"}', '{"name": "A Soluble Separation Solution"}']
+mysql res: ['{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics of a Football"}', '{"name": "Aerodynamics of Air Hockey"}', '{"name": "A Magnetic Primer Designer"}', '{"name": "Bacterial Transformation Efficiency"}', '{"name": "A Soluble Separation Solution"}']
+target res: ['{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics of a Football"}', '{"name": "Aerodynamics of Air Hockey"}', '{"name": "A Magnetic Primer Designer"}', '{"name": "Bacterial Transformation Efficiency"}', '{"name": "A Soluble Separation Solution"}']
+translate SELECT name FROM projects WHERE code NOT IN (SELECT project FROM assignedto) success
+
+--------------------------20-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto)]-----------------
+convert time:2.422323 s
+---------------------------Execute Target Query:db.scientists.find({ "ssn": { "$nin": db.assignedto.distinct("scientist") } }, { "name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.scientists.find({ "ssn": { "$nin": db.assignedto.distinct("scientist") } }, { "name": 1, "_id": 0 })
+result of mongodb: []
+mysql res: []
+target res: []
+translate SELECT name FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto) success
+
+--------------------------21-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto)]-----------------
+convert time:4.643687 s
+---------------------------Execute Target Query:db.scientists.aggregate([ { "$lookup": { "from": "assignedto", "localField": "ssn", "foreignField": "scientist", "as": "assigned" } }, { "$match": { "assigned": { "$size": 0 } } }, { "$count": "count" } ])-----------------
+here we are in executor, and the query is:  db.scientists.aggregate([ { "$lookup": { "from": "assignedto", "localField": "ssn", "foreignField": "scientist", "as": "assigned" } }, { "$match": { "assigned": { "$size": 0 } } }, { "$count": "count" } ])
+result of mongodb: []
+mysql res: ['{"count_*": 0}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------22-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists EXCEPT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects)]-----------------
+convert time:31.082571 s
+---------------------------Execute Target Query:db.scientists.aggregate([ { "$lookup": { "from": "assignedto", "localField": "ssn", "foreignField": "scientist", "as": "T1" } }, { "$unwind": "$T1" }, { "$lookup": { "from": "projects", "localField": "T1.project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$group": { "_id": None, "max_hours": { "$max": "$T2_hours" } } }, { "$lookup": { "from": "projects", "localField": "max_hours", "foreignField": "hours", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "assignedto", "localField": "T2.code", "foreignField": "project", "as": "T1" } }, { "$unwind": "$T1" }, { "$lookup": { "from": "scientists", "localField": "T1.scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T3_name": 1 } }, { "$group": { "_id": None, "names": { "$addToSet": "$T3_name" } } }, { "$lookup": { "from": "scientists", "pipeline": [], "as": "all_names" } }, { "$project": { "result": { "$setDifference": [ "$all_names.name", "$names" ] } } }, { "$unwind": "$result" }, { "$project": { "name": "$result", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.scientists.aggregate([ { "$lookup": { "from": "assignedto", "localField": "ssn", "foreignField": "scientist", "as": "T1" } }, { "$unwind": "$T1" }, { "$lookup": { "from": "projects", "localField": "T1.project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$group": { "_id": None, "max_hours": { "$max": "$T2_hours" } } }, { "$lookup": { "from": "projects", "localField": "max_hours", "foreignField": "hours", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "assignedto", "localField": "T2.code", "foreignField": "project", "as": "T1" } }, { "$unwind": "$T1" }, { "$lookup": { "from": "scientists", "localField": "T1.scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T3_name": 1 } }, { "$group": { "_id": None, "names": { "$addToSet": "$T3_name" } } }, { "$lookup": { "from": "scientists", "pipeline": [], "as": "all_names" } }, { "$project": { "result": { "$setDifference": [ "$all_names.name", "$names" ] } } }, { "$unwind": "$result" }, { "$project": { "name": "$result", "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "Mary-Anne Foster"}', '{"name": "George ODonnell"}', '{"name": "John Doe"}', '{"name": "David Smith"}', '{"name": "Zacary Efron"}', '{"name": "Eric Goldsmith"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------23-----------------
+schema:['name', 'name', 'hours']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T3.name ,  T3.hours FROM scientists AS T1 JOIN assignedto AS T2 ON T1.ssn = T2.scientist JOIN projects AS T3 ON T2.project = T3.code ORDER BY T3.name ,  T1.name]-----------------
+convert time:11.620327 s
+---------------------------Execute Target Query:db.scientists.aggregate([ { "$lookup": { "from": "assignedto", "localField": "ssn", "foreignField": "scientist", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "projects", "localField": "T2.project", "foreignField": "code", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T1_name": "$name", "T3_name": "$T3.name", "T3_hours": "$T3.hours", "_id": 0 } }, { "$sort": { "T3_name": 1, "T1_name": 1 } } ])-----------------
+here we are in executor, and the query is:  db.scientists.aggregate([ { "$lookup": { "from": "assignedto", "localField": "ssn", "foreignField": "scientist", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "projects", "localField": "T2.project", "foreignField": "code", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T1_name": "$name", "T3_name": "$T3.name", "T3_hours": "$T3.hours", "_id": 0 } }, { "$sort": { "T3_name": 1, "T1_name": 1 } } ])
+result of mongodb: ['{"T1_name": "Elizabeth Doe", "T3_name": "A Matter of Time", "T3_hours": 112}', '{"T1_name": "Kumar Swamy", "T3_name": "A Puzzling Parallax", "T3_hours": 299}', '{"T1_name": "John Doe", "T3_name": "A Silver-Cleaning Battery", "T3_hours": 545}', '{"T1_name": "Zacary Efron", "T3_name": "A Silver-Cleaning Battery", "T3_hours": 545}', '{"T1_name": "Anand Manikutty", "T3_name": "Aerodynamics and Gas Mileage", "T3_hours": 256}', '{"T1_name": "Eric Goldsmith", "T3_name": "Aerodynamics and Gas Mileage", "T3_hours": 256}', '{"T1_name": "George ODonnell", "T3_name": "Aerodynamics and Ice Hockey", "T3_hours": 789}', '{"T1_name": "Carol Smith", "T3_name": "Build Your Own Telescope", "T3_hours": 6546}', '{"T1_name": "David Smith", "T3_name": "Build Your Own Telescope", "T3_hours": 6546}', '{"T1_name": "Joe Stevens", "T3_name": "Build Your Own Telescope", "T3_hours": 6546}', '{"T1_name": "Mary-Anne Foster", "T3_name": "Juicy: Extracting Apple Juice with Pectinase", "T3_hours": 321}', '{"T1_name": "Michael Rogers", "T3_name": "Winds: Studying Bernoullis Principle", "T3_hours": 156}']
+mysql res: ['{"name": "Elizabeth Doe", "hours": 112}', '{"name": "Kumar Swamy", "hours": 299}', '{"name": "John Doe", "hours": 545}', '{"name": "Zacary Efron", "hours": 545}', '{"name": "Anand Manikutty", "hours": 256}', '{"name": "Eric Goldsmith", "hours": 256}', '{"name": "George ODonnell", "hours": 789}', '{"name": "Carol Smith", "hours": 6546}', '{"name": "David Smith", "hours": 6546}', '{"name": "Joe Stevens", "hours": 6546}', '{"name": "Mary-Anne Foster", "hours": 321}', '{"name": "Michael Rogers", "hours": 156}']
+target res: ['{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}', '{"name": null, "hours": null}']
+mismatch between MySQL and target
+
+--------------------------24-----------------
+schema:['name', 'name']
+---------------------------Execute SQL Query:[SELECT T2.name ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT min(hours) FROM projects)]-----------------
+convert time:12.508852 s
+---------------------------Execute Target Query:db.assignedto.aggregate([ { "$lookup": { "from": "projects", "localField": "project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T2_hours": { "$eq": { "$min": "$T2.hours" } } } }, { "$project": { "T2_name": "$T2.name", "T3_name": "$T3.name", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.assignedto.aggregate([ { "$lookup": { "from": "projects", "localField": "project", "foreignField": "code", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "scientists", "localField": "scientist", "foreignField": "ssn", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T2_hours": { "$eq": { "$min": "$T2.hours" } } } }, { "$project": { "T2_name": "$T2.name", "T3_name": "$T3.name", "_id": 0 } } ])
+result of mongodb: []
+mysql res: []
+target res: []
+translate SELECT T2.name ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT min(hours) FROM projects) success
+success_query_count: 10
+valid_count: 24
+accuracy: 0.4166666666666667

@@ -1,0 +1,1136 @@
+--------
+
+--------------------------1-----------------
+schema:['sum_T2_balance']
+---------------------------Execute SQL Query:[SELECT sum(T2.balance) FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T1.name != 'Brown']-----------------
+target_db_schema: ['balance', 'custid', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:6.534058 s
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": {
+        "match_all": {}
+      },
+      "filter": {
+        "script": {
+          "script": {
+            "source": "doc['name'].value != 'Brown'"
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "aggs": {
+    "total_balance": {
+      "sum": {
+        "field": "balance"
+      }
+    }
+  },
+  "inner_index": ["accounts", "savings"],
+  "code": {
+    "total_balance": "response['aggregations']['total_balance']['value']"
+  }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': {'match_all': {}}, 'filter': {'script': {'script': {'source': "doc['name'].value != 'Brown'"}}}}}, 'size': 0, 'aggs': {'total_balance': {'sum': {'field': 'balance'}}}, 'code': {'total_balance': "response['aggregations']['total_balance']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 14, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_balance': {'value': 0.0}}}
+
+exec_result_dict: {'total_balance': 0.0}
+mysql res: ['{"sum_T2_balance": 1000310300.0}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM accounts]-----------------
+target_db_schema: ['custid', 'name']
+convert time:5.072491 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_accounts": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["accounts"],
+    "code": {
+        "total_accounts": "response['aggregations']['total_accounts']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_accounts': {'value_count': {'field': '_index'}}}, 'code': {'total_accounts': "response['aggregations']['total_accounts']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_accounts': {'value': 7}}}
+
+exec_result_dict: {'total_accounts': 7}
+mysql res: ['{"count_*": 7}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------3-----------------
+schema:['sum_balance']
+---------------------------Execute SQL Query:[SELECT sum(balance) FROM checking]-----------------
+target_db_schema: ['balance', 'custid']
+convert time:7.844976 s
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "size": 0,
+  "aggs": {
+    "total_balance": {
+      "sum": {
+        "field": "balance"
+      }
+    }
+  },
+  "inner_index": ["checking"],
+  "code": {
+    "total_balance": "response['aggregations']['total_balance']['value']"
+  }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_balance': {'sum': {'field': 'balance'}}}, 'code': {'total_balance': "response['aggregations']['total_balance']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 8, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_balance': {'value': 32084.0}}}
+
+exec_result_dict: {'total_balance': 32084.0}
+mysql res: ['{"sum_balance": 32084.0}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------4-----------------
+schema:['avg_balance']
+---------------------------Execute SQL Query:[SELECT avg(balance) FROM checking]-----------------
+target_db_schema: ['balance', 'custid']
+convert time:5.208374 s
+---------------------------Execute Target Query:{
+    "inner_index": ["checking"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "avg_balance": {
+            "avg": {
+                "field": "balance"
+            }
+        }
+    },
+    "code": {
+        "avg_balance": "response['aggregations']['avg_balance']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'avg_balance': {'avg': {'field': 'balance'}}}, 'code': {'avg_balance': "response['aggregations']['avg_balance']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'avg_balance': {'value': 4583.428571428572}}}
+
+exec_result_dict: {'avg_balance': 4583.428571428572}
+mysql res: ['{"avg_balance": 4583.428571428572}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------5-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM savings WHERE balance  >  (SELECT avg(balance) FROM savings)]-----------------
+target_db_schema: ['balance', 'custid']
+convert time:10.730804 s
+---------------------------Execute Target Query:{
+    "inner_index": ["savings"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "balance": {
+                            "gt": {
+                                "script": {
+                                    "source": "doc['balance'].value > params.avg_balance",
+                                    "params": {
+                                        "avg_balance": {
+                                            "avg": {
+                                                "field": "balance"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "count_balance": {
+            "value_count": {
+                "field": "balance"
+            }
+        }
+    },
+    "code": {
+        "count_balance": "response['aggregations']['count_balance']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'range': {'balance': {'gt': {'script': {'source': "doc['balance'].value > params.avg_balance", 'params': {'avg_balance': {'avg': {'field': 'balance'}}}}}}}}]}}, 'aggs': {'count_balance': {'value_count': {'field': 'balance'}}}, 'code': {'count_balance': "response['aggregations']['count_balance']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[range] query does not support [script]')
+
+--------------------------6-----------------
+schema:['custid', 'name']
+---------------------------Execute SQL Query:[SELECT T1.custid ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT max(balance) FROM checking)]-----------------
+target_db_schema: ['balance', 'custid', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 129, column 119
+convert time:7.97684 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "checking",
+                        "query": {
+                            "bool": {
+                                "filter": [
+                                    {
+                                        "script": {
+                                            "script": "doc['balance'].value < params.max_balance",
+                                            "params": {
+                                                "max_balance": {
+                                                    "max": {
+                                                        "field": "balance"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["custid", "name"],
+    "inner_index": ["accounts", "checking"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'checking', 'query': {'bool': {'filter': [{'script': {'script': "doc['balance'].value < params.max_balance", 'params': {'max_balance': {'max': {'field': 'balance'}}}}}]}}}}]}}, '_source': ['custid', 'name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[script] query does not support [params]')
+
+--------------------------7-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T1.name LIKE '%ee%']-----------------
+target_db_schema: ['balance', 'custid', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:5.910438 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "name": "ee"
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": {
+                            "source": "doc['accounts.custid'].value == doc['checking.custid'].value"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["balance"],
+    "inner_index": ["accounts", "checking"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'name': 'ee'}}], 'filter': [{'script': {'script': {'source': "doc['accounts.custid'].value == doc['checking.custid'].value"}}}]}}, '_source': ['balance'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 6, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"balance": 7000.0}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['balance', 'balance']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T1.name  =  'Brown']-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:9.478259 s
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "accounts.name": "Brown"
+          }
+        }
+      ],
+      "should": [
+        {
+          "has_child": {
+            "type": "checking",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "_source": ["balance"]
+            }
+          }
+        },
+        {
+          "has_child": {
+            "type": "savings",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "_source": ["balance"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": false,
+  "inner_index": ["accounts", "checking", "savings"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'accounts.name': 'Brown'}}], 'should': [{'has_child': {'type': 'checking', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['balance']}}}, {'has_child': {'type': 'savings', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['balance']}}}]}}, '_source': False, 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"balance": 10000.0}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  >  (SELECT avg(balance) FROM checking) INTERSECT SELECT T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT avg(balance) FROM savings)]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 135, column 254
+convert time:21.095172 s
+---------------------------Execute Target Query:{
+    "inner_index": ["accounts", "checking", "savings"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "has_parent": {
+                                                "parent_type": "checking",
+                                                "query": {
+                                                    "range": {
+                                                        "balance": {
+                                                            "gt": {
+                                                                "script": {
+                                                                    "source": "doc['balance'].value > params.avg_balance",
+                                                                    "params": {
+                                                                        "avg_balance": "response['aggregations']['avg_balance_checking']['value']"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "bool": {
+                                    "must": [
+                                        {
+                                            "has_parent": {
+                                                "parent_type": "savings",
+                                                "query": {
+                                                    "range": {
+                                                        "balance": {
+                                                            "lt": {
+                                                                "script": {
+                                                                    "source": "doc['balance'].value < params.avg_balance",
+                                                                    "params": {
+                                                                        "avg_balance": "response['aggregations']['avg_balance_savings']['value']"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "avg_balance_checking": {
+            "avg": {
+                "field": "balance"
+            }
+        },
+        "avg_balance_savings": {
+            "avg": {
+                "field": "balance"
+            }
+        }
+    },
+    "code": {
+        "avg_balance_checking": "response['aggregations']['avg_balance_checking']['value']",
+        "avg_balance_savings": "response['aggregations']['avg_balance_savings']['value']",
+        "name_result": "response['hits']['hits'][]._source['name']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'bool': {'should': [{'bool': {'must': [{'has_parent': {'parent_type': 'checking', 'query': {'range': {'balance': {'gt': {'script': {'source': "doc['balance'].value > params.avg_balance", 'params': {'avg_balance': "response['aggregations']['avg_balance_checking']['value']"}}}}}}}}]}}, {'bool': {'must': [{'has_parent': {'parent_type': 'savings', 'query': {'range': {'balance': {'lt': {'script': {'source': "doc['balance'].value < params.avg_balance", 'params': {'avg_balance': "response['aggregations']['avg_balance_savings']['value']"}}}}}}}}]}}]}}]}}, 'aggs': {'avg_balance_checking': {'avg': {'field': 'balance'}}, 'avg_balance_savings': {'avg': {'field': 'balance'}}}, 'code': {'avg_balance_checking': "response['aggregations']['avg_balance_checking']['value']", 'avg_balance_savings': "response['aggregations']['avg_balance_savings']['value']", 'name_result': "response['hits']['hits'][]._source['name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[range] query does not support [script]')
+
+--------------------------10-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T1.name IN (SELECT T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  >  (SELECT avg(balance) FROM savings))]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:20.094418 s
+---------------------------Execute Target Query:{
+  "inner_index": ["accounts", "checking", "savings"],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "checking",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "has_parent": {
+                      "parent_type": "accounts",
+                      "query": {
+                        "bool": {
+                          "must": [
+                            {
+                              "terms": {
+                                "name": {
+                                  "index": "accounts",
+                                  "type": "savings",
+                                  "id": "custid",
+                                  "path": "name",
+                                  "query": {
+                                    "range": {
+                                      "balance": {
+                                        "gt": {
+                                          "script": {
+                                            "source": "Math.avg(params.balances)",
+                                            "params": {
+                                              "balances": {
+                                                "index": "savings",
+                                                "type": "_doc",
+                                                "id": "custid",
+                                                "path": "balance"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0,
+  "aggs": {
+    "balance": {
+      "terms": {
+        "field": "balance"
+      }
+    }
+  },
+  "code": {
+    "balance_result": "response['aggregations']['balance']['buckets'].map(bucket => bucket.key)"
+  }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'checking', 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'accounts', 'query': {'bool': {'must': [{'terms': {'name': {'index': 'accounts', 'type': 'savings', 'id': 'custid', 'path': 'name', 'query': {'range': {'balance': {'gt': {'script': {'source': 'Math.avg(params.balances)', 'params': {'balances': {'index': 'savings', 'type': '_doc', 'id': 'custid', 'path': 'balance'}}}}}}}}}}]}}}}]}}}}]}}, 'size': 0, 'aggs': {'balance': {'terms': {'field': 'balance'}}}, 'code': {'balance_result': "response['aggregations']['balance']['buckets'].map(bucket => bucket.key)"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:186] [terms_lookup] unknown field [type]')
+
+--------------------------11----------------- #comment: correct
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM accounts ORDER BY name]-----------------
+target_db_schema: ['custid', 'name']
+convert time:4.023967 s
+---------------------------Execute Target Query:{
+    "size": 10000,  
+    "sort": [
+        {"name.keyword": {"order": "asc"}}  # Orders the results by the 'name' field in ascending order
+    ],
+    "_source": ["name"],  # Specifies which fields to retrieve
+    "inner_index": ["accounts"]
+}-----------------
+execute target query error:Expecting ',' delimiter or ']': line 4 column 45 (char 81)
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance + T3.balance LIMIT 1]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:10.272923 s
+---------------------------Execute Target Query:{
+    "size": 1,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "checking",
+                        "query": {
+                            "exists": {
+                                "field": "balance"
+                            }
+                        },
+                        "inner_hits": {}
+                    }
+                },
+                {
+                    "has_child": {
+                        "type": "savings",
+                        "query": {
+                            "exists": {
+                                "field": "balance"
+                            }
+                        },
+                        "inner_hits": {}
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {
+            "_script": {
+                "type": "number",
+                "script": {
+                    "source": "doc['checking.balance'].value + doc['savings.balance'].value"
+                },
+                "order": "desc"
+            }
+        }
+    ],
+    "_source": ["name"],
+    "inner_index": ["accounts", "checking", "savings"]
+}-----------------
+**************************************************
+{'size': 1, 'query': {'bool': {'must': [{'has_child': {'type': 'checking', 'query': {'exists': {'field': 'balance'}}, 'inner_hits': {}}}, {'has_child': {'type': 'savings', 'query': {'exists': {'field': 'balance'}}, 'inner_hits': {}}}]}}, 'sort': [{'_script': {'type': 'number', 'script': {'source': "doc['checking.balance'].value + doc['savings.balance'].value"}, 'order': 'desc'}}], '_source': ['name']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------13-----------------
+schema:['name', 'T2_balance + T3_balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T2.balance + T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T3.balance  >  (SELECT avg(balance) FROM savings)]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:20.272159 s
+---------------------------Execute Target Query:{
+  "inner_index": ["accounts", "checking", "savings"],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "script": {
+            "script": {
+              "source": "doc['savings.balance'].value > savings_avg_balance",
+              "params": {
+                "savings_avg_balance": {
+                  "script": {
+                    "source": "return state.avg",
+                    "lang": "painless",
+                    "params": {
+                      "state": {
+                        "aggs": {
+                          "avg_balance": {
+                            "avg": {
+                              "field": "balance"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "has_parent": {
+            "parent_type": "accounts",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match": {
+                      "accounts.custid": "checking.custid"
+                    }
+                  },
+                  {
+                    "match": {
+                      "accounts.custid": "savings.custid"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "combined_balance": {
+      "scripted_metric": {
+        "init_script": "state.balances = []",
+        "map_script": "state.balances.add(doc['checking.balance'].value + doc['savings.balance'].value)",
+        "combine_script": "double sum = 0; for (t in state.balances) { sum += t } return sum",
+        "reduce_script": "double sum = 0; for (a in states) { sum += a } return sum"
+      }
+    }
+  },
+  "code": {
+    "combined_balance": "response['aggregations']['combined_balance']['value']",
+    "name_result": "response['hits']['hits'].map(hit => hit['_source']['name'])"
+  }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'script': {'script': {'source': "doc['savings.balance'].value > savings_avg_balance", 'params': {'savings_avg_balance': {'script': {'source': 'return state.avg', 'lang': 'painless', 'params': {'state': {'aggs': {'avg_balance': {'avg': {'field': 'balance'}}}}}}}}}}}, {'has_parent': {'parent_type': 'accounts', 'query': {'bool': {'must': [{'match': {'accounts.custid': 'checking.custid'}}, {'match': {'accounts.custid': 'savings.custid'}}]}}}}]}}, 'aggs': {'combined_balance': {'scripted_metric': {'init_script': 'state.balances = []', 'map_script': "state.balances.add(doc['checking.balance'].value + doc['savings.balance'].value)", 'combine_script': 'double sum = 0; for (t in state.balances) { sum += t } return sum', 'reduce_script': 'double sum = 0; for (a in states) { sum += a } return sum'}}}, 'code': {'combined_balance': "response['aggregations']['combined_balance']['value']", 'name_result': "response['hits']['hits'].map(hit => hit['_source']['name'])"}, 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'compile error')
+
+--------------------------14-----------------
+schema:['name', 'balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T3.balance LIMIT 1]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:5.853321 s
+---------------------------Execute Target Query:{
+    "size": 1,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "name"
+                    }
+                },
+                {
+                    "exists": {
+                        "field": "balance"
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {
+            "balance": {
+                "order": "asc"
+            }
+        }
+    ],
+    "_source": ["name", "balance"],
+    "inner_index": ["accounts", "checking", "savings"]
+}-----------------
+**************************************************
+{'size': 1, 'query': {'bool': {'must': [{'exists': {'field': 'name'}}, {'exists': {'field': 'balance'}}]}}, 'sort': [{'balance': {'order': 'asc'}}], '_source': ['name', 'balance']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'No mapping found for [balance] in order to sort on')
+
+--------------------------15-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid GROUP BY T1.name]-----------------
+target_db_schema: ['balance', 'custid', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:11.918709 s
+---------------------------Execute Target Query:{
+    "inner_index": ["accounts", "checking"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "checking",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "_source": ["custid"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_name": {
+            "terms": {
+                "field": "name",
+                "size": 10
+            },
+            "aggs": {
+                "count_all": {
+                    "value_count": {
+                        "field": "_index"
+                    }
+                }
+            }
+        }
+    },
+    "size": 0,
+    "code": {
+        "count": "response['aggregations']['group_by_name']['buckets'][0]['count_all']['value']",
+        "name_result": "response['aggregations']['group_by_name']['buckets'][0]['key']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'checking', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['custid']}}}]}}, 'aggs': {'group_by_name': {'terms': {'field': 'name', 'size': 10}, 'aggs': {'count_all': {'value_count': {'field': '_index'}}}}}, 'size': 0, 'code': {'count': "response['aggregations']['group_by_name']['buckets'][0]['count_all']['value']", 'name_result': "response['aggregations']['group_by_name']['buckets'][0]['key']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------16-----------------
+schema:['sum_T2_balance', 'name']
+---------------------------Execute SQL Query:[SELECT sum(T2.balance) ,  T1.name FROM accounts AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid GROUP BY T1.name]-----------------
+target_db_schema: ['balance', 'custid', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:14.827771 s
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "savings",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "_source": ["balance"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 0,
+  "aggs": {
+    "names": {
+      "terms": {
+        "field": "name.keyword",
+        "size": 10
+      },
+      "aggs": {
+        "total_balance": {
+          "sum": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  },
+  "inner_index": ["accounts", "savings"],
+  "code": {
+    "names_result": "response['aggregations']['names']['buckets']",
+    "total_balance": "bucket['total_balance']['value']"
+  }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'savings', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['balance']}}}]}}, 'size': 0, 'aggs': {'names': {'terms': {'field': 'name.keyword', 'size': 10}, 'aggs': {'total_balance': {'sum': {'field': 'balance'}}}}}, 'code': {'names_result': "response['aggregations']['names']['buckets']", 'total_balance': "bucket['total_balance']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------17-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid WHERE T2.balance  <  (SELECT avg(balance) FROM checking)]-----------------
+target_db_schema: ['balance', 'custid', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 135, column 106
+convert time:10.863224 s
+---------------------------Execute Target Query:{
+    "inner_index": ["accounts", "checking"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "checking",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "range": {
+                                            "balance": {
+                                                "lt": {
+                                                    "script": {
+                                                        "source": "params.avg_balance",
+                                                        "params": {
+                                                            "avg_balance": "response['aggregations']['avg_balance']['value']"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "avg_balance": {
+            "avg": {
+                "field": "balance"
+            }
+        }
+    },
+    "_source": ["name"],
+    "code": {
+        "names_result": "response['hits']['hits']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'checking', 'query': {'bool': {'must': [{'range': {'balance': {'lt': {'script': {'source': 'params.avg_balance', 'params': {'avg_balance': "response['aggregations']['avg_balance']['value']"}}}}}}]}}}}]}}, 'aggs': {'avg_balance': {'avg': {'field': 'balance'}}}, '_source': ['name'], 'code': {'names_result': "response['hits']['hits']"}, 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[range] query does not support [script]')
+
+--------------------------18-----------------
+schema:['balance']
+---------------------------Execute SQL Query:[SELECT T3.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance DESC LIMIT 1]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:11.349262 s
+---------------------------Execute Target Query:{
+    "size": 1,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "accounts.custid": {
+                            "index": "checking",
+                            "path": "custid"
+                        }
+                    }
+                },
+                {
+                    "term": {
+                        "accounts.custid": {
+                            "index": "savings",
+                            "path": "custid"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {"checking.balance": {"order": "desc"}}
+    ],
+    "_source": ["savings.balance"],
+    "inner_index": ["accounts", "checking", "savings"]
+}-----------------
+**************************************************
+{'size': 1, 'query': {'bool': {'must': [{'term': {'accounts.custid': {'index': 'checking', 'path': 'custid'}}}, {'term': {'accounts.custid': {'index': 'savings', 'path': 'custid'}}}]}}, 'sort': [{'checking.balance': {'order': 'desc'}}], '_source': ['savings.balance']}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[term] query does not support [index]')
+
+--------------------------19-----------------
+schema:['T1_balance + T2_balance']
+---------------------------Execute SQL Query:[SELECT T1.balance + T2.balance FROM checking AS T1 JOIN savings AS T2 ON T1.custid  =  T2.custid ORDER BY T1.balance + T2.balance]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n']
+convert time:8.940267 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "balance"
+                    }
+                },
+                {
+                    "script": {
+                        "script": {
+                            "source": "doc['checking.balance'].value + doc['savings.balance'].value"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {
+            "_script": {
+                "type": "number",
+                "script": {
+                    "source": "doc['checking.balance'].value + doc['savings.balance'].value"
+                },
+                "order": "asc"
+            }
+        }
+    ],
+    "inner_index": ["checking", "savings"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'exists': {'field': 'balance'}}, {'script': {'script': {'source': "doc['checking.balance'].value + doc['savings.balance'].value"}}}]}}, 'sort': [{'_script': {'type': 'number', 'script': {'source': "doc['checking.balance'].value + doc['savings.balance'].value"}, 'order': 'asc'}}], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'runtime error')
+
+--------------------------20-----------------
+schema:['balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T3.balance LIMIT 1]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:6.548822 s
+---------------------------Execute Target Query:{
+    "size": 1,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "balance"
+                    }
+                },
+                {
+                    "exists": {
+                        "field": "name"
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {"balance": {"order": "asc"}}
+    ],
+    "_source": ["balance", "name"],
+    "inner_index": ["accounts", "checking", "savings"]
+}-----------------
+**************************************************
+{'size': 1, 'query': {'bool': {'must': [{'exists': {'field': 'balance'}}, {'exists': {'field': 'name'}}]}}, 'sort': [{'balance': {'order': 'asc'}}], '_source': ['balance', 'name']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'No mapping found for [balance] in order to sort on')
+
+--------------------------21-----------------
+schema:['balance', 'balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:7.629279 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "accounts.custid": {
+                            "value": "{{T2.custid}}"
+                        }
+                    }
+                },
+                {
+                    "term": {
+                        "checking.custid": {
+                            "value": "{{T3.custid}}"
+                        }
+                    }
+                },
+                {
+                    "term": {
+                        "savings.custid": {
+                            "value": "{{T1.custid}}"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["accounts.name", "checking.balance", "savings.balance"],
+    "inner_index": ["accounts", "checking", "savings"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'accounts.custid': {'value': '{{T2.custid}}'}}}, {'term': {'checking.custid': {'value': '{{T3.custid}}'}}}, {'term': {'savings.custid': {'value': '{{T1.custid}}'}}}]}}, '_source': ['accounts.name', 'checking.balance', 'savings.balance'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"balance": 10000.0, "name": "Brown"}', '{"balance": 2000.0, "name": "Wang"}', '{"balance": 3000.0, "name": "O\'mahony"}', '{"balance": 7000.0, "name": "Weeks"}', '{"balance": 10000.0, "name": "Granger"}', '{"balance": 77.0, "name": "Porter"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------22-----------------
+schema:['balance', 'balance', 'name']
+---------------------------Execute SQL Query:[SELECT T2.balance ,  T3.balance ,  T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid ORDER BY T2.balance + T3.balance DESC]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:10.531969 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "checking",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "_source": ["balance"]
+                        }
+                    }
+                },
+                {
+                    "has_child": {
+                        "type": "savings",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "_source": ["balance"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "sort": [
+        {
+            "_script": {
+                "type": "number",
+                "script": {
+                    "source": "doc['checking.balance'].value + doc['savings.balance'].value"
+                },
+                "order": "desc"
+            }
+        }
+    ],
+    "_source": ["name"],
+    "inner_index": ["accounts", "checking", "savings"]
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_child': {'type': 'checking', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['balance']}}}, {'has_child': {'type': 'savings', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['balance']}}}]}}, 'sort': [{'_script': {'type': 'number', 'script': {'source': "doc['checking.balance'].value + doc['savings.balance'].value"}, 'order': 'desc'}}], '_source': ['name']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T2.balance  >  T3.balance]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:11.720693 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "checking",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "has_parent": {
+                                            "parent_type": "accounts",
+                                            "query": {
+                                                "match_all": {}
+                                            },
+                                            "inner_hits": {
+                                                "_source": ["name"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "has_child": {
+                        "type": "savings",
+                        "query": {
+                            "bool": {
+                                "must_not": [
+                                    {
+                                        "has_parent": {
+                                            "parent_type": "accounts",
+                                            "query": {
+                                                "match_all": {}
+                                            },
+                                            "inner_hits": {
+                                                "_source": ["name"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['checking.balance'].value > doc['savings.balance'].value"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["accounts", "checking", "savings"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'checking', 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'accounts', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['name']}}}]}}}}, {'has_child': {'type': 'savings', 'query': {'bool': {'must_not': [{'has_parent': {'parent_type': 'accounts', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['name']}}}]}}}}], 'filter': [{'script': {'script': "doc['checking.balance'].value > doc['savings.balance'].value"}}]}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------24-----------------
+schema:['name', 'T3_balance + T2_balance']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T3.balance + T2.balance FROM accounts AS T1 JOIN checking AS T2 ON T1.custid  =  T2.custid JOIN savings AS T3 ON T1.custid  =  T3.custid WHERE T3.balance  <  T2.balance]-----------------
+target_db_schema: ['balance', 'custid', 'c', 'h', 'e', 'c', 'k', 'i', 'n', 'g', ':', ' ', '[', "'", 'b', 'a', 'l', 'a', 'n', 'c', 'e', "'", ',', ' ', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'c', 'c', 'o', 'u', 'n', 't', 's', ':', ' ', '[', "'", 'c', 'u', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 120, column 179

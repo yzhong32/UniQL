@@ -1,0 +1,1074 @@
+--------
+
+--------------------------1-----------------
+schema:['email']
+---------------------------Execute SQL Query:[SELECT email FROM user_profiles WHERE name  =  'Mary']-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:12.989447 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match": {
+            "name": "Mary"
+        }
+    },
+    "size": 10,
+    "_source": ["email"],
+    "inner_index": ["user_profiles"]
+}-----------------
+**************************************************
+{'query': {'match': {'name': 'Mary'}}, 'size': 10, '_source': ['email']}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.017944, 'hits': [{'_index': 'twitter_1_user_profiles', '_id': '6FfnEY8BsHbYzo2ofXMc', '_score': 2.017944, '_source': {'email': 'Mary@yale.edu'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"email": "Mary@yale.edu"}']
+target res: ['{"email": "Mary@yale.edu"}']
+translate SELECT email FROM user_profiles WHERE name  =  'Mary' success
+
+--------------------------2-----------------
+schema:['partitionid']
+---------------------------Execute SQL Query:[SELECT partitionid FROM user_profiles WHERE name  =  'Iron Man']-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:3.505697 s
+---------------------------Execute Target Query:{
+    "inner_index": ["user_profiles"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "name": "Iron Man"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 10,
+    "_source": ["partitionid"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'name': 'Iron Man'}}]}}, 'size': 10, '_source': ['partitionid']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"partitionid": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------3-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM user_profiles]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:4.78275 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_users": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["user_profiles"],
+    "code": {
+        "total_users": "response['aggregations']['total_users']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_users': {'value_count': {'field': '_index'}}}, 'code': {'total_users': "response['aggregations']['total_users']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_users': {'value': 7}}}
+
+exec_result_dict: {'total_users': 7}
+mysql res: ['{"count_*": 7}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------4-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM follows]-----------------
+target_db_schema: ['f1', 'f2']
+convert time:6.06226 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_follows": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["follows"],
+    "code": {
+        "count": "response['aggregations']['total_follows']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_follows': {'value_count': {'field': '_index'}}}, 'code': {'count': "response['aggregations']['total_follows']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_follows': {'value': 9}}}
+
+exec_result_dict: {'count': 9}
+mysql res: ['{"count_*": 9}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------5-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM follows GROUP BY f1]-----------------
+target_db_schema: ['f1', 'f2']
+convert time:7.326485 s
+---------------------------Execute Target Query:{
+    "inner_index": ["follows"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "group_by_f1": {
+            "terms": {
+                "field": "f1",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "_index"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "count_result": "response['aggregations']['group_by_f1']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'group_by_f1': {'terms': {'field': 'f1', 'size': 10}, 'aggs': {'count': {'value_count': {'field': '_index'}}}}}, 'code': {'count_result': "response['aggregations']['group_by_f1']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_f1': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 1, 'doc_count': 3, 'count': {'value': 3}}, {'key': 3, 'doc_count': 2, 'count': {'value': 2}}, {'key': 5, 'doc_count': 2, 'count': {'value': 2}}, {'key': 2, 'doc_count': 1, 'count': {'value': 1}}, {'key': 7, 'doc_count': 1, 'count': {'value': 1}}]}}}
+
+exec_result_dict: {'count_result': [{'key': 1, 'doc_count': 3, 'count': {'value': 3}}, {'key': 3, 'doc_count': 2, 'count': {'value': 2}}, {'key': 5, 'doc_count': 2, 'count': {'value': 2}}, {'key': 2, 'doc_count': 1, 'count': {'value': 1}}, {'key': 7, 'doc_count': 1, 'count': {'value': 1}}]}
+mysql res: ['{"count_*": 3}', '{"count_*": 1}', '{"count_*": 2}', '{"count_*": 2}', '{"count_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------6-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM tweets]-----------------
+target_db_schema: ['createdate', 'id', 'text', 'uid']
+convert time:4.789246 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_tweets": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["tweets"],
+    "code": {
+        "total_tweets": "response['aggregations']['total_tweets']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_tweets': {'value_count': {'field': '_index'}}}, 'code': {'total_tweets': "response['aggregations']['total_tweets']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_tweets': {'value': 8}}}
+
+exec_result_dict: {'total_tweets': 8}
+mysql res: ['{"count_*": 8}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------7-----------------
+schema:['count_DISTINCT UID']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT UID) FROM tweets]-----------------
+target_db_schema: ['createdate', 'id', 'text', 'uid']
+convert time:7.533474 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_uids": {
+            "cardinality": {
+                "field": "uid"
+            }
+        }
+    },
+    "inner_index": ["tweets"],
+    "code": {
+        "count_distinct_uid": "response['aggregations']['unique_uids']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_uids': {'cardinality': {'field': 'uid'}}}, 'code': {'count_distinct_uid': "response['aggregations']['unique_uids']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_uids': {'value': 5}}}
+
+exec_result_dict: {'count_distinct_uid': 5}
+mysql res: ['{"count_DISTINCT UID": 5}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles WHERE name LIKE '%Swift%']-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:3.282449 s
+---------------------------Execute Target Query:{
+    "query": {
+        "wildcard": {
+            "name": "*Swift*"
+        }
+    },
+    "_source": ["name", "email"],
+    "inner_index": ["user_profiles"]
+}-----------------
+**************************************************
+{'query': {'wildcard': {'name': '*Swift*'}}, '_source': ['name', 'email'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles WHERE email LIKE '%superstar%' OR email LIKE '%edu%']-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:4.510421 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "wildcard": {
+                        "email": "*superstar*"
+                    }
+                },
+                {
+                    "wildcard": {
+                        "email": "*edu*"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["user_profiles"]
+}-----------------
+**************************************************
+{'query': {'bool': {'should': [{'wildcard': {'email': '*superstar*'}}, {'wildcard': {'email': '*edu*'}}]}}, '_source': ['name'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 8, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 4, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'twitter_1_user_profiles', '_id': '6FfnEY8BsHbYzo2ofXMc', '_score': 1.0, '_source': {'name': 'Mary'}}, {'_index': 'twitter_1_user_profiles', '_id': '61fnEY8BsHbYzo2ofXMc', '_score': 1.0, '_source': {'name': 'Tyler Swift'}}, {'_index': 'twitter_1_user_profiles', '_id': '7FfnEY8BsHbYzo2ofXMc', '_score': 1.0, '_source': {'name': 'Celine Dion'}}, {'_index': 'twitter_1_user_profiles', '_id': '7VfnEY8BsHbYzo2ofXMc', '_score': 1.0, '_source': {'name': 'Natalie Portman'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Mary"}', '{"name": "Tyler Swift"}', '{"name": "Celine Dion"}', '{"name": "Natalie Portman"}']
+target res: ['{"name": "Mary"}', '{"name": "Tyler Swift"}', '{"name": "Celine Dion"}', '{"name": "Natalie Portman"}']
+translate SELECT name FROM user_profiles WHERE email LIKE '%superstar%' OR email LIKE '%edu%' success
+
+--------------------------10-----------------
+schema:['text']
+---------------------------Execute SQL Query:[SELECT text FROM tweets WHERE text LIKE '%intern%']-----------------
+target_db_schema: ['createdate', 'id', 'text', 'uid']
+convert time:5.803828 s
+---------------------------Execute Target Query:{
+    "query": {
+        "wildcard": {
+            "text": "*intern*"
+        }
+    },
+    "_source": ["text"],
+    "inner_index": ["tweets"]
+}-----------------
+**************************************************
+{'query': {'wildcard': {'text': '*intern*'}}, '_source': ['text'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'twitter_1_tweets', '_id': '4VfnEY8BsHbYzo2oe3NK', '_score': 1.0, '_source': {'text': 'My company is hiring interns.'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"text": "My company is hiring interns."}']
+target res: ['{"text": "My company is hiring interns."}']
+translate SELECT text FROM tweets WHERE text LIKE '%intern%' success
+
+--------------------------11-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles WHERE followers  >  1000]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:5.953296 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "range": {
+                        "followers": {
+                            "gt": 1000
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name", "email"],
+    "inner_index": ["user_profiles"]
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'range': {'followers': {'gt': 1000}}}]}}, '_source': ['name', 'email'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 5, 'relation': 'eq'}, 'max_score': 0.0, 'hits': [{'_index': 'twitter_1_user_profiles', '_id': '51fnEY8BsHbYzo2ofXMc', '_score': 0.0, '_source': {'name': 'Iron Man', 'email': 'ts@richest.com'}}, {'_index': 'twitter_1_user_profiles', '_id': '6VfnEY8BsHbYzo2ofXMc', '_score': 0.0, '_source': {'name': 'Black Widow\n', 'email': 'bw@superhero.com'}}, {'_index': 'twitter_1_user_profiles', '_id': '61fnEY8BsHbYzo2ofXMc', '_score': 0.0, '_source': {'name': 'Tyler Swift', 'email': 'ts@superstar.com\n'}}, {'_index': 'twitter_1_user_profiles', '_id': '7FfnEY8BsHbYzo2ofXMc', '_score': 0.0, '_source': {'name': 'Celine Dion', 'email': 'cd@superstar.com'}}, {'_index': 'twitter_1_user_profiles', '_id': '7VfnEY8BsHbYzo2ofXMc', '_score': 0.0, '_source': {'name': 'Natalie Portman', 'email': 'np@superstar.com'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}', '{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}', '{"name": "Celine Dion", "email": "cd@superstar.com"}', '{"name": "Natalie Portman", "email": "np@superstar.com"}']
+target res: ['{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}', '{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}', '{"name": "Celine Dion", "email": "cd@superstar.com"}', '{"name": "Natalie Portman", "email": "np@superstar.com"}']
+translate SELECT name ,  email FROM user_profiles WHERE followers  >  1000 success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 'f', 'o', 'l', 'l', 'o', 'w', 's', ':', ' ', '[', "'", 'f', '1', "'", ',', ' ', "'", 'f', '2', "'", ']', '\n']
+convert time:12.618587 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "follows",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "name": "Tyler Swift"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "inner_hits": {
+                            "size": 0,
+                            "aggs": {
+                                "count_follows": {
+                                    "value_count": {
+                                        "field": "uid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['count_follows'].value > params.tyler_swift_count",
+                        "params": {
+                            "tyler_swift_count": "response['hits']['hits'][0]['inner_hits']['count_follows']['value']"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["user_profiles", "follows"],
+    "code": {
+        "name_result": "response['hits']['hits'][]._source['name']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'follows', 'query': {'bool': {'must': [{'match': {'name': 'Tyler Swift'}}]}}, 'inner_hits': {'size': 0, 'aggs': {'count_follows': {'value_count': {'field': 'uid'}}}}}}], 'filter': [{'script': {'script': "doc['count_follows'].value > params.tyler_swift_count", 'params': {'tyler_swift_count': "response['hits']['hits'][0]['inner_hits']['count_follows']['value']"}}}]}}, '_source': ['name'], 'code': {'name_result': "response['hits']['hits'][]._source['name']"}, 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:142] [inner_hits] unknown field [aggs]')
+
+--------------------------13-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.email FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  1]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 'f', 'o', 'l', 'l', 'o', 'w', 's', ':', ' ', '[', "'", 'f', '1', "'", ',', ' ', "'", 'f', '2', "'", ']', '\n']
+convert time:16.43546 s
+---------------------------Execute Target Query:{
+    "inner_index": ["user_profiles", "follows"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "follows",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "size": 0,
+                            "aggs": {
+                                "group_by_f1": {
+                                    "terms": {
+                                        "field": "f1"
+                                    },
+                                    "aggs": {
+                                        "count": {
+                                            "value_count": {
+                                                "field": "_id"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['group_by_f1.count'].value > 1"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_f1": {
+            "terms": {
+                "field": "f1"
+            },
+            "aggs": {
+                "names": {
+                    "terms": {
+                        "field": "name"
+                    }
+                },
+                "emails": {
+                    "terms": {
+                        "field": "email"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "names_result": "response['aggregations']['group_by_f1']['buckets'][*]['names']['buckets'][*]['key']",
+        "emails_result": "response['aggregations']['group_by_f1']['buckets'][*]['emails']['buckets'][*]['key']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_parent': {'parent_type': 'follows', 'query': {'match_all': {}}, 'inner_hits': {'size': 0, 'aggs': {'group_by_f1': {'terms': {'field': 'f1'}, 'aggs': {'count': {'value_count': {'field': '_id'}}}}}}}}], 'filter': [{'script': {'script': "doc['group_by_f1.count'].value > 1"}}]}}, 'aggs': {'group_by_f1': {'terms': {'field': 'f1'}, 'aggs': {'names': {'terms': {'field': 'name'}}, 'emails': {'terms': {'field': 'email'}}}}}, 'code': {'names_result': "response['aggregations']['group_by_f1']['buckets'][*]['names']['buckets'][*]['key']", 'emails_result': "response['aggregations']['group_by_f1']['buckets'][*]['emails']['buckets'][*]['key']"}, 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:114] [inner_hits] unknown field [aggs]')
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  >  1]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:10.867011 s
+---------------------------Execute Target Query:{
+    "inner_index": ["user_profiles", "tweets"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "user_profiles",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['uid'].value > 1"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_uid": {
+            "terms": {
+                "field": "uid",
+                "size": 10
+            },
+            "aggs": {
+                "top_names": {
+                    "top_hits": {
+                        "_source": {
+                            "includes": ["name"]
+                        },
+                        "size": 1
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['aggregations']['group_by_uid']['buckets'][*]['top_names']['hits']['hits'][*]['_source']['name']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'user_profiles', 'query': {'match_all': {}}}}], 'filter': [{'script': {'script': "doc['uid'].value > 1"}}]}}, 'aggs': {'group_by_uid': {'terms': {'field': 'uid', 'size': 10}, 'aggs': {'top_names': {'top_hits': {'_source': {'includes': ['name']}, 'size': 1}}}}}, 'code': {'name_result': "response['aggregations']['group_by_uid']['buckets'][*]['top_names']['hits']['hits'][*]['_source']['name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------15-----------------
+schema:['f1']
+---------------------------Execute SQL Query:[SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Mary" INTERSECT SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Susan"]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 'f', 'o', 'l', 'l', 'o', 'w', 's', ':', ' ', '[', "'", 'f', '1', "'", ',', ' ', "'", 'f', '2', "'", ']', '\n']
+convert time:9.026689 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {
+                                "match": {
+                                    "name": "Mary"
+                                }
+                            },
+                            {
+                                "match": {
+                                    "name": "Susan"
+                                }
+                            }
+                        ],
+                        "minimum_should_match": 1
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "follows",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "follows.f2": "user_profiles.uid"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["follows.f1"],
+    "inner_index": ["user_profiles", "follows"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'should': [{'match': {'name': 'Mary'}}, {'match': {'name': 'Susan'}}], 'minimum_should_match': 1}}, {'nested': {'path': 'follows', 'query': {'bool': {'must': [{'match': {'follows.f2': 'user_profiles.uid'}}]}}}}]}}, '_source': ['follows.f1'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [follows]')
+
+--------------------------16-----------------
+schema:['f1']
+---------------------------Execute SQL Query:[SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Mary" OR T1.name  =  "Susan"]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 'f', 'o', 'l', 'l', 'o', 'w', 's', ':', ' ', '[', "'", 'f', '1', "'", ',', ' ', "'", 'f', '2', "'", ']', '\n']
+convert time:8.556324 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {"match": {"name": "Mary"}},
+                            {"match": {"name": "Susan"}}
+                        ]
+                    }
+                },
+                {
+                    "has_child": {
+                        "type": "follows",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "_source": ["f1"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": false,
+    "inner_index": ["user_profiles", "follows"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'should': [{'match': {'name': 'Mary'}}, {'match': {'name': 'Susan'}}]}}, {'has_child': {'type': 'follows', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['f1']}}}]}}, '_source': False, 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------17-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:5.033916 s
+---------------------------Execute Target Query:{
+  "size": 1,
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "followers": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": ["name"],
+  "inner_index": ["user_profiles"],
+  "code": {
+    "name": "response['hits']['hits'][0]['_source']['name']"
+  }
+}-----------------
+**************************************************
+{'size': 1, 'query': {'match_all': {}}, 'sort': [{'followers': {'order': 'desc'}}], '_source': ['name'], 'code': {'name': "response['hits']['hits'][0]['_source']['name']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'twitter_1_user_profiles', '_id': '61fnEY8BsHbYzo2ofXMc', '_score': None, '_source': {'name': 'Tyler Swift'}, 'sort': [99999998]}]}}
+
+exec_result_dict: {'name': 'Tyler Swift'}
+mysql res: ['{"name": "Tyler Swift"}']
+target res: ['{"name": "Tyler Swift"}']
+translate SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1 success
+
+--------------------------18-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles ORDER BY followers LIMIT 1]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:3.201322 s
+---------------------------Execute Target Query:{
+  "size": 1,
+  "sort": [
+    {
+      "followers": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": ["name", "email"],
+  "inner_index": ["user_profiles"]
+}-----------------
+**************************************************
+{'size': 1, 'sort': [{'followers': {'order': 'desc'}}], '_source': ['name', 'email']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'twitter_1_user_profiles', '_id': '61fnEY8BsHbYzo2ofXMc', '_score': None, '_source': {'name': 'Tyler Swift', 'email': 'ts@superstar.com\n'}, 'sort': [99999998]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Susan", "email": "susan@gmail.com\\n"}']
+target res: ['{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}']
+mismatch between MySQL and target
+
+--------------------------19-----------------
+schema:['name', 'followers']
+---------------------------Execute SQL Query:[SELECT name ,  followers FROM user_profiles ORDER BY followers DESC]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:20.821587 s
+---------------------------Execute Target Query:{
+  "size": 0,
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "followers": {
+        "order": "desc"
+      }
+    }
+  ],
+  "aggs": {
+    "top_names": {
+      "terms": {
+        "field": "name.keyword",
+        "size": 10
+      },
+      "aggs": {
+        "followers_stats": {
+          "stats": {
+            "field": "followers"
+          }
+        }
+      }
+    }
+  },
+  "inner_index": ["user_profiles"],
+  "code": {
+    "name_result": "response['aggregations']['top_names']['buckets']",
+    "followers_stats": "response['aggregations']['top_names']['buckets'][0]['followers_stats']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'sort': [{'followers': {'order': 'desc'}}], 'aggs': {'top_names': {'terms': {'field': 'name.keyword', 'size': 10}, 'aggs': {'followers_stats': {'stats': {'field': 'followers'}}}}}, 'code': {'name_result': "response['aggregations']['top_names']['buckets']", 'followers_stats': "response['aggregations']['top_names']['buckets'][0]['followers_stats']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'top_names': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'Black Widow\n', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 35425845.0, 'max': 35425845.0, 'avg': 35425845.0, 'sum': 35425845.0}}, {'key': 'Celine Dion', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 23927492.0, 'max': 23927492.0, 'avg': 23927492.0, 'sum': 23927492.0}}, {'key': 'Iron Man', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 6662425.0, 'max': 6662425.0, 'avg': 6662425.0, 'sum': 6662425.0}}, {'key': 'Mary', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 890.0, 'max': 890.0, 'avg': 890.0, 'sum': 890.0}}, {'key': 'Natalie Portman', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 94375428.0, 'max': 94375428.0, 'avg': 94375428.0, 'sum': 94375428.0}}, {'key': 'Susan', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 100.0, 'max': 100.0, 'avg': 100.0, 'sum': 100.0}}, {'key': 'Tyler Swift', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 99999998.0, 'max': 99999998.0, 'avg': 99999998.0, 'sum': 99999998.0}}]}}}
+
+exec_result_dict: {'name_result': [{'key': 'Black Widow\n', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 35425845.0, 'max': 35425845.0, 'avg': 35425845.0, 'sum': 35425845.0}}, {'key': 'Celine Dion', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 23927492.0, 'max': 23927492.0, 'avg': 23927492.0, 'sum': 23927492.0}}, {'key': 'Iron Man', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 6662425.0, 'max': 6662425.0, 'avg': 6662425.0, 'sum': 6662425.0}}, {'key': 'Mary', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 890.0, 'max': 890.0, 'avg': 890.0, 'sum': 890.0}}, {'key': 'Natalie Portman', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 94375428.0, 'max': 94375428.0, 'avg': 94375428.0, 'sum': 94375428.0}}, {'key': 'Susan', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 100.0, 'max': 100.0, 'avg': 100.0, 'sum': 100.0}}, {'key': 'Tyler Swift', 'doc_count': 1, 'followers_stats': {'count': 1, 'min': 99999998.0, 'max': 99999998.0, 'avg': 99999998.0, 'sum': 99999998.0}}], 'followers_stats': {'count': 1, 'min': 35425845.0, 'max': 35425845.0, 'avg': 35425845.0, 'sum': 35425845.0}}
+mysql res: ['{"name": "Tyler Swift", "followers": 99999998}', '{"name": "Natalie Portman", "followers": 94375428}', '{"name": "Black Widow\\n", "followers": 35425845}', '{"name": "Celine Dion", "followers": 23927492}', '{"name": "Iron Man", "followers": 6662425}', '{"name": "Mary", "followers": 890}', '{"name": "Susan", "followers": 100}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------20-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 5]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:3.606653 s
+---------------------------Execute Target Query:{
+    "size": 5,
+    "sort": [
+        {"followers": {"order": "desc"}}
+    ],
+    "_source": ["name"],
+    "inner_index": ["user_profiles"]
+}-----------------
+**************************************************
+{'size': 5, 'sort': [{'followers': {'order': 'desc'}}], '_source': ['name']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'twitter_1_user_profiles', '_id': '61fnEY8BsHbYzo2ofXMc', '_score': None, '_source': {'name': 'Tyler Swift'}, 'sort': [99999998]}, {'_index': 'twitter_1_user_profiles', '_id': '7VfnEY8BsHbYzo2ofXMc', '_score': None, '_source': {'name': 'Natalie Portman'}, 'sort': [94375428]}, {'_index': 'twitter_1_user_profiles', '_id': '6VfnEY8BsHbYzo2ofXMc', '_score': None, '_source': {'name': 'Black Widow\n'}, 'sort': [35425845]}, {'_index': 'twitter_1_user_profiles', '_id': '7FfnEY8BsHbYzo2ofXMc', '_score': None, '_source': {'name': 'Celine Dion'}, 'sort': [23927492]}, {'_index': 'twitter_1_user_profiles', '_id': '51fnEY8BsHbYzo2ofXMc', '_score': None, '_source': {'name': 'Iron Man'}, 'sort': [6662425]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Tyler Swift"}', '{"name": "Natalie Portman"}', '{"name": "Black Widow\\n"}', '{"name": "Celine Dion"}', '{"name": "Iron Man"}']
+target res: ['{"name": "Tyler Swift"}', '{"name": "Natalie Portman"}', '{"name": "Black Widow\\n"}', '{"name": "Celine Dion"}', '{"name": "Iron Man"}']
+translate SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 5 success
+
+--------------------------21-----------------
+schema:['text']
+---------------------------Execute SQL Query:[SELECT text FROM tweets ORDER BY createdate]-----------------
+target_db_schema: ['createdate', 'id', 'text', 'uid']
+convert time:2.789241 s
+---------------------------Execute Target Query:{
+    "size": 10000,
+    "sort": [
+        {"createdate": {"order": "asc"}}
+    ],
+    "_source": ["text"],
+    "inner_index": ["tweets"]
+}-----------------
+**************************************************
+{'size': 10000, 'sort': [{'createdate': {'order': 'asc'}}], '_source': ['text']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'twitter_1_tweets', '_id': '31fnEY8BsHbYzo2oe3NK', '_score': None, '_source': {'text': "Hello I'm Tony Stark."}, 'sort': [1520625614000]}, {'_index': 'twitter_1_tweets', '_id': '4FfnEY8BsHbYzo2oe3NK', '_score': None, '_source': {'text': 'Today I have went shopping at Laffayette.'}, 'sort': [1520625662000]}, {'_index': 'twitter_1_tweets', '_id': '4VfnEY8BsHbYzo2oe3NK', '_score': None, '_source': {'text': 'My company is hiring interns.'}, 'sort': [1520821830000]}, {'_index': 'twitter_1_tweets', '_id': '4lfnEY8BsHbYzo2oe3NK', '_score': None, '_source': {'text': 'Oh, I only have a few fans.'}, 'sort': [1520821830000]}, {'_index': 'twitter_1_tweets', '_id': '41fnEY8BsHbYzo2oe3NK', '_score': None, '_source': {'text': 'Let’s celebrate women, fight for equality and support each other,  not just today, but everyday!'}, 'sort': [1520821830000]}, {'_index': 'twitter_1_tweets', '_id': '5FfnEY8BsHbYzo2oe3NK', '_score': None, '_source': {'text': 'I love my new boyfriend.'}, 'sort': [1520821830000]}, {'_index': 'twitter_1_tweets', '_id': '5VfnEY8BsHbYzo2oe3NK', '_score': None, '_source': {'text': "I feel tired and don't want to write SQLs."}, 'sort': [1520821830000]}, {'_index': 'twitter_1_tweets', '_id': '5lfnEY8BsHbYzo2oe3NK', '_score': None, '_source': {'text': 'I had a pretty rough time during the last couple of weeks'}, 'sort': [1520821830000]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"text": "Hello I\'m Tony Stark."}', '{"text": "Today I have went shopping at Laffayette."}', '{"text": "My company is hiring interns."}', '{"text": "Oh, I only have a few fans."}', '{"text": "Let\\u2019s celebrate women, fight for equality and support each other,  not just today, but everyday!"}', '{"text": "I love my new boyfriend."}', '{"text": "I feel tired and don\'t want to write SQLs."}', '{"text": "I had a pretty rough time during the last couple of weeks"}']
+target res: ['{"text": "Hello I\'m Tony Stark."}', '{"text": "Today I have went shopping at Laffayette."}', '{"text": "My company is hiring interns."}', '{"text": "Oh, I only have a few fans."}', '{"text": "Let\\u2019s celebrate women, fight for equality and support each other,  not just today, but everyday!"}', '{"text": "I love my new boyfriend."}', '{"text": "I feel tired and don\'t want to write SQLs."}', '{"text": "I had a pretty rough time during the last couple of weeks"}']
+translate SELECT text FROM tweets ORDER BY createdate success
+
+--------------------------22-----------------
+schema:['name', 'count_*']
+---------------------------Execute SQL Query:[SELECT T1.name ,  count(*) FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:11.256387 s
+---------------------------Execute Target Query:{
+    "inner_index": ["user_profiles", "tweets"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "user_profiles",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "users": {
+            "terms": {
+                "field": "uid",
+                "size": 10
+            },
+            "aggs": {
+                "name": {
+                    "top_hits": {
+                        "_source": {
+                            "includes": ["name"]
+                        },
+                        "size": 1
+                    }
+                },
+                "tweet_count": {
+                    "value_count": {
+                        "field": "uid"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['aggregations']['users']['buckets'][0]['name']['hits']['hits'][0]['_source']['name']",
+        "count": "response['aggregations']['users']['buckets'][0]['tweet_count']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'user_profiles', 'query': {'match_all': {}}}}]}}, 'aggs': {'users': {'terms': {'field': 'uid', 'size': 10}, 'aggs': {'name': {'top_hits': {'_source': {'includes': ['name']}, 'size': 1}}, 'tweet_count': {'value_count': {'field': 'uid'}}}}}, 'code': {'name_result': "response['aggregations']['users']['buckets'][0]['name']['hits']['hits'][0]['_source']['name']", 'count': "response['aggregations']['users']['buckets'][0]['tweet_count']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------23-----------------
+schema:['name', 'partitionid']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.partitionid FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  <  2]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 133, column 136
+convert time:17.484534 s
+---------------------------Execute Target Query:{
+    "inner_index": ["user_profiles", "tweets"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "user_profiles",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "_source": ["name", "partitionid"]
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['uid'].value == parent.doc['uid'].value"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_uid": {
+            "terms": {
+                "field": "uid",
+                "size": 10
+            },
+            "aggs": {
+                "having_count": {
+                    "bucket_selector": {
+                        "buckets_path": {
+                            "the_count": "_count"
+                        },
+                        "script": "params.the_count < 2"
+                    }
+                }
+            }
+        }
+    },
+    "size": 0,
+    "code": {
+        "name_result": "response['hits']['hits'][0]['inner_hits']['user_profiles']['hits']['hits'].map(hit => hit['_source']['name'])",
+        "partitionid_result": "response['hits']['hits'][0]['inner_hits']['user_profiles']['hits']['hits'].map(hit => hit['_source']['partitionid'])"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_parent': {'parent_type': 'user_profiles', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['name', 'partitionid']}}}], 'filter': [{'script': {'script': "doc['uid'].value == parent.doc['uid'].value"}}]}}, 'aggs': {'group_by_uid': {'terms': {'field': 'uid', 'size': 10}, 'aggs': {'having_count': {'bucket_selector': {'buckets_path': {'the_count': '_count'}, 'script': 'params.the_count < 2'}}}}}, 'size': 0, 'code': {'name_result': "response['hits']['hits'][0]['inner_hits']['user_profiles']['hits']['hits'].map(hit => hit['_source']['name'])", 'partitionid_result': "response['hits']['hits'][0]['inner_hits']['user_profiles']['hits']['hits'].map(hit => hit['_source']['partitionid'])"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------24-----------------
+schema:['name', 'count_*']
+---------------------------Execute SQL Query:[SELECT T1.name ,  count(*) FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  >  1]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:12.712169 s
+---------------------------Execute Target Query:{
+    "inner_index": ["user_profiles", "tweets"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "user_profiles",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['uid'].value > 1"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_uid": {
+            "terms": {
+                "field": "uid",
+                "size": 10
+            },
+            "aggs": {
+                "name": {
+                    "top_hits": {
+                        "_source": {
+                            "includes": ["name"]
+                        },
+                        "size": 1
+                    }
+                },
+                "tweet_count": {
+                    "value_count": {
+                        "field": "uid"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "name_result": "response['aggregations']['group_by_uid']['buckets'][*]['name']['hits']['hits'][*]['_source']['name']",
+        "count": "response['aggregations']['group_by_uid']['buckets'][*]['tweet_count']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'user_profiles', 'query': {'match_all': {}}}}], 'filter': [{'script': {'script': "doc['uid'].value > 1"}}]}}, 'aggs': {'group_by_uid': {'terms': {'field': 'uid', 'size': 10}, 'aggs': {'name': {'top_hits': {'_source': {'includes': ['name']}, 'size': 1}}, 'tweet_count': {'value_count': {'field': 'uid'}}}}}, 'code': {'name_result': "response['aggregations']['group_by_uid']['buckets'][*]['name']['hits']['hits'][*]['_source']['name']", 'count': "response['aggregations']['group_by_uid']['buckets'][*]['tweet_count']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------25-----------------
+schema:['avg_followers']
+---------------------------Execute SQL Query:[SELECT avg(followers) FROM user_profiles WHERE UID NOT IN (SELECT UID FROM tweets)]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:11.207346 s
+---------------------------Execute Target Query:{
+    "inner_index": ["user_profiles"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "ids": {
+                        "values": [
+                            "SELECT UID FROM tweets"
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "avg_followers": {
+            "avg": {
+                "field": "followers"
+            }
+        }
+    },
+    "code": {
+        "avg_followers": "response['aggregations']['avg_followers']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must_not': [{'ids': {'values': ['SELECT UID FROM tweets']}}]}}, 'aggs': {'avg_followers': {'avg': {'field': 'followers'}}}, 'code': {'avg_followers': "response['aggregations']['avg_followers']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 27, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'avg_followers': {'value': 37198882.571428575}}}
+
+exec_result_dict: {'avg_followers': 37198882.571428575}
+mysql res: ['{"avg_followers": 47188159.0000}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------26-----------------
+schema:['avg_followers']
+---------------------------Execute SQL Query:[SELECT avg(followers) FROM user_profiles WHERE UID IN (SELECT UID FROM tweets)]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:5.849273 s
+---------------------------Execute Target Query:{
+    "inner_index": ["user_profiles", "tweets"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "terms": {
+                        "uid": {
+                            "index": "tweets",
+                            "path": "uid"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "avg_followers": {
+            "avg": {
+                "field": "followers"
+            }
+        }
+    },
+    "code": {
+        "avg_followers": "response['aggregations']['avg_followers']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'terms': {'uid': {'index': 'tweets', 'path': 'uid'}}}]}}, 'aggs': {'avg_followers': {'avg': {'field': 'followers'}}}, 'code': {'avg_followers': "response['aggregations']['avg_followers']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:82] [bool] failed to parse field [must]')
+
+--------------------------27-----------------
+schema:['max_followers', 'sum_followers']
+---------------------------Execute SQL Query:[SELECT max(followers) ,  sum(followers) FROM user_profiles]-----------------
+target_db_schema: ['email', 'followers', 'name', 'partitionid', 'uid']
+convert time:14.283287 s
+---------------------------Execute Target Query:{
+  "query": {
+    "match_all": {}
+  },
+  "size": 0,
+  "aggs": {
+    "max_followers": {
+      "max": {
+        "field": "followers"
+      }
+    },
+    "total_followers": {
+      "sum": {
+        "field": "followers"
+      }
+    }
+  },
+  "inner_index": ["user_profiles"],
+  "code": {
+    "max_followers": "response['aggregations']['max_followers']['value']",
+    "total_followers": "response['aggregations']['total_followers']['value']"
+  }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'max_followers': {'max': {'field': 'followers'}}, 'total_followers': {'sum': {'field': 'followers'}}}, 'code': {'max_followers': "response['aggregations']['max_followers']['value']", 'total_followers': "response['aggregations']['total_followers']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'max_followers': {'value': 99999998.0}, 'total_followers': {'value': 260392178.0}}}
+
+exec_result_dict: {'max_followers': 99999998.0, 'total_followers': 260392178.0}
+mysql res: ['{"max_followers": 99999998, "sum_followers": 260392178}']
+target res: []
+Exception raised during comparison: Row number mismatch
+success_query_count: 7
+valid_count: 27
+accuracy: 0.25925925925925924

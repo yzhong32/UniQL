@@ -1,0 +1,411 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM scientists]-----------------
+convert time:1.61571 s
+---------------------------Execute Target Query:MATCH (s:scientists) RETURN count(s) as count-----------------
+MATCH (s:scientists) RETURN count(s) as count
+mysql res: ['{"count_*": 12}']
+target res: ['{"count": 12}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['sum_hours']
+---------------------------Execute SQL Query:[SELECT sum(hours) FROM projects]-----------------
+convert time:1.578842 s
+---------------------------Execute Target Query:MATCH (p:projects) RETURN sum(p.hours) as sum_hours-----------------
+MATCH (p:projects) RETURN sum(p.hours) as sum_hours
+mysql res: ['{"sum_hours": 20183}']
+target res: ['{"sum_hours": 20183}']
+translate SELECT sum(hours) FROM projects success
+
+--------------------------3-----------------
+schema:['count_DISTINCT scientist']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT scientist) FROM assignedto]-----------------
+convert time:1.758681 s
+---------------------------Execute Target Query:MATCH (a:assignedto) RETURN count(DISTINCT a.scientist) as count_distinct_scientist-----------------
+MATCH (a:assignedto) RETURN count(DISTINCT a.scientist) as count_distinct_scientist
+mysql res: ['{"count_DISTINCT scientist": 12}']
+target res: ['{"count_distinct_scientist": 12}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['count_DISTINCT name']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT name) FROM projects]-----------------
+convert time:1.272798 s
+---------------------------Execute Target Query:MATCH (p:projects) RETURN count(DISTINCT p.name) as count_distinct_name-----------------
+MATCH (p:projects) RETURN count(DISTINCT p.name) as count_distinct_name
+mysql res: ['{"count_DISTINCT name": 14}']
+target res: ['{"count_distinct_name": 14}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['avg_hours']
+---------------------------Execute SQL Query:[SELECT avg(hours) FROM projects]-----------------
+convert time:2.075575 s
+---------------------------Execute Target Query:MATCH (p:projects) RETURN avg(p.hours) as avg_hours-----------------
+MATCH (p:projects) RETURN avg(p.hours) as avg_hours
+mysql res: ['{"avg_hours": 1441.6429}']
+target res: ['{"avg_hours": 1441.6428571428573}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects ORDER BY hours DESC LIMIT 1]-----------------
+convert time:1.560464 s
+---------------------------Execute Target Query:MATCH (p:projects) RETURN p.name as name ORDER BY p.hours DESC LIMIT 1-----------------
+MATCH (p:projects) RETURN p.name as name ORDER BY p.hours DESC LIMIT 1
+mysql res: ['{"name": "A Magnetic Primer Designer"}']
+target res: ['{"name": "A Magnetic Primer Designer"}']
+translate SELECT name FROM projects ORDER BY hours DESC LIMIT 1 success
+
+--------------------------7-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE hours  >  (SELECT avg(hours) FROM projects)]-----------------
+convert time:2.021088 s
+---------------------------Execute Target Query:MATCH (p:projects)
+WITH avg(p.hours) AS avg_hours
+MATCH (p2:projects)
+WHERE p2.hours > avg_hours
+RETURN p2.name AS name-----------------
+MATCH (p:projects)
+WITH avg(p.hours) AS avg_hours
+MATCH (p2:projects)
+WHERE p2.hours > avg_hours
+RETURN p2.name AS name
+mysql res: ['{"name": "Build Your Own Telescope"}', '{"name": "A Magnetic Primer Designer"}']
+target res: ['{"name": "Build Your Own Telescope"}', '{"name": "A Magnetic Primer Designer"}']
+translate SELECT name FROM projects WHERE hours  >  (SELECT avg(hours) FROM projects) success
+
+--------------------------8-----------------
+schema:['name', 'hours']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.hours FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T2.project ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:2.776694 s
+---------------------------Execute Target Query:MATCH (p:projects)
+WHERE EXISTS ((p)-[:assignedto]->(:assignedto))
+WITH p, count(*) AS count_star
+RETURN p.name AS name, p.hours AS hours
+ORDER BY count_star DESC
+LIMIT 1-----------------
+MATCH (p:projects)
+WHERE EXISTS ((p)-[:assignedto]->(:assignedto))
+WITH p, count(*) AS count_star
+RETURN p.name AS name, p.hours AS hours
+ORDER BY count_star DESC
+LIMIT 1
+mysql res: ['{"name": "Build Your Own Telescope", "hours": 6546}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T3.name LIKE '%Smith%']-----------------
+convert time:3.150306 s
+---------------------------Execute Target Query:MATCH (t1:assignedto), (t2:projects), (t3:scientists) WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t3.name CONTAINS 'Smith' RETURN t2.name as name-----------------
+MATCH (t1:assignedto), (t2:projects), (t3:scientists) WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t3.name CONTAINS 'Smith' RETURN t2.name as name
+mysql res: ['{"name": "Build Your Own Telescope"}', '{"name": "Build Your Own Telescope"}', '{"name": "Aerodynamics and Gas Mileage"}']
+target res: ['{"name": "Build Your Own Telescope"}', '{"name": "Build Your Own Telescope"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['sum_T2_hours']
+---------------------------Execute SQL Query:[SELECT sum(T2.hours) FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T3.name  =  'Michael Rogers' OR T3.name  =  'Carol Smith']-----------------
+convert time:3.642724 s
+---------------------------Execute Target Query:MATCH (t1:assignedto)-[:r]->(t2:projects), (t1)-[:r]->(t3:scientists)
+WHERE t3.name = 'Michael Rogers' OR t3.name = 'Carol Smith'
+RETURN sum(t2.hours) as sum_hours-----------------
+MATCH (t1:assignedto)-[:r]->(t2:projects), (t1)-[:r]->(t3:scientists)
+WHERE t3.name = 'Michael Rogers' OR t3.name = 'Carol Smith'
+RETURN sum(t2.hours) as sum_hours
+mysql res: ['{"sum_T2_hours": 6702}']
+target res: ['{"sum_hours": 0}']
+mismatch between MySQL and target
+
+--------------------------11-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE hours BETWEEN 100 AND 300]-----------------
+convert time:3.54499 s
+---------------------------Execute Target Query:MATCH (p:projects) WHERE p.hours >= 100 AND p.hours <= 300 RETURN p.name as name-----------------
+MATCH (p:projects) WHERE p.hours >= 100 AND p.hours <= 300 RETURN p.name as name
+mysql res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+target res: ['{"name": "Winds: Studying Bernoullis Principle"}', '{"name": "Aerodynamics and Bridge Design"}', '{"name": "Aerodynamics and Gas Mileage"}', '{"name": "A Matter of Time"}', '{"name": "A Puzzling Parallax"}']
+translate SELECT name FROM projects WHERE hours BETWEEN 100 AND 300 success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'Matter of Time' INTERSECT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.name  =  'A Puzzling Parallax']-----------------
+convert time:7.797732 s
+---------------------------Execute Target Query:MATCH (t1:assignedto), (t2:projects), (t3:scientists)
+WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t2.name = 'Matter of Time'
+WITH t3.name AS name
+MATCH (t1:assignedto), (t2:projects), (t3:scientists)
+WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t2.name = 'A Puzzling Parallax'
+RETURN name WHERE name IN collect(t3.name)-----------------
+MATCH (t1:assignedto), (t2:projects), (t3:scientists)
+WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t2.name = 'Matter of Time'
+WITH t3.name AS name
+MATCH (t1:assignedto), (t2:projects), (t3:scientists)
+WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t2.name = 'A Puzzling Parallax'
+RETURN name WHERE name IN collect(t3.name)
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "AS"
+  "CALL"
+  "CONTAINS"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "ENDS"
+  "FOREACH"
+  "IN"
+  "INSERT"
+  "IS"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "OR"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "STARTS"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  "XOR"
+  "^"
+  <EOF> (line 6, column 13 (offset: 314))
+"RETURN name WHERE name IN collect(t3.name)"
+             ^}
+
+--------------------------13-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists ORDER BY name]-----------------
+convert time:1.713489 s
+---------------------------Execute Target Query:MATCH (s:scientists) RETURN s.name as name ORDER BY s.name-----------------
+MATCH (s:scientists) RETURN s.name as name ORDER BY s.name
+mysql res: ['{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "Elizabeth Doe"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "John Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Mary-Anne Foster"}', '{"name": "Michael Rogers"}', '{"name": "Zacary Efron"}']
+target res: ['{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "David Smith"}', '{"name": "Elizabeth Doe"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Joe Stevens"}', '{"name": "John Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Mary-Anne Foster"}', '{"name": "Michael Rogers"}', '{"name": "Zacary Efron"}']
+translate SELECT name FROM scientists ORDER BY name success
+
+--------------------------14-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project GROUP BY T1.name]-----------------
+convert time:2.787191 s
+---------------------------Execute Target Query:MATCH (p:projects)
+WHERE EXISTS ((p)-[:assignedto]->(:assignedto))
+RETURN count(*) AS count, p.name AS name
+GROUP BY p.name-----------------
+MATCH (p:projects)
+WHERE EXISTS ((p)-[:assignedto]->(:assignedto))
+RETURN count(*) AS count, p.name AS name
+GROUP BY p.name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 4, column 1 (offset: 108))
+"GROUP BY p.name"
+ ^}
+
+--------------------------15-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM projects AS T1 JOIN assignedto AS T2 ON T1.code  =  T2.project WHERE T1.hours  >  300 GROUP BY T1.name]-----------------
+convert time:1.41332 s
+---------------------------Execute Target Query:MATCH (p:projects)
+WHERE p.hours > 300
+RETURN count(*) AS count, p.name AS name-----------------
+MATCH (p:projects)
+WHERE p.hours > 300
+RETURN count(*) AS count, p.name AS name
+mysql res: ['{"count_*": 1, "name": "Aerodynamics and Ice Hockey"}', '{"count_*": 3, "name": "Build Your Own Telescope"}', '{"count_*": 1, "name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"count_*": 2, "name": "A Silver-Cleaning Battery"}']
+target res: ['{"count": 1, "name": "Aerodynamics and Ice Hockey"}', '{"count": 1, "name": "Build Your Own Telescope"}', '{"count": 1, "name": "Juicy: Extracting Apple Juice with Pectinase"}', '{"count": 1, "name": "A Magnetic Primer Designer"}', '{"count": 1, "name": "Bacterial Transformation Efficiency"}', '{"count": 1, "name": "A Silver-Cleaning Battery"}', '{"count": 1, "name": "A Soluble Separation Solution"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------16-----------------
+schema:['count_*', 'name']
+---------------------------Execute SQL Query:[SELECT count(*) ,  T1.name FROM scientists AS T1 JOIN assignedto AS T2 ON T1.ssn  =  T2.scientist GROUP BY T1.name]-----------------
+convert time:2.895565 s
+---------------------------Execute Target Query:MATCH (s:scientists)
+WHERE EXISTS ((s)-[:assignedto]->(:assignedto))
+RETURN count(*) AS count, s.name AS name
+GROUP BY s.name-----------------
+MATCH (s:scientists)
+WHERE EXISTS ((s)-[:assignedto]->(:assignedto))
+RETURN count(*) AS count, s.name AS name
+GROUP BY s.name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 4, column 1 (offset: 110))
+"GROUP BY s.name"
+ ^}
+
+--------------------------17-----------------
+schema:['ssn', 'name']
+---------------------------Execute SQL Query:[SELECT T3.ssn ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects)]-----------------
+convert time:4.38855 s
+---------------------------Execute Target Query:MATCH (t1:assignedto), (t2:projects), (t3:scientists)
+WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t2.hours = (SELECT max(hours) FROM projects)
+RETURN t3.ssn AS ssn, t3.name AS name-----------------
+MATCH (t1:assignedto), (t2:projects), (t3:scientists)
+WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t2.hours = (SELECT max(hours) FROM projects)
+RETURN t3.ssn AS ssn, t3.name AS name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input '(': expected "+" or "-" (line 2, column 69 (offset: 122))
+"WHERE t1.project = t2.code AND t1.scientist = t3.ssn AND t2.hours = (SELECT max(hours) FROM projects)"
+                                                                     ^}
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM assignedto AS T1 JOIN scientists AS T2 ON T1.scientist  =  T2.ssn]-----------------
+convert time:2.076969 s
+---------------------------Execute Target Query:MATCH (T1:assignedto), (T2:scientists) WHERE T1.scientist = T2.ssn RETURN T2.name as name-----------------
+MATCH (T1:assignedto), (T2:scientists) WHERE T1.scientist = T2.ssn RETURN T2.name as name
+mysql res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Eric Goldsmith"}', '{"name": "George ODonnell"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "David Smith"}', '{"name": "Mary-Anne Foster"}', '{"name": "John Doe"}', '{"name": "Zacary Efron"}']
+target res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "Mary-Anne Foster"}', '{"name": "George ODonnell"}', '{"name": "John Doe"}', '{"name": "David Smith"}', '{"name": "Zacary Efron"}', '{"name": "Eric Goldsmith"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}']
+translate SELECT T2.name FROM assignedto AS T1 JOIN scientists AS T2 ON T1.scientist  =  T2.ssn success
+
+--------------------------19-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM projects WHERE code NOT IN (SELECT project FROM assignedto)]-----------------
+convert time:1.812845 s
+---------------------------Execute Target Query:MATCH (p:projects) WHERE NOT EXISTS ((:assignedto {project: p.code})) RETURN p.name as name-----------------
+MATCH (p:projects) WHERE NOT EXISTS ((:assignedto {project: p.code})) RETURN p.name as name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input ':': expected "NOT", an expression or an identifier (line 1, column 39 (offset: 38))
+"MATCH (p:projects) WHERE NOT EXISTS ((:assignedto {project: p.code})) RETURN p.name as name"
+                                       ^}
+
+--------------------------20-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto)]-----------------
+convert time:1.493589 s
+---------------------------Execute Target Query:MATCH (s:scientists) WHERE NOT EXISTS ((s)-[:ASSIGNEDTO]-()) RETURN s.name as name-----------------
+MATCH (s:scientists) WHERE NOT EXISTS ((s)-[:ASSIGNEDTO]-()) RETURN s.name as name
+mysql res: []
+target res: ['{"name": "Michael Rogers"}', '{"name": "Anand Manikutty"}', '{"name": "Carol Smith"}', '{"name": "Joe Stevens"}', '{"name": "Mary-Anne Foster"}', '{"name": "George ODonnell"}', '{"name": "John Doe"}', '{"name": "David Smith"}', '{"name": "Zacary Efron"}', '{"name": "Eric Goldsmith"}', '{"name": "Elizabeth Doe"}', '{"name": "Kumar Swamy"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------21-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM scientists WHERE ssn NOT IN (SELECT scientist FROM assignedto)]-----------------
+convert time:1.471298 s
+---------------------------Execute Target Query:MATCH (s:scientists) WHERE NOT EXISTS ((s)-[:ASSIGNEDTO]->()) RETURN count(s) as count-----------------
+MATCH (s:scientists) WHERE NOT EXISTS ((s)-[:ASSIGNEDTO]->()) RETURN count(s) as count
+mysql res: ['{"count_*": 0}']
+target res: ['{"count": 12}']
+mismatch between MySQL and target
+
+--------------------------22-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM scientists EXCEPT SELECT T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT max(hours) FROM projects)]-----------------
+convert time:3.823282 s
+---------------------------Execute Target Query:MATCH (s:scientists)
+WHERE NOT (s.name IN [ 
+    MATCH (a:assignedto)-[:r]->(p:projects), (a)-[:r]->(sc:scientists) 
+    WHERE p.hours = max(p.hours) 
+    RETURN sc.name
+])
+RETURN s.name as name-----------------
+MATCH (s:scientists)
+WHERE NOT (s.name IN [ 
+    MATCH (a:assignedto)-[:r]->(p:projects), (a)-[:r]->(sc:scientists) 
+    WHERE p.hours = max(p.hours) 
+    RETURN sc.name
+])
+RETURN s.name as name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input '[': expected "+" or "-" (line 3, column 26 (offset: 70))
+"    MATCH (a:assignedto)-[:r]->(p:projects), (a)-[:r]->(sc:scientists)"
+                          ^}
+
+--------------------------23-----------------
+schema:['name', 'name', 'hours']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T3.name ,  T3.hours FROM scientists AS T1 JOIN assignedto AS T2 ON T1.ssn = T2.scientist JOIN projects AS T3 ON T2.project = T3.code ORDER BY T3.name ,  T1.name]-----------------
+convert time:3.254655 s
+---------------------------Execute Target Query:MATCH (s:scientists)-[:assignedto]->(p:projects)
+WHERE s.ssn = assignedto.scientist AND assignedto.project = p.code
+RETURN s.name AS scientist_name, p.name AS project_name, p.hours AS hours
+ORDER BY p.name, s.name-----------------
+MATCH (s:scientists)-[:assignedto]->(p:projects)
+WHERE s.ssn = assignedto.scientist AND assignedto.project = p.code
+RETURN s.name AS scientist_name, p.name AS project_name, p.hours AS hours
+ORDER BY p.name, s.name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Variable `assignedto` not defined (line 2, column 15 (offset: 63))
+"WHERE s.ssn = assignedto.scientist AND assignedto.project = p.code"
+               ^}
+
+--------------------------24-----------------
+schema:['name', 'name']
+---------------------------Execute SQL Query:[SELECT T2.name ,  T3.name FROM assignedto AS T1 JOIN projects AS T2 ON T1.project  =  T2.code JOIN scientists AS T3 ON T1.scientist  =  T3.ssn WHERE T2.hours  =  (SELECT min(hours) FROM projects)]-----------------
+convert time:3.324704 s
+---------------------------Execute Target Query:MATCH (p:projects), (s:scientists), (a:assignedto)
+WHERE a.project = p.code AND a.scientist = s.ssn AND p.hours = (SELECT min(hours) FROM projects)
+RETURN p.name AS name, s.name AS name-----------------
+MATCH (p:projects), (s:scientists), (a:assignedto)
+WHERE a.project = p.code AND a.scientist = s.ssn AND p.hours = (SELECT min(hours) FROM projects)
+RETURN p.name AS name, s.name AS name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input '(': expected "+" or "-" (line 2, column 64 (offset: 114))
+"WHERE a.project = p.code AND a.scientist = s.ssn AND p.hours = (SELECT min(hours) FROM projects)"
+                                                                ^}
+success_query_count: 6
+valid_count: 24
+accuracy: 0.25

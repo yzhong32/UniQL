@@ -1,0 +1,755 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM device]-----------------
+target_db_schema: ['Applications', 'Carrier', 'Device', 'Device_ID', 'Package_Version', 'Software_Platform']
+convert time:6.34035 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_devices": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["device"],
+    "code": {
+        "total_devices": "response['aggregations']['total_devices']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_devices': {'value_count': {'field': '_index'}}}, 'code': {'total_devices': "response['aggregations']['total_devices']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_devices': {'value': 6}}}
+
+exec_result_dict: {'total_devices': 6}
+mysql res: ['{"count_*": 6}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['Carrier']
+---------------------------Execute SQL Query:[SELECT Carrier FROM device ORDER BY Carrier ASC]-----------------
+target_db_schema: ['Applications', 'Carrier', 'Device', 'Device_ID', 'Package_Version', 'Software_Platform']
+convert time:2.713311 s
+---------------------------Execute Target Query:{
+    "size": 1000,
+    "sort": [
+        {"Carrier": {"order": "asc"}}
+    ],
+    "_source": ["Carrier"],
+    "inner_index": ["device"]
+}-----------------
+**************************************************
+{'size': 1000, 'sort': [{'Carrier': {'order': 'asc'}}], '_source': ['Carrier']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'device_device', '_id': 'hVcbEo8BsHbYzo2oPHSR', '_score': None, '_source': {'Carrier': 'Vodafone AU'}, 'sort': ['au']}, {'_index': 'device_device', '_id': 'g1cbEo8BsHbYzo2oPHSR', '_score': None, '_source': {'Carrier': 'Bell Mobility'}, 'sort': ['bell']}, {'_index': 'device_device', '_id': 'hFcbEo8BsHbYzo2oPHSR', '_score': None, '_source': {'Carrier': 'Iusacell'}, 'sort': ['iusacell']}, {'_index': 'device_device', '_id': 'gFcbEo8BsHbYzo2oPHSR', '_score': None, '_source': {'Carrier': 'MTS Mobility'}, 'sort': ['mobility']}, {'_index': 'device_device', '_id': 'glcbEo8BsHbYzo2oPHSR', '_score': None, '_source': {'Carrier': 'Telus Mobility'}, 'sort': ['mobility']}, {'_index': 'device_device', '_id': 'gVcbEo8BsHbYzo2oPHSR', '_score': None, '_source': {'Carrier': 'Verizon Wireless'}, 'sort': ['verizon']}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Carrier": "Bell Mobility"}', '{"Carrier": "Iusacell"}', '{"Carrier": "MTS Mobility"}', '{"Carrier": "Telus Mobility"}', '{"Carrier": "Verizon Wireless"}', '{"Carrier": "Vodafone AU"}']
+target res: ['{"Carrier": "Vodafone AU"}', '{"Carrier": "Bell Mobility"}', '{"Carrier": "Iusacell"}', '{"Carrier": "MTS Mobility"}', '{"Carrier": "Telus Mobility"}', '{"Carrier": "Verizon Wireless"}']
+translate SELECT Carrier FROM device ORDER BY Carrier ASC success
+
+--------------------------3-----------------
+schema:['Carrier']
+---------------------------Execute SQL Query:[SELECT Carrier FROM device WHERE Software_Platform != 'Android']-----------------
+target_db_schema: ['Applications', 'Carrier', 'Device', 'Device_ID', 'Package_Version', 'Software_Platform']
+convert time:4.424886 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "match": {
+                        "Software_Platform": "Android"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Carrier"],
+    "inner_index": ["device"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': [{'match': {'Software_Platform': 'Android'}}]}}, '_source': ['Carrier'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 0.0, 'hits': [{'_index': 'device_device', '_id': 'gVcbEo8BsHbYzo2oPHSR', '_score': 0.0, '_source': {'Carrier': 'Verizon Wireless'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Carrier": "Verizon Wireless"}']
+target res: ['{"Carrier": "Verizon Wireless"}']
+translate SELECT Carrier FROM device WHERE Software_Platform != 'Android' success
+
+--------------------------4-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT Shop_Name FROM shop ORDER BY Open_Year ASC]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name']
+convert time:3.841423 s
+---------------------------Execute Target Query:{
+    "size": 1000,
+    "sort": [
+        {"Open_Year": {"order": "asc"}}
+    ],
+    "_source": ["Shop_Name"],
+    "inner_index": ["shop"]
+}-----------------
+**************************************************
+{'size': 1000, 'sort': [{'Open_Year': {'order': 'asc'}}], '_source': ['Shop_Name']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 12, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'device_shop', '_id': 'h1cbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Best Buy'}, 'sort': [2006]}, {'_index': 'device_shop', '_id': 'i1cbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Tynewydd repair'}, 'sort': [2007]}, {'_index': 'device_shop', '_id': 'iFcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Ferndale'}, 'sort': [2009]}, {'_index': 'device_shop', '_id': 'iVcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Apple'}, 'sort': [2009]}, {'_index': 'device_shop', '_id': 'jFcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Dinas store'}, 'sort': [2009]}, {'_index': 'device_shop', '_id': 'jVcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Naval repair'}, 'sort': [2010]}, {'_index': 'device_shop', '_id': 'ilcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Pentre store'}, 'sort': [2011]}, {'_index': 'device_shop', '_id': 'jlcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Gelli repair'}, 'sort': [2013]}, {'_index': 'device_shop', '_id': 'hlcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Dinas Device'}, 'sort': [2014]}, {'_index': 'device_shop', '_id': 'j1cbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': "Naval's shop"}, 'sort': [2014]}, {'_index': 'device_shop', '_id': 'kFcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'ATnT'}, 'sort': [2015]}, {'_index': 'device_shop', '_id': 'kVcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'National Cellphone'}, 'sort': [2017]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Shop_Name": "Best Buy"}', '{"Shop_Name": "Tynewydd repair"}', '{"Shop_Name": "Ferndale"}', '{"Shop_Name": "Apple"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Gelli repair"}', '{"Shop_Name": "Dinas Device"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "ATnT"}', '{"Shop_Name": "National Cellphone"}']
+target res: ['{"Shop_Name": "Best Buy"}', '{"Shop_Name": "Tynewydd repair"}', '{"Shop_Name": "Ferndale"}', '{"Shop_Name": "Apple"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Gelli repair"}', '{"Shop_Name": "Dinas Device"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "ATnT"}', '{"Shop_Name": "National Cellphone"}']
+translate SELECT Shop_Name FROM shop ORDER BY Open_Year ASC success
+
+--------------------------5-----------------
+schema:['avg_Quantity']
+---------------------------Execute SQL Query:[SELECT avg(Quantity) FROM stock]-----------------
+target_db_schema: ['Device_ID', 'Quantity', 'Shop_ID']
+convert time:5.107314 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stock"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "avg_quantity": {
+            "avg": {
+                "field": "Quantity"
+            }
+        }
+    },
+    "code": {
+        "avg_quantity": "response['aggregations']['avg_quantity']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'avg_quantity': {'avg': {'field': 'Quantity'}}}, 'code': {'avg_quantity': "response['aggregations']['avg_quantity']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'avg_quantity': {'value': 110.875}}}
+
+exec_result_dict: {'avg_quantity': 110.875}
+mysql res: ['{"avg_Quantity": 110.8750}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------6-----------------
+schema:['Shop_Name', 'LOCATION']
+---------------------------Execute SQL Query:[SELECT Shop_Name ,  LOCATION FROM shop ORDER BY Shop_Name ASC]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name']
+convert time:2.653504 s
+---------------------------Execute Target Query:{
+    "size": 1000,
+    "sort": [
+        {"Shop_Name": {"order": "asc"}}
+    ],
+    "_source": ["Shop_Name", "Location"],
+    "inner_index": ["shop"]
+}-----------------
+**************************************************
+{'size': 1000, 'sort': [{'Shop_Name': {'order': 'asc'}}], '_source': ['Shop_Name', 'Location']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 12, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'device_shop', '_id': 'iVcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Apple', 'Location': 'Blaenllechau'}, 'sort': ['apple']}, {'_index': 'device_shop', '_id': 'kFcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'ATnT', 'Location': 'Maerdy'}, 'sort': ['atnt']}, {'_index': 'device_shop', '_id': 'h1cbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Best Buy', 'Location': 'Cymmer'}, 'sort': ['best']}, {'_index': 'device_shop', '_id': 'kVcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'National Cellphone', 'Location': 'Wattstown'}, 'sort': ['cellphone']}, {'_index': 'device_shop', '_id': 'hlcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Dinas Device', 'Location': 'Dinas'}, 'sort': ['device']}, {'_index': 'device_shop', '_id': 'jFcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Dinas store', 'Location': 'Dinas'}, 'sort': ['dinas']}, {'_index': 'device_shop', '_id': 'iFcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Ferndale', 'Location': 'Blaenllechau'}, 'sort': ['ferndale']}, {'_index': 'device_shop', '_id': 'jlcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Gelli repair', 'Location': 'Gelli'}, 'sort': ['gelli']}, {'_index': 'device_shop', '_id': 'jVcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Naval repair', 'Location': 'Penygraig'}, 'sort': ['naval']}, {'_index': 'device_shop', '_id': 'j1cbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': "Naval's shop", 'Location': 'Penygraig'}, 'sort': ["naval's"]}, {'_index': 'device_shop', '_id': 'ilcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Pentre store', 'Location': 'Pentre'}, 'sort': ['pentre']}, {'_index': 'device_shop', '_id': 'i1cbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'Tynewydd repair', 'Location': 'Porth'}, 'sort': ['repair']}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Shop_Name": "Apple", "LOCATION": "Blaenllechau"}', '{"Shop_Name": "ATnT", "LOCATION": "Maerdy"}', '{"Shop_Name": "Best Buy", "LOCATION": "Cymmer"}', '{"Shop_Name": "Dinas Device", "LOCATION": "Dinas"}', '{"Shop_Name": "Dinas store", "LOCATION": "Dinas"}', '{"Shop_Name": "Ferndale", "LOCATION": "Blaenllechau"}', '{"Shop_Name": "Gelli repair", "LOCATION": "Gelli"}', '{"Shop_Name": "National Cellphone", "LOCATION": "Wattstown"}', '{"Shop_Name": "Naval repair", "LOCATION": "Penygraig"}', '{"Shop_Name": "Naval\'s shop", "LOCATION": "Penygraig"}', '{"Shop_Name": "Pentre store", "LOCATION": "Pentre"}', '{"Shop_Name": "Tynewydd repair", "LOCATION": "Porth"}']
+target res: ['{"Shop_Name": "Apple", "LOCATION": null}', '{"Shop_Name": "ATnT", "LOCATION": null}', '{"Shop_Name": "Best Buy", "LOCATION": null}', '{"Shop_Name": "National Cellphone", "LOCATION": null}', '{"Shop_Name": "Dinas Device", "LOCATION": null}', '{"Shop_Name": "Dinas store", "LOCATION": null}', '{"Shop_Name": "Ferndale", "LOCATION": null}', '{"Shop_Name": "Gelli repair", "LOCATION": null}', '{"Shop_Name": "Naval repair", "LOCATION": null}', '{"Shop_Name": "Naval\'s shop", "LOCATION": null}', '{"Shop_Name": "Pentre store", "LOCATION": null}', '{"Shop_Name": "Tynewydd repair", "LOCATION": null}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['count_DISTINCT Software_Platform']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT Software_Platform) FROM device]-----------------
+target_db_schema: ['Applications', 'Carrier', 'Device', 'Device_ID', 'Package_Version', 'Software_Platform']
+convert time:7.938336 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_software_platforms": {
+            "cardinality": {
+                "field": "Software_Platform"
+            }
+        }
+    },
+    "inner_index": ["device"],
+    "code": {
+        "count_distinct_software_platform": "response['aggregations']['unique_software_platforms']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_software_platforms': {'cardinality': {'field': 'Software_Platform'}}}, 'code': {'count_distinct_software_platform': "response['aggregations']['unique_software_platforms']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_software_platforms': {'value': 2}}}
+
+exec_result_dict: {'count_distinct_software_platform': 2}
+mysql res: ['{"count_DISTINCT Software_Platform": 2}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['Open_Date', 'Open_Year']
+---------------------------Execute SQL Query:[SELECT Open_Date ,  Open_Year FROM shop WHERE Shop_Name  =  "Apple"]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name']
+convert time:3.675443 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "Shop_Name": "Apple" #comment: keyword
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Open_Date", "Open_Year"],
+    "inner_index": ["shop"]
+}-----------------
+**************************************************
+{'query': {'bool': {'filter': [{'term': {'Shop_Name': 'Apple'}}]}}, '_source': ['Open_Date', 'Open_Year'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"Open_Date": "10 June", "Open_Year": 2009}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT Shop_Name FROM shop ORDER BY Open_Year DESC LIMIT 1]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name']
+convert time:4.143606 s
+---------------------------Execute Target Query:{
+    "size": 1,
+    "sort": [
+        {"Open_Year": {"order": "desc"}}
+    ],
+    "_source": ["Shop_Name"],
+    "inner_index": ["shop"]
+}-----------------
+**************************************************
+{'size': 1, 'sort': [{'Open_Year': {'order': 'desc'}}], '_source': ['Shop_Name']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 12, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'device_shop', '_id': 'kVcbEo8BsHbYzo2oP3Qd', '_score': None, '_source': {'Shop_Name': 'National Cellphone'}, 'sort': [2017]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Shop_Name": "National Cellphone"}']
+target res: ['{"Shop_Name": "National Cellphone"}']
+translate SELECT Shop_Name FROM shop ORDER BY Open_Year DESC LIMIT 1 success
+
+--------------------------10-----------------
+schema:['Shop_Name', 'Carrier']
+---------------------------Execute SQL Query:[SELECT T3.Shop_Name ,  T2.Carrier FROM stock AS T1 JOIN device AS T2 ON T1.Device_ID  =  T2.Device_ID JOIN shop AS T3 ON T1.Shop_ID  =  T3.Shop_ID]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name', 'd', 'e', 'v', 'i', 'c', 'e', ':', ' ', '[', "'", 'A', 'p', 'p', 'l', 'i', 'c', 'a', 't', 'i', 'o', 'n', 's', "'", ',', ' ', "'", 'C', 'a', 'r', 'r', 'i', 'e', 'r', "'", ',', ' ', "'", 'D', 'e', 'v', 'i', 'c', 'e', "'", ',', ' ', "'", 'D', 'e', 'v', 'i', 'c', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'P', 'a', 'c', 'k', 'a', 'g', 'e', '_', 'V', 'e', 'r', 's', 'i', 'o', 'n', "'", ',', ' ', "'", 'S', 'o', 'f', 't', 'w', 'a', 'r', 'e', '_', 'P', 'l', 'a', 't', 'f', 'o', 'r', 'm', "'", ']', '\n', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'D', 'e', 'v', 'i', 'c', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'Q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'S', 'h', 'o', 'p', '_', 'I', 'D', "'", ']', '\n']
+convert time:21.748791 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "Device_ID"
+                    }
+                },
+                {
+                    "exists": {
+                        "field": "Shop_ID"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "shops": {
+            "terms": {
+                "field": "Shop_ID",
+                "size": 10
+            },
+            "aggs": {
+                "devices": {
+                    "terms": {
+                        "field": "Device_ID",
+                        "size": 10
+                    },
+                    "aggs": {
+                        "shop_name": {
+                            "top_hits": {
+                                "_source": {
+                                    "includes": ["Shop_Name"]
+                                },
+                                "size": 1
+                            }
+                        },
+                        "carrier": {
+                            "top_hits": {
+                                "_source": {
+                                    "includes": ["Carrier"]
+                                },
+                                "size": 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "inner_index": ["stock", "device", "shop"],
+    "code": {
+        "shop_name_result": "response['aggregations']['shops']['buckets'][0]['devices']['buckets'][0]['shop_name']['hits']['hits'][0]['_source']['Shop_Name']",
+        "carrier_result": "response['aggregations']['shops']['buckets'][0]['devices']['buckets'][0]['carrier']['hits']['hits'][0]['_source']['Carrier']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'exists': {'field': 'Device_ID'}}, {'exists': {'field': 'Shop_ID'}}]}}, 'aggs': {'shops': {'terms': {'field': 'Shop_ID', 'size': 10}, 'aggs': {'devices': {'terms': {'field': 'Device_ID', 'size': 10}, 'aggs': {'shop_name': {'top_hits': {'_source': {'includes': ['Shop_Name']}, 'size': 1}}, 'carrier': {'top_hits': {'_source': {'includes': ['Carrier']}, 'size': 1}}}}}}}, 'code': {'shop_name_result': "response['aggregations']['shops']['buckets'][0]['devices']['buckets'][0]['shop_name']['hits']['hits'][0]['_source']['Shop_Name']", 'carrier_result': "response['aggregations']['shops']['buckets'][0]['devices']['buckets'][0]['carrier']['hits']['hits'][0]['_source']['Carrier']"}}
+**************************************************
+response of elasticsearch: {'took': 22, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'shops': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 1, 'doc_count': 2, 'devices': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 4, 'doc_count': 1, 'shop_name': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'klcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}, 'carrier': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'klcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}}, {'key': 6, 'doc_count': 1, 'shop_name': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'k1cbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}, 'carrier': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'k1cbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}}]}}, {'key': 3, 'doc_count': 2, 'devices': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 4, 'doc_count': 1, 'shop_name': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'lVcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}, 'carrier': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'lVcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}}, {'key': 6, 'doc_count': 1, 'shop_name': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'llcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}, 'carrier': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'llcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}}]}}, {'key': 2, 'doc_count': 1, 'devices': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 6, 'doc_count': 1, 'shop_name': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'lFcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}, 'carrier': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'lFcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}}]}}, {'key': 4, 'doc_count': 1, 'devices': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 6, 'doc_count': 1, 'shop_name': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'l1cbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}, 'carrier': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'l1cbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}}]}}, {'key': 9, 'doc_count': 1, 'devices': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 4, 'doc_count': 1, 'shop_name': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'mFcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}, 'carrier': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'mFcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}}]}}, {'key': 11, 'doc_count': 1, 'devices': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 6, 'doc_count': 1, 'shop_name': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'mVcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}, 'carrier': {'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.0, 'hits': [{'_index': 'device_stock', '_id': 'mVcbEo8BsHbYzo2oQXQu', '_score': 2.0, '_source': {}}]}}}]}}]}}}
+
+exec_result_dict: {}
+mysql res: ['{"Shop_Name": "Dinas Device", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Ferndale", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Gelli repair", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Dinas Device", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Best Buy", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Ferndale", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Apple", "Carrier": "Vodafone AU"}', '{"Shop_Name": "ATnT", "Carrier": "Vodafone AU"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT T2.Shop_Name FROM stock AS T1 JOIN shop AS T2 ON T1.Shop_ID  =  T2.Shop_ID GROUP BY T1.Shop_ID HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'D', 'e', 'v', 'i', 'c', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'Q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'S', 'h', 'o', 'p', '_', 'I', 'D', "'", ']', '\n']
+convert time:17.739422 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stock", "shop"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "shop",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['Shop_ID'].value > 1"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_shop": {
+            "terms": {
+                "field": "Shop_ID",
+                "size": 10
+            },
+            "aggs": {
+                "shop_names": {
+                    "top_hits": {
+                        "_source": {
+                            "includes": ["Shop_Name"]
+                        },
+                        "size": 1
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "shop_name_result": "response['aggregations']['group_by_shop']['buckets'][*]['shop_names']['hits']['hits'][*]['_source']['Shop_Name']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'shop', 'query': {'match_all': {}}}}], 'filter': [{'script': {'script': "doc['Shop_ID'].value > 1"}}]}}, 'aggs': {'group_by_shop': {'terms': {'field': 'Shop_ID', 'size': 10}, 'aggs': {'shop_names': {'top_hits': {'_source': {'includes': ['Shop_Name']}, 'size': 1}}}}}, 'code': {'shop_name_result': "response['aggregations']['group_by_shop']['buckets'][*]['shop_names']['hits']['hits'][*]['_source']['Shop_Name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------12-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT T2.Shop_Name FROM stock AS T1 JOIN shop AS T2 ON T1.Shop_ID  =  T2.Shop_ID GROUP BY T1.Shop_ID ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'D', 'e', 'v', 'i', 'c', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'Q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'S', 'h', 'o', 'p', '_', 'I', 'D', "'", ']', '\n']
+convert time:10.058171 s
+---------------------------Execute Target Query:{
+  "inner_index": ["stock", "shop"],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_parent": {
+            "parent_type": "shop",
+            "query": {
+              "match_all": {}
+            },
+            "inner_hits": {
+              "_source": ["Shop_Name"]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_shop": {
+      "terms": {
+        "field": "Shop_ID",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "size": 0,
+  "code": {
+    "Shop_Name": "response['hits']['hits'][0]['inner_hits']['shop']['hits']['hits'][0]['_source']['Shop_Name']"
+  }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_parent': {'parent_type': 'shop', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['Shop_Name']}}}]}}, 'aggs': {'group_by_shop': {'terms': {'field': 'Shop_ID', 'size': 1, 'order': {'_count': 'desc'}}}}, 'size': 0, 'code': {'Shop_Name': "response['hits']['hits'][0]['inner_hits']['shop']['hits']['hits'][0]['_source']['Shop_Name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------13-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT T2.Shop_Name FROM stock AS T1 JOIN shop AS T2 ON T1.Shop_ID  =  T2.Shop_ID GROUP BY T1.Shop_ID ORDER BY SUM(T1.quantity) DESC LIMIT 1]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'D', 'e', 'v', 'i', 'c', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'Q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'S', 'h', 'o', 'p', '_', 'I', 'D', "'", ']', '\n']
+convert time:14.240847 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stock", "shop"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match_all": {}
+                }
+            ],
+            "should": [
+                {
+                    "has_parent": {
+                        "parent_type": "shop",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_shop": {
+            "terms": {
+                "field": "Shop_ID",
+                "size": 1,
+                "order": {
+                    "total_quantity": "desc"
+                }
+            },
+            "aggs": {
+                "total_quantity": {
+                    "sum": {
+                        "field": "Quantity"
+                    }
+                },
+                "shop_details": {
+                    "top_hits": {
+                        "size": 1,
+                        "_source": {
+                            "includes": ["Shop_Name"]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "Shop_Name": "response['aggregations']['group_by_shop']['buckets'][0]['shop_details']['hits']['hits'][0]['_source']['Shop_Name']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match_all': {}}], 'should': [{'has_parent': {'parent_type': 'shop', 'query': {'match_all': {}}}}]}}, 'aggs': {'group_by_shop': {'terms': {'field': 'Shop_ID', 'size': 1, 'order': {'total_quantity': 'desc'}}, 'aggs': {'total_quantity': {'sum': {'field': 'Quantity'}}, 'shop_details': {'top_hits': {'size': 1, '_source': {'includes': ['Shop_Name']}}}}}}, 'code': {'Shop_Name': "response['aggregations']['group_by_shop']['buckets'][0]['shop_details']['hits']['hits'][0]['_source']['Shop_Name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------14-----------------
+schema:['Software_Platform', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT Software_Platform ,  COUNT(*) FROM device GROUP BY Software_Platform]-----------------
+target_db_schema: ['Applications', 'Carrier', 'Device', 'Device_ID', 'Package_Version', 'Software_Platform']
+convert time:8.232952 s
+---------------------------Execute Target Query:{
+    "inner_index": ["device"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "group_by_software_platform": {
+            "terms": {
+                "field": "Software_Platform.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "_index"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "software_platform_result": "response['aggregations']['group_by_software_platform']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'group_by_software_platform': {'terms': {'field': 'Software_Platform.keyword', 'size': 10}, 'aggs': {'count': {'value_count': {'field': '_index'}}}}}, 'code': {'software_platform_result': "response['aggregations']['group_by_software_platform']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_software_platform': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'Android', 'doc_count': 5, 'count': {'value': 5}}, {'key': 'iOS', 'doc_count': 1, 'count': {'value': 1}}]}}}
+
+exec_result_dict: {'software_platform_result': [{'key': 'Android', 'doc_count': 5, 'count': {'value': 5}}, {'key': 'iOS', 'doc_count': 1, 'count': {'value': 1}}]}
+mysql res: ['{"Software_Platform": "Android", "COUNT_*": 5}', '{"Software_Platform": "iOS", "COUNT_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------15-----------------
+schema:['Software_Platform']
+---------------------------Execute SQL Query:[SELECT Software_Platform FROM device GROUP BY Software_Platform ORDER BY COUNT(*) DESC]-----------------
+target_db_schema: ['Applications', 'Carrier', 'Device', 'Device_ID', 'Package_Version', 'Software_Platform']
+convert time:4.733899 s
+---------------------------Execute Target Query:{
+  "size": 0,
+  "aggs": {
+    "software_platforms": {
+      "terms": {
+        "field": "Software_Platform.keyword",
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "inner_index": ["device"],
+  "code": {
+    "Software_Platform_result": "response['aggregations']['software_platforms']['buckets']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'aggs': {'software_platforms': {'terms': {'field': 'Software_Platform.keyword', 'order': {'_count': 'desc'}}}}, 'code': {'Software_Platform_result': "response['aggregations']['software_platforms']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'software_platforms': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'Android', 'doc_count': 5}, {'key': 'iOS', 'doc_count': 1}]}}}
+
+exec_result_dict: {'Software_Platform_result': [{'key': 'Android', 'doc_count': 5}, {'key': 'iOS', 'doc_count': 1}]}
+mysql res: ['{"Software_Platform": "Android"}', '{"Software_Platform": "iOS"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------16-----------------
+schema:['Software_Platform']
+---------------------------Execute SQL Query:[SELECT Software_Platform FROM device GROUP BY Software_Platform ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Applications', 'Carrier', 'Device', 'Device_ID', 'Package_Version', 'Software_Platform']
+convert time:7.406208 s
+---------------------------Execute Target Query:{
+  "size": 0,
+  "aggs": {
+    "software_platforms": {
+      "terms": {
+        "field": "Software_Platform.keyword",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "inner_index": ["device"],
+  "code": {
+    "Software_Platform": "response['aggregations']['software_platforms']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'aggs': {'software_platforms': {'terms': {'field': 'Software_Platform.keyword', 'size': 1, 'order': {'_count': 'desc'}}}}, 'code': {'Software_Platform': "response['aggregations']['software_platforms']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'software_platforms': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 1, 'buckets': [{'key': 'Android', 'doc_count': 5}]}}}
+
+exec_result_dict: {'Software_Platform': 'Android'}
+mysql res: ['{"Software_Platform": "Android"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------17-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT Shop_Name FROM shop WHERE Shop_ID NOT IN (SELECT Shop_ID FROM stock)]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'D', 'e', 'v', 'i', 'c', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'Q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'S', 'h', 'o', 'p', '_', 'I', 'D', "'", ']', '\n']
+convert time:6.357796 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": {
+                "terms": {
+                    "Shop_ID": {
+                        "index": "stock",
+                        "path": "Shop_ID"
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["Shop_Name"],
+    "inner_index": ["shop", "stock"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'Shop_ID': {'index': 'stock', 'path': 'Shop_ID'}}}}}, '_source': ['Shop_Name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:83] [bool] failed to parse field [must_not]')
+
+--------------------------18-----------------
+schema:['LOCATION']
+---------------------------Execute SQL Query:[SELECT LOCATION FROM shop WHERE Open_Year  >  2012 INTERSECT SELECT LOCATION FROM shop WHERE Open_Year  <  2008]-----------------
+target_db_schema: ['Location', 'Open_Date', 'Open_Year', 'Shop_ID', 'Shop_Name']
+Error parsing XML of prompt: not well-formed (invalid token): line 135, column 110
+convert time:11.987429 s
+---------------------------Execute Target Query:{
+    "inner_index": ["shop"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {
+                                "range": {
+                                    "Open_Year": {
+                                        "gt": 2012
+                                    }
+                                }
+                            },
+                            {
+                                "range": {
+                                    "Open_Year": {
+                                        "lt": 2008
+                                    }
+                                }
+                            }
+                        ],
+                        "minimum_should_match": 1
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Location"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'should': [{'range': {'Open_Year': {'gt': 2012}}}, {'range': {'Open_Year': {'lt': 2008}}}], 'minimum_should_match': 1}}]}}, '_source': ['Location'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'device_shop', '_id': 'hlcbEo8BsHbYzo2oP3Qd', '_score': 1.0, '_source': {'Location': 'Dinas'}}, {'_index': 'device_shop', '_id': 'h1cbEo8BsHbYzo2oP3Qd', '_score': 1.0, '_source': {'Location': 'Cymmer'}}, {'_index': 'device_shop', '_id': 'i1cbEo8BsHbYzo2oP3Qd', '_score': 1.0, '_source': {'Location': 'Porth'}}, {'_index': 'device_shop', '_id': 'jlcbEo8BsHbYzo2oP3Qd', '_score': 1.0, '_source': {'Location': 'Gelli'}}, {'_index': 'device_shop', '_id': 'j1cbEo8BsHbYzo2oP3Qd', '_score': 1.0, '_source': {'Location': 'Penygraig'}}, {'_index': 'device_shop', '_id': 'kFcbEo8BsHbYzo2oP3Qd', '_score': 1.0, '_source': {'Location': 'Maerdy'}}, {'_index': 'device_shop', '_id': 'kVcbEo8BsHbYzo2oP3Qd', '_score': 1.0, '_source': {'Location': 'Wattstown'}}]}}
+
+exec_result_dict: {}
+mysql res: []
+target res: ['{"LOCATION": null}', '{"LOCATION": null}', '{"LOCATION": null}', '{"LOCATION": null}', '{"LOCATION": null}', '{"LOCATION": null}', '{"LOCATION": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:['Carrier']
+---------------------------Execute SQL Query:[SELECT Carrier FROM device WHERE Device_ID NOT IN (SELECT Device_ID FROM stock)]-----------------
+target_db_schema: ['Device_ID', 'Quantity', 'Shop_ID', 'd', 'e', 'v', 'i', 'c', 'e', ':', ' ', '[', "'", 'A', 'p', 'p', 'l', 'i', 'c', 'a', 't', 'i', 'o', 'n', 's', "'", ',', ' ', "'", 'C', 'a', 'r', 'r', 'i', 'e', 'r', "'", ',', ' ', "'", 'D', 'e', 'v', 'i', 'c', 'e', "'", ',', ' ', "'", 'D', 'e', 'v', 'i', 'c', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'P', 'a', 'c', 'k', 'a', 'g', 'e', '_', 'V', 'e', 'r', 's', 'i', 'o', 'n', "'", ',', ' ', "'", 'S', 'o', 'f', 't', 'w', 'a', 'r', 'e', '_', 'P', 'l', 'a', 't', 'f', 'o', 'r', 'm', "'", ']', '\n']
+convert time:7.602047 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": {
+                "terms": {
+                    "Device_ID": {
+                        "index": "stock",
+                        "path": "Device_ID"
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["Carrier"],
+    "inner_index": ["device", "stock"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'Device_ID': {'index': 'stock', 'path': 'Device_ID'}}}}}, '_source': ['Carrier'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:87] [bool] failed to parse field [must_not]')
+
+--------------------------20-----------------
+schema:['Carrier']
+---------------------------Execute SQL Query:[SELECT T2.Carrier FROM stock AS T1 JOIN device AS T2 ON T1.Device_ID  =  T2.Device_ID GROUP BY T1.Device_ID HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ['Applications', 'Carrier', 'Device', 'Device_ID', 'Package_Version', 'Software_Platform', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'D', 'e', 'v', 'i', 'c', 'e', '_', 'I', 'D', "'", ',', ' ', "'", 'Q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'S', 'h', 'o', 'p', '_', 'I', 'D', "'", ']', '\n']
+convert time:11.567721 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stock", "device"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "device",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "size": 1,
+                            "aggs": {
+                                "device_count": {
+                                    "value_count": {
+                                        "field": "Device_ID"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['device_count'].value > 1"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_device_id": {
+            "terms": {
+                "field": "Device_ID",
+                "size": 10
+            },
+            "aggs": {
+                "carrier": {
+                    "terms": {
+                        "field": "Carrier"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "carrier_result": "response['aggregations']['group_by_device_id']['buckets'][*]['carrier']['buckets'][*]['key']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_child': {'type': 'device', 'query': {'match_all': {}}, 'inner_hits': {'size': 1, 'aggs': {'device_count': {'value_count': {'field': 'Device_ID'}}}}}}], 'filter': [{'script': {'script': "doc['device_count'].value > 1"}}]}}, 'aggs': {'group_by_device_id': {'terms': {'field': 'Device_ID', 'size': 10}, 'aggs': {'carrier': {'terms': {'field': 'Carrier'}}}}}, 'code': {'carrier_result': "response['aggregations']['group_by_device_id']['buckets'][*]['carrier']['buckets'][*]['key']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:114] [inner_hits] unknown field [aggs]')
+success_query_count: 4
+valid_count: 20
+accuracy: 0.2

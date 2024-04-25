@@ -1,0 +1,337 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) from railway]-----------------
+target_db_schema: ['railway_id', 'builder', 'location', 'wheels', 'objectnumber', 'built', 'railway']
+convert time:0.98428 s
+---------------------------Execute Target Query:MATCH (r:railway)
+RETURN count(*) as count-----------------
+MATCH (r:railway)
+RETURN count(*) as count
+mysql res: ['{"count_*": 10}']
+target res: ['{"count": 10}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['builder']
+---------------------------Execute SQL Query:[SELECT builder from railway ORDER BY builder ASC]-----------------
+target_db_schema: ['railway_id', 'builder', 'location', 'wheels', 'objectnumber', 'built', 'railway']
+convert time:0.902084 s
+---------------------------Execute Target Query:MATCH (r:railway)
+RETURN r.builder AS builder
+ORDER BY builder ASC-----------------
+MATCH (r:railway)
+RETURN r.builder AS builder
+ORDER BY builder ASC
+mysql res: ['{"builder": "Avonside"}', '{"builder": "GER Hartford"}', '{"builder": "GER Stratford"}', '{"builder": "GNR Doncaster"}', '{"builder": "GWR Swindon"}', '{"builder": "GWR Swindon"}', '{"builder": "MR Derby"}', '{"builder": "SECR Ashford"}', '{"builder": "Stephenson"}', '{"builder": "Swindon Works"}']
+target res: ['{"builder": "Avonside"}', '{"builder": "GER Hartford"}', '{"builder": "GER Stratford"}', '{"builder": "GNR Doncaster"}', '{"builder": "GWR Swindon"}', '{"builder": "GWR Swindon"}', '{"builder": "MR Derby"}', '{"builder": "SECR Ashford"}', '{"builder": "Stephenson"}', '{"builder": "Swindon Works"}']
+translate SELECT builder from railway ORDER BY builder ASC success
+
+--------------------------3-----------------
+schema:['wheels', 'location']
+---------------------------Execute SQL Query:[SELECT wheels ,  location from railway]-----------------
+target_db_schema: ['railway_id', 'builder', 'location', 'wheels', 'objectnumber', 'built', 'railway']
+convert time:0.758532 s
+---------------------------Execute Target Query:MATCH (r:railway)
+RETURN r.wheels, r.location;-----------------
+MATCH (r:railway)
+RETURN r.wheels, r.location;
+mysql res: ['{"wheels": "4-4-0", "location": "York"}', '{"wheels": "4-4-0", "location": "Bo\'ness"}', '{"wheels": "4-4-2", "location": "Barrow Hill"}', '{"wheels": "4-4-0", "location": "Toddington"}', '{"wheels": "0-6-0T", "location": "Bressingham"}', '{"wheels": "0-6-0", "location": "Barrow Hill"}', '{"wheels": "2-8-0", "location": "Shildon"}', '{"wheels": "4-6-0", "location": "Swindon"}', '{"wheels": "4-4-2T", "location": "Bressingham"}', '{"wheels": "0-6-0ST", "location": "Basingstoke"}']
+target res: ['{"r.wheels": "4-4-0", "r.location": "York"}', '{"r.wheels": "4-4-0", "r.location": "Bo\'ness"}', '{"r.wheels": "4-4-2", "r.location": "Barrow Hill"}', '{"r.wheels": "4-4-0", "r.location": "Toddington"}', '{"r.wheels": "0-6-0T", "r.location": "Bressingham"}', '{"r.wheels": "0-6-0", "r.location": "Barrow Hill"}', '{"r.wheels": "2-8-0", "r.location": "Shildon"}', '{"r.wheels": "4-6-0", "r.location": "Swindon"}', '{"r.wheels": "4-4-2T", "r.location": "Bressingham"}', '{"r.wheels": "0-6-0ST", "r.location": "Basingstoke"}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['max_level']
+---------------------------Execute SQL Query:[SELECT max(level) from manager WHERE country != "Australia	"]-----------------
+target_db_schema: ['level', 'manager_id', 'name', 'age', 'country', 'working_year_starts']
+convert time:0.860455 s
+---------------------------Execute Target Query:MATCH (m:manager)
+WHERE m.country <> "Australia"
+WITH MAX(m.level) AS max_level
+RETURN max_level-----------------
+MATCH (m:manager)
+WHERE m.country <> "Australia"
+WITH MAX(m.level) AS max_level
+RETURN max_level
+mysql res: ['{"max_level": 12}']
+target res: ['{"max_level": 11}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['avg_age']
+---------------------------Execute SQL Query:[SELECT avg(age) from manager]-----------------
+target_db_schema: ['level', 'manager_id', 'name', 'age', 'country', 'working_year_starts']
+convert time:0.768717 s
+---------------------------Execute Target Query:MATCH (m:manager)
+RETURN AVG(m.age) as avg_age-----------------
+MATCH (m:manager)
+RETURN AVG(m.age) as avg_age
+mysql res: ['{"avg_age": 49.1429}']
+target res: ['{"avg_age": 49.142857142857146}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name from manager ORDER BY level ASC]-----------------
+target_db_schema: ['level', 'manager_id', 'name', 'age', 'country', 'working_year_starts']
+convert time:0.791825 s
+---------------------------Execute Target Query:MATCH (m:manager)
+RETURN m.name
+ORDER BY m.level ASC-----------------
+MATCH (m:manager)
+RETURN m.name
+ORDER BY m.level ASC
+mysql res: ['{"name": "Ben Curtis"}', '{"name": "Todd Hamilton"}', '{"name": "Tiger Woods"}', '{"name": "David Duval"}', '{"name": "Sandy Lyle"}', '{"name": "Nick Faldo"}', '{"name": "Greg Norman"}']
+target res: ['{"m.name": "Ben Curtis"}', '{"m.name": "Todd Hamilton"}', '{"m.name": "Tiger Woods"}', '{"m.name": "David Duval"}', '{"m.name": "Sandy Lyle"}', '{"m.name": "Nick Faldo"}', '{"m.name": "Greg Norman"}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['name', 'arrival']
+---------------------------Execute SQL Query:[SELECT name ,  arrival from train]-----------------
+target_db_schema: ['name', 'from', 'railway_id', 'train_num', 'arrival', 'train_id']
+convert time:0.772839 s
+---------------------------Execute Target Query:MATCH (t:train)
+RETURN t.name, t.arrival-----------------
+MATCH (t:train)
+RETURN t.name, t.arrival
+mysql res: ['{"name": "Wardha-Ballarshah Pass", "arrival": "08:54"}', '{"name": "Sewagram Exp", "arrival": "09:08"}', '{"name": "Ballarshah-Mumbai Pass", "arrival": "09:48"}', '{"name": "Nagpur-Kazipet Pass", "arrival": "23:44"}', '{"name": "Kazipet-Nagpur Pass", "arrival": "05:09"}', '{"name": "Lucknow-Chennai Exp", "arrival": "13:04"}', '{"name": "Andaman Exp", "arrival": "13:04"}', '{"name": "Andaman Exp", "arrival": "23:39"}', '{"name": "Nandigram Exp", "arrival": "13:28"}']
+target res: ['{"t.name": "Wardha-Ballarshah Pass", "t.arrival": "08:54"}', '{"t.name": "Sewagram Exp", "t.arrival": "09:08"}', '{"t.name": "Ballarshah-Mumbai Pass", "t.arrival": "09:48"}', '{"t.name": "Nagpur-Kazipet Pass", "t.arrival": "23:44"}', '{"t.name": "Kazipet-Nagpur Pass", "t.arrival": "05:09"}', '{"t.name": "Lucknow-Chennai Exp", "t.arrival": "13:04"}', '{"t.name": "Andaman Exp", "t.arrival": "13:04"}', '{"t.name": "Andaman Exp", "t.arrival": "23:39"}', '{"t.name": "Nandigram Exp", "t.arrival": "13:28"}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name from manager ORDER BY age DESC LIMIT 1]-----------------
+target_db_schema: ['level', 'manager_id', 'name', 'age', 'country', 'working_year_starts']
+convert time:1.091169 s
+---------------------------Execute Target Query:MATCH (m:manager)
+RETURN m.name AS name
+ORDER BY m.age DESC
+LIMIT 1-----------------
+MATCH (m:manager)
+RETURN m.name AS name
+ORDER BY m.age DESC
+LIMIT 1
+mysql res: ['{"name": "Todd Hamilton"}']
+target res: ['{"name": "Todd Hamilton"}']
+translate SELECT name from manager ORDER BY age DESC LIMIT 1 success
+
+--------------------------9-----------------
+schema:['name', 'location']
+---------------------------Execute SQL Query:[SELECT T2.name ,  T1.location from railway AS T1 JOIN train AS T2 ON T1.railway_id  =  T2.railway_id]-----------------
+target_db_schema: ['name', 'from', 'railway_id', 'train_num', 'arrival', 'train_id', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'i', 'd', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'l', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'w', 'h', 'e', 'e', 'l', 's', "'", ',', ' ', "'", 'o', 'b', 'j', 'e', 'c', 't', 'n', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.025016 s
+---------------------------Execute Target Query:MATCH (r:railway), (t:train) WHERE r.railway_id = t.railway_id
+WITH t.name AS name, r.location AS location
+RETURN name, location-----------------
+MATCH (r:railway), (t:train) WHERE r.railway_id = t.railway_id
+WITH t.name AS name, r.location AS location
+RETURN name, location
+mysql res: ['{"name": "Wardha-Ballarshah Pass", "location": "York"}', '{"name": "Sewagram Exp", "location": "York"}', '{"name": "Ballarshah-Mumbai Pass", "location": "Bo\'ness"}', '{"name": "Nagpur-Kazipet Pass", "location": "Barrow Hill"}', '{"name": "Kazipet-Nagpur Pass", "location": "Bressingham"}', '{"name": "Lucknow-Chennai Exp", "location": "Bressingham"}', '{"name": "Andaman Exp", "location": "Shildon"}', '{"name": "Andaman Exp", "location": "Bressingham"}', '{"name": "Nandigram Exp", "location": "Basingstoke"}']
+target res: ['{"name": "Wardha-Ballarshah Pass", "location": "York"}', '{"name": "Sewagram Exp", "location": "York"}', '{"name": "Ballarshah-Mumbai Pass", "location": "Bo\'ness"}', '{"name": "Nagpur-Kazipet Pass", "location": "Barrow Hill"}', '{"name": "Kazipet-Nagpur Pass", "location": "Bressingham"}', '{"name": "Lucknow-Chennai Exp", "location": "Bressingham"}', '{"name": "Andaman Exp", "location": "Shildon"}', '{"name": "Andaman Exp", "location": "Bressingham"}', '{"name": "Nandigram Exp", "location": "Basingstoke"}']
+translate SELECT T2.name ,  T1.location from railway AS T1 JOIN train AS T2 ON T1.railway_id  =  T2.railway_id success
+
+--------------------------10-----------------
+schema:['builder']
+---------------------------Execute SQL Query:[SELECT T1.builder from railway AS T1 JOIN train AS T2 ON T1.railway_id  =  T2.railway_id WHERE T2.name  =  "Andaman Exp"]-----------------
+target_db_schema: ['name', 'from', 'railway_id', 'train_num', 'arrival', 'train_id', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'i', 'd', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'l', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'w', 'h', 'e', 'e', 'l', 's', "'", ',', ' ', "'", 'o', 'b', 'j', 'e', 'c', 't', 'n', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.258978 s
+---------------------------Execute Target Query:MATCH (r:railway), (t:train) 
+WHERE r.railway_id = t.railway_id AND t.name = "Andaman Exp" 
+RETURN r.builder as builder-----------------
+MATCH (r:railway), (t:train) 
+WHERE r.railway_id = t.railway_id AND t.name = "Andaman Exp" 
+RETURN r.builder as builder
+mysql res: ['{"builder": "GWR Swindon"}', '{"builder": "Stephenson"}']
+target res: ['{"builder": "GWR Swindon"}', '{"builder": "Stephenson"}']
+translate SELECT T1.builder from railway AS T1 JOIN train AS T2 ON T1.railway_id  =  T2.railway_id WHERE T2.name  =  "Andaman Exp" success
+
+--------------------------11-----------------
+schema:['railway_id', 'location']
+---------------------------Execute SQL Query:[SELECT T2.railway_id ,  T1.location from railway AS T1 JOIN train AS T2 ON T1.railway_id  =  T2.railway_id GROUP BY T2.railway_id HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ['name', 'from', 'railway_id', 'train_num', 'arrival', 'train_id', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'i', 'd', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'l', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'w', 'h', 'e', 'e', 'l', 's', "'", ',', ' ', "'", 'o', 'b', 'j', 'e', 'c', 't', 'n', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.157062 s
+---------------------------Execute Target Query:MATCH (r:railway)-[:r]->(t:train)
+WITH r.railway_id AS railway_id, t.location AS location, COUNT(*) AS cnt
+WHERE cnt > 1
+RETURN railway_id, location-----------------
+MATCH (r:railway)-[:r]->(t:train)
+WITH r.railway_id AS railway_id, t.location AS location, COUNT(*) AS cnt
+WHERE cnt > 1
+RETURN railway_id, location
+mysql res: ['{"railway_id": 1, "location": "York"}', '{"railway_id": 5, "location": "Bressingham"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['railway_id', 'builder']
+---------------------------Execute SQL Query:[SELECT T2.railway_id ,  T1.builder from railway AS T1 JOIN train AS T2 ON T1.railway_id  =  T2.railway_id GROUP BY T2.railway_id ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['name', 'from', 'railway_id', 'train_num', 'arrival', 'train_id', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'i', 'd', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'l', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'w', 'h', 'e', 'e', 'l', 's', "'", ',', ' ', "'", 'o', 'b', 'j', 'e', 'c', 't', 'n', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', "'", ']', '\n']
+convert time:1.406146 s
+---------------------------Execute Target Query:MATCH (r:railway)-[:r]->(t:train)
+WITH t.railway_id AS railway_id, r.builder AS builder, COUNT(*) AS count
+ORDER BY count DESC
+LIMIT 1
+RETURN railway_id, builder-----------------
+MATCH (r:railway)-[:r]->(t:train)
+WITH t.railway_id AS railway_id, r.builder AS builder, COUNT(*) AS count
+ORDER BY count DESC
+LIMIT 1
+RETURN railway_id, builder
+mysql res: ['{"railway_id": 1, "builder": "SECR Ashford"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['builder', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT builder ,  COUNT(*) from railway GROUP BY builder]-----------------
+target_db_schema: ['railway_id', 'builder', 'location', 'wheels', 'objectnumber', 'built', 'railway']
+convert time:0.931597 s
+---------------------------Execute Target Query:MATCH (r:railway)
+WITH r.builder AS builder, COUNT(*) AS count
+RETURN builder, count-----------------
+MATCH (r:railway)
+WITH r.builder AS builder, COUNT(*) AS count
+RETURN builder, count
+mysql res: ['{"builder": "SECR Ashford", "COUNT_*": 1}', '{"builder": "MR Derby", "COUNT_*": 1}', '{"builder": "GNR Doncaster", "COUNT_*": 1}', '{"builder": "GWR Swindon", "COUNT_*": 2}', '{"builder": "GER Stratford", "COUNT_*": 1}', '{"builder": "GER Hartford", "COUNT_*": 1}', '{"builder": "Swindon Works", "COUNT_*": 1}', '{"builder": "Stephenson", "COUNT_*": 1}', '{"builder": "Avonside", "COUNT_*": 1}']
+target res: ['{"builder": "SECR Ashford", "count": 1}', '{"builder": "MR Derby", "count": 1}', '{"builder": "GNR Doncaster", "count": 1}', '{"builder": "GWR Swindon", "count": 2}', '{"builder": "GER Stratford", "count": 1}', '{"builder": "GER Hartford", "count": 1}', '{"builder": "Swindon Works", "count": 1}', '{"builder": "Stephenson", "count": 1}', '{"builder": "Avonside", "count": 1}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['builder']
+---------------------------Execute SQL Query:[SELECT builder from railway GROUP BY builder ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['railway_id', 'builder', 'location', 'wheels', 'objectnumber', 'built', 'railway']
+convert time:1.345131 s
+---------------------------Execute Target Query:MATCH (r:railway)
+WITH r.builder AS builder, COUNT(*) AS count
+ORDER BY count DESC
+LIMIT 1
+RETURN builder-----------------
+MATCH (r:railway)
+WITH r.builder AS builder, COUNT(*) AS count
+ORDER BY count DESC
+LIMIT 1
+RETURN builder
+mysql res: ['{"builder": "GWR Swindon"}']
+target res: ['{"builder": "GWR Swindon"}']
+translate SELECT builder from railway GROUP BY builder ORDER BY COUNT(*) DESC LIMIT 1 success
+
+--------------------------15-----------------
+schema:['location', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT location ,  COUNT(*) from railway GROUP BY location]-----------------
+target_db_schema: ['railway_id', 'builder', 'location', 'wheels', 'objectnumber', 'built', 'railway']
+convert time:0.962614 s
+---------------------------Execute Target Query:MATCH (r:railway)
+WITH r.location AS location, COUNT(*) AS count
+RETURN location, count-----------------
+MATCH (r:railway)
+WITH r.location AS location, COUNT(*) AS count
+RETURN location, count
+mysql res: ['{"location": "York", "COUNT_*": 1}', '{"location": "Bo\'ness", "COUNT_*": 1}', '{"location": "Barrow Hill", "COUNT_*": 2}', '{"location": "Toddington", "COUNT_*": 1}', '{"location": "Bressingham", "COUNT_*": 2}', '{"location": "Shildon", "COUNT_*": 1}', '{"location": "Swindon", "COUNT_*": 1}', '{"location": "Basingstoke", "COUNT_*": 1}']
+target res: ['{"location": "York", "count": 1}', '{"location": "Bo\'ness", "count": 1}', '{"location": "Barrow Hill", "count": 2}', '{"location": "Toddington", "count": 1}', '{"location": "Bressingham", "count": 2}', '{"location": "Shildon", "count": 1}', '{"location": "Swindon", "count": 1}', '{"location": "Basingstoke", "count": 1}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['location']
+---------------------------Execute SQL Query:[SELECT location from railway GROUP BY location HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ['railway_id', 'builder', 'location', 'wheels', 'objectnumber', 'built', 'railway']
+convert time:0.896719 s
+---------------------------Execute Target Query:MATCH (r:railway)
+WITH r.location AS location, COUNT(*) AS count
+WHERE count > 1
+RETURN location-----------------
+MATCH (r:railway)
+WITH r.location AS location, COUNT(*) AS count
+WHERE count > 1
+RETURN location
+mysql res: ['{"location": "Barrow Hill"}', '{"location": "Bressingham"}']
+target res: ['{"location": "Barrow Hill"}', '{"location": "Bressingham"}']
+translate SELECT location from railway GROUP BY location HAVING COUNT(*)  >  1 success
+
+--------------------------17-----------------
+schema:['objectnumber']
+---------------------------Execute SQL Query:[SELECT objectnumber from railway WHERE railway_id NOT IN (SELECT railway_id from train)]-----------------
+target_db_schema: ['name', 'from', 'railway_id', 'train_num', 'arrival', 'train_id', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'i', 'd', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'l', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'w', 'h', 'e', 'e', 'l', 's', "'", ',', ' ', "'", 'o', 'b', 'j', 'e', 'c', 't', 'n', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'b', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'r', 'a', 'i', 'l', 'w', 'a', 'y', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:0.891657 s
+---------------------------Execute Target Query:MATCH (r:railway)
+WHERE NOT EXISTS((r)-[:r]->(:train))
+RETURN r.objectnumber as objectnumber-----------------
+MATCH (r:railway)
+WHERE NOT EXISTS((r)-[:r]->(:train))
+RETURN r.objectnumber as objectnumber
+mysql res: ['{"objectnumber": "1978-7025"}', '{"objectnumber": "1978-7026"}', '{"objectnumber": "1978-7027"}']
+target res: ['{"objectnumber": "1975-7006"}', '{"objectnumber": "1975-7018"}', '{"objectnumber": "1975-7005"}', '{"objectnumber": "1978-7025"}', '{"objectnumber": "1975-7003"}', '{"objectnumber": "1978-7026"}', '{"objectnumber": "1976-7001"}', '{"objectnumber": "1978-7027"}', '{"objectnumber": "1978-7028"}', '{"objectnumber": "2008-7159"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------18-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country from manager WHERE age  >  50 INTERSECT SELECT country from manager WHERE age  <  46]-----------------
+target_db_schema: ['level', 'manager_id', 'name', 'age', 'country', 'working_year_starts']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.272498 s
+---------------------------Execute Target Query:MATCH (m1:manager)
+WHERE m1.age > 50
+WITH m1.country AS country
+MATCH (m2:manager)
+WHERE m2.age < 46 AND m2.country = country
+RETURN country-----------------
+MATCH (m1:manager)
+WHERE m1.age > 50
+WITH m1.country AS country
+MATCH (m2:manager)
+WHERE m2.age < 46 AND m2.country = country
+RETURN country
+mysql res: ['{"country": "United States"}']
+target res: ['{"country": "United States"}']
+translate SELECT country from manager WHERE age  >  50 INTERSECT SELECT country from manager WHERE age  <  46 success
+
+--------------------------19-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT DISTINCT country from manager]-----------------
+target_db_schema: ['level', 'manager_id', 'name', 'age', 'country', 'working_year_starts']
+convert time:0.964769 s
+---------------------------Execute Target Query:MATCH (m:manager)
+RETURN DISTINCT m.country as country-----------------
+MATCH (m:manager)
+RETURN DISTINCT m.country as country
+mysql res: ['{"country": "United States"}', '{"country": "Scotland"}', '{"country": "England"}', '{"country": "Australia"}']
+target res: ['{"country": "United States"}', '{"country": "Scotland"}', '{"country": "England"}', '{"country": "Australia"}']
+translate SELECT DISTINCT country from manager success
+
+--------------------------20-----------------
+schema:['working_year_starts']
+---------------------------Execute SQL Query:[SELECT working_year_starts from manager ORDER BY level DESC]-----------------
+target_db_schema: ['level', 'manager_id', 'name', 'age', 'country', 'working_year_starts']
+convert time:1.009743 s
+---------------------------Execute Target Query:MATCH (m:manager)
+RETURN m.working_year_starts
+ORDER BY m.level DESC-----------------
+MATCH (m:manager)
+RETURN m.working_year_starts
+ORDER BY m.level DESC
+mysql res: ['{"working_year_starts": "1993"}', '{"working_year_starts": "1999"}', '{"working_year_starts": "1985"}', '{"working_year_starts": "2001"}', '{"working_year_starts": "2003"}', '{"working_year_starts": "2004"}', '{"working_year_starts": "2006"}']
+target res: ['{"m.working_year_starts": "1993"}', '{"m.working_year_starts": "1999"}', '{"m.working_year_starts": "1985"}', '{"m.working_year_starts": "2001"}', '{"m.working_year_starts": "2003"}', '{"m.working_year_starts": "2004"}', '{"m.working_year_starts": "2006"}']
+mismatch between MySQL and target
+
+--------------------------21-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country from manager WHERE age  >  50 OR age  <  46]-----------------
+target_db_schema: ['level', 'manager_id', 'name', 'age', 'country', 'working_year_starts']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:0.901001 s
+---------------------------Execute Target Query:MATCH (m:manager)
+WHERE m.age > 50 OR m.age < 46
+RETURN m.country as country-----------------
+MATCH (m:manager)
+WHERE m.age > 50 OR m.age < 46
+RETURN m.country as country
+mysql res: ['{"country": "United States"}', '{"country": "United States"}', '{"country": "England"}', '{"country": "Australia"}']
+target res: ['{"country": "United States"}', '{"country": "United States"}', '{"country": "England"}', '{"country": "Australia"}']
+translate SELECT country from manager WHERE age  >  50 OR age  <  46 success
+success_query_count: 9
+valid_count: 21
+accuracy: 0.42857142857142855

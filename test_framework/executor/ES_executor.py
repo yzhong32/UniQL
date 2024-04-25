@@ -31,20 +31,6 @@ class ElasticsearchExecutor(QueryExecutor):
         )
         return es
 
-    def get_schema(self, index_name):
-        try:
-            mappings = self.client.indices.get_mapping(index=index_name)
-            properties = mappings[index_name]['mappings']['properties']
-            schema = {}
-            for field, details in properties.items():
-                schema[field] = details.get('type', 'unknown')  # 'unknown' as default if type is not specified
-
-            return schema
-
-        except Exception as e:
-            print(f"Error retrieving schema for index {index_name}: {e}")
-            return None
-
     def init(self, config_path):
         pass
 
@@ -57,7 +43,9 @@ class ElasticsearchExecutor(QueryExecutor):
             print("**************************************************")
             print(query)
             print("**************************************************")
-            self.index = database+'_'+table[0]
+            if isinstance(table, list):
+                table = table[0]
+            self.index = database+'_'+table
 
             code = {}
             if "code" in query:
@@ -92,10 +80,11 @@ class ElasticsearchExecutor(QueryExecutor):
         except Exception as e:
             return None, e
 
-    def get_schema(self, index_name):
+    def get_schema(self, database, index_name):
         try:
-            mappings = self.client.indices.get_mapping(index=index_name)
-            properties = mappings[index_name]['mappings']['properties']
+            formatted_index = "{db}_{table}".format(db=database, table=index_name)
+            mappings = self.client.indices.get_mapping(index=formatted_index)
+            properties = mappings[formatted_index]['mappings']['properties']
             field_names = list(properties.keys())
             return field_names
 
@@ -109,7 +98,7 @@ class ElasticsearchExecutor(QueryExecutor):
 
         # Loop through each table name in the list
         for table in table_list:
-            schema = self.get_schema(table)
+            schema = self.get_schema(database, table)
             if schema is not None:
                 if concatenated_schema:  # Add the table name as a splitter if it's not the first schema
                     concatenated_schema += f"{table}: {schema}\n"
@@ -124,8 +113,7 @@ class ElasticsearchExecutor(QueryExecutor):
 
 if __name__ == '__main__':
     executor = ElasticsearchExecutor()
-    index_name = 'bike_1_trip'
-    schema = executor.get_schema(index_name)
+    schema = executor.get_schema("railway", "railway")
     print(schema)
 
 # if __name__ == '__main__':

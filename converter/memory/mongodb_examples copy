@@ -1,0 +1,16 @@
+SQL: SELECT avg(lat) , avg(longitude) FROM station WHERE city = "San Jose" ###
+Mongodb: db.station.aggregate([{ "$match": { "city": "San Jose" } }, { "$group": { "_id": null, "avgLatitude": { "$avg": "$lat" }, "avgLongitude": { "$avg": "$longitude" } }}])
+
+
+SQL: SELECT sum(duration) ,  max(duration) FROM trip WHERE bike_id  =  636 ###
+Mongodb: db.trip.aggregate([{ $match: { bike_id: 636 } }, { $group: { _id: null, totalDuration: { $sum: "$duration" }, maxDuration: { $max: "$duration" } }}])
+
+
+SQL: SELECT COUNT(*) FROM weather WHERE mean_humidity  >  50 AND mean_visibility_miles  >  8 ###
+Mongodb: db.weather.aggregate([{ $match: { mean_humidity: { $gt: 50 }, mean_visibility_miles: { $gt: 8 } }}, { $count: "totalCount" }])
+
+
+SQL: SELECT zip_code FROM weather GROUP BY zip_code ORDER BY avg(mean_sea_level_pressure_inches) LIMIT 1 ###
+Mongodb: db.weather.aggregate([{ $group: { _id: "$zip_code", avgPressure: { $avg: "$mean_sea_level_pressure_inches" } }}, { $sort: { avgPressure: 1 } }, { $limit: 1 }, { $project: { _id: 0, zip_code: "$_id" } }])
+
+

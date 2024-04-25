@@ -1,0 +1,354 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM device]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version']
+convert time:0.706933 s
+---------------------------Execute Target Query:MATCH (d:device)
+RETURN count(*) as count-----------------
+MATCH (d:device)
+RETURN count(*) as count
+mysql res: ['{"count_*": 6}']
+target res: ['{"count": 6}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['carrier']
+---------------------------Execute SQL Query:[SELECT carrier FROM device ORDER BY carrier ASC]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version']
+convert time:0.892858 s
+---------------------------Execute Target Query:MATCH (d:device)
+RETURN d.carrier
+ORDER BY d.carrier ASC-----------------
+MATCH (d:device)
+RETURN d.carrier
+ORDER BY d.carrier ASC
+mysql res: ['{"carrier": "Bell Mobility"}', '{"carrier": "Iusacell"}', '{"carrier": "MTS Mobility"}', '{"carrier": "Telus Mobility"}', '{"carrier": "Verizon Wireless"}', '{"carrier": "Vodafone AU"}']
+target res: ['{"d.carrier": "Bell Mobility"}', '{"d.carrier": "Iusacell"}', '{"d.carrier": "MTS Mobility"}', '{"d.carrier": "Telus Mobility"}', '{"d.carrier": "Verizon Wireless"}', '{"d.carrier": "Vodafone AU"}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['carrier']
+---------------------------Execute SQL Query:[SELECT carrier FROM device WHERE software_platform != 'Android']-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version']
+convert time:0.710111 s
+---------------------------Execute Target Query:MATCH (d:device)
+WHERE d.software_platform <> 'Android'
+RETURN d.carrier;-----------------
+MATCH (d:device)
+WHERE d.software_platform <> 'Android'
+RETURN d.carrier;
+mysql res: ['{"carrier": "Verizon Wireless"}']
+target res: ['{"d.carrier": "Verizon Wireless"}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT shop_name FROM shop ORDER BY open_year ASC]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date']
+convert time:1.065063 s
+---------------------------Execute Target Query:MATCH (s:shop)
+RETURN s.shop_name
+ORDER BY s.open_year ASC-----------------
+MATCH (s:shop)
+RETURN s.shop_name
+ORDER BY s.open_year ASC
+mysql res: ['{"shop_name": "Best Buy"}', '{"shop_name": "Tynewydd repair"}', '{"shop_name": "Ferndale"}', '{"shop_name": "Apple"}', '{"shop_name": "Dinas store"}', '{"shop_name": "Naval repair"}', '{"shop_name": "Pentre store"}', '{"shop_name": "Gelli repair"}', '{"shop_name": "Dinas Device"}', '{"shop_name": "Naval\'s shop"}', '{"shop_name": "ATnT"}', '{"shop_name": "National Cellphone"}']
+target res: ['{"s.shop_name": "Best Buy"}', '{"s.shop_name": "Tynewydd repair"}', '{"s.shop_name": "Ferndale"}', '{"s.shop_name": "Apple"}', '{"s.shop_name": "Dinas store"}', '{"s.shop_name": "Naval repair"}', '{"s.shop_name": "Pentre store"}', '{"s.shop_name": "Gelli repair"}', '{"s.shop_name": "Dinas Device"}', '{"s.shop_name": "Naval\'s shop"}', '{"s.shop_name": "ATnT"}', '{"s.shop_name": "National Cellphone"}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['avg_quantity']
+---------------------------Execute SQL Query:[SELECT avg(quantity) FROM stock]-----------------
+target_db_schema: ['quantity', 'device_id', 'shop_id']
+convert time:0.685243 s
+---------------------------Execute Target Query:MATCH (s:stock)
+RETURN AVG(s.quantity) as avg_quantity-----------------
+MATCH (s:stock)
+RETURN AVG(s.quantity) as avg_quantity
+mysql res: ['{"avg_quantity": 110.8750}']
+target res: ['{"avg_quantity": 110.875}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['shop_name', 'LOCATION']
+---------------------------Execute SQL Query:[SELECT shop_name ,  LOCATION FROM shop ORDER BY shop_name ASC]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date']
+convert time:0.69462 s
+---------------------------Execute Target Query:MATCH (s:shop)
+RETURN s.shop_name, s.location
+ORDER BY s.shop_name ASC-----------------
+MATCH (s:shop)
+RETURN s.shop_name, s.location
+ORDER BY s.shop_name ASC
+mysql res: ['{"shop_name": "Apple", "LOCATION": "Blaenllechau"}', '{"shop_name": "ATnT", "LOCATION": "Maerdy"}', '{"shop_name": "Best Buy", "LOCATION": "Cymmer"}', '{"shop_name": "Dinas Device", "LOCATION": "Dinas"}', '{"shop_name": "Dinas store", "LOCATION": "Dinas"}', '{"shop_name": "Ferndale", "LOCATION": "Blaenllechau"}', '{"shop_name": "Gelli repair", "LOCATION": "Gelli"}', '{"shop_name": "National Cellphone", "LOCATION": "Wattstown"}', '{"shop_name": "Naval repair", "LOCATION": "Penygraig"}', '{"shop_name": "Naval\'s shop", "LOCATION": "Penygraig"}', '{"shop_name": "Pentre store", "LOCATION": "Pentre"}', '{"shop_name": "Tynewydd repair", "LOCATION": "Porth"}']
+target res: ['{"s.shop_name": "ATnT", "s.location": "Maerdy"}', '{"s.shop_name": "Apple", "s.location": "Blaenllechau"}', '{"s.shop_name": "Best Buy", "s.location": "Cymmer"}', '{"s.shop_name": "Dinas Device", "s.location": "Dinas"}', '{"s.shop_name": "Dinas store", "s.location": "Dinas"}', '{"s.shop_name": "Ferndale", "s.location": "Blaenllechau"}', '{"s.shop_name": "Gelli repair", "s.location": "Gelli"}', '{"s.shop_name": "National Cellphone", "s.location": "Wattstown"}', '{"s.shop_name": "Naval repair", "s.location": "Penygraig"}', '{"s.shop_name": "Naval\'s shop", "s.location": "Penygraig"}', '{"s.shop_name": "Pentre store", "s.location": "Pentre"}', '{"s.shop_name": "Tynewydd repair", "s.location": "Porth"}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['count_DISTINCT software_platform']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT software_platform) FROM device]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version']
+convert time:0.856429 s
+---------------------------Execute Target Query:MATCH (d:device)
+RETURN COUNT(DISTINCT d.software_platform) AS count_distinct_software_platform-----------------
+MATCH (d:device)
+RETURN COUNT(DISTINCT d.software_platform) AS count_distinct_software_platform
+mysql res: ['{"count_DISTINCT software_platform": 2}']
+target res: ['{"count_distinct_software_platform": 2}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['open_date', 'open_year']
+---------------------------Execute SQL Query:[SELECT open_date ,  open_year FROM shop WHERE shop_name  =  "Apple"]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date']
+convert time:0.907567 s
+---------------------------Execute Target Query:MATCH (s:shop)
+WHERE s.shop_name = "Apple"
+RETURN s.open_date AS open_date, s.open_year AS open_year-----------------
+MATCH (s:shop)
+WHERE s.shop_name = "Apple"
+RETURN s.open_date AS open_date, s.open_year AS open_year
+mysql res: ['{"open_date": "10 June", "open_year": 2009}']
+target res: ['{"open_date": "10 June", "open_year": 2009}']
+translate SELECT open_date ,  open_year FROM shop WHERE shop_name  =  "Apple" success
+
+--------------------------9-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT shop_name FROM shop ORDER BY open_year DESC LIMIT 1]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date']
+convert time:1.054196 s
+---------------------------Execute Target Query:MATCH (s:shop)
+RETURN s.shop_name
+ORDER BY s.open_year DESC
+LIMIT 1-----------------
+MATCH (s:shop)
+RETURN s.shop_name
+ORDER BY s.open_year DESC
+LIMIT 1
+mysql res: ['{"shop_name": "National Cellphone"}']
+target res: ['{"s.shop_name": "National Cellphone"}']
+mismatch between MySQL and target
+
+--------------------------10-----------------
+schema:['shop_name', 'carrier']
+---------------------------Execute SQL Query:[SELECT T3.shop_name ,  T2.carrier FROM stock AS T1 JOIN device AS T2 ON T1.device_id  =  T2.device_id JOIN shop AS T3 ON T1.shop_id  =  T3.shop_id]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version', 's', 'h', 'o', 'p', ':', ' ', '[', "'", 's', 'h', 'o', 'p', '_', 'i', 'd', "'", ',', ' ', "'", 's', 'h', 'o', 'p', '_', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'o', 'p', 'e', 'n', '_', 'y', 'e', 'a', 'r', "'", ',', ' ', "'", 'l', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'o', 'p', 'e', 'n', '_', 'd', 'a', 't', 'e', "'", ']', '\n', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'd', 'e', 'v', 'i', 'c', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 's', 'h', 'o', 'p', '_', 'i', 'd', "'", ']', '\n']
+convert time:1.553046 s
+---------------------------Execute Target Query:MATCH (s:stock)-[:HAS_DEVICE]->(d:device)-[:BELONGS_TO_SHOP]->(sh:shop)
+RETURN sh.shop_name AS shop_name, d.carrier AS carrier-----------------
+MATCH (s:stock)-[:HAS_DEVICE]->(d:device)-[:BELONGS_TO_SHOP]->(sh:shop)
+RETURN sh.shop_name AS shop_name, d.carrier AS carrier
+mysql res: ['{"shop_name": "Dinas Device", "carrier": "Bell Mobility"}', '{"shop_name": "Ferndale", "carrier": "Bell Mobility"}', '{"shop_name": "Gelli repair", "carrier": "Bell Mobility"}', '{"shop_name": "Dinas Device", "carrier": "Vodafone AU"}', '{"shop_name": "Best Buy", "carrier": "Vodafone AU"}', '{"shop_name": "Ferndale", "carrier": "Vodafone AU"}', '{"shop_name": "Apple", "carrier": "Vodafone AU"}', '{"shop_name": "ATnT", "carrier": "Vodafone AU"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT T2.shop_name FROM stock AS T1 JOIN shop AS T2 ON T1.shop_id  =  T2.shop_id GROUP BY T1.shop_id HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'd', 'e', 'v', 'i', 'c', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 's', 'h', 'o', 'p', '_', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.177008 s
+---------------------------Execute Target Query:MATCH (s:stock)-[:BELONGS_TO_SHOP]->(sh:shop)
+WITH sh.shop_name AS shop_name, COUNT(*) AS cnt
+WHERE cnt > 1
+RETURN shop_name-----------------
+MATCH (s:stock)-[:BELONGS_TO_SHOP]->(sh:shop)
+WITH sh.shop_name AS shop_name, COUNT(*) AS cnt
+WHERE cnt > 1
+RETURN shop_name
+mysql res: ['{"shop_name": "Dinas Device"}', '{"shop_name": "Ferndale"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT T2.shop_name FROM stock AS T1 JOIN shop AS T2 ON T1.shop_id  =  T2.shop_id GROUP BY T1.shop_id ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'd', 'e', 'v', 'i', 'c', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 's', 'h', 'o', 'p', '_', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.710565 s
+---------------------------Execute Target Query:MATCH (s:stock)-[:BELONGS_TO_SHOP]->(sh:shop)
+WITH sh.shop_name AS shop_name, COUNT(*) AS count
+ORDER BY count DESC
+LIMIT 1
+RETURN shop_name-----------------
+MATCH (s:stock)-[:BELONGS_TO_SHOP]->(sh:shop)
+WITH sh.shop_name AS shop_name, COUNT(*) AS count
+ORDER BY count DESC
+LIMIT 1
+RETURN shop_name
+mysql res: ['{"shop_name": "Dinas Device"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT T2.shop_name FROM stock AS T1 JOIN shop AS T2 ON T1.shop_id  =  T2.shop_id GROUP BY T1.shop_id ORDER BY SUM(T1.quantity) DESC LIMIT 1]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'd', 'e', 'v', 'i', 'c', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 's', 'h', 'o', 'p', '_', 'i', 'd', "'", ']', '\n']
+convert time:1.405604 s
+---------------------------Execute Target Query:MATCH (s:stock)-[:BELONGS_TO]->(sh:shop)
+WITH sh.shop_name AS shop_name, SUM(s.quantity) AS total_quantity
+ORDER BY total_quantity DESC
+RETURN shop_name
+LIMIT 1-----------------
+MATCH (s:stock)-[:BELONGS_TO]->(sh:shop)
+WITH sh.shop_name AS shop_name, SUM(s.quantity) AS total_quantity
+ORDER BY total_quantity DESC
+RETURN shop_name
+LIMIT 1
+mysql res: ['{"shop_name": "Dinas Device"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------14-----------------
+schema:['software_platform', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT software_platform ,  COUNT(*) FROM device GROUP BY software_platform]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version']
+convert time:0.984681 s
+---------------------------Execute Target Query:MATCH (d:device)
+WITH d.software_platform AS software_platform, COUNT(*) AS count
+RETURN software_platform, count-----------------
+MATCH (d:device)
+WITH d.software_platform AS software_platform, COUNT(*) AS count
+RETURN software_platform, count
+mysql res: ['{"software_platform": "Android", "COUNT_*": 5}', '{"software_platform": "iOS", "COUNT_*": 1}']
+target res: ['{"software_platform": "Android", "count": 5}', '{"software_platform": "iOS", "count": 1}']
+mismatch between MySQL and target
+
+--------------------------15-----------------
+schema:['software_platform']
+---------------------------Execute SQL Query:[SELECT software_platform FROM device GROUP BY software_platform ORDER BY COUNT(*) DESC]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version']
+convert time:0.84678 s
+---------------------------Execute Target Query:MATCH (d:device)
+WITH d.software_platform AS software_platform, COUNT(*) AS count
+ORDER BY count DESC
+RETURN software_platform-----------------
+MATCH (d:device)
+WITH d.software_platform AS software_platform, COUNT(*) AS count
+ORDER BY count DESC
+RETURN software_platform
+mysql res: ['{"software_platform": "Android"}', '{"software_platform": "iOS"}']
+target res: ['{"software_platform": "Android"}', '{"software_platform": "iOS"}']
+translate SELECT software_platform FROM device GROUP BY software_platform ORDER BY COUNT(*) DESC success
+
+--------------------------16-----------------
+schema:['software_platform']
+---------------------------Execute SQL Query:[SELECT software_platform FROM device GROUP BY software_platform ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version']
+convert time:0.995291 s
+---------------------------Execute Target Query:MATCH (d:device)
+WITH d.software_platform AS software_platform, COUNT(*) AS count
+ORDER BY count DESC
+RETURN software_platform
+LIMIT 1;-----------------
+MATCH (d:device)
+WITH d.software_platform AS software_platform, COUNT(*) AS count
+ORDER BY count DESC
+RETURN software_platform
+LIMIT 1;
+mysql res: ['{"software_platform": "Android"}']
+target res: ['{"software_platform": "Android"}']
+translate SELECT software_platform FROM device GROUP BY software_platform ORDER BY COUNT(*) DESC LIMIT 1 success
+
+--------------------------17-----------------
+schema:['shop_name']
+---------------------------Execute SQL Query:[SELECT shop_name FROM shop WHERE shop_id NOT IN (SELECT shop_id FROM stock)]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'd', 'e', 'v', 'i', 'c', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 's', 'h', 'o', 'p', '_', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:0.91724 s
+---------------------------Execute Target Query:MATCH (s:shop)
+WHERE NOT (s)-[:HAS_STOCK]->()
+RETURN s.shop_name-----------------
+MATCH (s:shop)
+WHERE NOT (s)-[:HAS_STOCK]->()
+RETURN s.shop_name
+mysql res: ['{"shop_name": "Pentre store"}', '{"shop_name": "Tynewydd repair"}', '{"shop_name": "Dinas store"}', '{"shop_name": "Naval repair"}', '{"shop_name": "Naval\'s shop"}', '{"shop_name": "National Cellphone"}']
+target res: ['{"s.shop_name": "Dinas Device"}', '{"s.shop_name": "Best Buy"}', '{"s.shop_name": "Ferndale"}', '{"s.shop_name": "Apple"}', '{"s.shop_name": "Pentre store"}', '{"s.shop_name": "Tynewydd repair"}', '{"s.shop_name": "Dinas store"}', '{"s.shop_name": "Naval repair"}', '{"s.shop_name": "Gelli repair"}', '{"s.shop_name": "Naval\'s shop"}', '{"s.shop_name": "ATnT"}', '{"s.shop_name": "National Cellphone"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------18-----------------
+schema:['LOCATION']
+---------------------------Execute SQL Query:[SELECT LOCATION FROM shop WHERE open_year  >  2012 INTERSECT SELECT LOCATION FROM shop WHERE open_year  <  2008]-----------------
+target_db_schema: ['shop_id', 'shop_name', 'open_year', 'location', 'open_date']
+Error parsing XML of prompt: not well-formed (invalid token): line 32, column 24
+convert time:1.546893 s
+---------------------------Execute Target Query:MATCH (s:shop)
+WHERE s.open_year > 2012
+WITH COLLECT(s.location) AS locations1
+MATCH (s:shop)
+WHERE s.open_year < 2008
+WITH locations1, COLLECT(s.location) AS locations2
+RETURN apoc.coll.intersection(locations1, locations2) AS LOCATION-----------------
+MATCH (s:shop)
+WHERE s.open_year > 2012
+WITH COLLECT(s.location) AS locations1
+MATCH (s:shop)
+WHERE s.open_year < 2008
+WITH locations1, COLLECT(s.location) AS locations2
+RETURN apoc.coll.intersection(locations1, locations2) AS LOCATION
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Unknown function 'apoc.coll.intersection' (line 7, column 8 (offset: 177))
+"RETURN apoc.coll.intersection(locations1, locations2) AS LOCATION"
+        ^}
+
+--------------------------19-----------------
+schema:['carrier']
+---------------------------Execute SQL Query:[SELECT carrier FROM device WHERE device_id NOT IN (SELECT device_id FROM stock)]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'd', 'e', 'v', 'i', 'c', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 's', 'h', 'o', 'p', '_', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.011003 s
+---------------------------Execute Target Query:MATCH (d:device)
+WHERE NOT (d.device_id IN (MATCH (s:stock) RETURN s.device_id))
+RETURN d.carrier as carrier;-----------------
+MATCH (d:device)
+WHERE NOT (d.device_id IN (MATCH (s:stock) RETURN s.device_id))
+RETURN d.carrier as carrier;
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'RETURN': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 2, column 44 (offset: 60))
+"WHERE NOT (d.device_id IN (MATCH (s:stock) RETURN s.device_id))"
+                                            ^}
+
+--------------------------20-----------------
+schema:['carrier']
+---------------------------Execute SQL Query:[SELECT T2.carrier FROM stock AS T1 JOIN device AS T2 ON T1.device_id  =  T2.device_id GROUP BY T1.device_id HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ['software_platform', 'applications', 'device_id', 'device', 'carrier', 'package_version', 's', 't', 'o', 'c', 'k', ':', ' ', '[', "'", 'q', 'u', 'a', 'n', 't', 'i', 't', 'y', "'", ',', ' ', "'", 'd', 'e', 'v', 'i', 'c', 'e', '_', 'i', 'd', "'", ',', ' ', "'", 's', 'h', 'o', 'p', '_', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:1.017216 s
+---------------------------Execute Target Query:MATCH (s:stock)-[:HAS_DEVICE]->(d:device)
+WITH d.carrier AS carrier, COUNT(*) AS cnt
+WHERE cnt > 1
+RETURN carrier-----------------
+MATCH (s:stock)-[:HAS_DEVICE]->(d:device)
+WITH d.carrier AS carrier, COUNT(*) AS cnt
+WHERE cnt > 1
+RETURN carrier
+mysql res: ['{"carrier": "Bell Mobility"}', '{"carrier": "Vodafone AU"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+success_query_count: 3
+valid_count: 20
+accuracy: 0.15

@@ -1,0 +1,253 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM device]-----------------
+target_db_schema: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+convert time:2.806918 s
+---------------------------Execute Target Query:db.device.aggregate([ { "$group": { "_id": None, "count": { "$sum": 1 } } } ])-----------------
+here we are in executor, and the query is:  db.device.aggregate([ { "$group": { "_id": None, "count": { "$sum": 1 } } } ])
+result of mongodb: ['{"_id": null, "count": 6}']
+mysql res: ['{"count_*": 6}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['Carrier']
+---------------------------Execute SQL Query:[SELECT Carrier FROM device ORDER BY Carrier ASC]-----------------
+target_db_schema: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:2.353887 s
+---------------------------Execute Target Query:db.device.find({}, { "Carrier": 1, "_id": 0 }).sort({ "Carrier": 1 })-----------------
+here we are in executor, and the query is:  db.device.find({}, { "Carrier": 1, "_id": 0 }).sort({ "Carrier": 1 })
+result of mongodb: ['{"Carrier": "Bell Mobility"}', '{"Carrier": "Iusacell"}', '{"Carrier": "MTS Mobility"}', '{"Carrier": "Telus Mobility"}', '{"Carrier": "Verizon Wireless"}', '{"Carrier": "Vodafone AU"}']
+mysql res: ['{"Carrier": "Bell Mobility"}', '{"Carrier": "Iusacell"}', '{"Carrier": "MTS Mobility"}', '{"Carrier": "Telus Mobility"}', '{"Carrier": "Verizon Wireless"}', '{"Carrier": "Vodafone AU"}']
+target res: ['{"Carrier": "Bell Mobility"}', '{"Carrier": "Iusacell"}', '{"Carrier": "MTS Mobility"}', '{"Carrier": "Telus Mobility"}', '{"Carrier": "Verizon Wireless"}', '{"Carrier": "Vodafone AU"}']
+translate SELECT Carrier FROM device ORDER BY Carrier ASC success
+
+--------------------------3-----------------
+schema:['Carrier']
+---------------------------Execute SQL Query:[SELECT Carrier FROM device WHERE Software_Platform != 'Android']-----------------
+target_db_schema: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+convert time:3.50545 s
+---------------------------Execute Target Query:db.device.find({ "Software_Platform": { "$ne": "Android" } }, { "Carrier": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.device.find({ "Software_Platform": { "$ne": "Android" } }, { "Carrier": 1, "_id": 0 })
+result of mongodb: ['{"Carrier": "Verizon Wireless"}']
+mysql res: ['{"Carrier": "Verizon Wireless"}']
+target res: ['{"Carrier": "Verizon Wireless"}']
+translate SELECT Carrier FROM device WHERE Software_Platform != 'Android' success
+
+--------------------------4-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT Shop_Name FROM shop ORDER BY Open_Year ASC]-----------------
+target_db_schema: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+convert time:2.042717 s
+---------------------------Execute Target Query:db.shop.find({}, { "Shop_Name": 1, "_id": 0 }).sort({ "Open_Year": 1 })-----------------
+here we are in executor, and the query is:  db.shop.find({}, { "Shop_Name": 1, "_id": 0 }).sort({ "Open_Year": 1 })
+result of mongodb: ['{"Shop_Name": "Best Buy"}', '{"Shop_Name": "Tynewydd repair"}', '{"Shop_Name": "Ferndale"}', '{"Shop_Name": "Apple"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Gelli repair"}', '{"Shop_Name": "Dinas Device"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "ATnT"}', '{"Shop_Name": "National Cellphone"}']
+mysql res: ['{"Shop_Name": "Best Buy"}', '{"Shop_Name": "Tynewydd repair"}', '{"Shop_Name": "Ferndale"}', '{"Shop_Name": "Apple"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Gelli repair"}', '{"Shop_Name": "Dinas Device"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "ATnT"}', '{"Shop_Name": "National Cellphone"}']
+target res: ['{"Shop_Name": "Best Buy"}', '{"Shop_Name": "Tynewydd repair"}', '{"Shop_Name": "Ferndale"}', '{"Shop_Name": "Apple"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Gelli repair"}', '{"Shop_Name": "Dinas Device"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "ATnT"}', '{"Shop_Name": "National Cellphone"}']
+translate SELECT Shop_Name FROM shop ORDER BY Open_Year ASC success
+
+--------------------------5-----------------
+schema:['avg_Quantity']
+---------------------------Execute SQL Query:[SELECT avg(Quantity) FROM stock]-----------------
+target_db_schema: _id, Quantity, Shop_ID, Device_ID
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:4.111428 s
+---------------------------Execute Target Query:db.stock.aggregate([{"$group": {"_id": None, "avg_Quantity": {"$avg": "$Quantity"}}}, {"$project": {"_id": 0, "avg_Quantity": 1}}])-----------------
+here we are in executor, and the query is:  db.stock.aggregate([{"$group": {"_id": None, "avg_Quantity": {"$avg": "$Quantity"}}}, {"$project": {"_id": 0, "avg_Quantity": 1}}])
+result of mongodb: ['{"avg_Quantity": 110.875}']
+mysql res: ['{"avg_Quantity": 110.8750}']
+target res: ['{"avg_Quantity": 110.875}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['Shop_Name', 'LOCATION']
+---------------------------Execute SQL Query:[SELECT Shop_Name ,  LOCATION FROM shop ORDER BY Shop_Name ASC]-----------------
+target_db_schema: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+convert time:2.193687 s
+---------------------------Execute Target Query:db.shop.find({}, { "Shop_Name": 1, "LOCATION": 1, "_id": 0 }).sort({ "Shop_Name": 1 })-----------------
+here we are in executor, and the query is:  db.shop.find({}, { "Shop_Name": 1, "LOCATION": 1, "_id": 0 }).sort({ "Shop_Name": 1 })
+result of mongodb: ['{"Shop_Name": "ATnT"}', '{"Shop_Name": "Apple"}', '{"Shop_Name": "Best Buy"}', '{"Shop_Name": "Dinas Device"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Ferndale"}', '{"Shop_Name": "Gelli repair"}', '{"Shop_Name": "National Cellphone"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Tynewydd repair"}']
+mysql res: ['{"Shop_Name": "Apple", "LOCATION": "Blaenllechau"}', '{"Shop_Name": "ATnT", "LOCATION": "Maerdy"}', '{"Shop_Name": "Best Buy", "LOCATION": "Cymmer"}', '{"Shop_Name": "Dinas Device", "LOCATION": "Dinas"}', '{"Shop_Name": "Dinas store", "LOCATION": "Dinas"}', '{"Shop_Name": "Ferndale", "LOCATION": "Blaenllechau"}', '{"Shop_Name": "Gelli repair", "LOCATION": "Gelli"}', '{"Shop_Name": "National Cellphone", "LOCATION": "Wattstown"}', '{"Shop_Name": "Naval repair", "LOCATION": "Penygraig"}', '{"Shop_Name": "Naval\'s shop", "LOCATION": "Penygraig"}', '{"Shop_Name": "Pentre store", "LOCATION": "Pentre"}', '{"Shop_Name": "Tynewydd repair", "LOCATION": "Porth"}']
+target res: ['{"Shop_Name": "ATnT", "LOCATION": null}', '{"Shop_Name": "Apple", "LOCATION": null}', '{"Shop_Name": "Best Buy", "LOCATION": null}', '{"Shop_Name": "Dinas Device", "LOCATION": null}', '{"Shop_Name": "Dinas store", "LOCATION": null}', '{"Shop_Name": "Ferndale", "LOCATION": null}', '{"Shop_Name": "Gelli repair", "LOCATION": null}', '{"Shop_Name": "National Cellphone", "LOCATION": null}', '{"Shop_Name": "Naval repair", "LOCATION": null}', '{"Shop_Name": "Naval\'s shop", "LOCATION": null}', '{"Shop_Name": "Pentre store", "LOCATION": null}', '{"Shop_Name": "Tynewydd repair", "LOCATION": null}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['count_DISTINCT Software_Platform']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT Software_Platform) FROM device]-----------------
+target_db_schema: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+convert time:2.472249 s
+---------------------------Execute Target Query:db.device.aggregate([{"$group": {"_id": "$Software_Platform"}}, {"$count": "count_Distinct_Software_Platform"}])-----------------
+here we are in executor, and the query is:  db.device.aggregate([{"$group": {"_id": "$Software_Platform"}}, {"$count": "count_Distinct_Software_Platform"}])
+result of mongodb: ['{"count_Distinct_Software_Platform": 2}']
+mysql res: ['{"count_DISTINCT Software_Platform": 2}']
+target res: ['{"count_DISTINCT Software_Platform": null}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['Open_Date', 'Open_Year']
+---------------------------Execute SQL Query:[SELECT Open_Date ,  Open_Year FROM shop WHERE Shop_Name  =  "Apple"]-----------------
+target_db_schema: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:3.170058 s
+---------------------------Execute Target Query:db.shop.find({ "Shop_Name": "Apple" }, { "Open_Date": 1, "Open_Year": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.shop.find({ "Shop_Name": "Apple" }, { "Open_Date": 1, "Open_Year": 1, "_id": 0 })
+result of mongodb: ['{"Open_Date": "10 June", "Open_Year": 2009}']
+mysql res: ['{"Open_Date": "10 June", "Open_Year": 2009}']
+target res: ['{"Open_Date": "10 June", "Open_Year": 2009}']
+translate SELECT Open_Date ,  Open_Year FROM shop WHERE Shop_Name  =  "Apple" success
+
+--------------------------9-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT Shop_Name FROM shop ORDER BY Open_Year DESC LIMIT 1]-----------------
+target_db_schema: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+convert time:9.812118 s
+---------------------------Execute Target Query:db.shop.find({}, { "Shop_Name": 1, "_id": 0 }).sort({ "Open_Year": -1 }).limit(1)-----------------
+here we are in executor, and the query is:  db.shop.find({}, { "Shop_Name": 1, "_id": 0 }).sort({ "Open_Year": -1 }).limit(1)
+result of mongodb: ['{"Shop_Name": "National Cellphone"}']
+mysql res: ['{"Shop_Name": "National Cellphone"}']
+target res: ['{"Shop_Name": "National Cellphone"}']
+translate SELECT Shop_Name FROM shop ORDER BY Open_Year DESC LIMIT 1 success
+
+--------------------------10-----------------
+schema:['Shop_Name', 'Carrier']
+---------------------------Execute SQL Query:[SELECT T3.Shop_Name ,  T2.Carrier FROM stock AS T1 JOIN device AS T2 ON T1.Device_ID  =  T2.Device_ID JOIN shop AS T3 ON T1.Shop_ID  =  T3.Shop_ID]-----------------
+target_db_schema: _id, Quantity, Shop_ID, Device_IDdevice: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+shop: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+
+convert time:5.605497 s
+---------------------------Execute Target Query:db.stock.aggregate([{"$lookup":{"from":"device","localField":"Device_ID","foreignField":"Device_ID","as":"device"}},{"$unwind":"$device"},{"$lookup":{"from":"shop","localField":"Shop_ID","foreignField":"Shop_ID","as":"shop"}},{"$unwind":"$shop"},{"$project":{"Shop_Name":"$shop.Shop_Name","Carrier":"$device.Carrier","_id":0}}])-----------------
+here we are in executor, and the query is:  db.stock.aggregate([{"$lookup":{"from":"device","localField":"Device_ID","foreignField":"Device_ID","as":"device"}},{"$unwind":"$device"},{"$lookup":{"from":"shop","localField":"Shop_ID","foreignField":"Shop_ID","as":"shop"}},{"$unwind":"$shop"},{"$project":{"Shop_Name":"$shop.Shop_Name","Carrier":"$device.Carrier","_id":0}}])
+result of mongodb: ['{"Shop_Name": "Dinas Device", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Dinas Device", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Best Buy", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Ferndale", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Ferndale", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Apple", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Gelli repair", "Carrier": "Bell Mobility"}', '{"Shop_Name": "ATnT", "Carrier": "Vodafone AU"}']
+mysql res: ['{"Shop_Name": "Dinas Device", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Ferndale", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Gelli repair", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Dinas Device", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Best Buy", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Ferndale", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Apple", "Carrier": "Vodafone AU"}', '{"Shop_Name": "ATnT", "Carrier": "Vodafone AU"}']
+target res: ['{"Shop_Name": "Dinas Device", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Dinas Device", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Best Buy", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Ferndale", "Carrier": "Bell Mobility"}', '{"Shop_Name": "Ferndale", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Apple", "Carrier": "Vodafone AU"}', '{"Shop_Name": "Gelli repair", "Carrier": "Bell Mobility"}', '{"Shop_Name": "ATnT", "Carrier": "Vodafone AU"}']
+translate SELECT T3.Shop_Name ,  T2.Carrier FROM stock AS T1 JOIN device AS T2 ON T1.Device_ID  =  T2.Device_ID JOIN shop AS T3 ON T1.Shop_ID  =  T3.Shop_ID success
+
+--------------------------11-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT T2.Shop_Name FROM stock AS T1 JOIN shop AS T2 ON T1.Shop_ID  =  T2.Shop_ID GROUP BY T1.Shop_ID HAVING COUNT(*)  >  1]-----------------
+target_db_schema: _id, Quantity, Shop_ID, Device_IDshop: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+
+convert time:6.707134 s
+---------------------------Execute Target Query:db.stock.aggregate([{"$lookup": {"from": "shop", "localField": "Shop_ID", "foreignField": "Shop_ID", "as": "shop_info"}}, {"$unwind": "$shop_info"}, {"$group": {"_id": "$Shop_ID", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"Shop_Name": "$shop_info_Shop_Name", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.stock.aggregate([{"$lookup": {"from": "shop", "localField": "Shop_ID", "foreignField": "Shop_ID", "as": "shop_info"}}, {"$unwind": "$shop_info"}, {"$group": {"_id": "$Shop_ID", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"Shop_Name": "$shop_info_Shop_Name", "_id": 0}}])
+result of mongodb: ['{}', '{}']
+mysql res: ['{"Shop_Name": "Dinas Device"}', '{"Shop_Name": "Ferndale"}']
+target res: ['{"Shop_Name": null}', '{"Shop_Name": null}']
+mismatch between MySQL and target
+
+--------------------------12-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT T2.Shop_Name FROM stock AS T1 JOIN shop AS T2 ON T1.Shop_ID  =  T2.Shop_ID GROUP BY T1.Shop_ID ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: _id, Quantity, Shop_ID, Device_IDshop: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+
+convert time:5.653306 s
+---------------------------Execute Target Query:db.stock.aggregate([{"$lookup": {"from": "shop", "localField": "Shop_ID", "foreignField": "Shop_ID", "as": "shop_info"}}, {"$unwind": "$shop_info"}, {"$group": {"_id": "$Shop_ID", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Shop_Name": "$shop_info.Shop_Name", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.stock.aggregate([{"$lookup": {"from": "shop", "localField": "Shop_ID", "foreignField": "Shop_ID", "as": "shop_info"}}, {"$unwind": "$shop_info"}, {"$group": {"_id": "$Shop_ID", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Shop_Name": "$shop_info.Shop_Name", "_id": 0}}])
+result of mongodb: ['{}']
+mysql res: ['{"Shop_Name": "Dinas Device"}']
+target res: ['{"Shop_Name": null}']
+mismatch between MySQL and target
+
+--------------------------13-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT T2.Shop_Name FROM stock AS T1 JOIN shop AS T2 ON T1.Shop_ID  =  T2.Shop_ID GROUP BY T1.Shop_ID ORDER BY SUM(T1.quantity) DESC LIMIT 1]-----------------
+target_db_schema: _id, Quantity, Shop_ID, Device_IDshop: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+
+convert time:9.513032 s
+---------------------------Execute Target Query:db.stock.aggregate([{"$lookup": {"from": "shop", "localField": "Shop_ID", "foreignField": "Shop_ID", "as": "shop_info"}}, {"$unwind": "$shop_info"}, {"$group": {"_id": "$Shop_ID", "total_quantity": {"$sum": "$quantity"}}}, {"$sort": {"total_quantity": -1}}, {"$limit": 1}, {"$project": {"Shop_Name": "$shop_info.Shop_Name", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.stock.aggregate([{"$lookup": {"from": "shop", "localField": "Shop_ID", "foreignField": "Shop_ID", "as": "shop_info"}}, {"$unwind": "$shop_info"}, {"$group": {"_id": "$Shop_ID", "total_quantity": {"$sum": "$quantity"}}}, {"$sort": {"total_quantity": -1}}, {"$limit": 1}, {"$project": {"Shop_Name": "$shop_info.Shop_Name", "_id": 0}}])
+result of mongodb: ['{}']
+mysql res: ['{"Shop_Name": "Dinas Device"}']
+target res: ['{"Shop_Name": null}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['Software_Platform', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT Software_Platform ,  COUNT(*) FROM device GROUP BY Software_Platform]-----------------
+target_db_schema: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+convert time:4.825713 s
+---------------------------Execute Target Query:db.device.aggregate([{"$group": {"_id": "$Software_Platform", "COUNT": {"$sum": 1}}}, {"$project": {"Software_Platform": "$_id", "COUNT": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.device.aggregate([{"$group": {"_id": "$Software_Platform", "COUNT": {"$sum": 1}}}, {"$project": {"Software_Platform": "$_id", "COUNT": 1, "_id": 0}}])
+result of mongodb: ['{"COUNT": 5, "Software_Platform": "Android"}', '{"COUNT": 1, "Software_Platform": "iOS"}']
+mysql res: ['{"Software_Platform": "Android", "COUNT_*": 5}', '{"Software_Platform": "iOS", "COUNT_*": 1}']
+target res: ['{"Software_Platform": "Android", "COUNT_*": null}', '{"Software_Platform": "iOS", "COUNT_*": null}']
+mismatch between MySQL and target
+
+--------------------------15-----------------
+schema:['Software_Platform']
+---------------------------Execute SQL Query:[SELECT Software_Platform FROM device GROUP BY Software_Platform ORDER BY COUNT(*) DESC]-----------------
+target_db_schema: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+convert time:4.87601 s
+---------------------------Execute Target Query:db.device.aggregate([{"$group": {"_id": "$Software_Platform", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$project": {"Software_Platform": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.device.aggregate([{"$group": {"_id": "$Software_Platform", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$project": {"Software_Platform": "$_id", "_id": 0}}])
+result of mongodb: ['{"Software_Platform": "Android"}', '{"Software_Platform": "iOS"}']
+mysql res: ['{"Software_Platform": "Android"}', '{"Software_Platform": "iOS"}']
+target res: ['{"Software_Platform": "Android"}', '{"Software_Platform": "iOS"}']
+translate SELECT Software_Platform FROM device GROUP BY Software_Platform ORDER BY COUNT(*) DESC success
+
+--------------------------16-----------------
+schema:['Software_Platform']
+---------------------------Execute SQL Query:[SELECT Software_Platform FROM device GROUP BY Software_Platform ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+convert time:4.179985 s
+---------------------------Execute Target Query:db.device.aggregate([{"$group": {"_id": "$Software_Platform", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Software_Platform": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.device.aggregate([{"$group": {"_id": "$Software_Platform", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Software_Platform": "$_id", "_id": 0}}])
+result of mongodb: ['{"Software_Platform": "Android"}']
+mysql res: ['{"Software_Platform": "Android"}']
+target res: ['{"Software_Platform": "Android"}']
+translate SELECT Software_Platform FROM device GROUP BY Software_Platform ORDER BY COUNT(*) DESC LIMIT 1 success
+
+--------------------------17-----------------
+schema:['Shop_Name']
+---------------------------Execute SQL Query:[SELECT Shop_Name FROM shop WHERE Shop_ID NOT IN (SELECT Shop_ID FROM stock)]-----------------
+target_db_schema: _id, Quantity, Shop_ID, Device_IDshop: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+
+convert time:2.919699 s
+---------------------------Execute Target Query:db.shop.find({ "Shop_ID": { "$nin": db.stock.distinct("Shop_ID") } }, { "Shop_Name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.shop.find({ "Shop_ID": { "$nin": db.stock.distinct("Shop_ID") } }, { "Shop_Name": 1, "_id": 0 })
+result of mongodb: ['{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Tynewydd repair"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "National Cellphone"}']
+mysql res: ['{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Tynewydd repair"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "National Cellphone"}']
+target res: ['{"Shop_Name": "Pentre store"}', '{"Shop_Name": "Tynewydd repair"}', '{"Shop_Name": "Dinas store"}', '{"Shop_Name": "Naval repair"}', '{"Shop_Name": "Naval\'s shop"}', '{"Shop_Name": "National Cellphone"}']
+translate SELECT Shop_Name FROM shop WHERE Shop_ID NOT IN (SELECT Shop_ID FROM stock) success
+
+--------------------------18-----------------
+schema:['LOCATION']
+---------------------------Execute SQL Query:[SELECT LOCATION FROM shop WHERE Open_Year  >  2012 INTERSECT SELECT LOCATION FROM shop WHERE Open_Year  <  2008]-----------------
+target_db_schema: _id, Shop_Name, Open_Date, Open_Year, Location, Shop_ID
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:3.787542 s
+---------------------------Execute Target Query:db.shop.aggregate([{$match:{$or:[{Open_Year:{$gt:2012}},{Open_Year:{$lt:2008}}]}},{$group:{_id:"$Location"}},{$project:{Location:"$_id",_id:0}}])-----------------
+here we are in executor, and the query is:  db.shop.aggregate([{$match:{$or:[{Open_Year:{$gt:2012}},{Open_Year:{$lt:2008}}]}},{$group:{_id:"$Location"}},{$project:{Location:"$_id",_id:0}}])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------19-----------------
+schema:['Carrier']
+---------------------------Execute SQL Query:[SELECT Carrier FROM device WHERE Device_ID NOT IN (SELECT Device_ID FROM stock)]-----------------
+target_db_schema: _id, Quantity, Shop_ID, Device_IDdevice: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+
+convert time:2.853245 s
+---------------------------Execute Target Query:db.device.find({ "Device_ID": { "$nin": db.stock.distinct("Device_ID") } }, { "Carrier": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.device.find({ "Device_ID": { "$nin": db.stock.distinct("Device_ID") } }, { "Carrier": 1, "_id": 0 })
+result of mongodb: ['{"Carrier": "MTS Mobility"}', '{"Carrier": "Verizon Wireless"}', '{"Carrier": "Telus Mobility"}', '{"Carrier": "Iusacell"}']
+mysql res: ['{"Carrier": "MTS Mobility"}', '{"Carrier": "Verizon Wireless"}', '{"Carrier": "Telus Mobility"}', '{"Carrier": "Iusacell"}']
+target res: ['{"Carrier": "MTS Mobility"}', '{"Carrier": "Verizon Wireless"}', '{"Carrier": "Telus Mobility"}', '{"Carrier": "Iusacell"}']
+translate SELECT Carrier FROM device WHERE Device_ID NOT IN (SELECT Device_ID FROM stock) success
+
+--------------------------20-----------------
+schema:['Carrier']
+---------------------------Execute SQL Query:[SELECT T2.Carrier FROM stock AS T1 JOIN device AS T2 ON T1.Device_ID  =  T2.Device_ID GROUP BY T1.Device_ID HAVING COUNT(*)  >  1]-----------------
+target_db_schema: _id, Quantity, Shop_ID, Device_IDdevice: Carrier, _id, Software_Platform, Device, Device_ID, Package_Version, Applications
+
+convert time:9.832943 s
+---------------------------Execute Target Query:db.stock.aggregate([{"$lookup": {"from": "device", "localField": "Device_ID", "foreignField": "Device_ID", "as": "device_info"}}, {"$unwind": "$device_info"}, {"$group": {"_id": "$Device_ID", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"Carrier": "$device_info_Carrier", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.stock.aggregate([{"$lookup": {"from": "device", "localField": "Device_ID", "foreignField": "Device_ID", "as": "device_info"}}, {"$unwind": "$device_info"}, {"$group": {"_id": "$Device_ID", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"Carrier": "$device_info_Carrier", "_id": 0}}])
+result of mongodb: ['{}', '{}']
+mysql res: ['{"Carrier": "Bell Mobility"}', '{"Carrier": "Vodafone AU"}']
+target res: ['{"Carrier": null}', '{"Carrier": null}']
+mismatch between MySQL and target
+success_query_count: 10
+valid_count: 20
+accuracy: 0.5

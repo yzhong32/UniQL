@@ -44,6 +44,7 @@ class MongoDBExecutor(QueryExecutor):
         self.client = MongoClient(config['host'], config.get('port', 27017))
 
     def execute_query(self, query, database, schema):
+        print("here we are in executor, and the query is: ", query)
         self.db = self.client[database]
         
         exec_env = {
@@ -56,10 +57,13 @@ class MongoDBExecutor(QueryExecutor):
             records = exec_env.get("result")
 
             results = []
+            origin_results = []
             for doc in records:
                 doc_json = {field: doc.get(field, None) for field in schema}
                 results.append(simplejson.dumps(doc_json))
+                origin_results.append(simplejson.dumps(doc))
 
+            print("result of mongodb:", origin_results)
             return results, None
 
         except Exception as e:
@@ -67,7 +71,11 @@ class MongoDBExecutor(QueryExecutor):
 
 if __name__ == '__main__':
     executor = MongoDBExecutor()
-    executor.init('../config/mongodb_config.json')
+    executor.init('/home/ubuntu/SQLLMConverter/test_framework/config/mongodb_config.json')
     database = 'swimming'
     table_name = 'swimmer'
-    print(executor.get_schema(database, table_name))
+    # print(executor.get_schema(database, table_name))
+    # result = executor.execute_query('db.event.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])', database, {})
+
+    result = executor.execute_query('db.station.aggregate([{ "$match": { "city": "San Jose" } }, { "$group": { "_id": None, "avgLatitude": { "$avg": "$lat" }, "avgLongitude": { "$avg": "$longitude" } }}])', database, {})
+    print(result)

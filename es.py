@@ -8,45 +8,51 @@ def get_elasticsearch_conn():
 
 es = get_elasticsearch_conn()
 
-database_name = "bike_1"
+database_name = "device"
 
 converter_resp = {
-  "size": 0,
-  "aggs": {
-    "zip_codes": {
-      "terms": {
-        "field": "zip_code",
-        "size": 1,
-        "order": {
-          "avg_pressure": "asc"
+    "inner_index": ["shop"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {
+                                "range": {
+                                    "Open_Year": {
+                                        "gt": 2012
+                                    }
+                                }
+                            },
+                            {
+                                "range": {
+                                    "Open_Year": {
+                                        "lt": 2008
+                                    }
+                                }
+                            }
+                        ],
+                        "minimum_should_match": 1
+                    }
+                }
+            ]
         }
-      },
-      "aggs": {
-        "avg_pressure": {
-          "avg": {
-            "field": "mean_sea_level_pressure_inches.keyword"
-          }
-        }
-      }
-    }
-  },
-  "inner_index": ["weather"],
-  "code": {
-    "zip_code": "response['aggregations']['zip_codes']['buckets'][0]['key']"
-  }
+    },
+    "_source": ["Location"]
 }
-
-
-
-
-
 index = converter_resp.pop("inner_index")
+formatted_index = "{db}_{table}".format(db=database_name, table=index[0])
+
+mapping = es.indices.get_mapping(index="{db}_{table}".format(db=database_name, table=index[0]))
+print("mapping:{}".format(mapping))
+print("---------------------")
 
 code = {}
 if "code" in converter_resp:
     code = converter_resp.pop("code")
 
-response = es.search(index="{db}_{table}".format(db=database_name, table=index[0]), body=converter_resp)
+response = es.search(index=formatted_index, body=converter_resp)
 print(response)
 print("---------------------")
 

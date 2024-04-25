@@ -1,0 +1,255 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM railway]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railway
+convert time:1.797227 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$count": "count"}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$count": "count"}])
+result of mongodb: ['{"count": 10}']
+mysql res: ['{"count_*": 10}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['Builder']
+---------------------------Execute SQL Query:[SELECT Builder FROM railway ORDER BY Builder ASC]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railway
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:2.68052 s
+---------------------------Execute Target Query:db.railway.find({}, { "Builder": 1, "_id": 0 }).sort({ "Builder": 1 })-----------------
+here we are in executor, and the query is:  db.railway.find({}, { "Builder": 1, "_id": 0 }).sort({ "Builder": 1 })
+result of mongodb: ['{"Builder": "Avonside"}', '{"Builder": "GER Hartford"}', '{"Builder": "GER Stratford"}', '{"Builder": "GNR Doncaster"}', '{"Builder": "GWR Swindon"}', '{"Builder": "GWR Swindon"}', '{"Builder": "MR Derby"}', '{"Builder": "SECR Ashford"}', '{"Builder": "Stephenson"}', '{"Builder": "Swindon Works"}']
+mysql res: ['{"Builder": "Avonside"}', '{"Builder": "GER Hartford"}', '{"Builder": "GER Stratford"}', '{"Builder": "GNR Doncaster"}', '{"Builder": "GWR Swindon"}', '{"Builder": "GWR Swindon"}', '{"Builder": "MR Derby"}', '{"Builder": "SECR Ashford"}', '{"Builder": "Stephenson"}', '{"Builder": "Swindon Works"}']
+target res: ['{"Builder": "Avonside"}', '{"Builder": "GER Hartford"}', '{"Builder": "GER Stratford"}', '{"Builder": "GNR Doncaster"}', '{"Builder": "GWR Swindon"}', '{"Builder": "GWR Swindon"}', '{"Builder": "MR Derby"}', '{"Builder": "SECR Ashford"}', '{"Builder": "Stephenson"}', '{"Builder": "Swindon Works"}']
+translate SELECT Builder FROM railway ORDER BY Builder ASC success
+
+--------------------------3-----------------
+schema:['Wheels', 'LOCATION']
+---------------------------Execute SQL Query:[SELECT Wheels ,  LOCATION FROM railway]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railway
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:2.083454 s
+---------------------------Execute Target Query:db.railway.find({}, { "Wheels": 1, "LOCATION": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.railway.find({}, { "Wheels": 1, "LOCATION": 1, "_id": 0 })
+result of mongodb: ['{"Wheels": "4-4-0"}', '{"Wheels": "4-4-0"}', '{"Wheels": "4-4-2"}', '{"Wheels": "4-4-0"}', '{"Wheels": "0-6-0T"}', '{"Wheels": "0-6-0"}', '{"Wheels": "2-8-0"}', '{"Wheels": "4-6-0"}', '{"Wheels": "4-4-2T"}', '{"Wheels": "0-6-0ST"}']
+mysql res: ['{"Wheels": "4-4-0", "LOCATION": "York"}', '{"Wheels": "4-4-0", "LOCATION": "Bo\'ness"}', '{"Wheels": "4-4-2", "LOCATION": "Barrow Hill"}', '{"Wheels": "4-4-0", "LOCATION": "Toddington"}', '{"Wheels": "0-6-0T", "LOCATION": "Bressingham"}', '{"Wheels": "0-6-0", "LOCATION": "Barrow Hill"}', '{"Wheels": "2-8-0", "LOCATION": "Shildon"}', '{"Wheels": "4-6-0", "LOCATION": "Swindon"}', '{"Wheels": "4-4-2T", "LOCATION": "Bressingham"}', '{"Wheels": "0-6-0ST", "LOCATION": "Basingstoke"}']
+target res: ['{"Wheels": "4-4-0", "LOCATION": null}', '{"Wheels": "4-4-0", "LOCATION": null}', '{"Wheels": "4-4-2", "LOCATION": null}', '{"Wheels": "4-4-0", "LOCATION": null}', '{"Wheels": "0-6-0T", "LOCATION": null}', '{"Wheels": "0-6-0", "LOCATION": null}', '{"Wheels": "2-8-0", "LOCATION": null}', '{"Wheels": "4-6-0", "LOCATION": null}', '{"Wheels": "4-4-2T", "LOCATION": null}', '{"Wheels": "0-6-0ST", "LOCATION": null}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['max_LEVEL']
+---------------------------Execute SQL Query:[SELECT max(LEVEL) FROM manager WHERE Country != "Australia	"]-----------------
+target_db_schema: Working_year_starts, Level, Country, _id, Manager_ID, Age, Name
+convert time:2.948845 s
+---------------------------Execute Target Query:db.manager.aggregate([{"$match": {"Country": {"$ne": "Australia"}}}, {"$group": {"_id": None, "max_Level": {"$max": "$Level"}}}])-----------------
+here we are in executor, and the query is:  db.manager.aggregate([{"$match": {"Country": {"$ne": "Australia"}}}, {"$group": {"_id": None, "max_Level": {"$max": "$Level"}}}])
+result of mongodb: ['{"_id": null, "max_Level": 11}']
+mysql res: ['{"max_LEVEL": 12}']
+target res: ['{"max_LEVEL": null}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['avg_Age']
+---------------------------Execute SQL Query:[SELECT avg(Age) FROM manager]-----------------
+target_db_schema: Working_year_starts, Level, Country, _id, Manager_ID, Age, Name
+convert time:2.64504 s
+---------------------------Execute Target Query:db.manager.aggregate([ { $group: { _id: null, avg_Age: { $avg: "$Age" } } }, { $project: { _id: 0, avg_Age: 1 } } ])-----------------
+here we are in executor, and the query is:  db.manager.aggregate([ { $group: { _id: null, avg_Age: { $avg: "$Age" } } }, { $project: { _id: 0, avg_Age: 1 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------6-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT Name FROM manager ORDER BY LEVEL ASC]-----------------
+target_db_schema: Working_year_starts, Level, Country, _id, Manager_ID, Age, Name
+convert time:3.094265 s
+---------------------------Execute Target Query:db.manager.find({}, { "Name": 1, "_id": 0 }).sort({ "Level": 1 })-----------------
+here we are in executor, and the query is:  db.manager.find({}, { "Name": 1, "_id": 0 }).sort({ "Level": 1 })
+result of mongodb: ['{"Name": "Ben Curtis"}', '{"Name": "Todd Hamilton"}', '{"Name": "Tiger Woods"}', '{"Name": "David Duval"}', '{"Name": "Sandy Lyle"}', '{"Name": "Nick Faldo"}', '{"Name": "Greg Norman"}']
+mysql res: ['{"Name": "Ben Curtis"}', '{"Name": "Todd Hamilton"}', '{"Name": "Tiger Woods"}', '{"Name": "David Duval"}', '{"Name": "Sandy Lyle"}', '{"Name": "Nick Faldo"}', '{"Name": "Greg Norman"}']
+target res: ['{"Name": "Ben Curtis"}', '{"Name": "Todd Hamilton"}', '{"Name": "Tiger Woods"}', '{"Name": "David Duval"}', '{"Name": "Sandy Lyle"}', '{"Name": "Nick Faldo"}', '{"Name": "Greg Norman"}']
+translate SELECT Name FROM manager ORDER BY LEVEL ASC success
+
+--------------------------7-----------------
+schema:['Name', 'Arrival']
+---------------------------Execute SQL Query:[SELECT Name ,  Arrival FROM train]-----------------
+target_db_schema: Train_Num, Train_ID, From, Arrival, _id, Railway_ID, Name
+convert time:2.161221 s
+---------------------------Execute Target Query:db.train.find({}, { "Name": 1, "Arrival": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.train.find({}, { "Name": 1, "Arrival": 1, "_id": 0 })
+result of mongodb: ['{"Arrival": "08:54", "Name": "Wardha-Ballarshah Pass"}', '{"Arrival": "09:08", "Name": "Sewagram Exp"}', '{"Arrival": "09:48", "Name": "Ballarshah-Mumbai Pass"}', '{"Arrival": "23:44", "Name": "Nagpur-Kazipet Pass"}', '{"Arrival": "05:09", "Name": "Kazipet-Nagpur Pass"}', '{"Arrival": "13:04", "Name": "Lucknow-Chennai Exp"}', '{"Arrival": "13:04", "Name": "Andaman Exp"}', '{"Arrival": "23:39", "Name": "Andaman Exp"}', '{"Arrival": "13:28", "Name": "Nandigram Exp"}']
+mysql res: ['{"Name": "Wardha-Ballarshah Pass", "Arrival": "08:54"}', '{"Name": "Sewagram Exp", "Arrival": "09:08"}', '{"Name": "Ballarshah-Mumbai Pass", "Arrival": "09:48"}', '{"Name": "Nagpur-Kazipet Pass", "Arrival": "23:44"}', '{"Name": "Kazipet-Nagpur Pass", "Arrival": "05:09"}', '{"Name": "Lucknow-Chennai Exp", "Arrival": "13:04"}', '{"Name": "Andaman Exp", "Arrival": "13:04"}', '{"Name": "Andaman Exp", "Arrival": "23:39"}', '{"Name": "Nandigram Exp", "Arrival": "13:28"}']
+target res: ['{"Name": "Wardha-Ballarshah Pass", "Arrival": "08:54"}', '{"Name": "Sewagram Exp", "Arrival": "09:08"}', '{"Name": "Ballarshah-Mumbai Pass", "Arrival": "09:48"}', '{"Name": "Nagpur-Kazipet Pass", "Arrival": "23:44"}', '{"Name": "Kazipet-Nagpur Pass", "Arrival": "05:09"}', '{"Name": "Lucknow-Chennai Exp", "Arrival": "13:04"}', '{"Name": "Andaman Exp", "Arrival": "13:04"}', '{"Name": "Andaman Exp", "Arrival": "23:39"}', '{"Name": "Nandigram Exp", "Arrival": "13:28"}']
+translate SELECT Name ,  Arrival FROM train success
+
+--------------------------8-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT Name FROM manager ORDER BY Age DESC LIMIT 1]-----------------
+target_db_schema: Working_year_starts, Level, Country, _id, Manager_ID, Age, Name
+convert time:1.970613 s
+---------------------------Execute Target Query:db.manager.find({}, { "Name": 1, "_id": 0 }).sort({ "Age": -1 }).limit(1)-----------------
+here we are in executor, and the query is:  db.manager.find({}, { "Name": 1, "_id": 0 }).sort({ "Age": -1 }).limit(1)
+result of mongodb: ['{"Name": "Todd Hamilton"}']
+mysql res: ['{"Name": "Todd Hamilton"}']
+target res: ['{"Name": "Todd Hamilton"}']
+translate SELECT Name FROM manager ORDER BY Age DESC LIMIT 1 success
+
+--------------------------9-----------------
+schema:['Name', 'Location']
+---------------------------Execute SQL Query:[SELECT T2.Name ,  T1.Location FROM railway AS T1 JOIN train AS T2 ON T1.Railway_ID  =  T2.Railway_ID]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railwaytrain: Train_Num, Train_ID, From, Arrival, _id, Railway_ID, Name
+
+convert time:5.270648 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$lookup": {"from": "train", "localField": "Railway_ID", "foreignField": "Railway_ID", "as": "train"}}, {"$unwind": "$train"}, {"$project": {"Name": "$train_Name", "Location": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$lookup": {"from": "train", "localField": "Railway_ID", "foreignField": "Railway_ID", "as": "train"}}, {"$unwind": "$train"}, {"$project": {"Name": "$train_Name", "Location": 1, "_id": 0}}])
+result of mongodb: ['{"Location": "York"}', '{"Location": "York"}', '{"Location": "Bo\'ness"}', '{"Location": "Barrow Hill"}', '{"Location": "Bressingham"}', '{"Location": "Bressingham"}', '{"Location": "Shildon"}', '{"Location": "Bressingham"}', '{"Location": "Basingstoke"}']
+mysql res: ['{"Name": "Wardha-Ballarshah Pass", "Location": "York"}', '{"Name": "Sewagram Exp", "Location": "York"}', '{"Name": "Ballarshah-Mumbai Pass", "Location": "Bo\'ness"}', '{"Name": "Nagpur-Kazipet Pass", "Location": "Barrow Hill"}', '{"Name": "Kazipet-Nagpur Pass", "Location": "Bressingham"}', '{"Name": "Lucknow-Chennai Exp", "Location": "Bressingham"}', '{"Name": "Andaman Exp", "Location": "Shildon"}', '{"Name": "Andaman Exp", "Location": "Bressingham"}', '{"Name": "Nandigram Exp", "Location": "Basingstoke"}']
+target res: ['{"Name": null, "Location": "York"}', '{"Name": null, "Location": "York"}', '{"Name": null, "Location": "Bo\'ness"}', '{"Name": null, "Location": "Barrow Hill"}', '{"Name": null, "Location": "Bressingham"}', '{"Name": null, "Location": "Bressingham"}', '{"Name": null, "Location": "Shildon"}', '{"Name": null, "Location": "Bressingham"}', '{"Name": null, "Location": "Basingstoke"}']
+mismatch between MySQL and target
+
+--------------------------10-----------------
+schema:['Builder']
+---------------------------Execute SQL Query:[SELECT T1.Builder FROM railway AS T1 JOIN train AS T2 ON T1.Railway_ID  =  T2.Railway_ID WHERE T2.Name  =  "Andaman Exp"]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railwaytrain: Train_Num, Train_ID, From, Arrival, _id, Railway_ID, Name
+
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:5.290627 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$lookup":{"from":"train","localField":"Railway_ID","foreignField":"Railway_ID","as":"train"}},{"$match":{"train_Name":"Andaman Exp"}},{"$project":{"Builder":1,"_id":0}}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$lookup":{"from":"train","localField":"Railway_ID","foreignField":"Railway_ID","as":"train"}},{"$match":{"train_Name":"Andaman Exp"}},{"$project":{"Builder":1,"_id":0}}])
+result of mongodb: []
+mysql res: ['{"Builder": "GWR Swindon"}', '{"Builder": "Stephenson"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['Railway_ID', 'Location']
+---------------------------Execute SQL Query:[SELECT T2.Railway_ID ,  T1.Location FROM railway AS T1 JOIN train AS T2 ON T1.Railway_ID  =  T2.Railway_ID GROUP BY T2.Railway_ID HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railwaytrain: Train_Num, Train_ID, From, Arrival, _id, Railway_ID, Name
+
+convert time:5.565363 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$lookup": {"from": "train", "localField": "Railway_ID", "foreignField": "Railway_ID", "as": "train"}}, {"$unwind": "$train"}, {"$group": {"_id": "$train_Railway_ID", "count": {"$sum": 1}, "Location": {"$first": "$Location"}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"Railway_ID": "$_id", "Location": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$lookup": {"from": "train", "localField": "Railway_ID", "foreignField": "Railway_ID", "as": "train"}}, {"$unwind": "$train"}, {"$group": {"_id": "$train_Railway_ID", "count": {"$sum": 1}, "Location": {"$first": "$Location"}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"Railway_ID": "$_id", "Location": 1, "_id": 0}}])
+result of mongodb: ['{"Location": "York", "Railway_ID": null}']
+mysql res: ['{"Railway_ID": 1, "Location": "York"}', '{"Railway_ID": 5, "Location": "Bressingham"}']
+target res: ['{"Railway_ID": null, "Location": "York"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['Railway_ID', 'Builder']
+---------------------------Execute SQL Query:[SELECT T2.Railway_ID ,  T1.Builder FROM railway AS T1 JOIN train AS T2 ON T1.Railway_ID  =  T2.Railway_ID GROUP BY T2.Railway_ID ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railwaytrain: Train_Num, Train_ID, From, Arrival, _id, Railway_ID, Name
+
+convert time:6.400032 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$lookup": {"from": "train", "localField": "Railway_ID", "foreignField": "Railway_ID", "as": "train"}}, {"$unwind": "$train"}, {"$group": {"_id": "$train_Railway_ID", "Builder": {"$first": "$Builder"}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Railway_ID": "$_id", "Builder": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$lookup": {"from": "train", "localField": "Railway_ID", "foreignField": "Railway_ID", "as": "train"}}, {"$unwind": "$train"}, {"$group": {"_id": "$train_Railway_ID", "Builder": {"$first": "$Builder"}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Railway_ID": "$_id", "Builder": 1, "_id": 0}}])
+result of mongodb: ['{"Builder": "SECR Ashford", "Railway_ID": null}']
+mysql res: ['{"Railway_ID": 1, "Builder": "SECR Ashford"}']
+target res: ['{"Railway_ID": null, "Builder": "SECR Ashford"}']
+mismatch between MySQL and target
+
+--------------------------13-----------------
+schema:['Builder', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT Builder ,  COUNT(*) FROM railway GROUP BY Builder]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railway
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:5.011927 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$group": {"_id": "$Builder", "COUNT": {"$sum": 1}}}, {"$project": {"Builder": "$_id", "COUNT": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$group": {"_id": "$Builder", "COUNT": {"$sum": 1}}}, {"$project": {"Builder": "$_id", "COUNT": 1, "_id": 0}}])
+result of mongodb: ['{"COUNT": 1, "Builder": "GER Hartford"}', '{"COUNT": 1, "Builder": "SECR Ashford"}', '{"COUNT": 1, "Builder": "Swindon Works"}', '{"COUNT": 1, "Builder": "MR Derby"}', '{"COUNT": 1, "Builder": "Stephenson"}', '{"COUNT": 1, "Builder": "GNR Doncaster"}', '{"COUNT": 2, "Builder": "GWR Swindon"}', '{"COUNT": 1, "Builder": "GER Stratford"}', '{"COUNT": 1, "Builder": "Avonside"}']
+mysql res: ['{"Builder": "SECR Ashford", "COUNT_*": 1}', '{"Builder": "MR Derby", "COUNT_*": 1}', '{"Builder": "GNR Doncaster", "COUNT_*": 1}', '{"Builder": "GWR Swindon", "COUNT_*": 2}', '{"Builder": "GER Stratford", "COUNT_*": 1}', '{"Builder": "GER Hartford", "COUNT_*": 1}', '{"Builder": "Swindon Works", "COUNT_*": 1}', '{"Builder": "Stephenson", "COUNT_*": 1}', '{"Builder": "Avonside", "COUNT_*": 1}']
+target res: ['{"Builder": "GER Hartford", "COUNT_*": null}', '{"Builder": "SECR Ashford", "COUNT_*": null}', '{"Builder": "Swindon Works", "COUNT_*": null}', '{"Builder": "MR Derby", "COUNT_*": null}', '{"Builder": "Stephenson", "COUNT_*": null}', '{"Builder": "GNR Doncaster", "COUNT_*": null}', '{"Builder": "GWR Swindon", "COUNT_*": null}', '{"Builder": "GER Stratford", "COUNT_*": null}', '{"Builder": "Avonside", "COUNT_*": null}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['Builder']
+---------------------------Execute SQL Query:[SELECT Builder FROM railway GROUP BY Builder ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railway
+convert time:5.494178 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$group": {"_id": "$Builder", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Builder": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$group": {"_id": "$Builder", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Builder": "$_id", "_id": 0}}])
+result of mongodb: ['{"Builder": "GWR Swindon"}']
+mysql res: ['{"Builder": "GWR Swindon"}']
+target res: ['{"Builder": "GWR Swindon"}']
+translate SELECT Builder FROM railway GROUP BY Builder ORDER BY COUNT(*) DESC LIMIT 1 success
+
+--------------------------15-----------------
+schema:['LOCATION', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT LOCATION ,  COUNT(*) FROM railway GROUP BY LOCATION]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railway
+convert time:2.853618 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$group": {"_id": "$LOCATION", "count": {"$sum": 1}}}, {"$project": {"LOCATION": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$group": {"_id": "$LOCATION", "count": {"$sum": 1}}}, {"$project": {"LOCATION": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 10, "LOCATION": null}']
+mysql res: ['{"LOCATION": "York", "COUNT_*": 1}', '{"LOCATION": "Bo\'ness", "COUNT_*": 1}', '{"LOCATION": "Barrow Hill", "COUNT_*": 2}', '{"LOCATION": "Toddington", "COUNT_*": 1}', '{"LOCATION": "Bressingham", "COUNT_*": 2}', '{"LOCATION": "Shildon", "COUNT_*": 1}', '{"LOCATION": "Swindon", "COUNT_*": 1}', '{"LOCATION": "Basingstoke", "COUNT_*": 1}']
+target res: ['{"LOCATION": null, "COUNT_*": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------16-----------------
+schema:['LOCATION']
+---------------------------Execute SQL Query:[SELECT LOCATION FROM railway GROUP BY LOCATION HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railway
+convert time:4.620694 s
+---------------------------Execute Target Query:db.railway.aggregate([{"$group": {"_id": "$Location", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"Location": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.railway.aggregate([{"$group": {"_id": "$Location", "count": {"$sum": 1}}}, {"$match": {"count": {"$gt": 1}}}, {"$project": {"Location": "$_id", "_id": 0}}])
+result of mongodb: ['{"Location": "Barrow Hill"}', '{"Location": "Bressingham"}']
+mysql res: ['{"LOCATION": "Barrow Hill"}', '{"LOCATION": "Bressingham"}']
+target res: ['{"LOCATION": null}', '{"LOCATION": null}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['ObjectNumber']
+---------------------------Execute SQL Query:[SELECT ObjectNumber FROM railway WHERE Railway_ID NOT IN (SELECT Railway_ID FROM train)]-----------------
+target_db_schema: ObjectNumber, Builder, Location, Built, _id, Railway_ID, Wheels, Railwaytrain: Train_Num, Train_ID, From, Arrival, _id, Railway_ID, Name
+
+convert time:3.125803 s
+---------------------------Execute Target Query:db.railway.find({ "Railway_ID": { "$nin": db.train.distinct("Railway_ID") } }, { "ObjectNumber": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.railway.find({ "Railway_ID": { "$nin": db.train.distinct("Railway_ID") } }, { "ObjectNumber": 1, "_id": 0 })
+result of mongodb: ['{"ObjectNumber": "1978-7025"}', '{"ObjectNumber": "1978-7026"}', '{"ObjectNumber": "1978-7027"}']
+mysql res: ['{"ObjectNumber": "1978-7025"}', '{"ObjectNumber": "1978-7026"}', '{"ObjectNumber": "1978-7027"}']
+target res: ['{"ObjectNumber": "1978-7025"}', '{"ObjectNumber": "1978-7026"}', '{"ObjectNumber": "1978-7027"}']
+translate SELECT ObjectNumber FROM railway WHERE Railway_ID NOT IN (SELECT Railway_ID FROM train) success
+
+--------------------------18-----------------
+schema:['Country']
+---------------------------Execute SQL Query:[SELECT Country FROM manager WHERE Age  >  50 INTERSECT SELECT Country FROM manager WHERE Age  <  46]-----------------
+target_db_schema: Working_year_starts, Level, Country, _id, Manager_ID, Age, Name
+Error parsing XML of prompt: not well-formed (invalid token): line 89, column 100
+convert time:6.758575 s
+---------------------------Execute Target Query:db.manager.aggregate([ { $match: { $or: [ { Age: { $gt: 50 } }, { Age: { $lt: 46 } } ] } }, { $group: { _id: "$Country" } }, { $project: { Country: "$_id", _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.manager.aggregate([ { $match: { $or: [ { Age: { $gt: 50 } }, { Age: { $lt: 46 } } ] } }, { $group: { _id: "$Country" } }, { $project: { Country: "$_id", _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------19-----------------
+schema:['Country']
+---------------------------Execute SQL Query:[SELECT DISTINCT Country FROM manager]-----------------
+target_db_schema: Working_year_starts, Level, Country, _id, Manager_ID, Age, Name
+convert time:1.004696 s
+---------------------------Execute Target Query:db.manager.distinct("Country")-----------------
+here we are in executor, and the query is:  db.manager.distinct("Country")
+execute target query error:'str' object has no attribute 'get'
+
+--------------------------20-----------------
+schema:['Working_year_starts']
+---------------------------Execute SQL Query:[SELECT Working_year_starts FROM manager ORDER BY LEVEL DESC]-----------------
+target_db_schema: Working_year_starts, Level, Country, _id, Manager_ID, Age, Name
+convert time:5.124999 s
+---------------------------Execute Target Query:db.manager.find({}, { "Working_year_starts": 1, "_id": 0 }).sort({ "Level": -1 })-----------------
+here we are in executor, and the query is:  db.manager.find({}, { "Working_year_starts": 1, "_id": 0 }).sort({ "Level": -1 })
+result of mongodb: ['{"Working_year_starts": "1993"}', '{"Working_year_starts": "1999"}', '{"Working_year_starts": "1985"}', '{"Working_year_starts": "2001"}', '{"Working_year_starts": "2003"}', '{"Working_year_starts": "2004"}', '{"Working_year_starts": "2006"}']
+mysql res: ['{"Working_year_starts": "1993"}', '{"Working_year_starts": "1999"}', '{"Working_year_starts": "1985"}', '{"Working_year_starts": "2001"}', '{"Working_year_starts": "2003"}', '{"Working_year_starts": "2004"}', '{"Working_year_starts": "2006"}']
+target res: ['{"Working_year_starts": "1993"}', '{"Working_year_starts": "1999"}', '{"Working_year_starts": "1985"}', '{"Working_year_starts": "2001"}', '{"Working_year_starts": "2003"}', '{"Working_year_starts": "2004"}', '{"Working_year_starts": "2006"}']
+translate SELECT Working_year_starts FROM manager ORDER BY LEVEL DESC success
+
+--------------------------21-----------------
+schema:['Country']
+---------------------------Execute SQL Query:[SELECT Country FROM manager WHERE Age  >  50 OR Age  <  46]-----------------
+target_db_schema: Working_year_starts, Level, Country, _id, Manager_ID, Age, Name
+Error parsing XML of prompt: not well-formed (invalid token): line 89, column 59
+convert time:5.736021 s
+---------------------------Execute Target Query:db.manager.find({$or: [{"Age": {$gt: 50}}, {"Age": {$lt: 46}}]}, {"Country": 1, "_id": 0})-----------------
+here we are in executor, and the query is:  db.manager.find({$or: [{"Age": {$gt: 50}}, {"Age": {$lt: 46}}]}, {"Country": 1, "_id": 0})
+execute target query error:invalid syntax (<string>, line 1)
+success_query_count: 7
+valid_count: 21
+accuracy: 0.3333333333333333

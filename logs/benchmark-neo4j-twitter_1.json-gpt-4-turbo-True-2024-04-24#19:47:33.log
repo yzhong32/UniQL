@@ -1,0 +1,433 @@
+--------
+
+--------------------------1-----------------
+schema:['email']
+---------------------------Execute SQL Query:[SELECT email FROM user_profiles WHERE name  =  'Mary']-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:1.714126 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) WHERE u.name = 'Mary' RETURN u.email as email-----------------
+MATCH (u:user_profiles) WHERE u.name = 'Mary' RETURN u.email as email
+mysql res: ['{"email": "Mary@yale.edu"}']
+target res: ['{"email": "Mary@yale.edu"}']
+translate SELECT email FROM user_profiles WHERE name  =  'Mary' success
+
+--------------------------2-----------------
+schema:['partitionid']
+---------------------------Execute SQL Query:[SELECT partitionid FROM user_profiles WHERE name  =  'Iron Man']-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:1.728189 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) WHERE u.name = 'Iron Man' RETURN u.partitionid as partitionid-----------------
+MATCH (u:user_profiles) WHERE u.name = 'Iron Man' RETURN u.partitionid as partitionid
+mysql res: ['{"partitionid": 1}']
+target res: ['{"partitionid": 1}']
+translate SELECT partitionid FROM user_profiles WHERE name  =  'Iron Man' success
+
+--------------------------3-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM user_profiles]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:1.288905 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) RETURN COUNT(*) AS count-----------------
+MATCH (u:user_profiles) RETURN COUNT(*) AS count
+mysql res: ['{"count_*": 7}']
+target res: ['{"count": 7}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM follows]-----------------
+target_db_schema: ['f2', 'f1']
+convert time:1.93222 s
+---------------------------Execute Target Query:MATCH (f:follows) RETURN COUNT(*) AS count-----------------
+MATCH (f:follows) RETURN COUNT(*) AS count
+mysql res: ['{"count_*": 9}']
+target res: ['{"count": 9}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM follows GROUP BY f1]-----------------
+target_db_schema: ['f2', 'f1']
+convert time:2.026497 s
+---------------------------Execute Target Query:MATCH (f:follows)
+WITH f.f1 AS f1, COUNT(*) AS count_star
+RETURN f1, count_star-----------------
+MATCH (f:follows)
+WITH f.f1 AS f1, COUNT(*) AS count_star
+RETURN f1, count_star
+mysql res: ['{"count_*": 3}', '{"count_*": 1}', '{"count_*": 2}', '{"count_*": 2}', '{"count_*": 1}']
+target res: ['{"f1": 5, "count_star": 2}', '{"f1": 7, "count_star": 1}', '{"f1": 1, "count_star": 3}', '{"f1": 2, "count_star": 1}', '{"f1": 3, "count_star": 2}']
+mismatch between MySQL and target
+
+--------------------------6-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM tweets]-----------------
+target_db_schema: ['text', 'id', 'createdate', 'uid']
+convert time:1.202532 s
+---------------------------Execute Target Query:MATCH (t:tweets) RETURN COUNT(*) AS count-----------------
+MATCH (t:tweets) RETURN COUNT(*) AS count
+mysql res: ['{"count_*": 8}']
+target res: ['{"count": 8}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['count_DISTINCT uid']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT uid) FROM tweets]-----------------
+target_db_schema: ['text', 'id', 'createdate', 'uid']
+convert time:1.628803 s
+---------------------------Execute Target Query:MATCH (t:tweets) RETURN COUNT(DISTINCT t.uid) AS count_distinct_uid-----------------
+MATCH (t:tweets) RETURN COUNT(DISTINCT t.uid) AS count_distinct_uid
+mysql res: ['{"count_DISTINCT uid": 5}']
+target res: ['{"count_distinct_uid": 5}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles WHERE name LIKE '%Swift%']-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:1.868672 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) WHERE u.name CONTAINS 'Swift' RETURN u.name AS name, u.email AS email-----------------
+MATCH (u:user_profiles) WHERE u.name CONTAINS 'Swift' RETURN u.name AS name, u.email AS email
+mysql res: ['{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}']
+target res: ['{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}']
+translate SELECT name ,  email FROM user_profiles WHERE name LIKE '%Swift%' success
+
+--------------------------9-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles WHERE email LIKE '%superstar%' OR email LIKE '%edu%']-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:2.528495 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) WHERE u.email CONTAINS 'superstar' OR u.email CONTAINS 'edu' RETURN u.name AS name-----------------
+MATCH (u:user_profiles) WHERE u.email CONTAINS 'superstar' OR u.email CONTAINS 'edu' RETURN u.name AS name
+mysql res: ['{"name": "Mary"}', '{"name": "Tyler Swift"}', '{"name": "Celine Dion"}', '{"name": "Natalie Portman"}']
+target res: ['{"name": "Mary"}', '{"name": "Tyler Swift"}', '{"name": "Celine Dion"}', '{"name": "Natalie Portman"}']
+translate SELECT name FROM user_profiles WHERE email LIKE '%superstar%' OR email LIKE '%edu%' success
+
+--------------------------10-----------------
+schema:['text']
+---------------------------Execute SQL Query:[SELECT text FROM tweets WHERE text LIKE '%intern%']-----------------
+target_db_schema: ['text', 'id', 'createdate', 'uid']
+convert time:1.747385 s
+---------------------------Execute Target Query:MATCH (t:tweets) WHERE t.text CONTAINS 'intern' RETURN t.text AS text-----------------
+MATCH (t:tweets) WHERE t.text CONTAINS 'intern' RETURN t.text AS text
+mysql res: ['{"text": "My company is hiring interns."}']
+target res: ['{"text": "My company is hiring interns."}']
+translate SELECT text FROM tweets WHERE text LIKE '%intern%' success
+
+--------------------------11-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles WHERE followers  >  1000]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:2.091173 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) WHERE u.followers > 1000 RETURN u.name AS name, u.email AS email-----------------
+MATCH (u:user_profiles) WHERE u.followers > 1000 RETURN u.name AS name, u.email AS email
+mysql res: ['{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}', '{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}', '{"name": "Celine Dion", "email": "cd@superstar.com"}', '{"name": "Natalie Portman", "email": "np@superstar.com"}']
+target res: ['{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}', '{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}', '{"name": "Celine Dion", "email": "cd@superstar.com"}', '{"name": "Natalie Portman", "email": "np@superstar.com"}']
+translate SELECT name ,  email FROM user_profiles WHERE followers  >  1000 success
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  (SELECT count(*) FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 WHERE T1.name  =  'Tyler Swift')]-----------------
+target_db_schema: ['f2', 'f1', 'u', 's', 'e', 'r', '_', 'p', 'r', 'o', 'f', 'i', 'l', 'e', 's', ':', ' ', '[', "'", 'u', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'e', 'm', 'a', 'i', 'l', "'", ',', ' ', "'", 'f', 'o', 'l', 'l', 'o', 'w', 'e', 'r', 's', "'", ',', ' ', "'", 'p', 'a', 'r', 't', 'i', 't', 'i', 'o', 'n', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:7.446455 s
+---------------------------Execute Target Query:MATCH (u1:user_profiles)-[:follows]->(u2:user_profiles)
+WHERE u1.uid = u2.f1
+WITH u2.f1 AS f1, COUNT(*) AS total_follows, u1.name AS name
+WITH f1, total_follows, name, 
+     [(u1:user_profiles)-[:follows]->(u2:user_profiles) WHERE u1.name = 'Tyler Swift' AND u1.uid = u2.f1 | COUNT(*)] AS tyler_follows
+WHERE total_follows > tyler_follows[0]
+RETURN name-----------------
+MATCH (u1:user_profiles)-[:follows]->(u2:user_profiles)
+WHERE u1.uid = u2.f1
+WITH u2.f1 AS f1, COUNT(*) AS total_follows, u1.name AS name
+WITH f1, total_follows, name, 
+     [(u1:user_profiles)-[:follows]->(u2:user_profiles) WHERE u1.name = 'Tyler Swift' AND u1.uid = u2.f1 | COUNT(*)] AS tyler_follows
+WHERE total_follows > tyler_follows[0]
+RETURN name
+mysql res: ['{"name": "Iron Man"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.email FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  1]-----------------
+target_db_schema: ['f2', 'f1', 'u', 's', 'e', 'r', '_', 'p', 'r', 'o', 'f', 'i', 'l', 'e', 's', ':', ' ', '[', "'", 'u', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'e', 'm', 'a', 'i', 'l', "'", ',', ' ', "'", 'f', 'o', 'l', 'l', 'o', 'w', 'e', 'r', 's', "'", ',', ' ', "'", 'p', 'a', 'r', 't', 'i', 't', 'i', 'o', 'n', 'i', 'd', "'", ']', '\n']
+convert time:5.262074 s
+---------------------------Execute Target Query:MATCH (u:user_profiles), (f:follows) WHERE u.uid = f.f1 WITH u.name AS name, u.email AS email, COUNT(*) AS count WHERE count > 1 RETURN name, email-----------------
+MATCH (u:user_profiles), (f:follows) WHERE u.uid = f.f1 WITH u.name AS name, u.email AS email, COUNT(*) AS count WHERE count > 1 RETURN name, email
+mysql res: ['{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}', '{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}']
+target res: ['{"name": "Tyler Swift", "email": "ts@superstar.com\\n"}', '{"name": "Iron Man", "email": "ts@richest.com"}', '{"name": "Black Widow\\n", "email": "bw@superhero.com"}']
+translate SELECT T1.name ,  T1.email FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f1 GROUP BY T2.f1 HAVING count(*)  >  1 success
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  >  1]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:10.674199 s
+---------------------------Execute Target Query:MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, COUNT(*) AS tweet_count WHERE tweet_count > 1 RETURN name-----------------
+MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, COUNT(*) AS tweet_count WHERE tweet_count > 1 RETURN name
+mysql res: ['{"name": "Iron Man"}', '{"name": "Susan"}', '{"name": "Celine Dion"}']
+target res: ['{"name": "Iron Man"}', '{"name": "Susan"}', '{"name": "Celine Dion"}']
+translate SELECT T1.name FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  >  1 success
+
+--------------------------15-----------------
+schema:['f1']
+---------------------------Execute SQL Query:[SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Mary" INTERSECT SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Susan"]-----------------
+target_db_schema: ['f2', 'f1', 'u', 's', 'e', 'r', '_', 'p', 'r', 'o', 'f', 'i', 'l', 'e', 's', ':', ' ', '[', "'", 'u', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'e', 'm', 'a', 'i', 'l', "'", ',', ' ', "'", 'f', 'o', 'l', 'l', 'o', 'w', 'e', 'r', 's', "'", ',', ' ', "'", 'p', 'a', 'r', 't', 'i', 't', 'i', 'o', 'n', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:4.16726 s
+---------------------------Execute Target Query:MATCH (u1:user_profiles)-[f:follows]->(u2:user_profiles)
+WHERE u1.name = "Mary"
+WITH u2.f1 AS f1
+MATCH (u1:user_profiles)-[f:follows]->(u2:user_profiles)
+WHERE u1.name = "Susan"
+RETURN f1
+INTERSECT
+RETURN f1-----------------
+MATCH (u1:user_profiles)-[f:follows]->(u2:user_profiles)
+WHERE u1.name = "Mary"
+WITH u2.f1 AS f1
+MATCH (u1:user_profiles)-[f:follows]->(u2:user_profiles)
+WHERE u1.name = "Susan"
+RETURN f1
+INTERSECT
+RETURN f1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'INTERSECT': expected
+  "!="
+  "%"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "AS"
+  "CALL"
+  "CONTAINS"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "ENDS"
+  "FOREACH"
+  "IN"
+  "INSERT"
+  "IS"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "OR"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "STARTS"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  "XOR"
+  "^"
+  <EOF> (line 7, column 1 (offset: 188))
+"INTERSECT"
+ ^}
+
+--------------------------16-----------------
+schema:['f1']
+---------------------------Execute SQL Query:[SELECT T2.f1 FROM user_profiles AS T1 JOIN follows AS T2 ON T1.uid  =  T2.f2 WHERE T1.name  =  "Mary" OR T1.name  =  "Susan"]-----------------
+target_db_schema: ['f2', 'f1', 'u', 's', 'e', 'r', '_', 'p', 'r', 'o', 'f', 'i', 'l', 'e', 's', ':', ' ', '[', "'", 'u', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'e', 'm', 'a', 'i', 'l', "'", ',', ' ', "'", 'f', 'o', 'l', 'l', 'o', 'w', 'e', 'r', 's', "'", ',', ' ', "'", 'p', 'a', 'r', 't', 'i', 't', 'i', 'o', 'n', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:3.93936 s
+---------------------------Execute Target Query:MATCH (u:user_profiles)-[f:follows]->(up:user_profiles)
+WHERE u.name = "Mary" OR u.name = "Susan"
+RETURN f.f1 AS f1-----------------
+MATCH (u:user_profiles)-[f:follows]->(up:user_profiles)
+WHERE u.name = "Mary" OR u.name = "Susan"
+RETURN f.f1 AS f1
+mysql res: ['{"f1": 1}', '{"f1": 3}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------17-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:3.655845 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) RETURN u.name AS name ORDER BY u.followers DESC LIMIT 1-----------------
+MATCH (u:user_profiles) RETURN u.name AS name ORDER BY u.followers DESC LIMIT 1
+mysql res: ['{"name": "Tyler Swift"}']
+target res: ['{"name": "Tyler Swift"}']
+translate SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 1 success
+
+--------------------------18-----------------
+schema:['name', 'email']
+---------------------------Execute SQL Query:[SELECT name ,  email FROM user_profiles ORDER BY followers LIMIT 1]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:1.879593 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) RETURN u.name AS name, u.email AS email ORDER BY u.followers LIMIT 1-----------------
+MATCH (u:user_profiles) RETURN u.name AS name, u.email AS email ORDER BY u.followers LIMIT 1
+mysql res: ['{"name": "Susan", "email": "susan@gmail.com\\n"}']
+target res: ['{"name": "Susan", "email": "susan@gmail.com\\n"}']
+translate SELECT name ,  email FROM user_profiles ORDER BY followers LIMIT 1 success
+
+--------------------------19-----------------
+schema:['name', 'followers']
+---------------------------Execute SQL Query:[SELECT name ,  followers FROM user_profiles ORDER BY followers DESC]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:2.218723 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) RETURN u.name AS name, u.followers AS followers ORDER BY u.followers DESC-----------------
+MATCH (u:user_profiles) RETURN u.name AS name, u.followers AS followers ORDER BY u.followers DESC
+mysql res: ['{"name": "Tyler Swift", "followers": 99999998}', '{"name": "Natalie Portman", "followers": 94375428}', '{"name": "Black Widow\\n", "followers": 35425845}', '{"name": "Celine Dion", "followers": 23927492}', '{"name": "Iron Man", "followers": 6662425}', '{"name": "Mary", "followers": 890}', '{"name": "Susan", "followers": 100}']
+target res: ['{"name": "Tyler Swift", "followers": 99999998}', '{"name": "Natalie Portman", "followers": 94375428}', '{"name": "Black Widow\\n", "followers": 35425845}', '{"name": "Celine Dion", "followers": 23927492}', '{"name": "Iron Man", "followers": 6662425}', '{"name": "Mary", "followers": 890}', '{"name": "Susan", "followers": 100}']
+translate SELECT name ,  followers FROM user_profiles ORDER BY followers DESC success
+
+--------------------------20-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 5]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:1.674775 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) RETURN u.name AS name ORDER BY u.followers DESC LIMIT 5-----------------
+MATCH (u:user_profiles) RETURN u.name AS name ORDER BY u.followers DESC LIMIT 5
+mysql res: ['{"name": "Tyler Swift"}', '{"name": "Natalie Portman"}', '{"name": "Black Widow\\n"}', '{"name": "Celine Dion"}', '{"name": "Iron Man"}']
+target res: ['{"name": "Tyler Swift"}', '{"name": "Natalie Portman"}', '{"name": "Black Widow\\n"}', '{"name": "Celine Dion"}', '{"name": "Iron Man"}']
+translate SELECT name FROM user_profiles ORDER BY followers DESC LIMIT 5 success
+
+--------------------------21-----------------
+schema:['text']
+---------------------------Execute SQL Query:[SELECT text FROM tweets ORDER BY createdate]-----------------
+target_db_schema: ['text', 'id', 'createdate', 'uid']
+convert time:2.259754 s
+---------------------------Execute Target Query:MATCH (t:tweets) RETURN t.text ORDER BY t.createdate-----------------
+MATCH (t:tweets) RETURN t.text ORDER BY t.createdate
+mysql res: ['{"text": "Hello I\'m Tony Stark."}', '{"text": "Today I have went shopping at Laffayette."}', '{"text": "My company is hiring interns."}', '{"text": "Oh, I only have a few fans."}', '{"text": "Let\\u2019s celebrate women, fight for equality and support each other,  not just today, but everyday!"}', '{"text": "I love my new boyfriend."}', '{"text": "I feel tired and don\'t want to write SQLs."}', '{"text": "I had a pretty rough time during the last couple of weeks"}']
+target res: ['{"t.text": "Hello I\'m Tony Stark."}', '{"t.text": "Today I have went shopping at Laffayette."}', '{"t.text": "My company is hiring interns."}', '{"t.text": "Oh, I only have a few fans."}', '{"t.text": "Let\\u2019s celebrate women, fight for equality and support each other,  not just today, but everyday!"}', '{"t.text": "I love my new boyfriend."}', '{"t.text": "I feel tired and don\'t want to write SQLs."}', '{"t.text": "I had a pretty rough time during the last couple of weeks"}']
+mismatch between MySQL and target
+
+--------------------------22-----------------
+schema:['name', 'count_*']
+---------------------------Execute SQL Query:[SELECT T1.name ,  count(*) FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:2.981075 s
+---------------------------Execute Target Query:MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, COUNT(*) AS count RETURN name, count-----------------
+MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, COUNT(*) AS count RETURN name, count
+mysql res: ['{"name": "Iron Man", "count_*": 2}', '{"name": "Black Widow\\n", "count_*": 1}', '{"name": "Susan", "count_*": 2}', '{"name": "Tyler Swift", "count_*": 1}', '{"name": "Celine Dion", "count_*": 2}']
+target res: ['{"name": "Iron Man", "count": 2}', '{"name": "Black Widow\\n", "count": 1}', '{"name": "Susan", "count": 2}', '{"name": "Celine Dion", "count": 2}', '{"name": "Tyler Swift", "count": 1}']
+mismatch between MySQL and target
+
+--------------------------23-----------------
+schema:['name', 'partitionid']
+---------------------------Execute SQL Query:[SELECT T1.name ,  T1.partitionid FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  <  2]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 92, column 136
+convert time:2.942643 s
+---------------------------Execute Target Query:MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, u.partitionid AS partitionid, COUNT(*) AS count WHERE count < 2 RETURN name, partitionid-----------------
+MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, u.partitionid AS partitionid, COUNT(*) AS count WHERE count < 2 RETURN name, partitionid
+mysql res: ['{"name": "Black Widow\\n", "partitionid": 23}', '{"name": "Tyler Swift", "partitionid": 10}']
+target res: ['{"name": "Black Widow\\n", "partitionid": 23}', '{"name": "Tyler Swift", "partitionid": 10}']
+translate SELECT T1.name ,  T1.partitionid FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  <  2 success
+
+--------------------------24-----------------
+schema:['name', 'count_*']
+---------------------------Execute SQL Query:[SELECT T1.name ,  count(*) FROM user_profiles AS T1 JOIN tweets AS T2 ON T1.uid  =  T2.uid GROUP BY T2.uid HAVING count(*)  >  1]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:2.903269 s
+---------------------------Execute Target Query:MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, COUNT(*) AS count RETURN name, count HAVING count > 1-----------------
+MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, COUNT(*) AS count RETURN name, count HAVING count > 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'HAVING': expected
+  "!="
+  "%"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "AS"
+  "CALL"
+  "CONTAINS"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "ENDS"
+  "FOREACH"
+  "IN"
+  "INSERT"
+  "IS"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "OR"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "STARTS"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  "XOR"
+  "^"
+  <EOF> (line 1, column 115 (offset: 114))
+"MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH u.name AS name, COUNT(*) AS count RETURN name, count HAVING count > 1"
+                                                                                                                   ^}
+
+--------------------------25-----------------
+schema:['avg_followers']
+---------------------------Execute SQL Query:[SELECT avg(followers) FROM user_profiles WHERE uid NOT IN (SELECT uid FROM tweets)]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:2.720537 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) WHERE NOT EXISTS ((u)-[:HAS_TWEET]->(:tweets)) RETURN AVG(u.followers) AS avg_followers-----------------
+MATCH (u:user_profiles) WHERE NOT EXISTS ((u)-[:HAS_TWEET]->(:tweets)) RETURN AVG(u.followers) AS avg_followers
+mysql res: ['{"avg_followers": 47188159.0000}']
+target res: ['{"avg_followers": 37198882.571428575}']
+mismatch between MySQL and target
+
+--------------------------26-----------------
+schema:['avg_followers']
+---------------------------Execute SQL Query:[SELECT avg(followers) FROM user_profiles WHERE uid IN (SELECT uid FROM tweets)]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid', 't', 'w', 'e', 'e', 't', 's', ':', ' ', '[', "'", 't', 'e', 'x', 't', "'", ',', ' ', "'", 'i', 'd', "'", ',', ' ', "'", 'c', 'r', 'e', 'a', 't', 'e', 'd', 'a', 't', 'e', "'", ',', ' ', "'", 'u', 'i', 'd', "'", ']', '\n']
+convert time:2.604377 s
+---------------------------Execute Target Query:MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH AVG(u.followers) AS avg_followers RETURN avg_followers-----------------
+MATCH (u:user_profiles), (t:tweets) WHERE u.uid = t.uid WITH AVG(u.followers) AS avg_followers RETURN avg_followers
+mysql res: ['{"avg_followers": 33203172.0000}']
+target res: ['{"avg_followers": 24575734.625}']
+mismatch between MySQL and target
+
+--------------------------27-----------------
+schema:['max_followers', 'sum_followers']
+---------------------------Execute SQL Query:[SELECT max(followers) ,  sum(followers) FROM user_profiles]-----------------
+target_db_schema: ['uid', 'name', 'email', 'followers', 'partitionid']
+convert time:2.061586 s
+---------------------------Execute Target Query:MATCH (u:user_profiles) RETURN MAX(u.followers) AS max_followers, SUM(u.followers) AS sum_followers-----------------
+MATCH (u:user_profiles) RETURN MAX(u.followers) AS max_followers, SUM(u.followers) AS sum_followers
+mysql res: ['{"max_followers": 99999998, "sum_followers": 260392178}']
+target res: ['{"max_followers": 99999998, "sum_followers": 260392178}']
+translate SELECT max(followers) ,  sum(followers) FROM user_profiles success
+success_query_count: 14
+valid_count: 27
+accuracy: 0.5185185185185185

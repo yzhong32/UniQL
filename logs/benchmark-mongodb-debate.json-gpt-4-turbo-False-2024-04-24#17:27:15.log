@@ -1,0 +1,166 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM debate]-----------------
+convert time:1.928715 s
+---------------------------Execute Target Query:db.debate.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])-----------------
+here we are in executor, and the query is:  db.debate.aggregate([{ "$group": { "_id": None, "count": { "$sum": 1 } } }])
+result of mongodb: ['{"_id": null, "count": 6}']
+mysql res: ['{"count_*": 6}']
+target res: ['{"count_*": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['Venue']
+---------------------------Execute SQL Query:[SELECT Venue FROM debate ORDER BY Num_of_Audience ASC]-----------------
+convert time:2.02365 s
+---------------------------Execute Target Query:db.debate.find({}, { "Venue": 1, "_id": 0 }).sort({ "Num_of_Audience": 1 })-----------------
+here we are in executor, and the query is:  db.debate.find({}, { "Venue": 1, "_id": 0 }).sort({ "Num_of_Audience": 1 })
+result of mongodb: ['{"Venue": "Manama , Bahrain"}', '{"Venue": "Doha , Qatar"}', '{"Venue": "Abu Dhabi , UAE"}', '{"Venue": "Manama , Bahrain"}', '{"Venue": "Dubai , UAE"}', '{"Venue": "Manama , Bahrain"}']
+mysql res: ['{"Venue": "Manama , Bahrain"}', '{"Venue": "Doha , Qatar"}', '{"Venue": "Abu Dhabi , UAE"}', '{"Venue": "Manama , Bahrain"}', '{"Venue": "Dubai , UAE"}', '{"Venue": "Manama , Bahrain"}']
+target res: ['{"Venue": "Manama , Bahrain"}', '{"Venue": "Doha , Qatar"}', '{"Venue": "Abu Dhabi , UAE"}', '{"Venue": "Manama , Bahrain"}', '{"Venue": "Dubai , UAE"}', '{"Venue": "Manama , Bahrain"}']
+translate SELECT Venue FROM debate ORDER BY Num_of_Audience ASC success
+
+--------------------------3-----------------
+schema:['Date', 'Venue']
+---------------------------Execute SQL Query:[SELECT Date ,  Venue FROM debate]-----------------
+convert time:2.052252 s
+---------------------------Execute Target Query:db.debate.find({}, { "Date": 1, "Venue": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.debate.find({}, { "Date": 1, "Venue": 1, "_id": 0 })
+result of mongodb: ['{"Date": "October 21, 2011", "Venue": "Manama , Bahrain"}', '{"Date": "December 17, 2014", "Venue": "Doha , Qatar"}', '{"Date": "August 3, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "October 27, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "January 12, 2017", "Venue": "Dubai , UAE"}', '{"Date": "January 21, 2017", "Venue": "Abu Dhabi , UAE"}']
+mysql res: ['{"Date": "October 21, 2011", "Venue": "Manama , Bahrain"}', '{"Date": "December 17, 2014", "Venue": "Doha , Qatar"}', '{"Date": "August 3, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "October 27, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "January 12, 2017", "Venue": "Dubai , UAE"}', '{"Date": "January 21, 2017", "Venue": "Abu Dhabi , UAE"}']
+target res: ['{"Date": "October 21, 2011", "Venue": "Manama , Bahrain"}', '{"Date": "December 17, 2014", "Venue": "Doha , Qatar"}', '{"Date": "August 3, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "October 27, 2015", "Venue": "Manama , Bahrain"}', '{"Date": "January 12, 2017", "Venue": "Dubai , UAE"}', '{"Date": "January 21, 2017", "Venue": "Abu Dhabi , UAE"}']
+translate SELECT Date ,  Venue FROM debate success
+
+--------------------------4-----------------
+schema:['Date']
+---------------------------Execute SQL Query:[SELECT Date FROM debate WHERE Num_of_Audience  >  150]-----------------
+convert time:1.926982 s
+---------------------------Execute Target Query:db.debate.find({ "Num_of_Audience": { "$gt": 150 } },{ "Date": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.debate.find({ "Num_of_Audience": { "$gt": 150 } },{ "Date": 1, "_id": 0 })
+result of mongodb: ['{"Date": "October 21, 2011"}', '{"Date": "October 27, 2015"}', '{"Date": "January 12, 2017"}', '{"Date": "January 21, 2017"}']
+mysql res: ['{"Date": "October 21, 2011"}', '{"Date": "October 27, 2015"}', '{"Date": "January 12, 2017"}', '{"Date": "January 21, 2017"}']
+target res: ['{"Date": "October 21, 2011"}', '{"Date": "October 27, 2015"}', '{"Date": "January 12, 2017"}', '{"Date": "January 21, 2017"}']
+translate SELECT Date FROM debate WHERE Num_of_Audience  >  150 success
+
+--------------------------5-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT Name FROM  people WHERE Age  =  35 OR Age  =  36]-----------------
+convert time:2.266508 s
+---------------------------Execute Target Query:db.people.find({ "$or": [{ "Age": 35 }, { "Age": 36 }] }, { "Name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.people.find({ "$or": [{ "Age": 35 }, { "Age": 36 }] }, { "Name": 1, "_id": 0 })
+result of mongodb: ['{"Name": "Luther C. Carter"}', '{"Name": "William B. Maclay"}', '{"Name": "Charles Van Wyck"}']
+mysql res: ['{"Name": "Luther C. Carter"}', '{"Name": "William B. Maclay"}', '{"Name": "Charles Van Wyck"}']
+target res: ['{"Name": "Luther C. Carter"}', '{"Name": "William B. Maclay"}', '{"Name": "Charles Van Wyck"}']
+translate SELECT Name FROM  people WHERE Age  =  35 OR Age  =  36 success
+
+--------------------------6-----------------
+schema:['Party']
+---------------------------Execute SQL Query:[SELECT Party FROM people ORDER BY Age ASC LIMIT 1]-----------------
+convert time:1.627229 s
+---------------------------Execute Target Query:db.people.find({}, { "Party": 1, "_id": 0 }).sort({ "Age": 1 }).limit(1)-----------------
+here we are in executor, and the query is:  db.people.find({}, { "Party": 1, "_id": 0 }).sort({ "Age": 1 }).limit(1)
+result of mongodb: ['{"Party": "Republican"}']
+mysql res: ['{"Party": "Republican"}']
+target res: ['{"Party": "Republican"}']
+translate SELECT Party FROM people ORDER BY Age ASC LIMIT 1 success
+
+--------------------------7-----------------
+schema:['Party', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT Party ,  COUNT(*) FROM people GROUP BY Party]-----------------
+convert time:1.886103 s
+---------------------------Execute Target Query:db.people.aggregate([ { "$group": { "_id": "$Party", "count": { "$sum": 1 } } } ])-----------------
+here we are in executor, and the query is:  db.people.aggregate([ { "$group": { "_id": "$Party", "count": { "$sum": 1 } } } ])
+result of mongodb: ['{"_id": "Democratic", "count": 3}', '{"_id": "Independent Democrat", "count": 1}', '{"_id": "Republican", "count": 4}', '{"_id": "Anti-Lecompton Democrat", "count": 2}']
+mysql res: ['{"Party": "Republican", "COUNT_*": 4}', '{"Party": "Democratic", "COUNT_*": 3}', '{"Party": "Independent Democrat", "COUNT_*": 1}', '{"Party": "Anti-Lecompton Democrat", "COUNT_*": 2}']
+target res: ['{"Party": null, "COUNT_*": null}', '{"Party": null, "COUNT_*": null}', '{"Party": null, "COUNT_*": null}', '{"Party": null, "COUNT_*": null}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['Party']
+---------------------------Execute SQL Query:[SELECT Party FROM people GROUP BY Party ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+convert time:6.562738 s
+---------------------------Execute Target Query:db.people.aggregate([ { "$group": { "_id": "$Party", "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "Party": "$_id", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.people.aggregate([ { "$group": { "_id": "$Party", "count": { "$sum": 1 } } }, { "$sort": { "count": -1 } }, { "$limit": 1 }, { "$project": { "Party": "$_id", "_id": 0 } } ])
+result of mongodb: ['{"Party": "Republican"}']
+mysql res: ['{"Party": "Republican"}']
+target res: ['{"Party": "Republican"}']
+translate SELECT Party FROM people GROUP BY Party ORDER BY COUNT(*) DESC LIMIT 1 success
+
+--------------------------9-----------------
+schema:['Venue']
+---------------------------Execute SQL Query:[SELECT DISTINCT Venue FROM debate]-----------------
+convert time:0.96872 s
+---------------------------Execute Target Query:db.debate.distinct("Venue")-----------------
+here we are in executor, and the query is:  db.debate.distinct("Venue")
+execute target query error:'str' object has no attribute 'get'
+
+--------------------------10-----------------
+schema:['Name', 'Date', 'Venue']
+---------------------------Execute SQL Query:[SELECT T3.Name ,  T2.Date ,  T2.Venue FROM debate_people AS T1 JOIN debate AS T2 ON T1.Debate_ID  =  T2.Debate_ID JOIN people AS T3 ON T1.Affirmative  =  T3.People_ID]-----------------
+convert time:9.495294 s
+---------------------------Execute Target Query:db.debate_people.aggregate([ { "$lookup": { "from": "debate", "localField": "Debate_ID", "foreignField": "Debate_ID", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "people", "localField": "Affirmative", "foreignField": "People_ID", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T3_Name": "$T3.Name", "T2_Date": "$T2.Date", "T2_Venue": "$T2.Venue", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.debate_people.aggregate([ { "$lookup": { "from": "debate", "localField": "Debate_ID", "foreignField": "Debate_ID", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "people", "localField": "Affirmative", "foreignField": "People_ID", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T3_Name": "$T3.Name", "T2_Date": "$T2.Date", "T2_Venue": "$T2.Venue", "_id": 0 } } ])
+result of mongodb: ['{"T3_Name": "Luther C. Carter", "T2_Date": "October 21, 2011", "T2_Venue": "Manama , Bahrain"}', '{"T3_Name": "Thomas J. Barr", "T2_Date": "August 3, 2015", "T2_Venue": "Manama , Bahrain"}', '{"T3_Name": "William B. Maclay", "T2_Date": "October 27, 2015", "T2_Venue": "Manama , Bahrain"}', '{"T3_Name": "James Humphrey", "T2_Date": "January 12, 2017", "T2_Venue": "Dubai , UAE"}', '{"T3_Name": "William B. Maclay", "T2_Date": "January 21, 2017", "T2_Venue": "Abu Dhabi , UAE"}']
+mysql res: ['{"Name": "William B. Maclay", "Date": "January 21, 2017", "Venue": "Abu Dhabi , UAE"}', '{"Name": "Thomas J. Barr", "Date": "August 3, 2015", "Venue": "Manama , Bahrain"}', '{"Name": "William B. Maclay", "Date": "October 27, 2015", "Venue": "Manama , Bahrain"}', '{"Name": "James Humphrey", "Date": "January 12, 2017", "Venue": "Dubai , UAE"}', '{"Name": "Luther C. Carter", "Date": "October 21, 2011", "Venue": "Manama , Bahrain"}']
+target res: ['{"Name": null, "Date": null, "Venue": null}', '{"Name": null, "Date": null, "Venue": null}', '{"Name": null, "Date": null, "Venue": null}', '{"Name": null, "Date": null, "Venue": null}', '{"Name": null, "Date": null, "Venue": null}']
+mismatch between MySQL and target
+
+--------------------------11-----------------
+schema:['Name', 'Date', 'Venue']
+---------------------------Execute SQL Query:[SELECT T3.Name ,  T2.Date ,  T2.Venue FROM debate_people AS T1 JOIN debate AS T2 ON T1.Debate_ID  =  T2.Debate_ID JOIN people AS T3 ON T1.Negative  =  T3.People_ID ORDER BY T3.Name ASC]-----------------
+convert time:8.562167 s
+---------------------------Execute Target Query:db.debate_people.aggregate([ { "$lookup": { "from": "debate", "localField": "Debate_ID", "foreignField": "Debate_ID", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "people", "localField": "Negative", "foreignField": "People_ID", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T3_Name": "$T3.Name", "T2_Date": "$T2.Date", "T2_Venue": "$T2.Venue", "_id": 0 } }, { "$sort": { "T3_Name": 1 } } ])-----------------
+here we are in executor, and the query is:  db.debate_people.aggregate([ { "$lookup": { "from": "debate", "localField": "Debate_ID", "foreignField": "Debate_ID", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "people", "localField": "Negative", "foreignField": "People_ID", "as": "T3" } }, { "$unwind": "$T3" }, { "$project": { "T3_Name": "$T3.Name", "T2_Date": "$T2.Date", "T2_Venue": "$T2.Venue", "_id": 0 } }, { "$sort": { "T3_Name": 1 } } ])
+result of mongodb: ['{"T3_Name": "Charles Van Wyck", "T2_Date": "October 21, 2011", "T2_Venue": "Manama , Bahrain"}', '{"T3_Name": "George Briggs", "T2_Date": "August 3, 2015", "T2_Venue": "Manama , Bahrain"}', '{"T3_Name": "Horace F. Clark", "T2_Date": "October 27, 2015", "T2_Venue": "Manama , Bahrain"}', '{"T3_Name": "Horace F. Clark", "T2_Date": "January 12, 2017", "T2_Venue": "Dubai , UAE"}', '{"T3_Name": "John Cochrane", "T2_Date": "January 21, 2017", "T2_Venue": "Abu Dhabi , UAE"}']
+mysql res: ['{"Name": "Charles Van Wyck", "Date": "October 21, 2011", "Venue": "Manama , Bahrain"}', '{"Name": "George Briggs", "Date": "August 3, 2015", "Venue": "Manama , Bahrain"}', '{"Name": "Horace F. Clark", "Date": "October 27, 2015", "Venue": "Manama , Bahrain"}', '{"Name": "Horace F. Clark", "Date": "January 12, 2017", "Venue": "Dubai , UAE"}', '{"Name": "John Cochrane", "Date": "January 21, 2017", "Venue": "Abu Dhabi , UAE"}']
+target res: ['{"Name": null, "Date": null, "Venue": null}', '{"Name": null, "Date": null, "Venue": null}', '{"Name": null, "Date": null, "Venue": null}', '{"Name": null, "Date": null, "Venue": null}', '{"Name": null, "Date": null, "Venue": null}']
+mismatch between MySQL and target
+
+--------------------------12-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT T3.Name FROM debate_people AS T1 JOIN debate AS T2 ON T1.Debate_ID  =  T2.Debate_ID JOIN people AS T3 ON T1.Affirmative  =  T3.People_ID WHERE T2.Num_of_Audience  >  200]-----------------
+convert time:10.544168 s
+---------------------------Execute Target Query:db.debate_people.aggregate([ { "$lookup": { "from": "debate", "localField": "Debate_ID", "foreignField": "Debate_ID", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "people", "localField": "Affirmative", "foreignField": "People_ID", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T2_Num_of_Audience": { "$gt": 200 } } }, { "$project": { "Name": "$T3_Name", "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.debate_people.aggregate([ { "$lookup": { "from": "debate", "localField": "Debate_ID", "foreignField": "Debate_ID", "as": "T2" } }, { "$unwind": "$T2" }, { "$lookup": { "from": "people", "localField": "Affirmative", "foreignField": "People_ID", "as": "T3" } }, { "$unwind": "$T3" }, { "$match": { "T2_Num_of_Audience": { "$gt": 200 } } }, { "$project": { "Name": "$T3_Name", "_id": 0 } } ])
+result of mongodb: []
+mysql res: ['{"Name": "Luther C. Carter"}', '{"Name": "William B. Maclay"}', '{"Name": "James Humphrey"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['Name', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT T2.Name ,  COUNT(*) FROM debate_people AS T1 JOIN people AS T2 ON T1.Affirmative  =  T2.People_ID GROUP BY T2.Name]-----------------
+convert time:6.018521 s
+---------------------------Execute Target Query:db.debate_people.aggregate([ { "$lookup": { "from": "people", "localField": "Affirmative", "foreignField": "People_ID", "as": "people_join" } }, { "$unwind": "$people_join" }, { "$group": { "_id": "$people_join.Name", "count": { "$sum": 1 } } }, { "$project": { "Name": "$_id", "count": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.debate_people.aggregate([ { "$lookup": { "from": "people", "localField": "Affirmative", "foreignField": "People_ID", "as": "people_join" } }, { "$unwind": "$people_join" }, { "$group": { "_id": "$people_join.Name", "count": { "$sum": 1 } } }, { "$project": { "Name": "$_id", "count": 1, "_id": 0 } } ])
+result of mongodb: ['{"count": 1, "Name": "Luther C. Carter"}', '{"count": 1, "Name": "Thomas J. Barr"}', '{"count": 1, "Name": "James Humphrey"}', '{"count": 2, "Name": "William B. Maclay"}']
+mysql res: ['{"Name": "William B. Maclay", "COUNT_*": 2}', '{"Name": "Thomas J. Barr", "COUNT_*": 1}', '{"Name": "James Humphrey", "COUNT_*": 1}', '{"Name": "Luther C. Carter", "COUNT_*": 1}']
+target res: ['{"Name": "Luther C. Carter", "COUNT_*": null}', '{"Name": "Thomas J. Barr", "COUNT_*": null}', '{"Name": "James Humphrey", "COUNT_*": null}', '{"Name": "William B. Maclay", "COUNT_*": null}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT T2.Name FROM debate_people AS T1 JOIN people AS T2 ON T1.Negative  =  T2.People_ID GROUP BY T2.Name HAVING COUNT(*)  >=  2]-----------------
+convert time:5.551019 s
+---------------------------Execute Target Query:db.debate_people.aggregate([{"$lookup": {"from": "people", "localField": "Negative", "foreignField": "People_ID", "as": "T2"}}, {"$unwind": "$T2"}, {"$group": {"_id": "$T2_Name", "count": {"$sum": 1}}}, {"$match": {"count": {"$gte": 2}}}, {"$project": {"T2_Name": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.debate_people.aggregate([{"$lookup": {"from": "people", "localField": "Negative", "foreignField": "People_ID", "as": "T2"}}, {"$unwind": "$T2"}, {"$group": {"_id": "$T2_Name", "count": {"$sum": 1}}}, {"$match": {"count": {"$gte": 2}}}, {"$project": {"T2_Name": 1, "_id": 0}}])
+result of mongodb: ['{}']
+mysql res: ['{"Name": "Horace F. Clark"}']
+target res: ['{"Name": null}']
+mismatch between MySQL and target
+
+--------------------------15-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT Name FROM people WHERE People_id NOT IN (SELECT Affirmative FROM debate_people)]-----------------
+convert time:7.056464 s
+---------------------------Execute Target Query:db.people.find({ "People_id": { "$nin": db.debate_people.distinct("Affirmative") } }, { "Name": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.people.find({ "People_id": { "$nin": db.debate_people.distinct("Affirmative") } }, { "Name": 1, "_id": 0 })
+result of mongodb: ['{"Name": "Luther C. Carter"}', '{"Name": "James Humphrey"}', '{"Name": "Daniel Sickles"}', '{"Name": "Thomas J. Barr"}', '{"Name": "William B. Maclay"}', '{"Name": "John Cochrane"}', '{"Name": "George Briggs"}', '{"Name": "Horace F. Clark"}', '{"Name": "John B. Haskin"}', '{"Name": "Charles Van Wyck"}']
+mysql res: ['{"Name": "Daniel Sickles"}', '{"Name": "John Cochrane"}', '{"Name": "George Briggs"}', '{"Name": "Horace F. Clark"}', '{"Name": "John B. Haskin"}', '{"Name": "Charles Van Wyck"}']
+target res: ['{"Name": "Luther C. Carter"}', '{"Name": "James Humphrey"}', '{"Name": "Daniel Sickles"}', '{"Name": "Thomas J. Barr"}', '{"Name": "William B. Maclay"}', '{"Name": "John Cochrane"}', '{"Name": "George Briggs"}', '{"Name": "Horace F. Clark"}', '{"Name": "John B. Haskin"}', '{"Name": "Charles Van Wyck"}']
+Exception raised during comparison: Row number mismatch
+success_query_count: 6
+valid_count: 15
+accuracy: 0.4

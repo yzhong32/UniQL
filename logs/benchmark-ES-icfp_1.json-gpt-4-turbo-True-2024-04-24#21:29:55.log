@@ -1,0 +1,1604 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM authors]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:4.717121 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_authors": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["authors"],
+    "code": {
+        "total_authors": "response['aggregations']['total_authors']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_authors': {'value_count': {'field': '_index'}}}, 'code': {'total_authors': "response['aggregations']['total_authors']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 13, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_authors': {'value': 13}}}
+
+exec_result_dict: {'total_authors': 13}
+mysql res: ['{"count_*": 13}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM inst]-----------------
+target_db_schema: ['country', 'instid', 'name']
+convert time:4.117064 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_institutions": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["inst"],
+    "code": {
+        "total_institutions": "response['aggregations']['total_institutions']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_institutions': {'value_count': {'field': '_index'}}}, 'code': {'total_institutions': "response['aggregations']['total_institutions']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_institutions': {'value': 8}}}
+
+exec_result_dict: {'total_institutions': 8}
+mysql res: ['{"count_*": 8}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------3-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM papers]-----------------
+target_db_schema: ['paperid', 'title']
+convert time:8.158124 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_papers": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["papers"],
+    "code": {
+        "total_papers": "response['aggregations']['total_papers']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_papers': {'value_count': {'field': '_index'}}}, 'code': {'total_papers': "response['aggregations']['total_papers']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_papers': {'value': 7}}}
+
+exec_result_dict: {'total_papers': 7}
+mysql res: ['{"count_*": 7}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------4-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Jeremy" AND t1.lname  =  "Gibbons"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:9.177603 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors", "authorship", "papers"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "fname": "Jeremy"
+                    }
+                },
+                {
+                    "match": {
+                        "lname": "Gibbons"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": "authors.authid"
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "papers",
+                                            "query": {
+                                                "match": {
+                                                    "papers.paperid": "authorship.paperid"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["title"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'fname': 'Jeremy'}}, {'match': {'lname': 'Gibbons'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': 'authors.authid'}}, {'nested': {'path': 'papers', 'query': {'match': {'papers.paperid': 'authorship.paperid'}}}}]}}}}]}}, '_source': ['title'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------5-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Aaron" AND t1.lname  =  "Turon"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:11.701556 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "fname": "Aaron"
+                    }
+                },
+                {
+                    "match": {
+                        "lname": "Turon"
+                    }
+                }
+            ],
+            "should": [
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": "authors.authid"
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "authorship.papers",
+                                            "query": {
+                                                "match": {
+                                                    "authorship.papers.paperid": "papers.paperid"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["papers.title"],
+    "inner_index": ["authors", "authorship", "papers"],
+    "code": {
+        "title_result": "response['hits']['hits'][]._source['papers.title']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'fname': 'Aaron'}}, {'match': {'lname': 'Turon'}}], 'should': [{'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': 'authors.authid'}}, {'nested': {'path': 'authorship.papers', 'query': {'match': {'authorship.papers.paperid': 'papers.paperid'}}}}]}}}}]}}, '_source': ['papers.title'], 'code': {'title_result': "response['hits']['hits'][]._source['papers.title']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------6-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Atsushi" AND t1.lname  =  "Ohori"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:16.763 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "fname": "Atsushi"
+                    }
+                },
+                {
+                    "match": {
+                        "lname": "Ohori"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": "t1.authid"
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "authorship.papers",
+                                            "query": {
+                                                "match": {
+                                                    "authorship.papers.paperid": "t2.paperid"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_authors": {
+            "value_count": {
+                "field": "authid"
+            }
+        }
+    },
+    "inner_index": ["authors", "authorship", "papers"],
+    "code": {
+        "total_authors": "response['aggregations']['total_authors']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'fname': 'Atsushi'}}, {'match': {'lname': 'Ohori'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': 't1.authid'}}, {'nested': {'path': 'authorship.papers', 'query': {'match': {'authorship.papers.paperid': 't2.paperid'}}}}]}}}}]}}, 'size': 0, 'aggs': {'total_authors': {'value_count': {'field': 'authid'}}}, 'code': {'total_authors': "response['aggregations']['total_authors']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------7-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Matthias" AND t1.lname  =  "Blume"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:12.279288 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "fname": "Matthias"
+                    }
+                },
+                {
+                    "match": {
+                        "lname": "Blume"
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": {
+                                                "query": "authors.authid"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "authorship.inst",
+                                            "query": {
+                                                "match": {
+                                                    "authorship.inst.instid": {
+                                                        "query": "inst.instid"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "distinct_names": {
+            "terms": {
+                "field": "inst.name",
+                "size": 10
+            }
+        }
+    },
+    "inner_index": ["authors", "authorship", "inst"],
+    "code": {
+        "distinct_names_result": "response['aggregations']['distinct_names']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'fname': 'Matthias'}}, {'match': {'lname': 'Blume'}}], 'filter': [{'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': {'query': 'authors.authid'}}}, {'nested': {'path': 'authorship.inst', 'query': {'match': {'authorship.inst.instid': {'query': 'inst.instid'}}}}}]}}}}]}}, 'aggs': {'distinct_names': {'terms': {'field': 'inst.name', 'size': 10}}}, 'code': {'distinct_names_result': "response['aggregations']['distinct_names']['buckets']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------8-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Katsuhiro" AND t1.lname  =  "Ueno"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:15.723911 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "fname": "Katsuhiro"
+                    }
+                },
+                {
+                    "match": {
+                        "lname": "Ueno"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": "authors.authid"
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "authorship.inst",
+                                            "query": {
+                                                "match": {
+                                                    "authorship.inst.instid": "inst.instid"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "distinct_names": {
+            "terms": {
+                "field": "inst.name",
+                "size": 10
+            }
+        }
+    },
+    "inner_index": ["authors", "authorship", "inst"],
+    "code": {
+        "distinct_names_result": "response['aggregations']['distinct_names']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'fname': 'Katsuhiro'}}, {'match': {'lname': 'Ueno'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': 'authors.authid'}}, {'nested': {'path': 'authorship.inst', 'query': {'match': {'authorship.inst.instid': 'inst.instid'}}}}]}}}}]}}, 'aggs': {'distinct_names': {'terms': {'field': 'inst.name', 'size': 10}}}, 'code': {'distinct_names_result': "response['aggregations']['distinct_names']['buckets']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------9-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Oxford"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:10.473361 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors", "authorship", "inst"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "inst.name": "University of Oxford"
+                    }
+                },
+                {
+                    "match": {
+                        "authors.authid": "authorship.authid"
+                    }
+                },
+                {
+                    "match": {
+                        "authorship.instid": "inst.instid"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["authors.fname", "authors.lname"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'inst.name': 'University of Oxford'}}, {'match': {'authors.authid': 'authorship.authid'}}, {'match': {'authorship.instid': 'inst.instid'}}]}}, '_source': ['authors.fname', 'authors.lname'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:10.074189 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors", "authorship", "inst"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "inst.name": "Google"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": "authors.authid"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "unique_authors": {
+            "terms": {
+                "field": "authors.fname",
+                "size": 10
+            },
+            "aggs": {
+                "last_names": {
+                    "terms": {
+                        "field": "authors.lname",
+                        "size": 10
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "fname_result": "response['aggregations']['unique_authors']['buckets']",
+        "lname_result": "response['aggregations']['unique_authors']['buckets'][*]['last_names']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'inst.name': 'Google'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': 'authors.authid'}}]}}}}]}}, 'aggs': {'unique_authors': {'terms': {'field': 'authors.fname', 'size': 10}, 'aggs': {'last_names': {'terms': {'field': 'authors.lname', 'size': 10}}}}}, 'code': {'fname_result': "response['aggregations']['unique_authors']['buckets']", 'lname_result': "response['aggregations']['unique_authors']['buckets'][*]['last_names']['buckets']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------11-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Binders Unbound"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:12.94425 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors", "authorship", "papers"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "papers.title": "Binders Unbound"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": {
+                                                "query": {
+                                                    "match": {
+                                                        "authors.authid": "authorship.authid"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "authorship.paperid": {
+                                                "query": {
+                                                    "match": {
+                                                        "papers.paperid": "authorship.paperid"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["authors.lname"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'papers.title': 'Binders Unbound'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': {'query': {'match': {'authors.authid': 'authorship.authid'}}}}}, {'match': {'authorship.paperid': {'query': {'match': {'papers.paperid': 'authorship.paperid'}}}}}]}}}}]}}, '_source': ['authors.lname'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[match] unknown token [START_OBJECT] after [query]')
+
+--------------------------12-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Nameless ,  Painless"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:6.427256 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors", "authorship", "papers"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "papers.title": "Nameless ,  Painless"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": {
+                                                "query": "authors.authid",
+                                                "type": "phrase"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["authors.fname", "authors.lname"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'papers.title': 'Nameless ,  Painless'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': {'query': 'authors.authid', 'type': 'phrase'}}}]}}}}]}}, '_source': ['authors.fname', 'authors.lname'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[match] query does not support [type]')
+
+--------------------------13-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Indiana University"]-----------------
+target_db_schema: ['country', 'instid', 'name', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:14.176308 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "name.keyword": "Indiana University"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match_all": {}
+                                    }
+                                ]
+                            }
+                        },
+                        "inner_hits": {
+                            "_source": ["paperid"]
+                        }
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "papers",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match_all": {}
+                                    }
+                                ]
+                            }
+                        },
+                        "inner_hits": {
+                            "_source": ["title"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "distinct_titles": {
+            "terms": {
+                "field": "papers.title.keyword",
+                "size": 10000
+            }
+        }
+    },
+    "inner_index": ["papers", "authorship", "inst"],
+    "code": {
+        "distinct_titles_result": "response['aggregations']['distinct_titles']['buckets']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'name.keyword': 'Indiana University'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match_all': {}}]}}, 'inner_hits': {'_source': ['paperid']}}}, {'nested': {'path': 'papers', 'query': {'bool': {'must': [{'match_all': {}}]}}, 'inner_hits': {'_source': ['title']}}}]}}, 'size': 0, 'aggs': {'distinct_titles': {'terms': {'field': 'papers.title.keyword', 'size': 10000}}}, 'code': {'distinct_titles_result': "response['aggregations']['distinct_titles']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'distinct_titles': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'distinct_titles_result': []}
+mysql res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------14-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google"]-----------------
+target_db_schema: ['country', 'instid', 'name', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:9.835926 s
+---------------------------Execute Target Query:{
+    "inner_index": ["papers", "authorship", "inst"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "inst.name": "Google"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.paperid": "papers.paperid"
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "authorship.instid": "inst.instid"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "unique_titles": {
+            "terms": {
+                "field": "papers.title",
+                "size": 10000
+            }
+        }
+    },
+    "code": {
+        "title_result": "response['aggregations']['unique_titles']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'term': {'inst.name': 'Google'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.paperid': 'papers.paperid'}}, {'match': {'authorship.instid': 'inst.instid'}}]}}}}]}}, 'aggs': {'unique_titles': {'terms': {'field': 'papers.title', 'size': 10000}}}, 'code': {'title_result': "response['aggregations']['unique_titles']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_titles': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'title_result': []}
+mysql res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------15-----------------
+schema:['count_DISTINCT t1_title']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT t1.title) FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Tokohu University"]-----------------
+target_db_schema: ['country', 'instid', 'name', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:12.435157 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "inst.name": "Tokohu University"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.instid": "inst.instid"
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "papers",
+                                            "query": {
+                                                "match": {
+                                                    "papers.paperid": "authorship.paperid"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "unique_titles": {
+            "cardinality": {
+                "field": "papers.title"
+            }
+        }
+    },
+    "inner_index": ["papers", "authorship", "inst"],
+    "code": {
+        "count_distinct_title": "response['aggregations']['unique_titles']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'inst.name': 'Tokohu University'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.instid': 'inst.instid'}}, {'nested': {'path': 'papers', 'query': {'match': {'papers.paperid': 'authorship.paperid'}}}}]}}}}]}}, 'size': 0, 'aggs': {'unique_titles': {'cardinality': {'field': 'papers.title'}}}, 'code': {'count_distinct_title': "response['aggregations']['unique_titles']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------16-----------------
+schema:['count_DISTINCT t1_title']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT t1.title) FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Pennsylvania"]-----------------
+target_db_schema: ['country', 'instid', 'name', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:15.292244 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "name": "University of Pennsylvania"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.instid": "inst.instid"
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "authorship.papers",
+                                            "query": {
+                                                "match": {
+                                                    "authorship.papers.paperid": "papers.paperid"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "unique_titles": {
+            "cardinality": {
+                "field": "papers.title"
+            }
+        }
+    },
+    "inner_index": ["papers", "authorship", "inst"],
+    "code": {
+        "count_distinct_title": "response['aggregations']['unique_titles']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'name': 'University of Pennsylvania'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.instid': 'inst.instid'}}, {'nested': {'path': 'authorship.papers', 'query': {'match': {'authorship.papers.paperid': 'papers.paperid'}}}}]}}}}]}}, 'size': 0, 'aggs': {'unique_titles': {'cardinality': {'field': 'papers.title'}}}, 'code': {'count_distinct_title': "response['aggregations']['unique_titles']['value']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------17-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Olin" AND t1.lname  =  "Shivers"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:11.718668 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "fname": "Olin"
+                    }
+                },
+                {
+                    "match": {
+                        "lname": "Shivers"
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": "authors.authid"
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "papers",
+                                            "query": {
+                                                "match": {
+                                                    "papers.paperid": "authorship.paperid"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["papers.title"],
+    "inner_index": ["authors", "authorship", "papers"]
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'fname': 'Olin'}}, {'match': {'lname': 'Shivers'}}], 'filter': [{'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': 'authors.authid'}}, {'nested': {'path': 'papers', 'query': {'match': {'papers.paperid': 'authorship.paperid'}}}}]}}}}]}}, '_source': ['papers.title']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------18-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Stephanie" AND t1.lname  =  "Weirich"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:13.309044 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors", "authorship", "papers"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "fname": "Stephanie"
+                    }
+                },
+                {
+                    "match": {
+                        "lname": "Weirich"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": "authors.authid"
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "papers",
+                                            "query": {
+                                                "match": {
+                                                    "papers.paperid": "authorship.paperid"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["title"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'fname': 'Stephanie'}}, {'match': {'lname': 'Weirich'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': 'authors.authid'}}, {'nested': {'path': 'papers', 'query': {'match': {'papers.paperid': 'authorship.paperid'}}}}]}}}}]}}, '_source': ['title'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------19-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "USA" AND t2.authorder  =  2 AND t1.lname  =  "Turon"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:10.645548 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {"term": {"inst.country": "USA"}},
+                {"term": {"authorship.authorder": 2}},
+                {"term": {"authors.lname": "Turon"}}
+            ],
+            "should": [
+                {"nested": {
+                    "path": "authors",
+                    "query": {"term": {"authors.authid": "authorship.authid"}}
+                }},
+                {"nested": {
+                    "path": "authorship",
+                    "query": {"term": {"authorship.paperid": "papers.paperid"}}
+                }},
+                {"nested": {
+                    "path": "authorship",
+                    "query": {"term": {"authorship.instid": "inst.instid"}}
+                }}
+            ],
+            "minimum_should_match": 3
+        }
+    },
+    "_source": ["papers.title"],
+    "inner_index": ["authors", "authorship", "papers", "inst"]
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'term': {'inst.country': 'USA'}}, {'term': {'authorship.authorder': 2}}, {'term': {'authors.lname': 'Turon'}}], 'should': [{'nested': {'path': 'authors', 'query': {'term': {'authors.authid': 'authorship.authid'}}}}, {'nested': {'path': 'authorship', 'query': {'term': {'authorship.paperid': 'papers.paperid'}}}}, {'nested': {'path': 'authorship', 'query': {'term': {'authorship.instid': 'inst.instid'}}}}], 'minimum_should_match': 3}}, '_source': ['papers.title']}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------20-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "Japan" AND t2.authorder  =  1 AND t1.lname  =  "Ohori"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:10.560679 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors", "authorship", "papers", "inst"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "inst.country": "Japan"
+                    }
+                },
+                {
+                    "term": {
+                        "authorship.authorder": 1
+                    }
+                },
+                {
+                    "term": {
+                        "authors.lname": "Ohori"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": {
+                                                "query": "authors.authid"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "authorship.paperid": {
+                                                "query": "papers.paperid"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "match": {
+                                            "authorship.instid": {
+                                                "query": "inst.instid"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["papers.title"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'inst.country': 'Japan'}}, {'term': {'authorship.authorder': 1}}, {'term': {'authors.lname': 'Ohori'}}, {'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': {'query': 'authors.authid'}}}, {'match': {'authorship.paperid': {'query': 'papers.paperid'}}}, {'match': {'authorship.instid': {'query': 'inst.instid'}}}]}}}}]}}, '_source': ['papers.title'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 1, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------21-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.fname ,  t1.lname ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:10.721165 s
+---------------------------Execute Target Query:{
+  "inner_index": ["authors", "authorship", "papers"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_parent": {
+            "parent_type": "authorship",
+            "query": {
+              "has_parent": {
+                "parent_type": "papers",
+                "query": {
+                  "match_all": {}
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_name": {
+      "terms": {
+        "script": {
+          "source": "doc['fname'].value + ' ' + doc['lname'].value"
+        },
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "code": {
+    "lname": "response['aggregations']['group_by_name']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'authorship', 'query': {'has_parent': {'parent_type': 'papers', 'query': {'match_all': {}}}}}}]}}, 'aggs': {'group_by_name': {'terms': {'script': {'source': "doc['fname'].value + ' ' + doc['lname'].value"}, 'size': 1, 'order': {'_count': 'desc'}}}}, 'code': {'lname': "response['aggregations']['group_by_name']['buckets'][0]['key']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------22-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT t1.country FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.country ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['country', 'instid', 'name', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+convert time:18.979424 s
+---------------------------Execute Target Query:{
+  "inner_index": ["inst", "authorship", "papers"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_parent": {
+            "parent_type": "authorship",
+            "query": {
+              "has_parent": {
+                "parent_type": "papers",
+                "query": {
+                  "match_all": {}
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "countries": {
+      "terms": {
+        "field": "country.keyword",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "code": {
+    "country": "response['aggregations']['countries']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'authorship', 'query': {'has_parent': {'parent_type': 'papers', 'query': {'match_all': {}}}}}}]}}, 'aggs': {'countries': {'terms': {'field': 'country.keyword', 'size': 1, 'order': {'_count': 'desc'}}}}, 'code': {'country': "response['aggregations']['countries']['buckets'][0]['key']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.name ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['country', 'instid', 'name', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+convert time:9.272447 s
+---------------------------Execute Target Query:{
+  "inner_index": ["inst", "authorship", "papers"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match_all": {}
+        }
+      ],
+      "filter": [
+        {
+          "bool": {
+            "must": [
+              {
+                "term": {
+                  "inst.instid": {
+                    "path": "authorship.instid"
+                  }
+                }
+              },
+              {
+                "term": {
+                  "authorship.paperid": {
+                    "path": "papers.paperid"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_name": {
+      "terms": {
+        "field": "inst.name",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "code": {
+    "name": "response['aggregations']['group_by_name']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match_all': {}}], 'filter': [{'bool': {'must': [{'term': {'inst.instid': {'path': 'authorship.instid'}}}, {'term': {'authorship.paperid': {'path': 'papers.paperid'}}}]}}]}}, 'aggs': {'group_by_name': {'terms': {'field': 'inst.name', 'size': 1, 'order': {'_count': 'desc'}}}}, 'code': {'name': "response['aggregations']['group_by_name']['buckets'][0]['key']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[term] query does not support [path]')
+
+--------------------------24-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT title FROM papers WHERE title LIKE "%ML%"]-----------------
+target_db_schema: ['paperid', 'title']
+convert time:3.288767 s
+---------------------------Execute Target Query:{
+    "query": {
+        "wildcard": {
+            "title": "*ML*" #comment: .keyword
+        }
+    },
+    "inner_index": ["papers"],
+    "code": {
+        "title_result": "response['hits']['hits']"
+    }
+}-----------------
+**************************************************
+{'query': {'wildcard': {'title': '*ML*'}}, 'code': {'title_result': "response['hits']['hits']"}, 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {'title_result': []}
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------25-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT title FROM papers WHERE title LIKE "%Database%"]-----------------
+target_db_schema: ['paperid', 'title']
+convert time:2.590818 s
+---------------------------Execute Target Query:{
+    "query": {
+        "wildcard": {
+            "title": "*Database*"
+        }
+    },
+    "inner_index": ["papers"]
+}-----------------
+**************************************************
+{'query': {'wildcard': {'title': '*Database*'}}, 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------26-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT t1.fname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Functional%"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:10.218921 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors", "authorship", "papers"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "authorship.authid": {
+                                                "query": "authors.authid"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "authorship.papers",
+                                            "query": {
+                                                "bool": {
+                                                    "must": [
+                                                        {
+                                                            "match": {
+                                                                "authorship.papers.paperid": {
+                                                                    "query": "papers.paperid"
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "wildcard": {
+                                                                "papers.title": "*Functional*"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["fname"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'match': {'authorship.authid': {'query': 'authors.authid'}}}, {'nested': {'path': 'authorship.papers', 'query': {'bool': {'must': [{'match': {'authorship.papers.paperid': {'query': 'papers.paperid'}}}, {'wildcard': {'papers.title': '*Functional*'}}]}}}}]}}}}]}}, '_source': ['fname'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------27-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Monadic%"]-----------------
+target_db_schema: ['authid', 'fname', 'lname', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:6.799881 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "nested": {
+                        "path": "authorship",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "nested": {
+                                            "path": "authorship.papers",
+                                            "query": {
+                                                "match": {
+                                                    "authorship.papers.title": "Monadic"
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["lname"],
+    "inner_index": ["authors", "authorship", "papers"]
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'nested': {'path': 'authorship', 'query': {'bool': {'must': [{'nested': {'path': 'authorship.papers', 'query': {'match': {'authorship.papers.title': 'Monadic'}}}}]}}}}]}}, '_source': ['lname']}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [authorship]')
+
+--------------------------28-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t2.title FROM authorship AS t1 JOIN papers AS t2 ON t1.paperid  =  t2.paperid WHERE t1.authorder  =  (SELECT max(authorder) FROM authorship)]-----------------
+target_db_schema: ['authid', 'authorder', 'instid', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ',', ' ', "'", 't', 'i', 't', 'l', 'e', "'", ']', '\n']
+convert time:13.184855 s
+---------------------------Execute Target Query:{
+  "inner_index": ["authorship", "papers"],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_child": {
+            "type": "papers",
+            "query": {
+              "match": {
+                "paperid": {
+                  "query": {
+                    "bool": {
+                      "must": [
+                        {
+                          "match": {
+                            "authorder": {
+                              "query": {
+                                "max": {
+                                  "field": "authorder"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "max_authorder": {
+      "max": {
+        "field": "authorder"
+      }
+    }
+  },
+  "code": {
+    "title_result": "response['hits']['hits'][0]['_source']['title']"
+  }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'papers', 'query': {'match': {'paperid': {'query': {'bool': {'must': [{'match': {'authorder': {'query': {'max': {'field': 'authorder'}}}}}]}}}}}}}]}}, 'aggs': {'max_authorder': {'max': {'field': 'authorder'}}}, 'code': {'title_result': "response['hits']['hits'][0]['_source']['title']"}, 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[match] unknown token [START_OBJECT] after [query]')
+
+--------------------------29-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT fname FROM authors WHERE lname  =  "Ueno"]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:4.431548 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "lname": "Ueno"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 10,
+    "_source": ["fname"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'lname': 'Ueno'}}]}}, 'size': 10, '_source': ['fname']}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.2335923, 'hits': [{'_index': 'icfp_1_authors', '_id': 'MFcDEo8BsHbYzo2oYXQp', '_score': 2.2335923, '_source': {'fname': 'Katsuhiro'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"fname": "Katsuhiro"}']
+target res: ['{"fname": "Katsuhiro"}']
+translate SELECT fname FROM authors WHERE lname  =  "Ueno" success
+
+--------------------------30-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM authors WHERE fname  =  "Amal"]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:3.252578 s
+---------------------------Execute Target Query:{
+    "inner_index": ["authors"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "fname": "Amal"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 10,
+    "_source": ["lname"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'fname': 'Amal'}}]}}, 'size': 10, '_source': ['lname']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 1, 'relation': 'eq'}, 'max_score': 2.3624535, 'hits': [{'_index': 'icfp_1_authors', '_id': 'LVcDEo8BsHbYzo2oYXQp', '_score': 2.3624535, '_source': {'lname': 'Ahmed'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"lname": "Ahmed"}']
+target res: ['{"lname": "Ahmed"}']
+translate SELECT lname FROM authors WHERE fname  =  "Amal" success
+
+--------------------------31-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT fname FROM authors ORDER BY fname]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:3.000346 s
+---------------------------Execute Target Query:{
+    "size": 1000,
+    "sort": [
+        {"fname": {"order": "asc"}}
+    ],
+    "_source": ["fname"],
+    "inner_index": ["authors"]
+}-----------------
+**************************************************
+{'size': 1000, 'sort': [{'fname': {'order': 'asc'}}], '_source': ['fname']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 13, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'icfp_1_authors', '_id': 'LFcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Aaron'}, 'sort': ['aaron']}, {'_index': 'icfp_1_authors', '_id': 'LVcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Amal'}, 'sort': ['amal']}, {'_index': 'icfp_1_authors', '_id': 'L1cDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Atsushi'}, 'sort': ['atsushi']}, {'_index': 'icfp_1_authors', '_id': 'M1cDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Brent'}, 'sort': ['brent']}, {'_index': 'icfp_1_authors', '_id': 'KlcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Daniel W. H.'}, 'sort': ['daniel']}, {'_index': 'icfp_1_authors', '_id': 'KFcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Jeremy'}, 'sort': ['jeremy']}, {'_index': 'icfp_1_authors', '_id': 'MFcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Katsuhiro'}, 'sort': ['katsuhiro']}, {'_index': 'icfp_1_authors', '_id': 'LlcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Matthias'}, 'sort': ['matthias']}, {'_index': 'icfp_1_authors', '_id': 'MVcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Nicolas'}, 'sort': ['nicolas']}, {'_index': 'icfp_1_authors', '_id': 'K1cDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Olin'}, 'sort': ['olin']}, {'_index': 'icfp_1_authors', '_id': 'KVcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Ralf'}, 'sort': ['ralf']}, {'_index': 'icfp_1_authors', '_id': 'MlcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Stephanie'}, 'sort': ['stephanie']}, {'_index': 'icfp_1_authors', '_id': 'NFcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'fname': 'Tim'}, 'sort': ['tim']}]}}
+
+exec_result_dict: {}
+mysql res: ['{"fname": "Aaron"}', '{"fname": "Amal"}', '{"fname": "Atsushi"}', '{"fname": "Brent"}', '{"fname": "Daniel W. H."}', '{"fname": "Jeremy"}', '{"fname": "Katsuhiro"}', '{"fname": "Matthias"}', '{"fname": "Nicolas"}', '{"fname": "Olin"}', '{"fname": "Ralf"}', '{"fname": "Stephanie"}', '{"fname": "Tim"}']
+target res: ['{"fname": "Aaron"}', '{"fname": "Amal"}', '{"fname": "Atsushi"}', '{"fname": "Brent"}', '{"fname": "Daniel W. H."}', '{"fname": "Jeremy"}', '{"fname": "Katsuhiro"}', '{"fname": "Matthias"}', '{"fname": "Nicolas"}', '{"fname": "Olin"}', '{"fname": "Ralf"}', '{"fname": "Stephanie"}', '{"fname": "Tim"}']
+translate SELECT fname FROM authors ORDER BY fname success
+
+--------------------------32-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM authors ORDER BY lname]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:3.230368 s
+---------------------------Execute Target Query:{
+    "size": 10000,  
+    "sort": [
+        {"lname": {"order": "asc"}}  # Orders the results by the 'lname' field in ascending order
+    ],
+    "_source": ["lname"],  # Specifies which fields to retrieve
+    "inner_index": ["authors"]
+}-----------------
+execute target query error:Expecting ',' delimiter or ']': line 4 column 38 (char 74)
+
+--------------------------33-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT fname ,  lname FROM authors ORDER BY lname]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:2.972644 s
+---------------------------Execute Target Query:{
+    "size": 1000,
+    "sort": [
+        {"lname": {"order": "asc"}}
+    ],
+    "_source": ["fname", "lname"],
+    "inner_index": ["authors"]
+}-----------------
+**************************************************
+{'size': 1000, 'sort': [{'lname': {'order': 'asc'}}], '_source': ['fname', 'lname']}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 13, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'icfp_1_authors', '_id': 'LVcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Ahmed', 'fname': 'Amal'}, 'sort': ['ahmed']}, {'_index': 'icfp_1_authors', '_id': 'LlcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Blume', 'fname': 'Matthias'}, 'sort': ['blume']}, {'_index': 'icfp_1_authors', '_id': 'KFcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Gibbons', 'fname': 'Jeremy'}, 'sort': ['gibbons']}, {'_index': 'icfp_1_authors', '_id': 'KVcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Hinze', 'fname': 'Ralf'}, 'sort': ['hinze']}, {'_index': 'icfp_1_authors', '_id': 'KlcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'James', 'fname': 'Daniel W. H.'}, 'sort': ['james']}, {'_index': 'icfp_1_authors', '_id': 'L1cDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Ohori', 'fname': 'Atsushi'}, 'sort': ['ohori']}, {'_index': 'icfp_1_authors', '_id': 'MVcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Pouillard', 'fname': 'Nicolas'}, 'sort': ['pouillard']}, {'_index': 'icfp_1_authors', '_id': 'NFcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Sheard', 'fname': 'Tim'}, 'sort': ['sheard']}, {'_index': 'icfp_1_authors', '_id': 'K1cDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Shivers', 'fname': 'Olin'}, 'sort': ['shivers']}, {'_index': 'icfp_1_authors', '_id': 'LFcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Turon', 'fname': 'Aaron'}, 'sort': ['turon']}, {'_index': 'icfp_1_authors', '_id': 'MFcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Ueno', 'fname': 'Katsuhiro'}, 'sort': ['ueno']}, {'_index': 'icfp_1_authors', '_id': 'MlcDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Weirich', 'fname': 'Stephanie'}, 'sort': ['weirich']}, {'_index': 'icfp_1_authors', '_id': 'M1cDEo8BsHbYzo2oYXQp', '_score': None, '_source': {'lname': 'Yorgey', 'fname': 'Brent'}, 'sort': ['yorgey']}]}}
+
+exec_result_dict: {}
+mysql res: ['{"fname": "Amal", "lname": "Ahmed"}', '{"fname": "Matthias", "lname": "Blume"}', '{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Atsushi", "lname": "Ohori"}', '{"fname": "Nicolas", "lname": "Pouillard"}', '{"fname": "Tim", "lname": "Sheard"}', '{"fname": "Olin", "lname": "Shivers"}', '{"fname": "Aaron", "lname": "Turon"}', '{"fname": "Katsuhiro", "lname": "Ueno"}', '{"fname": "Stephanie", "lname": "Weirich"}', '{"fname": "Brent", "lname": "Yorgey"}']
+target res: ['{"fname": "Amal", "lname": "Ahmed"}', '{"fname": "Matthias", "lname": "Blume"}', '{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Atsushi", "lname": "Ohori"}', '{"fname": "Nicolas", "lname": "Pouillard"}', '{"fname": "Tim", "lname": "Sheard"}', '{"fname": "Olin", "lname": "Shivers"}', '{"fname": "Aaron", "lname": "Turon"}', '{"fname": "Katsuhiro", "lname": "Ueno"}', '{"fname": "Stephanie", "lname": "Weirich"}', '{"fname": "Brent", "lname": "Yorgey"}']
+translate SELECT fname ,  lname FROM authors ORDER BY lname success
+success_query_count: 4
+valid_count: 33
+accuracy: 0.12121212121212122

@@ -1,0 +1,426 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM authors]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:1.4178 s
+---------------------------Execute Target Query:MATCH (a:authors) RETURN COUNT(*) AS count-----------------
+MATCH (a:authors) RETURN COUNT(*) AS count
+mysql res: ['{"count_*": 13}']
+target res: ['{"count": 13}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM inst]-----------------
+target_db_schema: ['name', 'country', 'instid']
+convert time:1.234512 s
+---------------------------Execute Target Query:MATCH (i:inst) RETURN COUNT(*) AS count-----------------
+MATCH (i:inst) RETURN COUNT(*) AS count
+mysql res: ['{"count_*": 8}']
+target res: ['{"count": 8}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM papers]-----------------
+target_db_schema: ['title', 'paperid']
+convert time:1.491075 s
+---------------------------Execute Target Query:MATCH (p:papers) RETURN COUNT(*) AS count-----------------
+MATCH (p:papers) RETURN COUNT(*) AS count
+mysql res: ['{"count_*": 7}']
+target res: ['{"count": 7}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Jeremy" AND t1.lname  =  "Gibbons"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:3.936948 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND a.fname = "Jeremy" AND a.lname = "Gibbons" RETURN p.title AS title-----------------
+MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND a.fname = "Jeremy" AND a.lname = "Gibbons" RETURN p.title AS title
+mysql res: ['{"title": "Just do it: Simple Monadic Equational Reasoning"}']
+target res: ['{"title": "Just do it: Simple Monadic Equational Reasoning"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Jeremy" AND t1.lname  =  "Gibbons" success
+
+--------------------------5-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Aaron" AND t1.lname  =  "Turon"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:4.541513 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND a.fname = "Aaron" AND a.lname = "Turon" RETURN p.title AS title-----------------
+MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND a.fname = "Aaron" AND a.lname = "Turon" RETURN p.title AS title
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Aaron" AND t1.lname  =  "Turon" success
+
+--------------------------6-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE  t1.fname  =  "Atsushi" AND t1.lname  =  "Ohori"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:7.048844 s
+---------------------------Execute Target Query:MATCH (a:authors)-[:authorship]->(p:papers) WHERE a.fname = "Atsushi" AND a.lname = "Ohori" RETURN COUNT(*) AS count-----------------
+MATCH (a:authors)-[:authorship]->(p:papers) WHERE a.fname = "Atsushi" AND a.lname = "Ohori" RETURN COUNT(*) AS count
+mysql res: ['{"count_*": 1}']
+target res: ['{"count": 0}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Matthias" AND t1.lname  =  "Blume"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:5.474304 s
+---------------------------Execute Target Query:MATCH (a:authors)-[:authorship]->(i:inst) WHERE a.fname = "Matthias" AND a.lname = "Blume" RETURN DISTINCT i.name AS name-----------------
+MATCH (a:authors)-[:authorship]->(i:inst) WHERE a.fname = "Matthias" AND a.lname = "Blume" RETURN DISTINCT i.name AS name
+mysql res: ['{"name": "Google"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT DISTINCT t3.name FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t1.fname  =  "Katsuhiro" AND t1.lname  =  "Ueno"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:2.603783 s
+---------------------------Execute Target Query:MATCH (a:authors)-[:authorship]->(i:inst) WHERE a.fname = "Katsuhiro" AND a.lname = "Ueno" RETURN DISTINCT i.name AS name-----------------
+MATCH (a:authors)-[:authorship]->(i:inst) WHERE a.fname = "Katsuhiro" AND a.lname = "Ueno" RETURN DISTINCT i.name AS name
+mysql res: ['{"name": "Tohoku University"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Oxford"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:3.094491 s
+---------------------------Execute Target Query:MATCH (a:authors)-[:authorship]->(i:inst) WHERE i.name = "University of Oxford" RETURN DISTINCT a.fname AS fname, a.lname AS lname-----------------
+MATCH (a:authors)-[:authorship]->(i:inst) WHERE i.name = "University of Oxford" RETURN DISTINCT a.fname AS fname, a.lname AS lname
+mysql res: ['{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------10-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:5.880777 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (i:inst) 
+WHERE a.authid = as.authid AND as.instid = i.instid AND i.name = "Google" 
+RETURN DISTINCT a.fname, a.lname-----------------
+MATCH (a:authors), (as:authorship), (i:inst) 
+WHERE a.authid = as.authid AND as.instid = i.instid AND i.name = "Google" 
+RETURN DISTINCT a.fname, a.lname
+mysql res: ['{"fname": "Matthias", "lname": "Blume"}']
+target res: ['{"a.fname": "Matthias", "a.lname": "Blume"}']
+mismatch between MySQL and target
+
+--------------------------11-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Binders Unbound"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:2.648066 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title = "Binders Unbound" RETURN a.lname-----------------
+MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title = "Binders Unbound" RETURN a.lname
+mysql res: ['{"lname": "Weirich"}', '{"lname": "Yorgey"}', '{"lname": "Sheard"}']
+target res: ['{"a.lname": "Weirich"}', '{"a.lname": "Yorgey"}', '{"a.lname": "Sheard"}']
+mismatch between MySQL and target
+
+--------------------------12-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Nameless ,  Painless"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:9.168684 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title = "Nameless ,  Painless" RETURN a.fname AS fname, a.lname AS lname-----------------
+MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title = "Nameless ,  Painless" RETURN a.fname AS fname, a.lname AS lname
+mysql res: []
+target res: []
+translate SELECT t1.fname ,  t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title  =  "Nameless ,  Painless" success
+
+--------------------------13-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Indiana University"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:8.778764 s
+---------------------------Execute Target Query:MATCH (p:papers), (a:authorship), (i:inst) WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Indiana University" RETURN DISTINCT p.title-----------------
+MATCH (p:papers), (a:authorship), (i:inst) WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Indiana University" RETURN DISTINCT p.title
+mysql res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+target res: ['{"p.title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Google"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:3.170994 s
+---------------------------Execute Target Query:MATCH (p:papers), (a:authorship), (i:inst) WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Google" RETURN DISTINCT p.title-----------------
+MATCH (p:papers), (a:authorship), (i:inst) WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Google" RETURN DISTINCT p.title
+mysql res: ['{"title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+target res: ['{"p.title": "An Equivalence-Preserving CPS Translation via Multi-Language Semantics"}']
+mismatch between MySQL and target
+
+--------------------------15-----------------
+schema:['count_DISTINCT t1_title']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT t1.title) FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "Tokohu University"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:9.624163 s
+---------------------------Execute Target Query:MATCH (p:papers), (a:authorship), (i:inst) WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Tokohu University" RETURN COUNT(DISTINCT p.title) AS count_distinct_title-----------------
+MATCH (p:papers), (a:authorship), (i:inst) WHERE p.paperid = a.paperid AND a.instid = i.instid AND i.name = "Tokohu University" RETURN COUNT(DISTINCT p.title) AS count_distinct_title
+mysql res: ['{"count_DISTINCT t1_title": 0}']
+target res: ['{"count_distinct_title": 0}']
+mismatch between MySQL and target
+
+--------------------------16-----------------
+schema:['count_DISTINCT t1_title']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT t1.title) FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  "University of Pennsylvania"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:3.302462 s
+---------------------------Execute Target Query:MATCH (p:papers)-[:authorship]->(a:authorship)-[:inst]->(i:inst)
+WHERE i.name = "University of Pennsylvania"
+RETURN COUNT(DISTINCT p.title) AS count_distinct_title-----------------
+MATCH (p:papers)-[:authorship]->(a:authorship)-[:inst]->(i:inst)
+WHERE i.name = "University of Pennsylvania"
+RETURN COUNT(DISTINCT p.title) AS count_distinct_title
+mysql res: ['{"count_DISTINCT t1_title": 1}']
+target res: ['{"count_distinct_title": 0}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Olin" AND t1.lname  =  "Shivers"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:3.54736 s
+---------------------------Execute Target Query:MATCH (a:authors)-[:authorship]->(p:papers) WHERE a.fname = "Olin" AND a.lname = "Shivers" RETURN p.title AS title-----------------
+MATCH (a:authors)-[:authorship]->(p:papers) WHERE a.fname = "Olin" AND a.lname = "Shivers" RETURN p.title AS title
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------18-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Stephanie" AND t1.lname  =  "Weirich"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:3.722237 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND a.fname = "Stephanie" AND a.lname = "Weirich" RETURN p.title AS title-----------------
+MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND a.fname = "Stephanie" AND a.lname = "Weirich" RETURN p.title AS title
+mysql res: ['{"title": "Binders Unbound"}']
+target res: ['{"title": "Binders Unbound"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t1.fname  =  "Stephanie" AND t1.lname  =  "Weirich" success
+
+--------------------------19-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "USA" AND t2.authorder  =  2 AND t1.lname  =  "Turon"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:14.542768 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers), (i:inst) 
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND as.instid = i.instid AND i.country = "USA" AND as.authorder = 2 AND a.lname = "Turon" 
+RETURN p.title AS title-----------------
+MATCH (a:authors), (as:authorship), (p:papers), (i:inst) 
+WHERE a.authid = as.authid AND as.paperid = p.paperid AND as.instid = i.instid AND i.country = "USA" AND as.authorder = 2 AND a.lname = "Turon" 
+RETURN p.title AS title
+mysql res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+target res: ['{"title": "Functional Pearl: Modular Rollback through Control Logging"}']
+translate SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "USA" AND t2.authorder  =  2 AND t1.lname  =  "Turon" success
+
+--------------------------20-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t3.title FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid JOIN inst AS t4 ON t2.instid  =  t4.instid WHERE t4.country  =  "Japan" AND t2.authorder  =  1 AND t1.lname  =  "Ohori"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'i', 'n', 's', 't', ':', ' ', '[', "'", 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'c', 'o', 'u', 'n', 't', 'r', 'y', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ']', '\n', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:7.040304 s
+---------------------------Execute Target Query:MATCH (a:authors)-[:authorship]->(p:papers), (a)-[:authorship]->(i:inst)
+WHERE i.country = "Japan" AND a.lname = "Ohori" AND EXISTS((a)-[:authorship {authorder: 1}]->(p))
+RETURN p.title as title-----------------
+MATCH (a:authors)-[:authorship]->(p:papers), (a)-[:authorship]->(i:inst)
+WHERE i.country = "Japan" AND a.lname = "Ohori" AND EXISTS((a)-[:authorship {authorder: 1}]->(p))
+RETURN p.title as title
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------21-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.fname ,  t1.lname ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:7.228081 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid WITH a.lname AS lname, COUNT(*) AS count_star GROUP BY a.fname, a.lname ORDER BY count_star DESC LIMIT 1 RETURN lname-----------------
+MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid WITH a.lname AS lname, COUNT(*) AS count_star GROUP BY a.fname, a.lname ORDER BY count_star DESC LIMIT 1 RETURN lname
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WHERE"
+  "WITH"
+  <EOF> (line 1, column 148 (offset: 147))
+"MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid WITH a.lname AS lname, COUNT(*) AS count_star GROUP BY a.fname, a.lname ORDER BY count_star DESC LIMIT 1 RETURN lname"
+                                                                                                                                                    ^}
+
+--------------------------22-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT t1.country FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.country ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['name', 'country', 'instid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+convert time:4.673952 s
+---------------------------Execute Target Query:MATCH (i:inst), (a:authorship), (p:papers) WHERE i.instid = a.instid AND a.paperid = p.paperid WITH i.country AS country, COUNT(*) AS count_star ORDER BY count_star DESC LIMIT 1 RETURN country-----------------
+MATCH (i:inst), (a:authorship), (p:papers) WHERE i.instid = a.instid AND a.paperid = p.paperid WITH i.country AS country, COUNT(*) AS count_star ORDER BY count_star DESC LIMIT 1 RETURN country
+mysql res: ['{"country": "USA"}']
+target res: ['{"country": "USA"}']
+translate SELECT t1.country FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.country ORDER BY count(*) DESC LIMIT 1 success
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.name ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['name', 'country', 'instid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:33.387587 s
+---------------------------Execute Target Query:MATCH (i:inst), (a:authorship), (p:papers) WHERE i.instid = a.instid AND a.paperid = p.paperid WITH i.name AS name, COUNT(*) AS count_star RETURN name ORDER BY count_star DESC LIMIT 1-----------------
+MATCH (i:inst), (a:authorship), (p:papers) WHERE i.instid = a.instid AND a.paperid = p.paperid WITH i.name AS name, COUNT(*) AS count_star RETURN name ORDER BY count_star DESC LIMIT 1
+mysql res: ['{"name": "University of Oxford"}']
+target res: ['{"name": "University of Oxford"}']
+translate SELECT t1.name FROM inst AS t1 JOIN authorship AS t2 ON t1.instid  =  t2.instid JOIN papers AS t3 ON t2.paperid  =  t3.paperid GROUP BY t1.name ORDER BY count(*) DESC LIMIT 1 success
+
+--------------------------24-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT title FROM papers WHERE title LIKE "%ML%"]-----------------
+target_db_schema: ['title', 'paperid']
+convert time:1.725948 s
+---------------------------Execute Target Query:MATCH (p:papers) WHERE p.title CONTAINS "ML" RETURN p.title AS title-----------------
+MATCH (p:papers) WHERE p.title CONTAINS "ML" RETURN p.title AS title
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+translate SELECT title FROM papers WHERE title LIKE "%ML%" success
+
+--------------------------25-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT title FROM papers WHERE title LIKE "%Database%"]-----------------
+target_db_schema: ['title', 'paperid']
+convert time:1.674181 s
+---------------------------Execute Target Query:MATCH (p:papers) WHERE p.title CONTAINS "Database" RETURN p.title-----------------
+MATCH (p:papers) WHERE p.title CONTAINS "Database" RETURN p.title
+mysql res: ['{"title": "Making Standard ML a Practical Database Programming Language"}']
+target res: ['{"p.title": "Making Standard ML a Practical Database Programming Language"}']
+mismatch between MySQL and target
+
+--------------------------26-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT t1.fname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Functional%"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:11.587427 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title CONTAINS "Functional" RETURN a.fname-----------------
+MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title CONTAINS "Functional" RETURN a.fname
+mysql res: ['{"fname": "Olin"}', '{"fname": "Aaron"}']
+target res: ['{"a.fname": "Olin"}', '{"a.fname": "Aaron"}']
+mismatch between MySQL and target
+
+--------------------------27-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT t1.lname FROM authors AS t1 JOIN authorship AS t2 ON t1.authid  =  t2.authid JOIN papers AS t3 ON t2.paperid  =  t3.paperid WHERE t3.title LIKE "%Monadic%"]-----------------
+target_db_schema: ['authid', 'instid', 'authorder', 'paperid', 'p', 'a', 'p', 'e', 'r', 's', ':', ' ', '[', "'", 't', 'i', 't', 'l', 'e', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n', 'a', 'u', 't', 'h', 'o', 'r', 's', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'f', 'n', 'a', 'm', 'e', "'", ',', ' ', "'", 'l', 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:3.310652 s
+---------------------------Execute Target Query:MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title CONTAINS "Monadic" RETURN a.lname-----------------
+MATCH (a:authors), (as:authorship), (p:papers) WHERE a.authid = as.authid AND as.paperid = p.paperid AND p.title CONTAINS "Monadic" RETURN a.lname
+mysql res: ['{"lname": "Gibbons"}', '{"lname": "Hinze"}']
+target res: ['{"a.lname": "Gibbons"}', '{"a.lname": "Hinze"}']
+mismatch between MySQL and target
+
+--------------------------28-----------------
+schema:['title']
+---------------------------Execute SQL Query:[SELECT t2.title FROM authorship AS t1 JOIN papers AS t2 ON t1.paperid  =  t2.paperid WHERE t1.authorder  =  (SELECT max(authorder) FROM authorship)]-----------------
+target_db_schema: ['title', 'paperid', 'a', 'u', 't', 'h', 'o', 'r', 's', 'h', 'i', 'p', ':', ' ', '[', "'", 'a', 'u', 't', 'h', 'i', 'd', "'", ',', ' ', "'", 'i', 'n', 's', 't', 'i', 'd', "'", ',', ' ', "'", 'a', 'u', 't', 'h', 'o', 'r', 'd', 'e', 'r', "'", ',', ' ', "'", 'p', 'a', 'p', 'e', 'r', 'i', 'd', "'", ']', '\n']
+Error parsing XML of prompt: not well-formed (invalid token): line 14, column 44
+convert time:3.415705 s
+---------------------------Execute Target Query:MATCH (a:authorship)-[:AUTHORED]->(p:papers)
+WHERE a.authorder = (SELECT MAX(b.authorder) FROM authorship b)
+RETURN p.title AS title-----------------
+MATCH (a:authorship)-[:AUTHORED]->(p:papers)
+WHERE a.authorder = (SELECT MAX(b.authorder) FROM authorship b)
+RETURN p.title AS title
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input '(': expected "+" or "-" (line 2, column 21 (offset: 65))
+"WHERE a.authorder = (SELECT MAX(b.authorder) FROM authorship b)"
+                     ^}
+
+--------------------------29-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT fname FROM authors WHERE lname  =  "Ueno"]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:1.819246 s
+---------------------------Execute Target Query:MATCH (a:authors) WHERE a.lname = "Ueno" RETURN a.fname-----------------
+MATCH (a:authors) WHERE a.lname = "Ueno" RETURN a.fname
+mysql res: ['{"fname": "Katsuhiro"}']
+target res: ['{"a.fname": "Katsuhiro"}']
+mismatch between MySQL and target
+
+--------------------------30-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM authors WHERE fname  =  "Amal"]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:1.469208 s
+---------------------------Execute Target Query:MATCH (a:authors) WHERE a.fname = "Amal" RETURN a.lname-----------------
+MATCH (a:authors) WHERE a.fname = "Amal" RETURN a.lname
+mysql res: ['{"lname": "Ahmed"}']
+target res: ['{"a.lname": "Ahmed"}']
+mismatch between MySQL and target
+
+--------------------------31-----------------
+schema:['fname']
+---------------------------Execute SQL Query:[SELECT fname FROM authors ORDER BY fname]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:1.34751 s
+---------------------------Execute Target Query:MATCH (a:authors) RETURN a.fname ORDER BY a.fname-----------------
+MATCH (a:authors) RETURN a.fname ORDER BY a.fname
+mysql res: ['{"fname": "Aaron"}', '{"fname": "Amal"}', '{"fname": "Atsushi"}', '{"fname": "Brent"}', '{"fname": "Daniel W. H."}', '{"fname": "Jeremy"}', '{"fname": "Katsuhiro"}', '{"fname": "Matthias"}', '{"fname": "Nicolas"}', '{"fname": "Olin"}', '{"fname": "Ralf"}', '{"fname": "Stephanie"}', '{"fname": "Tim"}']
+target res: ['{"a.fname": "Aaron"}', '{"a.fname": "Amal"}', '{"a.fname": "Atsushi"}', '{"a.fname": "Brent"}', '{"a.fname": "Daniel W. H."}', '{"a.fname": "Jeremy"}', '{"a.fname": "Katsuhiro"}', '{"a.fname": "Matthias"}', '{"a.fname": "Nicolas"}', '{"a.fname": "Olin"}', '{"a.fname": "Ralf"}', '{"a.fname": "Stephanie"}', '{"a.fname": "Tim"}']
+mismatch between MySQL and target
+
+--------------------------32-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM authors ORDER BY lname]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:1.537889 s
+---------------------------Execute Target Query:MATCH (a:authors) RETURN a.lname ORDER BY a.lname-----------------
+MATCH (a:authors) RETURN a.lname ORDER BY a.lname
+mysql res: ['{"lname": "Ahmed"}', '{"lname": "Blume"}', '{"lname": "Gibbons"}', '{"lname": "Hinze"}', '{"lname": "James"}', '{"lname": "Ohori"}', '{"lname": "Pouillard"}', '{"lname": "Sheard"}', '{"lname": "Shivers"}', '{"lname": "Turon"}', '{"lname": "Ueno"}', '{"lname": "Weirich"}', '{"lname": "Yorgey"}']
+target res: ['{"a.lname": "Ahmed"}', '{"a.lname": "Blume"}', '{"a.lname": "Gibbons"}', '{"a.lname": "Hinze"}', '{"a.lname": "James"}', '{"a.lname": "Ohori"}', '{"a.lname": "Pouillard"}', '{"a.lname": "Sheard"}', '{"a.lname": "Shivers"}', '{"a.lname": "Turon"}', '{"a.lname": "Ueno"}', '{"a.lname": "Weirich"}', '{"a.lname": "Yorgey"}']
+mismatch between MySQL and target
+
+--------------------------33-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT fname ,  lname FROM authors ORDER BY lname]-----------------
+target_db_schema: ['authid', 'fname', 'lname']
+convert time:1.417676 s
+---------------------------Execute Target Query:MATCH (a:authors) RETURN a.fname, a.lname ORDER BY a.lname-----------------
+MATCH (a:authors) RETURN a.fname, a.lname ORDER BY a.lname
+mysql res: ['{"fname": "Amal", "lname": "Ahmed"}', '{"fname": "Matthias", "lname": "Blume"}', '{"fname": "Jeremy", "lname": "Gibbons"}', '{"fname": "Ralf", "lname": "Hinze"}', '{"fname": "Daniel W. H.", "lname": "James"}', '{"fname": "Atsushi", "lname": "Ohori"}', '{"fname": "Nicolas", "lname": "Pouillard"}', '{"fname": "Tim", "lname": "Sheard"}', '{"fname": "Olin", "lname": "Shivers"}', '{"fname": "Aaron", "lname": "Turon"}', '{"fname": "Katsuhiro", "lname": "Ueno"}', '{"fname": "Stephanie", "lname": "Weirich"}', '{"fname": "Brent", "lname": "Yorgey"}']
+target res: ['{"a.fname": "Amal", "a.lname": "Ahmed"}', '{"a.fname": "Matthias", "a.lname": "Blume"}', '{"a.fname": "Jeremy", "a.lname": "Gibbons"}', '{"a.fname": "Ralf", "a.lname": "Hinze"}', '{"a.fname": "Daniel W. H.", "a.lname": "James"}', '{"a.fname": "Atsushi", "a.lname": "Ohori"}', '{"a.fname": "Nicolas", "a.lname": "Pouillard"}', '{"a.fname": "Tim", "a.lname": "Sheard"}', '{"a.fname": "Olin", "a.lname": "Shivers"}', '{"a.fname": "Aaron", "a.lname": "Turon"}', '{"a.fname": "Katsuhiro", "a.lname": "Ueno"}', '{"a.fname": "Stephanie", "a.lname": "Weirich"}', '{"a.fname": "Brent", "a.lname": "Yorgey"}']
+mismatch between MySQL and target
+success_query_count: 8
+valid_count: 33
+accuracy: 0.24242424242424243

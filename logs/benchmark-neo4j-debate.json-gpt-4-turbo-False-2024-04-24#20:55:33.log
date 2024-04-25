@@ -1,0 +1,254 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM debate]-----------------
+convert time:1.930884 s
+---------------------------Execute Target Query:MATCH (d:debate) RETURN count(d) as count_-----------------
+MATCH (d:debate) RETURN count(d) as count_
+mysql res: ['{"count_*": 6}']
+target res: ['{"count_": 6}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['venue']
+---------------------------Execute SQL Query:[SELECT venue FROM debate ORDER BY num_of_audience ASC]-----------------
+convert time:1.29852 s
+---------------------------Execute Target Query:MATCH (d:debate) RETURN d.venue as venue ORDER BY d.num_of_audience ASC-----------------
+MATCH (d:debate) RETURN d.venue as venue ORDER BY d.num_of_audience ASC
+mysql res: ['{"venue": "Manama , Bahrain"}', '{"venue": "Doha , Qatar"}', '{"venue": "Abu Dhabi , UAE"}', '{"venue": "Manama , Bahrain"}', '{"venue": "Dubai , UAE"}', '{"venue": "Manama , Bahrain"}']
+target res: ['{"venue": "Manama , Bahrain"}', '{"venue": "Doha , Qatar"}', '{"venue": "Abu Dhabi , UAE"}', '{"venue": "Manama , Bahrain"}', '{"venue": "Dubai , UAE"}', '{"venue": "Manama , Bahrain"}']
+translate SELECT venue FROM debate ORDER BY num_of_audience ASC success
+
+--------------------------3-----------------
+schema:['date', 'venue']
+---------------------------Execute SQL Query:[SELECT date ,  venue FROM debate]-----------------
+convert time:1.353067 s
+---------------------------Execute Target Query:MATCH (d:debate) RETURN d.date as date, d.venue as venue-----------------
+MATCH (d:debate) RETURN d.date as date, d.venue as venue
+mysql res: ['{"date": "October 21, 2011", "venue": "Manama , Bahrain"}', '{"date": "December 17, 2014", "venue": "Doha , Qatar"}', '{"date": "August 3, 2015", "venue": "Manama , Bahrain"}', '{"date": "October 27, 2015", "venue": "Manama , Bahrain"}', '{"date": "January 12, 2017", "venue": "Dubai , UAE"}', '{"date": "January 21, 2017", "venue": "Abu Dhabi , UAE"}']
+target res: ['{"date": "October 21, 2011", "venue": "Manama , Bahrain"}', '{"date": "December 17, 2014", "venue": "Doha , Qatar"}', '{"date": "August 3, 2015", "venue": "Manama , Bahrain"}', '{"date": "October 27, 2015", "venue": "Manama , Bahrain"}', '{"date": "January 12, 2017", "venue": "Dubai , UAE"}', '{"date": "January 21, 2017", "venue": "Abu Dhabi , UAE"}']
+translate SELECT date ,  venue FROM debate success
+
+--------------------------4-----------------
+schema:['date']
+---------------------------Execute SQL Query:[SELECT date FROM debate WHERE num_of_audience  >  150]-----------------
+convert time:4.142199 s
+---------------------------Execute Target Query:MATCH (d:debate) WHERE d.num_of_audience > 150 RETURN d.date as date-----------------
+MATCH (d:debate) WHERE d.num_of_audience > 150 RETURN d.date as date
+mysql res: ['{"date": "October 21, 2011"}', '{"date": "October 27, 2015"}', '{"date": "January 12, 2017"}', '{"date": "January 21, 2017"}']
+target res: ['{"date": "October 21, 2011"}', '{"date": "October 27, 2015"}', '{"date": "January 12, 2017"}', '{"date": "January 21, 2017"}']
+translate SELECT date FROM debate WHERE num_of_audience  >  150 success
+
+--------------------------5-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM  people WHERE age  =  35 OR age  =  36]-----------------
+convert time:2.85427 s
+---------------------------Execute Target Query:MATCH (p:people) WHERE p.age = 35 OR p.age = 36 RETURN p.name as name-----------------
+MATCH (p:people) WHERE p.age = 35 OR p.age = 36 RETURN p.name as name
+mysql res: ['{"name": "Luther C. Carter"}', '{"name": "William B. Maclay"}', '{"name": "Charles Van Wyck"}']
+target res: ['{"name": "Jamie Mickelson"}', '{"name": "Luther C. Carter"}', '{"name": "William B. Maclay"}', '{"name": "Charles Van Wyck"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------6-----------------
+schema:['party']
+---------------------------Execute SQL Query:[SELECT party FROM people ORDER BY age ASC LIMIT 1]-----------------
+convert time:2.125487 s
+---------------------------Execute Target Query:MATCH (p:people) RETURN p.party as party ORDER BY p.age ASC LIMIT 1-----------------
+MATCH (p:people) RETURN p.party as party ORDER BY p.age ASC LIMIT 1
+mysql res: ['{"party": "Republican"}']
+target res: ['{"party": null}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['party', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT party ,  COUNT(*) FROM people GROUP BY party]-----------------
+convert time:1.493409 s
+---------------------------Execute Target Query:MATCH (p:people)
+RETURN p.party as party, count(p) as count_-----------------
+MATCH (p:people)
+RETURN p.party as party, count(p) as count_
+mysql res: ['{"party": "Republican", "COUNT_*": 4}', '{"party": "Democratic", "COUNT_*": 3}', '{"party": "Independent Democrat", "COUNT_*": 1}', '{"party": "Anti-Lecompton Democrat", "COUNT_*": 2}']
+target res: ['{"party": null, "count_": 12}', '{"party": "Republican", "count_": 4}', '{"party": "Democratic", "count_": 3}', '{"party": "Independent Democrat", "count_": 1}', '{"party": "Anti-Lecompton Democrat", "count_": 2}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['party']
+---------------------------Execute SQL Query:[SELECT party FROM people GROUP BY party ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+convert time:2.181127 s
+---------------------------Execute Target Query:MATCH (p:people)
+RETURN p.party as party, COUNT(*) as count
+GROUP BY p.party
+ORDER BY count DESC
+LIMIT 1-----------------
+MATCH (p:people)
+RETURN p.party as party, COUNT(*) as count
+GROUP BY p.party
+ORDER BY count DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 60))
+"GROUP BY p.party"
+ ^}
+
+--------------------------9-----------------
+schema:['venue']
+---------------------------Execute SQL Query:[SELECT DISTINCT venue FROM debate]-----------------
+convert time:1.237115 s
+---------------------------Execute Target Query:MATCH (d:debate) RETURN DISTINCT d.venue as venue-----------------
+MATCH (d:debate) RETURN DISTINCT d.venue as venue
+mysql res: ['{"venue": "Manama , Bahrain"}', '{"venue": "Doha , Qatar"}', '{"venue": "Dubai , UAE"}', '{"venue": "Abu Dhabi , UAE"}']
+target res: ['{"venue": "Manama , Bahrain"}', '{"venue": "Doha , Qatar"}', '{"venue": "Dubai , UAE"}', '{"venue": "Abu Dhabi , UAE"}']
+translate SELECT DISTINCT venue FROM debate success
+
+--------------------------10-----------------
+schema:['name', 'date', 'venue']
+---------------------------Execute SQL Query:[SELECT T3.name ,  T2.date ,  T2.venue FROM debate_people AS T1 JOIN debate AS T2 ON T1.debate_id  =  T2.debate_id JOIN people AS T3 ON T1.affirmative  =  T3.People_ID]-----------------
+convert time:3.833977 s
+---------------------------Execute Target Query:MATCH (dp:debate_people), (d:debate), (p:people)
+WHERE dp.debate_id = d.debate_id AND dp.affirmative = p.People_ID
+RETURN p.name AS name, d.date AS date, d.venue AS venue-----------------
+MATCH (dp:debate_people), (d:debate), (p:people)
+WHERE dp.debate_id = d.debate_id AND dp.affirmative = p.People_ID
+RETURN p.name AS name, d.date AS date, d.venue AS venue
+mysql res: ['{"name": "William B. Maclay", "date": "January 21, 2017", "venue": "Abu Dhabi , UAE"}', '{"name": "Thomas J. Barr", "date": "August 3, 2015", "venue": "Manama , Bahrain"}', '{"name": "William B. Maclay", "date": "October 27, 2015", "venue": "Manama , Bahrain"}', '{"name": "James Humphrey", "date": "January 12, 2017", "venue": "Dubai , UAE"}', '{"name": "Luther C. Carter", "date": "October 21, 2011", "venue": "Manama , Bahrain"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['name', 'date', 'venue']
+---------------------------Execute SQL Query:[SELECT T3.name ,  T2.date ,  T2.venue FROM debate_people AS T1 JOIN debate AS T2 ON T1.debate_id  =  T2.debate_id JOIN people AS T3 ON T1.negative  =  T3.People_ID ORDER BY T3.name ASC]-----------------
+convert time:4.788613 s
+---------------------------Execute Target Query:MATCH (dp:debate_people), (d:debate), (p:people)
+WHERE dp.debate_id = d.debate_id AND dp.negative = p.People_ID
+RETURN p.name AS name, d.date AS date, d.venue AS venue
+ORDER BY p.name ASC-----------------
+MATCH (dp:debate_people), (d:debate), (p:people)
+WHERE dp.debate_id = d.debate_id AND dp.negative = p.People_ID
+RETURN p.name AS name, d.date AS date, d.venue AS venue
+ORDER BY p.name ASC
+mysql res: ['{"name": "Charles Van Wyck", "date": "October 21, 2011", "venue": "Manama , Bahrain"}', '{"name": "George Briggs", "date": "August 3, 2015", "venue": "Manama , Bahrain"}', '{"name": "Horace F. Clark", "date": "October 27, 2015", "venue": "Manama , Bahrain"}', '{"name": "Horace F. Clark", "date": "January 12, 2017", "venue": "Dubai , UAE"}', '{"name": "John Cochrane", "date": "January 21, 2017", "venue": "Abu Dhabi , UAE"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T3.name FROM debate_people AS T1 JOIN debate AS T2 ON T1.debate_id  =  T2.debate_id JOIN people AS T3 ON T1.affirmative  =  T3.People_ID WHERE T2.num_of_audience  >  200]-----------------
+convert time:7.702415 s
+---------------------------Execute Target Query:MATCH (t1:debate_people), (t2:debate), (t3:people)
+WHERE t1.debate_id = t2.debate_id AND t1.affirmative = t3.People_ID AND t2.num_of_audience > 200
+RETURN t3.name as name-----------------
+MATCH (t1:debate_people), (t2:debate), (t3:people)
+WHERE t1.debate_id = t2.debate_id AND t1.affirmative = t3.People_ID AND t2.num_of_audience > 200
+RETURN t3.name as name
+mysql res: ['{"name": "Luther C. Carter"}', '{"name": "William B. Maclay"}', '{"name": "James Humphrey"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['name', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT T2.name ,  COUNT(*) FROM debate_people AS T1 JOIN people AS T2 ON T1.affirmative  =  T2.People_ID GROUP BY T2.name]-----------------
+convert time:2.168006 s
+---------------------------Execute Target Query:MATCH (dp:debate_people), (p:people) WHERE dp.affirmative = p.People_ID RETURN p.name as name, count(*) as count_-----------------
+MATCH (dp:debate_people), (p:people) WHERE dp.affirmative = p.People_ID RETURN p.name as name, count(*) as count_
+mysql res: ['{"name": "William B. Maclay", "COUNT_*": 2}', '{"name": "Thomas J. Barr", "COUNT_*": 1}', '{"name": "James Humphrey", "COUNT_*": 1}', '{"name": "Luther C. Carter", "COUNT_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM debate_people AS T1 JOIN people AS T2 ON T1.negative  =  T2.People_ID GROUP BY T2.name HAVING COUNT(*)  >=  2]-----------------
+convert time:2.988579 s
+---------------------------Execute Target Query:MATCH (dp:debate_people), (p:people) WHERE dp.negative = p.People_ID
+RETURN p.name as name, COUNT(*) as count
+WHERE count >= 2
+GROUP BY p.name-----------------
+MATCH (dp:debate_people), (p:people) WHERE dp.negative = p.People_ID
+RETURN p.name as name, COUNT(*) as count
+WHERE count >= 2
+GROUP BY p.name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 110))
+"WHERE count >= 2"
+ ^}
+
+--------------------------15-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM people WHERE People_id NOT IN (SELECT affirmative FROM debate_people)]-----------------
+convert time:3.07453 s
+---------------------------Execute Target Query:MATCH (p:people) WHERE NOT p.People_id IN [d.affirmative IN (MATCH (d:debate_people) RETURN d.affirmative)] RETURN p.name as name-----------------
+MATCH (p:people) WHERE NOT p.People_id IN [d.affirmative IN (MATCH (d:debate_people) RETURN d.affirmative)] RETURN p.name as name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'RETURN': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 86 (offset: 85))
+"MATCH (p:people) WHERE NOT p.People_id IN [d.affirmative IN (MATCH (d:debate_people) RETURN d.affirmative)] RETURN p.name as name"
+                                                                                      ^}
+success_query_count: 4
+valid_count: 15
+accuracy: 0.26666666666666666

@@ -1,0 +1,694 @@
+--------
+
+--------------------------1-----------------
+schema:['count_DISTINCT allergy']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT allergy) FROM allergy_type]-----------------
+convert time:1.459917 s
+---------------------------Execute Target Query:MATCH (a:allergy_type) RETURN count(DISTINCT a.allergy) as count_distinct_allergy-----------------
+MATCH (a:allergy_type) RETURN count(DISTINCT a.allergy) as count_distinct_allergy
+mysql res: ['{"count_DISTINCT allergy": 14}']
+target res: ['{"count_distinct_allergy": 14}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['count_DISTINCT allergytype']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT allergytype) FROM allergy_type]-----------------
+convert time:2.146765 s
+---------------------------Execute Target Query:MATCH (a:allergy_type) RETURN count(DISTINCT a.allergytype) as count_distinct_allergytype-----------------
+MATCH (a:allergy_type) RETURN count(DISTINCT a.allergytype) as count_distinct_allergytype
+mysql res: ['{"count_DISTINCT allergytype": 3}']
+target res: ['{"count_distinct_allergytype": 3}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT DISTINCT allergytype FROM allergy_type]-----------------
+convert time:2.866106 s
+---------------------------Execute Target Query:MATCH (a:allergy_type) RETURN DISTINCT a.allergytype as allergytype-----------------
+MATCH (a:allergy_type) RETURN DISTINCT a.allergytype as allergytype
+mysql res: ['{"allergytype": "food"}', '{"allergytype": "animal"}', '{"allergytype": "environmental"}']
+target res: ['{"allergytype": "food"}', '{"allergytype": "animal"}', '{"allergytype": "environmental"}']
+translate SELECT DISTINCT allergytype FROM allergy_type success
+
+--------------------------4-----------------
+schema:['allergy', 'allergytype']
+---------------------------Execute SQL Query:[SELECT allergy ,  allergytype FROM allergy_type]-----------------
+convert time:1.388537 s
+---------------------------Execute Target Query:MATCH (a:allergy_type) RETURN a.allergy AS allergy, a.allergytype AS allergytype-----------------
+MATCH (a:allergy_type) RETURN a.allergy AS allergy, a.allergytype AS allergytype
+mysql res: ['{"allergy": "Anchovies", "allergytype": "food"}', '{"allergy": "Bee Stings", "allergytype": "animal"}', '{"allergy": "Cat", "allergytype": "animal"}', '{"allergy": "Dog", "allergytype": "animal"}', '{"allergy": "Eggs", "allergytype": "food"}', '{"allergy": "Grass Pollen", "allergytype": "environmental"}', '{"allergy": "Milk", "allergytype": "food"}', '{"allergy": "Nuts", "allergytype": "food"}', '{"allergy": "Ragweed", "allergytype": "environmental"}', '{"allergy": "Rodent", "allergytype": "animal"}', '{"allergy": "Shellfish", "allergytype": "food"}', '{"allergy": "Soy", "allergytype": "food"}', '{"allergy": "Tree Pollen", "allergytype": "environmental"}', '{"allergy": "Wheat", "allergytype": "food"}']
+target res: ['{"allergy": "Anchovies", "allergytype": "food"}', '{"allergy": "Bee Stings", "allergytype": "animal"}', '{"allergy": "Cat", "allergytype": "animal"}', '{"allergy": "Dog", "allergytype": "animal"}', '{"allergy": "Eggs", "allergytype": "food"}', '{"allergy": "Grass Pollen", "allergytype": "environmental"}', '{"allergy": "Milk", "allergytype": "food"}', '{"allergy": "Nuts", "allergytype": "food"}', '{"allergy": "Ragweed", "allergytype": "environmental"}', '{"allergy": "Rodent", "allergytype": "animal"}', '{"allergy": "Shellfish", "allergytype": "food"}', '{"allergy": "Soy", "allergytype": "food"}', '{"allergy": "Tree Pollen", "allergytype": "environmental"}', '{"allergy": "Wheat", "allergytype": "food"}']
+translate SELECT allergy ,  allergytype FROM allergy_type success
+
+--------------------------5-----------------
+schema:['allergy']
+---------------------------Execute SQL Query:[SELECT DISTINCT allergy FROM allergy_type WHERE allergytype  =  "food"]-----------------
+convert time:2.019031 s
+---------------------------Execute Target Query:MATCH (a:allergy_type) WHERE a.allergytype = "food" RETURN DISTINCT a.allergy as allergy-----------------
+MATCH (a:allergy_type) WHERE a.allergytype = "food" RETURN DISTINCT a.allergy as allergy
+mysql res: ['{"allergy": "Anchovies"}', '{"allergy": "Eggs"}', '{"allergy": "Milk"}', '{"allergy": "Nuts"}', '{"allergy": "Shellfish"}', '{"allergy": "Soy"}', '{"allergy": "Wheat"}']
+target res: ['{"allergy": "Anchovies"}', '{"allergy": "Eggs"}', '{"allergy": "Milk"}', '{"allergy": "Nuts"}', '{"allergy": "Shellfish"}', '{"allergy": "Soy"}', '{"allergy": "Wheat"}']
+translate SELECT DISTINCT allergy FROM allergy_type WHERE allergytype  =  "food" success
+
+--------------------------6-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type WHERE allergy  =  "Cat"]-----------------
+convert time:1.655952 s
+---------------------------Execute Target Query:MATCH (a:allergy_type) WHERE a.allergy = "Cat" RETURN a.allergytype as allergytype-----------------
+MATCH (a:allergy_type) WHERE a.allergy = "Cat" RETURN a.allergytype as allergytype
+mysql res: ['{"allergytype": "animal"}']
+target res: ['{"allergytype": "animal"}']
+translate SELECT allergytype FROM allergy_type WHERE allergy  =  "Cat" success
+
+--------------------------7-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM allergy_type WHERE allergytype  =  "animal"]-----------------
+convert time:1.255385 s
+---------------------------Execute Target Query:MATCH (a:allergy_type) WHERE a.allergytype = "animal" RETURN count(*) as count-----------------
+MATCH (a:allergy_type) WHERE a.allergytype = "animal" RETURN count(*) as count
+mysql res: ['{"count_*": 4}']
+target res: ['{"count": 4}']
+mismatch between MySQL and target
+
+--------------------------8-----------------
+schema:['allergytype', 'count_*']
+---------------------------Execute SQL Query:[SELECT allergytype ,  count(*) FROM allergy_type GROUP BY allergytype]-----------------
+convert time:2.166585 s
+---------------------------Execute Target Query:MATCH (a:allergy_type)
+RETURN a.allergytype AS allergytype, count(*) AS count_allergytype-----------------
+MATCH (a:allergy_type)
+RETURN a.allergytype AS allergytype, count(*) AS count_allergytype
+mysql res: ['{"allergytype": "food", "count_*": 7}', '{"allergytype": "animal", "count_*": 4}', '{"allergytype": "environmental", "count_*": 3}']
+target res: ['{"allergytype": "food", "count_allergytype": 7}', '{"allergytype": "animal", "count_allergytype": 4}', '{"allergytype": "environmental", "count_allergytype": 3}']
+mismatch between MySQL and target
+
+--------------------------9-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type GROUP BY allergytype ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:5.862958 s
+---------------------------Execute Target Query:MATCH (a:allergy_type)
+RETURN a.allergytype as allergytype
+ORDER BY count(a) DESC
+LIMIT 1-----------------
+MATCH (a:allergy_type)
+RETURN a.allergytype as allergytype
+ORDER BY count(a) DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Cannot use aggregation in ORDER BY if there are no aggregate expressions in the preceding RETURN (line 2, column 1 (offset: 23))
+"RETURN a.allergytype as allergytype"
+ ^}
+
+--------------------------10-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type GROUP BY allergytype ORDER BY count(*) ASC LIMIT 1]-----------------
+convert time:2.302046 s
+---------------------------Execute Target Query:MATCH (a:allergy_type)
+RETURN a.allergytype as allergytype
+ORDER BY count(a) ASC
+LIMIT 1-----------------
+MATCH (a:allergy_type)
+RETURN a.allergytype as allergytype
+ORDER BY count(a) ASC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Cannot use aggregation in ORDER BY if there are no aggregate expressions in the preceding RETURN (line 2, column 1 (offset: 23))
+"RETURN a.allergytype as allergytype"
+ ^}
+
+--------------------------11-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student]-----------------
+convert time:1.224911 s
+---------------------------Execute Target Query:MATCH (s:student) RETURN count(s) as count-----------------
+MATCH (s:student) RETURN count(s) as count
+mysql res: ['{"count_*": 34}']
+target res: ['{"count": 34}']
+mismatch between MySQL and target
+
+--------------------------12-----------------
+schema:['fname', 'lname']
+---------------------------Execute SQL Query:[SELECT fname ,  lname FROM student]-----------------
+convert time:16.103639 s
+---------------------------Execute Target Query:MATCH (s:student) RETURN s.fname AS fname, s.lname AS lname-----------------
+MATCH (s:student) RETURN s.fname AS fname, s.lname AS lname
+mysql res: ['{"fname": "Linda", "lname": "Smith"}', '{"fname": "Tracy", "lname": "Kim"}', '{"fname": "Shiela", "lname": "Jones"}', '{"fname": "Dinesh", "lname": "Kumar"}', '{"fname": "Paul", "lname": "Gompers"}', '{"fname": "Andy", "lname": "Schultz"}', '{"fname": "Lisa", "lname": "Apap"}', '{"fname": "Jandy", "lname": "Nelson"}', '{"fname": "Eric", "lname": "Tai"}', '{"fname": "Derek", "lname": "Lee"}', '{"fname": "David", "lname": "Adams"}', '{"fname": "Steven", "lname": "Davis"}', '{"fname": "Charles", "lname": "Norris"}', '{"fname": "Susan", "lname": "Lee"}', '{"fname": "Mark", "lname": "Schwartz"}', '{"fname": "Bruce", "lname": "Wilson"}', '{"fname": "Michael", "lname": "Leighton"}', '{"fname": "Arthur", "lname": "Pang"}', '{"fname": "Ian", "lname": "Thornton"}', '{"fname": "George", "lname": "Andreou"}', '{"fname": "Michael", "lname": "Woods"}', '{"fname": "David", "lname": "Shieber"}', '{"fname": "Stacy", "lname": "Prater"}', '{"fname": "Mark", "lname": "Goldman"}', '{"fname": "Eric", "lname": "Pang"}', '{"fname": "Paul", "lname": "Brody"}', '{"fname": "Eric", "lname": "Rugh"}', '{"fname": "Jun", "lname": "Han"}', '{"fname": "Lisa", "lname": "Cheng"}', '{"fname": "Sarah", "lname": "Smith"}', '{"fname": "Eric", "lname": "Brown"}', '{"fname": "William", "lname": "Simms"}', '{"fname": "Eric", "lname": "Epp"}', '{"fname": "Sarah", "lname": "Schmidt"}']
+target res: ['{"fname": "Linda", "lname": "Smith"}', '{"fname": "Tracy", "lname": "Kim"}', '{"fname": "Shiela", "lname": "Jones"}', '{"fname": "Dinesh", "lname": "Kumar"}', '{"fname": "Paul", "lname": "Gompers"}', '{"fname": "Andy", "lname": "Schultz"}', '{"fname": "Lisa", "lname": "Apap"}', '{"fname": "Jandy", "lname": "Nelson"}', '{"fname": "Eric", "lname": "Tai"}', '{"fname": "Derek", "lname": "Lee"}', '{"fname": "David", "lname": "Adams"}', '{"fname": "Steven", "lname": "Davis"}', '{"fname": "Charles", "lname": "Norris"}', '{"fname": "Susan", "lname": "Lee"}', '{"fname": "Mark", "lname": "Schwartz"}', '{"fname": "Bruce", "lname": "Wilson"}', '{"fname": "Michael", "lname": "Leighton"}', '{"fname": "Arthur", "lname": "Pang"}', '{"fname": "Ian", "lname": "Thornton"}', '{"fname": "George", "lname": "Andreou"}', '{"fname": "Michael", "lname": "Woods"}', '{"fname": "David", "lname": "Shieber"}', '{"fname": "Stacy", "lname": "Prater"}', '{"fname": "Mark", "lname": "Goldman"}', '{"fname": "Eric", "lname": "Pang"}', '{"fname": "Paul", "lname": "Brody"}', '{"fname": "Eric", "lname": "Rugh"}', '{"fname": "Jun", "lname": "Han"}', '{"fname": "Lisa", "lname": "Cheng"}', '{"fname": "Sarah", "lname": "Smith"}', '{"fname": "Eric", "lname": "Brown"}', '{"fname": "William", "lname": "Simms"}', '{"fname": "Eric", "lname": "Epp"}', '{"fname": "Sarah", "lname": "Schmidt"}']
+translate SELECT fname ,  lname FROM student success
+
+--------------------------13-----------------
+schema:['count_DISTINCT advisor']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT advisor) FROM student]-----------------
+convert time:4.457957 s
+---------------------------Execute Target Query:MATCH (s:student) RETURN count(DISTINCT s.advisor) as count_distinct_advisor-----------------
+MATCH (s:student) RETURN count(DISTINCT s.advisor) as count_distinct_advisor
+mysql res: ['{"count_DISTINCT advisor": 18}']
+target res: ['{"count_distinct_advisor": 18}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['major']
+---------------------------Execute SQL Query:[SELECT DISTINCT major FROM student]-----------------
+convert time:1.003974 s
+---------------------------Execute Target Query:MATCH (s:student) RETURN DISTINCT s.major as major-----------------
+MATCH (s:student) RETURN DISTINCT s.major as major
+mysql res: ['{"major": 600}', '{"major": 520}', '{"major": 540}', '{"major": 550}', '{"major": 100}', '{"major": 50}']
+target res: ['{"major": 600}', '{"major": 520}', '{"major": 540}', '{"major": 550}', '{"major": 100}', '{"major": 50}']
+translate SELECT DISTINCT major FROM student success
+
+--------------------------15-----------------
+schema:['city_code']
+---------------------------Execute SQL Query:[SELECT DISTINCT city_code FROM student]-----------------
+convert time:1.073985 s
+---------------------------Execute Target Query:MATCH (s:student) RETURN DISTINCT s.city_code as city_code-----------------
+MATCH (s:student) RETURN DISTINCT s.city_code as city_code
+mysql res: ['{"city_code": "BAL"}', '{"city_code": "HKG"}', '{"city_code": "WAS"}', '{"city_code": "CHI"}', '{"city_code": "YYZ"}', '{"city_code": "PIT"}', '{"city_code": "HOU"}', '{"city_code": "PHL"}', '{"city_code": "DAL"}', '{"city_code": "DET"}', '{"city_code": "LON"}', '{"city_code": "NYC"}', '{"city_code": "LOS"}', '{"city_code": "ROC"}', '{"city_code": "PEK"}', '{"city_code": "SFO"}', '{"city_code": "ATL"}', '{"city_code": "NAR"}', '{"city_code": "BOS"}']
+target res: ['{"city_code": "BAL"}', '{"city_code": "HKG"}', '{"city_code": "WAS"}', '{"city_code": "CHI"}', '{"city_code": "YYZ"}', '{"city_code": "PIT"}', '{"city_code": "HOU"}', '{"city_code": "PHL"}', '{"city_code": "DAL"}', '{"city_code": "DET"}', '{"city_code": "LON"}', '{"city_code": "NYC"}', '{"city_code": "LOS"}', '{"city_code": "ROC"}', '{"city_code": "PEK"}', '{"city_code": "SFO"}', '{"city_code": "ATL"}', '{"city_code": "NAR"}', '{"city_code": "BOS"}']
+translate SELECT DISTINCT city_code FROM student success
+
+--------------------------16-----------------
+schema:['fname', 'lname', 'age']
+---------------------------Execute SQL Query:[SELECT fname ,  lname ,  age FROM student WHERE sex  =  'F']-----------------
+convert time:3.575541 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE s.sex = 'F' RETURN s.fname AS fname, s.lname AS lname, s.age AS age-----------------
+MATCH (s:student) WHERE s.sex = 'F' RETURN s.fname AS fname, s.lname AS lname, s.age AS age
+mysql res: ['{"fname": "Linda", "lname": "Smith", "age": 18}', '{"fname": "Tracy", "lname": "Kim", "age": 19}', '{"fname": "Shiela", "lname": "Jones", "age": 21}', '{"fname": "Lisa", "lname": "Apap", "age": 18}', '{"fname": "Jandy", "lname": "Nelson", "age": 20}', '{"fname": "Susan", "lname": "Lee", "age": 16}', '{"fname": "Stacy", "lname": "Prater", "age": 18}', '{"fname": "Lisa", "lname": "Cheng", "age": 21}', '{"fname": "Sarah", "lname": "Smith", "age": 20}', '{"fname": "Sarah", "lname": "Schmidt", "age": 26}']
+target res: ['{"fname": "Linda", "lname": "Smith", "age": 18}', '{"fname": "Tracy", "lname": "Kim", "age": 19}', '{"fname": "Shiela", "lname": "Jones", "age": 21}', '{"fname": "Lisa", "lname": "Apap", "age": 18}', '{"fname": "Jandy", "lname": "Nelson", "age": 20}', '{"fname": "Susan", "lname": "Lee", "age": 16}', '{"fname": "Stacy", "lname": "Prater", "age": 18}', '{"fname": "Lisa", "lname": "Cheng", "age": 21}', '{"fname": "Sarah", "lname": "Smith", "age": 20}', '{"fname": "Sarah", "lname": "Schmidt", "age": 26}']
+translate SELECT fname ,  lname ,  age FROM student WHERE sex  =  'F' success
+
+--------------------------17-----------------
+schema:['stuid']
+---------------------------Execute SQL Query:[SELECT stuid FROM student WHERE sex  =  'M']-----------------
+convert time:1.847905 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE s.sex = 'M' RETURN s.stuid as stuid-----------------
+MATCH (s:student) WHERE s.sex = 'M' RETURN s.stuid as stuid
+mysql res: ['{"stuid": 1004}', '{"stuid": 1005}', '{"stuid": 1006}', '{"stuid": 1009}', '{"stuid": 1010}', '{"stuid": 1011}', '{"stuid": 1012}', '{"stuid": 1014}', '{"stuid": 1016}', '{"stuid": 1017}', '{"stuid": 1018}', '{"stuid": 1019}', '{"stuid": 1020}', '{"stuid": 1021}', '{"stuid": 1022}', '{"stuid": 1023}', '{"stuid": 1025}', '{"stuid": 1026}', '{"stuid": 1027}', '{"stuid": 1028}', '{"stuid": 1029}', '{"stuid": 1032}', '{"stuid": 1033}', '{"stuid": 1034}']
+target res: ['{"stuid": 1004}', '{"stuid": 1005}', '{"stuid": 1006}', '{"stuid": 1009}', '{"stuid": 1010}', '{"stuid": 1011}', '{"stuid": 1012}', '{"stuid": 1014}', '{"stuid": 1016}', '{"stuid": 1017}', '{"stuid": 1018}', '{"stuid": 1019}', '{"stuid": 1020}', '{"stuid": 1021}', '{"stuid": 1022}', '{"stuid": 1023}', '{"stuid": 1025}', '{"stuid": 1026}', '{"stuid": 1027}', '{"stuid": 1028}', '{"stuid": 1029}', '{"stuid": 1032}', '{"stuid": 1033}', '{"stuid": 1034}']
+translate SELECT stuid FROM student WHERE sex  =  'M' success
+
+--------------------------18-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE age  =  18]-----------------
+convert time:1.672447 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE s.age = 18 RETURN count(s) as count_-----------------
+MATCH (s:student) WHERE s.age = 18 RETURN count(s) as count_
+mysql res: ['{"count_*": 10}']
+target res: ['{"count_": 10}']
+mismatch between MySQL and target
+
+--------------------------19-----------------
+schema:['stuid']
+---------------------------Execute SQL Query:[SELECT stuid FROM student WHERE age  >  20]-----------------
+convert time:1.335902 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE s.age > 20 RETURN s.stuid as stuid-----------------
+MATCH (s:student) WHERE s.age > 20 RETURN s.stuid as stuid
+mysql res: ['{"stuid": 1003}', '{"stuid": 1005}', '{"stuid": 1011}', '{"stuid": 1017}', '{"stuid": 1020}', '{"stuid": 1030}', '{"stuid": 1035}']
+target res: ['{"stuid": 1003}', '{"stuid": 1005}', '{"stuid": 1011}', '{"stuid": 1017}', '{"stuid": 1020}', '{"stuid": 1030}', '{"stuid": 1035}']
+translate SELECT stuid FROM student WHERE age  >  20 success
+
+--------------------------20-----------------
+schema:['city_code']
+---------------------------Execute SQL Query:[SELECT city_code FROM student WHERE lname  =  "Kim"]-----------------
+convert time:1.39308 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE s.lname = "Kim" RETURN s.city_code as city_code-----------------
+MATCH (s:student) WHERE s.lname = "Kim" RETURN s.city_code as city_code
+mysql res: ['{"city_code": "HKG"}']
+target res: ['{"city_code": "HKG"}']
+translate SELECT city_code FROM student WHERE lname  =  "Kim" success
+
+--------------------------21-----------------
+schema:['advisor']
+---------------------------Execute SQL Query:[SELECT advisor FROM student WHERE stuid  =  1004]-----------------
+convert time:1.344696 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE s.stuid = 1004 RETURN s.advisor as advisor-----------------
+MATCH (s:student) WHERE s.stuid = 1004 RETURN s.advisor as advisor
+mysql res: ['{"advisor": 8423}']
+target res: ['{"advisor": 8423}']
+translate SELECT advisor FROM student WHERE stuid  =  1004 success
+
+--------------------------22-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE city_code  =  "HKG" OR city_code  =  "CHI"]-----------------
+convert time:3.521957 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE s.city_code = "HKG" OR s.city_code = "CHI" RETURN count(*) as count-----------------
+MATCH (s:student) WHERE s.city_code = "HKG" OR s.city_code = "CHI" RETURN count(*) as count
+mysql res: ['{"count_*": 4}']
+target res: ['{"count": 4}']
+mismatch between MySQL and target
+
+--------------------------23-----------------
+schema:['min_age', 'avg_age', 'max_age']
+---------------------------Execute SQL Query:[SELECT min(age) ,  avg(age) ,  max(age) FROM student]-----------------
+convert time:1.482899 s
+---------------------------Execute Target Query:MATCH (s:student) RETURN min(s.age) AS min_age, avg(s.age) AS avg_age, max(s.age) AS max_age-----------------
+MATCH (s:student) RETURN min(s.age) AS min_age, avg(s.age) AS avg_age, max(s.age) AS max_age
+mysql res: ['{"min_age": 16, "avg_age": 19.5588, "max_age": 27}']
+target res: ['{"min_age": 16, "avg_age": 19.558823529411768, "max_age": 27}']
+mismatch between MySQL and target
+
+--------------------------24-----------------
+schema:['lname']
+---------------------------Execute SQL Query:[SELECT lname FROM student WHERE age  =  (SELECT min(age) FROM student)]-----------------
+convert time:2.072904 s
+---------------------------Execute Target Query:MATCH (s:student)
+WITH min(s.age) AS min_age
+MATCH (s2:student) WHERE s2.age = min_age
+RETURN s2.lname AS lname-----------------
+MATCH (s:student)
+WITH min(s.age) AS min_age
+MATCH (s2:student) WHERE s2.age = min_age
+RETURN s2.lname AS lname
+mysql res: ['{"lname": "Lee"}']
+target res: ['{"lname": "Lee"}']
+translate SELECT lname FROM student WHERE age  =  (SELECT min(age) FROM student) success
+
+--------------------------25-----------------
+schema:['stuid']
+---------------------------Execute SQL Query:[SELECT stuid FROM student WHERE age  =  (SELECT max(age) FROM student)]-----------------
+convert time:3.12382 s
+---------------------------Execute Target Query:MATCH (s:student)
+WITH max(s.age) AS max_age
+MATCH (s2:student) WHERE s2.age = max_age
+RETURN s2.stuid AS stuid-----------------
+MATCH (s:student)
+WITH max(s.age) AS max_age
+MATCH (s2:student) WHERE s2.age = max_age
+RETURN s2.stuid AS stuid
+mysql res: ['{"stuid": 1017}']
+target res: ['{"stuid": 1017}']
+translate SELECT stuid FROM student WHERE age  =  (SELECT max(age) FROM student) success
+
+--------------------------26-----------------
+schema:['major', 'count_*']
+---------------------------Execute SQL Query:[SELECT major ,  count(*) FROM student GROUP BY major]-----------------
+convert time:1.11353 s
+---------------------------Execute Target Query:MATCH (s:student)
+RETURN s.major as major, count(s) as count_-----------------
+MATCH (s:student)
+RETURN s.major as major, count(s) as count_
+mysql res: ['{"major": 600, "count_*": 18}', '{"major": 520, "count_*": 6}', '{"major": 540, "count_*": 2}', '{"major": 550, "count_*": 5}', '{"major": 100, "count_*": 1}', '{"major": 50, "count_*": 2}']
+target res: ['{"major": 600, "count_": 18}', '{"major": 520, "count_": 6}', '{"major": 540, "count_": 2}', '{"major": 550, "count_": 5}', '{"major": 100, "count_": 1}', '{"major": 50, "count_": 2}']
+mismatch between MySQL and target
+
+--------------------------27-----------------
+schema:['major']
+---------------------------Execute SQL Query:[SELECT major FROM student GROUP BY major ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:3.298527 s
+---------------------------Execute Target Query:MATCH (s:student)
+RETURN s.major as major, count(*) as count_star
+GROUP BY s.major
+ORDER BY count_star DESC
+LIMIT 1-----------------
+MATCH (s:student)
+RETURN s.major as major, count(*) as count_star
+GROUP BY s.major
+ORDER BY count_star DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 66))
+"GROUP BY s.major"
+ ^}
+
+--------------------------28-----------------
+schema:['age', 'count_*']
+---------------------------Execute SQL Query:[SELECT age ,  count(*) FROM student GROUP BY age]-----------------
+convert time:1.547767 s
+---------------------------Execute Target Query:MATCH (s:student)
+RETURN s.age as age, count(s) as count_-----------------
+MATCH (s:student)
+RETURN s.age as age, count(s) as count_
+mysql res: ['{"age": 18, "count_*": 10}', '{"age": 19, "count_*": 4}', '{"age": 21, "count_*": 2}', '{"age": 20, "count_*": 8}', '{"age": 26, "count_*": 2}', '{"age": 17, "count_*": 4}', '{"age": 22, "count_*": 2}', '{"age": 16, "count_*": 1}', '{"age": 27, "count_*": 1}']
+target res: ['{"age": 18, "count_": 10}', '{"age": 19, "count_": 4}', '{"age": 21, "count_": 2}', '{"age": 20, "count_": 8}', '{"age": 26, "count_": 2}', '{"age": 17, "count_": 4}', '{"age": 22, "count_": 2}', '{"age": 16, "count_": 1}', '{"age": 27, "count_": 1}']
+mismatch between MySQL and target
+
+--------------------------29-----------------
+schema:['avg_age', 'sex']
+---------------------------Execute SQL Query:[SELECT avg(age) ,  sex FROM student GROUP BY sex]-----------------
+convert time:1.434316 s
+---------------------------Execute Target Query:MATCH (s:student)
+RETURN s.sex as sex, avg(s.age) as avg_age
+GROUP BY s.sex-----------------
+MATCH (s:student)
+RETURN s.sex as sex, avg(s.age) as avg_age
+GROUP BY s.sex
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 61))
+"GROUP BY s.sex"
+ ^}
+
+--------------------------30-----------------
+schema:['city_code', 'count_*']
+---------------------------Execute SQL Query:[SELECT city_code ,  count(*) FROM student GROUP BY city_code]-----------------
+convert time:1.765053 s
+---------------------------Execute Target Query:MATCH (s:student)
+RETURN s.city_code AS city_code, count(*) AS count_-----------------
+MATCH (s:student)
+RETURN s.city_code AS city_code, count(*) AS count_
+mysql res: ['{"city_code": "BAL", "count_*": 4}', '{"city_code": "HKG", "count_*": 3}', '{"city_code": "WAS", "count_*": 3}', '{"city_code": "CHI", "count_*": 1}', '{"city_code": "YYZ", "count_*": 2}', '{"city_code": "PIT", "count_*": 4}', '{"city_code": "HOU", "count_*": 1}', '{"city_code": "PHL", "count_*": 3}', '{"city_code": "DAL", "count_*": 1}', '{"city_code": "DET", "count_*": 1}', '{"city_code": "LON", "count_*": 1}', '{"city_code": "NYC", "count_*": 3}', '{"city_code": "LOS", "count_*": 1}', '{"city_code": "ROC", "count_*": 1}', '{"city_code": "PEK", "count_*": 1}', '{"city_code": "SFO", "count_*": 1}', '{"city_code": "ATL", "count_*": 1}', '{"city_code": "NAR", "count_*": 1}', '{"city_code": "BOS", "count_*": 1}']
+target res: ['{"city_code": "BAL", "count_": 4}', '{"city_code": "HKG", "count_": 3}', '{"city_code": "WAS", "count_": 3}', '{"city_code": "CHI", "count_": 1}', '{"city_code": "YYZ", "count_": 2}', '{"city_code": "PIT", "count_": 4}', '{"city_code": "HOU", "count_": 1}', '{"city_code": "PHL", "count_": 3}', '{"city_code": "DAL", "count_": 1}', '{"city_code": "DET", "count_": 1}', '{"city_code": "LON", "count_": 1}', '{"city_code": "NYC", "count_": 3}', '{"city_code": "LOS", "count_": 1}', '{"city_code": "ROC", "count_": 1}', '{"city_code": "PEK", "count_": 1}', '{"city_code": "SFO", "count_": 1}', '{"city_code": "ATL", "count_": 1}', '{"city_code": "NAR", "count_": 1}', '{"city_code": "BOS", "count_": 1}']
+mismatch between MySQL and target
+
+--------------------------31-----------------
+schema:['advisor', 'count_*']
+---------------------------Execute SQL Query:[SELECT advisor ,  count(*) FROM student GROUP BY advisor]-----------------
+convert time:2.57424 s
+---------------------------Execute Target Query:MATCH (s:student)
+RETURN s.advisor as advisor, count(s) as count_-----------------
+MATCH (s:student)
+RETURN s.advisor as advisor, count(s) as count_
+mysql res: ['{"advisor": 1121, "count_*": 3}', '{"advisor": 7712, "count_*": 1}', '{"advisor": 7792, "count_*": 1}', '{"advisor": 8423, "count_*": 1}', '{"advisor": 1148, "count_*": 3}', '{"advisor": 8918, "count_*": 1}', '{"advisor": 9172, "count_*": 1}', '{"advisor": 2192, "count_*": 4}', '{"advisor": 7723, "count_*": 1}', '{"advisor": 8741, "count_*": 1}', '{"advisor": 8721, "count_*": 1}', '{"advisor": 7271, "count_*": 2}', '{"advisor": 8722, "count_*": 3}', '{"advisor": 7134, "count_*": 2}', '{"advisor": 8723, "count_*": 1}', '{"advisor": 2311, "count_*": 3}', '{"advisor": 8772, "count_*": 3}', '{"advisor": 5718, "count_*": 2}']
+target res: ['{"advisor": 1121, "count_": 3}', '{"advisor": 7712, "count_": 1}', '{"advisor": 7792, "count_": 1}', '{"advisor": 8423, "count_": 1}', '{"advisor": 1148, "count_": 3}', '{"advisor": 8918, "count_": 1}', '{"advisor": 9172, "count_": 1}', '{"advisor": 2192, "count_": 4}', '{"advisor": 7723, "count_": 1}', '{"advisor": 8741, "count_": 1}', '{"advisor": 8721, "count_": 1}', '{"advisor": 7271, "count_": 2}', '{"advisor": 8722, "count_": 3}', '{"advisor": 7134, "count_": 2}', '{"advisor": 8723, "count_": 1}', '{"advisor": 2311, "count_": 3}', '{"advisor": 8772, "count_": 3}', '{"advisor": 5718, "count_": 2}']
+mismatch between MySQL and target
+
+--------------------------32-----------------
+schema:['advisor']
+---------------------------Execute SQL Query:[SELECT advisor FROM student GROUP BY advisor ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:2.245581 s
+---------------------------Execute Target Query:MATCH (s:student)
+RETURN s.advisor as advisor, count(*) as count_star
+GROUP BY s.advisor
+ORDER BY count_star DESC
+LIMIT 1-----------------
+MATCH (s:student)
+RETURN s.advisor as advisor, count(*) as count_star
+GROUP BY s.advisor
+ORDER BY count_star DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 70))
+"GROUP BY s.advisor"
+ ^}
+
+--------------------------33-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy WHERE allergy  =  "Cat"]-----------------
+convert time:3.497903 s
+---------------------------Execute Target Query:MATCH (h:has_allergy) WHERE h.allergy = "Cat" RETURN count(h) as count_allergy-----------------
+MATCH (h:has_allergy) WHERE h.allergy = "Cat" RETURN count(h) as count_allergy
+mysql res: ['{"count_*": 4}']
+target res: ['{"count_allergy": 4}']
+mismatch between MySQL and target
+
+--------------------------34-----------------
+schema:['stuid']
+---------------------------Execute SQL Query:[SELECT stuid FROM has_allergy GROUP BY stuid HAVING count(*)  >=  2]-----------------
+convert time:1.669799 s
+---------------------------Execute Target Query:MATCH (h:has_allergy)
+WITH h.stuid AS stuid, COUNT(*) AS count_star
+WHERE count_star >= 2
+RETURN stuid-----------------
+MATCH (h:has_allergy)
+WITH h.stuid AS stuid, COUNT(*) AS count_star
+WHERE count_star >= 2
+RETURN stuid
+mysql res: ['{"stuid": 1002}', '{"stuid": 1005}', '{"stuid": 1007}', '{"stuid": 1010}', '{"stuid": 1015}', '{"stuid": 1016}', '{"stuid": 1018}', '{"stuid": 1022}', '{"stuid": 1023}', '{"stuid": 1024}', '{"stuid": 1029}', '{"stuid": 1031}']
+target res: ['{"stuid": 1002}', '{"stuid": 1005}', '{"stuid": 1007}', '{"stuid": 1010}', '{"stuid": 1015}', '{"stuid": 1016}', '{"stuid": 1018}', '{"stuid": 1022}', '{"stuid": 1023}', '{"stuid": 1024}', '{"stuid": 1029}', '{"stuid": 1031}']
+translate SELECT stuid FROM has_allergy GROUP BY stuid HAVING count(*)  >=  2 success
+
+--------------------------35-----------------
+schema:['stuid']
+---------------------------Execute SQL Query:[SELECT stuid FROM student EXCEPT SELECT stuid FROM has_allergy]-----------------
+convert time:4.600255 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE NOT (s.stuid IN [h.stuid IN (MATCH (h:has_allergy) RETURN h.stuid)]) RETURN s.stuid as stuid-----------------
+MATCH (s:student) WHERE NOT (s.stuid IN [h.stuid IN (MATCH (h:has_allergy) RETURN h.stuid)]) RETURN s.stuid as stuid
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'RETURN': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 76 (offset: 75))
+"MATCH (s:student) WHERE NOT (s.stuid IN [h.stuid IN (MATCH (h:has_allergy) RETURN h.stuid)]) RETURN s.stuid as stuid"
+                                                                            ^}
+
+--------------------------36-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy AS T1 JOIN student AS T2 ON T1.stuid  =  T2.stuid WHERE T2.sex  =  "F" AND T1.allergy  =  "Milk" OR T1.allergy  =  "Eggs"]-----------------
+convert time:6.285821 s
+---------------------------Execute Target Query:MATCH (h:has_allergy), (s:student) WHERE h.stuid = s.stuid AND s.sex = "F" AND (h.allergy = "Milk" OR h.allergy = "Eggs") RETURN count(*) as count-----------------
+MATCH (h:has_allergy), (s:student) WHERE h.stuid = s.stuid AND s.sex = "F" AND (h.allergy = "Milk" OR h.allergy = "Eggs") RETURN count(*) as count
+mysql res: ['{"count_*": 4}']
+target res: ['{"count": 2}']
+mismatch between MySQL and target
+
+--------------------------37-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy AS T1 JOIN allergy_type AS T2 ON T1.allergy  =  T2.allergy WHERE T2.allergytype  =  "food"]-----------------
+convert time:2.722681 s
+---------------------------Execute Target Query:MATCH (t1:has_allergy), (t2:allergy_type) WHERE t1.allergy = t2.allergy AND t2.allergytype = "food" RETURN count(*) as count-----------------
+MATCH (t1:has_allergy), (t2:allergy_type) WHERE t1.allergy = t2.allergy AND t2.allergytype = "food" RETURN count(*) as count
+mysql res: ['{"count_*": 28}']
+target res: ['{"count": 28}']
+mismatch between MySQL and target
+
+--------------------------38-----------------
+schema:['allergy']
+---------------------------Execute SQL Query:[SELECT allergy FROM has_allergy GROUP BY allergy ORDER BY count(*) DESC LIMIT 1]-----------------
+convert time:3.076401 s
+---------------------------Execute Target Query:MATCH (h:has_allergy)
+RETURN h.allergy AS allergy, count(*) AS count_allergy
+GROUP BY h.allergy
+ORDER BY count_allergy DESC
+LIMIT 1-----------------
+MATCH (h:has_allergy)
+RETURN h.allergy AS allergy, count(*) AS count_allergy
+GROUP BY h.allergy
+ORDER BY count_allergy DESC
+LIMIT 1
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 77))
+"GROUP BY h.allergy"
+ ^}
+
+--------------------------39-----------------
+schema:['allergy', 'count_*']
+---------------------------Execute SQL Query:[SELECT allergy ,  count(*) FROM has_allergy GROUP BY allergy]-----------------
+convert time:1.548842 s
+---------------------------Execute Target Query:MATCH (h:has_allergy)
+RETURN h.allergy AS allergy, count(*) AS count_allergy-----------------
+MATCH (h:has_allergy)
+RETURN h.allergy AS allergy, count(*) AS count_allergy
+mysql res: ['{"allergy": "Anchovies", "count_*": 3}', '{"allergy": "Cat", "count_*": 4}', '{"allergy": "Dog", "count_*": 3}', '{"allergy": "Eggs", "count_*": 3}', '{"allergy": "Grass Pollen", "count_*": 4}', '{"allergy": "Milk", "count_*": 3}', '{"allergy": "Nuts", "count_*": 11}', '{"allergy": "Ragweed", "count_*": 6}', '{"allergy": "Rodent", "count_*": 1}', '{"allergy": "Shellfish", "count_*": 4}', '{"allergy": "Soy", "count_*": 4}', '{"allergy": "Tree Pollen", "count_*": 13}']
+target res: ['{"allergy": "Cat", "count_allergy": 4}', '{"allergy": "Shellfish", "count_allergy": 4}', '{"allergy": "Tree Pollen", "count_allergy": 13}', '{"allergy": "Dog", "count_allergy": 3}', '{"allergy": "Nuts", "count_allergy": 11}', '{"allergy": "Ragweed", "count_allergy": 6}', '{"allergy": "Grass Pollen", "count_allergy": 4}', '{"allergy": "Eggs", "count_allergy": 3}', '{"allergy": "Milk", "count_allergy": 3}', '{"allergy": "Anchovies", "count_allergy": 3}', '{"allergy": "Soy", "count_allergy": 4}', '{"allergy": "Rodent", "count_allergy": 1}']
+mismatch between MySQL and target
+
+--------------------------40-----------------
+schema:['allergytype', 'count_*']
+---------------------------Execute SQL Query:[SELECT T2.allergytype ,  count(*) FROM has_allergy AS T1 JOIN allergy_type AS T2 ON T1.allergy  =  T2.allergy GROUP BY T2.allergytype]-----------------
+convert time:2.792552 s
+---------------------------Execute Target Query:MATCH (t1:has_allergy), (t2:allergy_type) WHERE t1.allergy = t2.allergy RETURN t2.allergytype AS allergytype, count(*) AS count_allergytype-----------------
+MATCH (t1:has_allergy), (t2:allergy_type) WHERE t1.allergy = t2.allergy RETURN t2.allergytype AS allergytype, count(*) AS count_allergytype
+mysql res: ['{"allergytype": "food", "count_*": 28}', '{"allergytype": "animal", "count_*": 8}', '{"allergytype": "environmental", "count_*": 23}']
+target res: ['{"allergytype": "animal", "count_allergytype": 8}', '{"allergytype": "food", "count_allergytype": 28}', '{"allergytype": "environmental", "count_allergytype": 23}']
+mismatch between MySQL and target
+
+--------------------------41-----------------
+schema:['lname', 'age']
+---------------------------Execute SQL Query:[SELECT lname ,  age FROM student WHERE stuid IN (SELECT stuid FROM has_allergy WHERE allergy  =  "Milk" INTERSECT SELECT stuid FROM has_allergy WHERE allergy  =  "Cat")]-----------------
+convert time:3.765774 s
+---------------------------Execute Target Query:MATCH (s:student), (h1:has_allergy), (h2:has_allergy)
+WHERE h1.allergy = "Milk" AND h2.allergy = "Cat" AND s.stuid = h1.stuid AND s.stuid = h2.stuid
+RETURN s.lname AS lname, s.age AS age-----------------
+MATCH (s:student), (h1:has_allergy), (h2:has_allergy)
+WHERE h1.allergy = "Milk" AND h2.allergy = "Cat" AND s.stuid = h1.stuid AND s.stuid = h2.stuid
+RETURN s.lname AS lname, s.age AS age
+mysql res: ['{"lname": "Apap", "age": 18}', '{"lname": "Lee", "age": 17}']
+target res: ['{"lname": "Apap", "age": 18}', '{"lname": "Lee", "age": 17}']
+translate SELECT lname ,  age FROM student WHERE stuid IN (SELECT stuid FROM has_allergy WHERE allergy  =  "Milk" INTERSECT SELECT stuid FROM has_allergy WHERE allergy  =  "Cat") success
+
+--------------------------42-----------------
+schema:['allergy', 'allergytype']
+---------------------------Execute SQL Query:[SELECT T1.allergy ,  T1.allergytype FROM allergy_type AS T1 JOIN has_allergy AS T2 ON T1.allergy  =  T2.allergy JOIN student AS T3 ON T3.stuid  =  T2.stuid WHERE T3.fname  =  "Lisa" ORDER BY T1.allergy]-----------------
+convert time:5.003499 s
+---------------------------Execute Target Query:MATCH (a:allergy_type), (h:has_allergy), (s:student)
+WHERE a.allergy = h.allergy AND h.stuid = s.stuid AND s.fname = "Lisa"
+RETURN a.allergy AS allergy, a.allergytype AS allergytype
+ORDER BY a.allergy-----------------
+MATCH (a:allergy_type), (h:has_allergy), (s:student)
+WHERE a.allergy = h.allergy AND h.stuid = s.stuid AND s.fname = "Lisa"
+RETURN a.allergy AS allergy, a.allergytype AS allergytype
+ORDER BY a.allergy
+mysql res: ['{"allergy": "Anchovies", "allergytype": "food"}', '{"allergy": "Cat", "allergytype": "animal"}', '{"allergy": "Dog", "allergytype": "animal"}', '{"allergy": "Eggs", "allergytype": "food"}', '{"allergy": "Grass Pollen", "allergytype": "environmental"}', '{"allergy": "Grass Pollen", "allergytype": "environmental"}', '{"allergy": "Milk", "allergytype": "food"}', '{"allergy": "Ragweed", "allergytype": "environmental"}', '{"allergy": "Shellfish", "allergytype": "food"}', '{"allergy": "Tree Pollen", "allergytype": "environmental"}']
+target res: ['{"allergy": "Anchovies", "allergytype": "food"}', '{"allergy": "Cat", "allergytype": "animal"}', '{"allergy": "Dog", "allergytype": "animal"}', '{"allergy": "Eggs", "allergytype": "food"}', '{"allergy": "Grass Pollen", "allergytype": "environmental"}', '{"allergy": "Grass Pollen", "allergytype": "environmental"}', '{"allergy": "Milk", "allergytype": "food"}', '{"allergy": "Ragweed", "allergytype": "environmental"}', '{"allergy": "Shellfish", "allergytype": "food"}', '{"allergy": "Tree Pollen", "allergytype": "environmental"}']
+translate SELECT T1.allergy ,  T1.allergytype FROM allergy_type AS T1 JOIN has_allergy AS T2 ON T1.allergy  =  T2.allergy JOIN student AS T3 ON T3.stuid  =  T2.stuid WHERE T3.fname  =  "Lisa" ORDER BY T1.allergy success
+
+--------------------------43-----------------
+schema:['fname', 'sex']
+---------------------------Execute SQL Query:[SELECT fname ,  sex FROM student WHERE stuid IN (SELECT stuid FROM has_allergy WHERE allergy  =  "Milk" EXCEPT SELECT stuid FROM has_allergy WHERE allergy  =  "Cat")]-----------------
+convert time:23.760643 s
+---------------------------Execute Target Query:MATCH (s:student), (h1:has_allergy), (h2:has_allergy)
+WHERE h1.allergy = "Milk" AND h2.allergy = "Cat" AND s.stuid = h1.stuid AND s.stuid <> h2.stuid
+RETURN s.fname AS fname, s.sex AS sex-----------------
+MATCH (s:student), (h1:has_allergy), (h2:has_allergy)
+WHERE h1.allergy = "Milk" AND h2.allergy = "Cat" AND s.stuid = h1.stuid AND s.stuid <> h2.stuid
+RETURN s.fname AS fname, s.sex AS sex
+mysql res: ['{"fname": "Mark", "sex": "M"}']
+target res: ['{"fname": "Lisa", "sex": "F"}', '{"fname": "Lisa", "sex": "F"}', '{"fname": "Lisa", "sex": "F"}', '{"fname": "Derek", "sex": "M"}', '{"fname": "Derek", "sex": "M"}', '{"fname": "Derek", "sex": "M"}', '{"fname": "Mark", "sex": "M"}', '{"fname": "Mark", "sex": "M"}', '{"fname": "Mark", "sex": "M"}', '{"fname": "Mark", "sex": "M"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------44-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT avg(age) FROM student WHERE stuid IN ( SELECT T1.stuid FROM has_allergy AS T1 JOIN allergy_Type AS T2 ON T1.allergy  =  T2.allergy WHERE T2.allergytype  =  "food" INTERSECT SELECT T1.stuid FROM has_allergy AS T1 JOIN allergy_Type AS T2 ON T1.allergy  =  T2.allergy WHERE T2.allergytype  =  "animal")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.allergy_Type' doesn't exist")
+
+--------------------------45-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT fname ,  lname FROM student WHERE stuid NOT IN (SELECT T1.stuid FROM has_allergy AS T1 JOIN allergy_Type AS T2 ON T1.allergy  =  T2.allergy WHERE T2.allergytype  =  "food")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.allergy_Type' doesn't exist")
+
+--------------------------46-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE sex  =  "M" AND stuid IN (SELECT stuid FROM has_allergy AS T1 JOIN allergy_Type AS T2 ON T1.allergy  =  T2.allergy WHERE T2.allergytype  =  "food")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.allergy_Type' doesn't exist")
+
+--------------------------47-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Has_allergy' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT DISTINCT T1.fname ,  T1.city_code FROM student AS T1 JOIN Has_allergy AS T2 ON T1.stuid  =  T2.stuid WHERE T2.allergy  =  "Milk" OR T2.allergy  =  "Cat"]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Has_allergy' doesn't exist")
+
+--------------------------48-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE age  >  18 AND stuid NOT IN ( SELECT stuid FROM has_allergy AS T1 JOIN allergy_Type AS T2 ON T1.allergy  =  T2.allergy WHERE T2.allergytype  =  "food" OR T2.allergytype  =  "animal")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.allergy_Type' doesn't exist")
+
+--------------------------49-----------------
+schema:['fname', 'major']
+---------------------------Execute SQL Query:[SELECT fname ,  major FROM student WHERE stuid NOT IN (SELECT stuid FROM has_allergy WHERE allergy  =  "Soy")]-----------------
+convert time:3.990605 s
+---------------------------Execute Target Query:MATCH (s:student) WHERE NOT EXISTS (MATCH (h:has_allergy) WHERE h.stuid = s.stuid AND h.allergy = "Soy") RETURN s.fname AS fname, s.major AS major-----------------
+MATCH (s:student) WHERE NOT EXISTS (MATCH (h:has_allergy) WHERE h.stuid = s.stuid AND h.allergy = "Soy") RETURN s.fname AS fname, s.major AS major
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'WHERE': expected
+  "!="
+  "%"
+  ")"
+  "*"
+  "+"
+  ","
+  "-"
+  "/"
+  "::"
+  "<"
+  "<="
+  "<>"
+  "="
+  "=~"
+  ">"
+  ">="
+  "AND"
+  "CONTAINS"
+  "ENDS"
+  "IN"
+  "IS"
+  "OR"
+  "STARTS"
+  "XOR"
+  "^" (line 1, column 59 (offset: 58))
+"MATCH (s:student) WHERE NOT EXISTS (MATCH (h:has_allergy) WHERE h.stuid = s.stuid AND h.allergy = "Soy") RETURN s.fname AS fname, s.major AS major"
+                                                           ^}
+success_query_count: 17
+valid_count: 44
+accuracy: 0.38636363636363635

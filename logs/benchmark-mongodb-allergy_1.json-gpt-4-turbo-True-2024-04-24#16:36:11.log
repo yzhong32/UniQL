@@ -1,0 +1,531 @@
+--------
+
+--------------------------1-----------------
+schema:['count_DISTINCT allergy']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT allergy) FROM allergy_type]-----------------
+target_db_schema: Allergy, AllergyType, _id
+convert time:5.06629 s
+---------------------------Execute Target Query:db.allergy_type.aggregate([{"$group": {"_id": "$allergy", "count": {"$sum": 1}}}, {"$group": {"_id": None, "distinct_allergy_count": {"$sum": 1}}}, {"$project": {"_id": 0, "distinct_allergy_count": 1}}])-----------------
+here we are in executor, and the query is:  db.allergy_type.aggregate([{"$group": {"_id": "$allergy", "count": {"$sum": 1}}}, {"$group": {"_id": None, "distinct_allergy_count": {"$sum": 1}}}, {"$project": {"_id": 0, "distinct_allergy_count": 1}}])
+result of mongodb: ['{"distinct_allergy_count": 1}']
+mysql res: ['{"count_DISTINCT allergy": 14}']
+target res: ['{"count_DISTINCT allergy": null}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['count_DISTINCT allergytype']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT allergytype) FROM allergy_type]-----------------
+target_db_schema: Allergy, AllergyType, _id
+convert time:3.436271 s
+---------------------------Execute Target Query:db.allergy_type.aggregate([{"$group": {"_id": "$allergytype"}}, {"$count": "count_distinct_allergytype"}])-----------------
+here we are in executor, and the query is:  db.allergy_type.aggregate([{"$group": {"_id": "$allergytype"}}, {"$count": "count_distinct_allergytype"}])
+result of mongodb: ['{"count_distinct_allergytype": 1}']
+mysql res: ['{"count_DISTINCT allergytype": 3}']
+target res: ['{"count_DISTINCT allergytype": null}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT DISTINCT allergytype FROM allergy_type]-----------------
+target_db_schema: Allergy, AllergyType, _id
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:1.28317 s
+---------------------------Execute Target Query:db.allergy_type.distinct("allergytype")-----------------
+here we are in executor, and the query is:  db.allergy_type.distinct("allergytype")
+result of mongodb: []
+mysql res: ['{"allergytype": "food"}', '{"allergytype": "animal"}', '{"allergytype": "environmental"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------4-----------------
+schema:['allergy', 'allergytype']
+---------------------------Execute SQL Query:[SELECT allergy ,  allergytype FROM allergy_type]-----------------
+target_db_schema: Allergy, AllergyType, _id
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:2.171239 s
+---------------------------Execute Target Query:db.allergy_type.find({}, { "allergy": 1, "allergytype": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.allergy_type.find({}, { "allergy": 1, "allergytype": 1, "_id": 0 })
+result of mongodb: ['{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}']
+mysql res: ['{"allergy": "Anchovies", "allergytype": "food"}', '{"allergy": "Bee Stings", "allergytype": "animal"}', '{"allergy": "Cat", "allergytype": "animal"}', '{"allergy": "Dog", "allergytype": "animal"}', '{"allergy": "Eggs", "allergytype": "food"}', '{"allergy": "Grass Pollen", "allergytype": "environmental"}', '{"allergy": "Milk", "allergytype": "food"}', '{"allergy": "Nuts", "allergytype": "food"}', '{"allergy": "Ragweed", "allergytype": "environmental"}', '{"allergy": "Rodent", "allergytype": "animal"}', '{"allergy": "Shellfish", "allergytype": "food"}', '{"allergy": "Soy", "allergytype": "food"}', '{"allergy": "Tree Pollen", "allergytype": "environmental"}', '{"allergy": "Wheat", "allergytype": "food"}']
+target res: ['{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}', '{"allergy": null, "allergytype": null}']
+mismatch between MySQL and target
+
+--------------------------5-----------------
+schema:['allergy']
+---------------------------Execute SQL Query:[SELECT DISTINCT allergy FROM allergy_type WHERE allergytype  =  "food"]-----------------
+target_db_schema: Allergy, AllergyType, _id
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:1.425593 s
+---------------------------Execute Target Query:db.allergy_type.distinct("allergy", { "allergytype": "food" })-----------------
+here we are in executor, and the query is:  db.allergy_type.distinct("allergy", { "allergytype": "food" })
+result of mongodb: []
+mysql res: ['{"allergy": "Anchovies"}', '{"allergy": "Eggs"}', '{"allergy": "Milk"}', '{"allergy": "Nuts"}', '{"allergy": "Shellfish"}', '{"allergy": "Soy"}', '{"allergy": "Wheat"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------6-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type WHERE allergy  =  "Cat"]-----------------
+target_db_schema: Allergy, AllergyType, _id
+convert time:2.067554 s
+---------------------------Execute Target Query:db.allergy_type.find({ "allergy": "Cat" }, { "allergytype": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.allergy_type.find({ "allergy": "Cat" }, { "allergytype": 1, "_id": 0 })
+result of mongodb: []
+mysql res: ['{"allergytype": "animal"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------7-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM allergy_type WHERE allergytype  =  "animal"]-----------------
+target_db_schema: Allergy, AllergyType, _id
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:1.783579 s
+---------------------------Execute Target Query:db.allergy_type.aggregate([{"$match":{"allergytype":"animal"}},{"$count":"count"}])-----------------
+here we are in executor, and the query is:  db.allergy_type.aggregate([{"$match":{"allergytype":"animal"}},{"$count":"count"}])
+result of mongodb: []
+mysql res: ['{"count_*": 4}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['allergytype', 'count_*']
+---------------------------Execute SQL Query:[SELECT allergytype ,  count(*) FROM allergy_type GROUP BY allergytype]-----------------
+target_db_schema: Allergy, AllergyType, _id
+convert time:18.242008 s
+---------------------------Execute Target Query:db.allergy_type.aggregate([{"$group": {"_id": "$allergytype", "count": {"$sum": 1}}}, {"$project": {"allergytype": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.allergy_type.aggregate([{"$group": {"_id": "$allergytype", "count": {"$sum": 1}}}, {"$project": {"allergytype": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 14, "allergytype": null}']
+mysql res: ['{"allergytype": "food", "count_*": 7}', '{"allergytype": "animal", "count_*": 4}', '{"allergytype": "environmental", "count_*": 3}']
+target res: ['{"allergytype": null, "count_*": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type GROUP BY allergytype ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: Allergy, AllergyType, _id
+convert time:3.722514 s
+---------------------------Execute Target Query:db.allergy_type.aggregate([{"$group": {"_id": "$allergytype", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"allergytype": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.allergy_type.aggregate([{"$group": {"_id": "$allergytype", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"allergytype": "$_id", "_id": 0}}])
+result of mongodb: ['{"allergytype": null}']
+mysql res: ['{"allergytype": "food"}']
+target res: ['{"allergytype": null}']
+mismatch between MySQL and target
+
+--------------------------10-----------------
+schema:['allergytype']
+---------------------------Execute SQL Query:[SELECT allergytype FROM allergy_type GROUP BY allergytype ORDER BY count(*) ASC LIMIT 1]-----------------
+target_db_schema: Allergy, AllergyType, _id
+convert time:10.493663 s
+---------------------------Execute Target Query:db.allergy_type.aggregate([{"$group": {"_id": "$allergytype", "count": {"$sum": 1}}}, {"$sort": {"count": 1}}, {"$limit": 1}, {"$project": {"allergytype": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.allergy_type.aggregate([{"$group": {"_id": "$allergytype", "count": {"$sum": 1}}}, {"$sort": {"count": 1}}, {"$limit": 1}, {"$project": {"allergytype": "$_id", "_id": 0}}])
+result of mongodb: ['{"allergytype": null}']
+mysql res: ['{"allergytype": "environmental"}']
+target res: ['{"allergytype": null}']
+mismatch between MySQL and target
+
+--------------------------11-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:1.476848 s
+---------------------------Execute Target Query:db.student.aggregate([ { $count: "count" } ])-----------------
+here we are in executor, and the query is:  db.student.aggregate([ { $count: "count" } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------12-----------------
+schema:['Fname', 'Lname']
+---------------------------Execute SQL Query:[SELECT Fname ,  Lname FROM student]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:6.919002 s
+---------------------------Execute Target Query:db.student.find({}, { "Fname": 1, "Lname": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.student.find({}, { "Fname": 1, "Lname": 1, "_id": 0 })
+result of mongodb: ['{"Fname": "Linda"}', '{"Fname": "Tracy"}', '{"Fname": "Shiela"}', '{"Fname": "Dinesh"}', '{"Fname": "Paul"}', '{"Fname": "Andy"}', '{"Fname": "Lisa"}', '{"Fname": "Jandy"}', '{"Fname": "Eric"}', '{"Fname": "Derek"}', '{"Fname": "David"}', '{"Fname": "Steven"}', '{"Fname": "Charles"}', '{"Fname": "Susan"}', '{"Fname": "Mark"}', '{"Fname": "Bruce"}', '{"Fname": "Michael"}', '{"Fname": "Arthur"}', '{"Fname": "Ian"}', '{"Fname": "George"}', '{"Fname": "Michael"}', '{"Fname": "David"}', '{"Fname": "Stacy"}', '{"Fname": "Mark"}', '{"Fname": "Eric"}', '{"Fname": "Paul"}', '{"Fname": "Eric"}', '{"Fname": "Jun"}', '{"Fname": "Lisa"}', '{"Fname": "Sarah"}', '{"Fname": "Eric"}', '{"Fname": "William"}', '{"Fname": "Eric"}', '{"Fname": "Sarah"}']
+mysql res: ['{"Fname": "Linda", "Lname": "Smith"}', '{"Fname": "Tracy", "Lname": "Kim"}', '{"Fname": "Shiela", "Lname": "Jones"}', '{"Fname": "Dinesh", "Lname": "Kumar"}', '{"Fname": "Paul", "Lname": "Gompers"}', '{"Fname": "Andy", "Lname": "Schultz"}', '{"Fname": "Lisa", "Lname": "Apap"}', '{"Fname": "Jandy", "Lname": "Nelson"}', '{"Fname": "Eric", "Lname": "Tai"}', '{"Fname": "Derek", "Lname": "Lee"}', '{"Fname": "David", "Lname": "Adams"}', '{"Fname": "Steven", "Lname": "Davis"}', '{"Fname": "Charles", "Lname": "Norris"}', '{"Fname": "Susan", "Lname": "Lee"}', '{"Fname": "Mark", "Lname": "Schwartz"}', '{"Fname": "Bruce", "Lname": "Wilson"}', '{"Fname": "Michael", "Lname": "Leighton"}', '{"Fname": "Arthur", "Lname": "Pang"}', '{"Fname": "Ian", "Lname": "Thornton"}', '{"Fname": "George", "Lname": "Andreou"}', '{"Fname": "Michael", "Lname": "Woods"}', '{"Fname": "David", "Lname": "Shieber"}', '{"Fname": "Stacy", "Lname": "Prater"}', '{"Fname": "Mark", "Lname": "Goldman"}', '{"Fname": "Eric", "Lname": "Pang"}', '{"Fname": "Paul", "Lname": "Brody"}', '{"Fname": "Eric", "Lname": "Rugh"}', '{"Fname": "Jun", "Lname": "Han"}', '{"Fname": "Lisa", "Lname": "Cheng"}', '{"Fname": "Sarah", "Lname": "Smith"}', '{"Fname": "Eric", "Lname": "Brown"}', '{"Fname": "William", "Lname": "Simms"}', '{"Fname": "Eric", "Lname": "Epp"}', '{"Fname": "Sarah", "Lname": "Schmidt"}']
+target res: ['{"Fname": "Linda", "Lname": null}', '{"Fname": "Tracy", "Lname": null}', '{"Fname": "Shiela", "Lname": null}', '{"Fname": "Dinesh", "Lname": null}', '{"Fname": "Paul", "Lname": null}', '{"Fname": "Andy", "Lname": null}', '{"Fname": "Lisa", "Lname": null}', '{"Fname": "Jandy", "Lname": null}', '{"Fname": "Eric", "Lname": null}', '{"Fname": "Derek", "Lname": null}', '{"Fname": "David", "Lname": null}', '{"Fname": "Steven", "Lname": null}', '{"Fname": "Charles", "Lname": null}', '{"Fname": "Susan", "Lname": null}', '{"Fname": "Mark", "Lname": null}', '{"Fname": "Bruce", "Lname": null}', '{"Fname": "Michael", "Lname": null}', '{"Fname": "Arthur", "Lname": null}', '{"Fname": "Ian", "Lname": null}', '{"Fname": "George", "Lname": null}', '{"Fname": "Michael", "Lname": null}', '{"Fname": "David", "Lname": null}', '{"Fname": "Stacy", "Lname": null}', '{"Fname": "Mark", "Lname": null}', '{"Fname": "Eric", "Lname": null}', '{"Fname": "Paul", "Lname": null}', '{"Fname": "Eric", "Lname": null}', '{"Fname": "Jun", "Lname": null}', '{"Fname": "Lisa", "Lname": null}', '{"Fname": "Sarah", "Lname": null}', '{"Fname": "Eric", "Lname": null}', '{"Fname": "William", "Lname": null}', '{"Fname": "Eric", "Lname": null}', '{"Fname": "Sarah", "Lname": null}']
+mismatch between MySQL and target
+
+--------------------------13-----------------
+schema:['count_DISTINCT advisor']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT advisor) FROM student]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:1.780231 s
+---------------------------Execute Target Query:db.student.aggregate([{"$group": {"_id": "$advisor"}}, {"$count": "count_distinct_advisor"}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$group": {"_id": "$advisor"}}, {"$count": "count_distinct_advisor"}])
+result of mongodb: ['{"count_distinct_advisor": 1}']
+mysql res: ['{"count_DISTINCT advisor": 18}']
+target res: ['{"count_DISTINCT advisor": null}']
+mismatch between MySQL and target
+
+--------------------------14-----------------
+schema:['Major']
+---------------------------Execute SQL Query:[SELECT DISTINCT Major FROM student]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:1.177792 s
+---------------------------Execute Target Query:db.student.distinct("Major")-----------------
+here we are in executor, and the query is:  db.student.distinct("Major")
+execute target query error:'int' object has no attribute 'get'
+
+--------------------------15-----------------
+schema:['city_code']
+---------------------------Execute SQL Query:[SELECT DISTINCT city_code FROM student]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:1.386831 s
+---------------------------Execute Target Query:db.student.distinct("city_code")-----------------
+here we are in executor, and the query is:  db.student.distinct("city_code")
+execute target query error:'str' object has no attribute 'get'
+
+--------------------------16-----------------
+schema:['Fname', 'Lname', 'Age']
+---------------------------Execute SQL Query:[SELECT Fname ,  Lname ,  Age FROM student WHERE Sex  =  'F']-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:2.510113 s
+---------------------------Execute Target Query:db.student.find({ "Sex": "F" }, { "Fname": 1, "Lname": 1, "Age": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.student.find({ "Sex": "F" }, { "Fname": 1, "Lname": 1, "Age": 1, "_id": 0 })
+result of mongodb: ['{"Age": 18, "Fname": "Linda"}', '{"Age": 19, "Fname": "Tracy"}', '{"Age": 21, "Fname": "Shiela"}', '{"Age": 18, "Fname": "Lisa"}', '{"Age": 20, "Fname": "Jandy"}', '{"Age": 16, "Fname": "Susan"}', '{"Age": 18, "Fname": "Stacy"}', '{"Age": 21, "Fname": "Lisa"}', '{"Age": 20, "Fname": "Sarah"}', '{"Age": 26, "Fname": "Sarah"}']
+mysql res: ['{"Fname": "Linda", "Lname": "Smith", "Age": 18}', '{"Fname": "Tracy", "Lname": "Kim", "Age": 19}', '{"Fname": "Shiela", "Lname": "Jones", "Age": 21}', '{"Fname": "Lisa", "Lname": "Apap", "Age": 18}', '{"Fname": "Jandy", "Lname": "Nelson", "Age": 20}', '{"Fname": "Susan", "Lname": "Lee", "Age": 16}', '{"Fname": "Stacy", "Lname": "Prater", "Age": 18}', '{"Fname": "Lisa", "Lname": "Cheng", "Age": 21}', '{"Fname": "Sarah", "Lname": "Smith", "Age": 20}', '{"Fname": "Sarah", "Lname": "Schmidt", "Age": 26}']
+target res: ['{"Fname": "Linda", "Lname": null, "Age": 18}', '{"Fname": "Tracy", "Lname": null, "Age": 19}', '{"Fname": "Shiela", "Lname": null, "Age": 21}', '{"Fname": "Lisa", "Lname": null, "Age": 18}', '{"Fname": "Jandy", "Lname": null, "Age": 20}', '{"Fname": "Susan", "Lname": null, "Age": 16}', '{"Fname": "Stacy", "Lname": null, "Age": 18}', '{"Fname": "Lisa", "Lname": null, "Age": 21}', '{"Fname": "Sarah", "Lname": null, "Age": 20}', '{"Fname": "Sarah", "Lname": null, "Age": 26}']
+mismatch between MySQL and target
+
+--------------------------17-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM student WHERE Sex  =  'M']-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:1.980873 s
+---------------------------Execute Target Query:db.student.find({ "Sex": "M" }, { "StuID": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.student.find({ "Sex": "M" }, { "StuID": 1, "_id": 0 })
+result of mongodb: ['{"StuID": 1004}', '{"StuID": 1005}', '{"StuID": 1006}', '{"StuID": 1009}', '{"StuID": 1010}', '{"StuID": 1011}', '{"StuID": 1012}', '{"StuID": 1014}', '{"StuID": 1016}', '{"StuID": 1017}', '{"StuID": 1018}', '{"StuID": 1019}', '{"StuID": 1020}', '{"StuID": 1021}', '{"StuID": 1022}', '{"StuID": 1023}', '{"StuID": 1025}', '{"StuID": 1026}', '{"StuID": 1027}', '{"StuID": 1028}', '{"StuID": 1029}', '{"StuID": 1032}', '{"StuID": 1033}', '{"StuID": 1034}']
+mysql res: ['{"StuID": 1004}', '{"StuID": 1005}', '{"StuID": 1006}', '{"StuID": 1009}', '{"StuID": 1010}', '{"StuID": 1011}', '{"StuID": 1012}', '{"StuID": 1014}', '{"StuID": 1016}', '{"StuID": 1017}', '{"StuID": 1018}', '{"StuID": 1019}', '{"StuID": 1020}', '{"StuID": 1021}', '{"StuID": 1022}', '{"StuID": 1023}', '{"StuID": 1025}', '{"StuID": 1026}', '{"StuID": 1027}', '{"StuID": 1028}', '{"StuID": 1029}', '{"StuID": 1032}', '{"StuID": 1033}', '{"StuID": 1034}']
+target res: ['{"StuID": 1004}', '{"StuID": 1005}', '{"StuID": 1006}', '{"StuID": 1009}', '{"StuID": 1010}', '{"StuID": 1011}', '{"StuID": 1012}', '{"StuID": 1014}', '{"StuID": 1016}', '{"StuID": 1017}', '{"StuID": 1018}', '{"StuID": 1019}', '{"StuID": 1020}', '{"StuID": 1021}', '{"StuID": 1022}', '{"StuID": 1023}', '{"StuID": 1025}', '{"StuID": 1026}', '{"StuID": 1027}', '{"StuID": 1028}', '{"StuID": 1029}', '{"StuID": 1032}', '{"StuID": 1033}', '{"StuID": 1034}']
+translate SELECT StuID FROM student WHERE Sex  =  'M' success
+
+--------------------------18-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE age  =  18]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:3.757621 s
+---------------------------Execute Target Query:db.student.aggregate([{"$match": {"Age": "18"}}, {"$count": "count"}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$match": {"Age": "18"}}, {"$count": "count"}])
+result of mongodb: []
+mysql res: ['{"count_*": 10}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM student WHERE age  >  20]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:3.919865 s
+---------------------------Execute Target Query:db.student.find({ "Age": { $gt: 20 } }, { "StuID": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.student.find({ "Age": { $gt: 20 } }, { "StuID": 1, "_id": 0 })
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------20-----------------
+schema:['city_code']
+---------------------------Execute SQL Query:[SELECT city_code FROM student WHERE LName  =  "Kim"]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:3.523584 s
+---------------------------Execute Target Query:db.student.find({ "LName": "Kim" }, { "city_code": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.student.find({ "LName": "Kim" }, { "city_code": 1, "_id": 0 })
+result of mongodb: ['{"city_code": "HKG"}']
+mysql res: ['{"city_code": "HKG"}']
+target res: ['{"city_code": "HKG"}']
+translate SELECT city_code FROM student WHERE LName  =  "Kim" success
+
+--------------------------21-----------------
+schema:['Advisor']
+---------------------------Execute SQL Query:[SELECT Advisor FROM student WHERE StuID  =  1004]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:2.815885 s
+---------------------------Execute Target Query:db.student.find({ "StuID": 1004 }, { "Advisor": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.student.find({ "StuID": 1004 }, { "Advisor": 1, "_id": 0 })
+result of mongodb: ['{"Advisor": 8423}']
+mysql res: ['{"Advisor": 8423}']
+target res: ['{"Advisor": 8423}']
+translate SELECT Advisor FROM student WHERE StuID  =  1004 success
+
+--------------------------22-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE city_code  =  "HKG" OR city_code  =  "CHI"]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:2.707114 s
+---------------------------Execute Target Query:db.student.aggregate([ { $match: { $or: [ { city_code: "HKG" }, { city_code: "CHI" } ] } }, { $count: "count" } ])-----------------
+here we are in executor, and the query is:  db.student.aggregate([ { $match: { $or: [ { city_code: "HKG" }, { city_code: "CHI" } ] } }, { $count: "count" } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------23-----------------
+schema:['min_age', 'avg_age', 'max_age']
+---------------------------Execute SQL Query:[SELECT min(age) ,  avg(age) ,  max(age) FROM student]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:4.266206 s
+---------------------------Execute Target Query:db.student.aggregate([{"$group": {"_id": None, "min_age": {"$min": "$Age"}, "avg_age": {"$avg": "$Age"}, "max_age": {"$max": "$Age"}}}, {"$project": {"_id": 0}}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$group": {"_id": None, "min_age": {"$min": "$Age"}, "avg_age": {"$avg": "$Age"}, "max_age": {"$max": "$Age"}}}, {"$project": {"_id": 0}}])
+result of mongodb: ['{"min_age": 16, "avg_age": 19.558823529411764, "max_age": 27}']
+mysql res: ['{"min_age": 16, "avg_age": 19.5588, "max_age": 27}']
+target res: ['{"min_age": 16, "avg_age": 19.558823529411764, "max_age": 27}']
+mismatch between MySQL and target
+
+--------------------------24-----------------
+schema:['LName']
+---------------------------Execute SQL Query:[SELECT LName FROM student WHERE age  =  (SELECT min(age) FROM student)]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:5.524169 s
+---------------------------Execute Target Query:db.student.aggregate([{"$group": {"_id": null, "min_age": {"$min": "$Age"}}}, {"$lookup": {"from": "student", "localField": "min_age", "foreignField": "Age", "as": "youngest"}}, {"$unwind": "$youngest"}, {"$project": {"LName": "$youngest.LName", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$group": {"_id": null, "min_age": {"$min": "$Age"}}}, {"$lookup": {"from": "student", "localField": "min_age", "foreignField": "Age", "as": "youngest"}}, {"$unwind": "$youngest"}, {"$project": {"LName": "$youngest.LName", "_id": 0}}])
+execute target query error:name 'null' is not defined
+
+--------------------------25-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM student WHERE age  =  (SELECT max(age) FROM student)]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:6.560106 s
+---------------------------Execute Target Query:db.student.aggregate([ { $group: { _id: null, max_age: { $max: "$Age" } } }, { $lookup: { from: "student", localField: "max_age", foreignField: "Age", as: "students_with_max_age" } }, { $unwind: "$students_with_max_age" }, { $project: { StuID: "$students_with_max_age.StuID", _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.student.aggregate([ { $group: { _id: null, max_age: { $max: "$Age" } } }, { $lookup: { from: "student", localField: "max_age", foreignField: "Age", as: "students_with_max_age" } }, { $unwind: "$students_with_max_age" }, { $project: { StuID: "$students_with_max_age.StuID", _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------26-----------------
+schema:['major', 'count_*']
+---------------------------Execute SQL Query:[SELECT major ,  count(*) FROM student GROUP BY major]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:3.04361 s
+---------------------------Execute Target Query:db.student.aggregate([{"$group": {"_id": "$major", "count": {"$sum": 1}}}, {"$project": {"major": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$group": {"_id": "$major", "count": {"$sum": 1}}}, {"$project": {"major": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 34, "major": null}']
+mysql res: ['{"major": 600, "count_*": 18}', '{"major": 520, "count_*": 6}', '{"major": 540, "count_*": 2}', '{"major": 550, "count_*": 5}', '{"major": 100, "count_*": 1}', '{"major": 50, "count_*": 2}']
+target res: ['{"major": null, "count_*": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------27-----------------
+schema:['major']
+---------------------------Execute SQL Query:[SELECT major FROM student GROUP BY major ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:3.243673 s
+---------------------------Execute Target Query:db.student.aggregate([{"$group": {"_id": "$major", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"major": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$group": {"_id": "$major", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"major": "$_id", "_id": 0}}])
+result of mongodb: ['{"major": null}']
+mysql res: ['{"major": 600}']
+target res: ['{"major": null}']
+mismatch between MySQL and target
+
+--------------------------28-----------------
+schema:['age', 'count_*']
+---------------------------Execute SQL Query:[SELECT age ,  count(*) FROM student GROUP BY age]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:1.879137 s
+---------------------------Execute Target Query:db.student.aggregate([{"$group": {"_id": "$age", "count": {"$sum": 1}}}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$group": {"_id": "$age", "count": {"$sum": 1}}}])
+result of mongodb: ['{"_id": null, "count": 34}']
+mysql res: ['{"age": 18, "count_*": 10}', '{"age": 19, "count_*": 4}', '{"age": 21, "count_*": 2}', '{"age": 20, "count_*": 8}', '{"age": 26, "count_*": 2}', '{"age": 17, "count_*": 4}', '{"age": 22, "count_*": 2}', '{"age": 16, "count_*": 1}', '{"age": 27, "count_*": 1}']
+target res: ['{"age": null, "count_*": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------29-----------------
+schema:['avg_age', 'sex']
+---------------------------Execute SQL Query:[SELECT avg(age) ,  sex FROM student GROUP BY sex]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:4.775446 s
+---------------------------Execute Target Query:db.student.aggregate([{"$group": {"_id": "$sex", "avg_age": {"$avg": "$Age"}}}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$group": {"_id": "$sex", "avg_age": {"$avg": "$Age"}}}])
+result of mongodb: ['{"_id": null, "avg_age": 19.558823529411764}']
+mysql res: ['{"avg_age": 19.7000, "sex": "F"}', '{"avg_age": 19.5000, "sex": "M"}']
+target res: ['{"avg_age": 19.558823529411764, "sex": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------30-----------------
+schema:['city_code', 'count_*']
+---------------------------Execute SQL Query:[SELECT city_code ,  count(*) FROM student GROUP BY city_code]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:3.338188 s
+---------------------------Execute Target Query:db.student.aggregate([{"$group": {"_id": "$city_code", "count": {"$sum": 1}}}, {"$project": {"city_code": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.student.aggregate([{"$group": {"_id": "$city_code", "count": {"$sum": 1}}}, {"$project": {"city_code": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 1, "city_code": "ATL"}', '{"count": 4, "city_code": "BAL"}', '{"count": 3, "city_code": "HKG"}', '{"count": 1, "city_code": "LON"}', '{"count": 1, "city_code": "NAR"}', '{"count": 3, "city_code": "WAS"}', '{"count": 1, "city_code": "SFO"}', '{"count": 1, "city_code": "PEK"}', '{"count": 1, "city_code": "BOS"}', '{"count": 1, "city_code": "CHI"}', '{"count": 1, "city_code": "DET"}', '{"count": 3, "city_code": "NYC"}', '{"count": 3, "city_code": "PHL"}', '{"count": 1, "city_code": "ROC"}', '{"count": 1, "city_code": "HOU"}', '{"count": 1, "city_code": "DAL"}', '{"count": 4, "city_code": "PIT"}', '{"count": 1, "city_code": "LOS"}', '{"count": 2, "city_code": "YYZ"}']
+mysql res: ['{"city_code": "BAL", "count_*": 4}', '{"city_code": "HKG", "count_*": 3}', '{"city_code": "WAS", "count_*": 3}', '{"city_code": "CHI", "count_*": 1}', '{"city_code": "YYZ", "count_*": 2}', '{"city_code": "PIT", "count_*": 4}', '{"city_code": "HOU", "count_*": 1}', '{"city_code": "PHL", "count_*": 3}', '{"city_code": "DAL", "count_*": 1}', '{"city_code": "DET", "count_*": 1}', '{"city_code": "LON", "count_*": 1}', '{"city_code": "NYC", "count_*": 3}', '{"city_code": "LOS", "count_*": 1}', '{"city_code": "ROC", "count_*": 1}', '{"city_code": "PEK", "count_*": 1}', '{"city_code": "SFO", "count_*": 1}', '{"city_code": "ATL", "count_*": 1}', '{"city_code": "NAR", "count_*": 1}', '{"city_code": "BOS", "count_*": 1}']
+target res: ['{"city_code": "ATL", "count_*": null}', '{"city_code": "BAL", "count_*": null}', '{"city_code": "HKG", "count_*": null}', '{"city_code": "LON", "count_*": null}', '{"city_code": "NAR", "count_*": null}', '{"city_code": "WAS", "count_*": null}', '{"city_code": "SFO", "count_*": null}', '{"city_code": "PEK", "count_*": null}', '{"city_code": "BOS", "count_*": null}', '{"city_code": "CHI", "count_*": null}', '{"city_code": "DET", "count_*": null}', '{"city_code": "NYC", "count_*": null}', '{"city_code": "PHL", "count_*": null}', '{"city_code": "ROC", "count_*": null}', '{"city_code": "HOU", "count_*": null}', '{"city_code": "DAL", "count_*": null}', '{"city_code": "PIT", "count_*": null}', '{"city_code": "LOS", "count_*": null}', '{"city_code": "YYZ", "count_*": null}']
+mismatch between MySQL and target
+
+--------------------------31-----------------
+schema:['advisor', 'count_*']
+---------------------------Execute SQL Query:[SELECT advisor ,  count(*) FROM student GROUP BY advisor]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:4.232477 s
+---------------------------Execute Target Query:db.student.aggregate([ { $group: { _id: "$advisor", count: { $sum: 1 } } }, { $project: { advisor: "$_id", count: 1, _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.student.aggregate([ { $group: { _id: "$advisor", count: { $sum: 1 } } }, { $project: { advisor: "$_id", count: 1, _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------32-----------------
+schema:['advisor']
+---------------------------Execute SQL Query:[SELECT advisor FROM student GROUP BY advisor ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+convert time:3.949224 s
+---------------------------Execute Target Query:db.student.aggregate([ { $group: { _id: "$advisor", count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 1 }, { $project: { advisor: "$_id", _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.student.aggregate([ { $group: { _id: "$advisor", count: { $sum: 1 } } }, { $sort: { count: -1 } }, { $limit: 1 }, { $project: { advisor: "$_id", _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------33-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy WHERE Allergy  =  "Cat"]-----------------
+target_db_schema: Allergy, StuID, _id
+Error parsing XML of prompt: not well-formed (invalid token): line 41, column 88
+convert time:4.180844 s
+---------------------------Execute Target Query:db.has_allergy.aggregate([ { $match: { Allergy: "Cat" } }, { $count: "count" } ])-----------------
+here we are in executor, and the query is:  db.has_allergy.aggregate([ { $match: { Allergy: "Cat" } }, { $count: "count" } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------34-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM has_allergy GROUP BY StuID HAVING count(*)  >=  2]-----------------
+target_db_schema: Allergy, StuID, _id
+convert time:4.29214 s
+---------------------------Execute Target Query:db.has_allergy.aggregate([{"$group": {"_id": "$StuID", "count": {"$sum": 1}}}, {"$match": {"count": {"$gte": 2}}}, {"$project": {"StuID": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.has_allergy.aggregate([{"$group": {"_id": "$StuID", "count": {"$sum": 1}}}, {"$match": {"count": {"$gte": 2}}}, {"$project": {"StuID": "$_id", "_id": 0}}])
+result of mongodb: ['{"StuID": 1010}', '{"StuID": 1005}', '{"StuID": 1002}', '{"StuID": 1015}', '{"StuID": 1024}', '{"StuID": 1007}', '{"StuID": 1031}', '{"StuID": 1022}', '{"StuID": 1018}', '{"StuID": 1029}', '{"StuID": 1016}', '{"StuID": 1023}']
+mysql res: ['{"StuID": 1002}', '{"StuID": 1005}', '{"StuID": 1007}', '{"StuID": 1010}', '{"StuID": 1015}', '{"StuID": 1016}', '{"StuID": 1018}', '{"StuID": 1022}', '{"StuID": 1023}', '{"StuID": 1024}', '{"StuID": 1029}', '{"StuID": 1031}']
+target res: ['{"StuID": 1010}', '{"StuID": 1005}', '{"StuID": 1002}', '{"StuID": 1015}', '{"StuID": 1024}', '{"StuID": 1007}', '{"StuID": 1031}', '{"StuID": 1022}', '{"StuID": 1018}', '{"StuID": 1029}', '{"StuID": 1016}', '{"StuID": 1023}']
+translate SELECT StuID FROM has_allergy GROUP BY StuID HAVING count(*)  >=  2 success
+
+--------------------------35-----------------
+schema:['StuID']
+---------------------------Execute SQL Query:[SELECT StuID FROM student EXCEPT SELECT StuID FROM has_allergy]-----------------
+target_db_schema: Allergy, StuID, _idstudent: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+
+convert time:3.902065 s
+---------------------------Execute Target Query:db.student.aggregate([ { $lookup: { from: "has_allergy", localField: "StuID", foreignField: "StuID", as: "allergies" } }, { $match: { "allergies": { $size: 0 } } }, { $project: { "StuID": 1, "_id": 0 } } ])-----------------
+here we are in executor, and the query is:  db.student.aggregate([ { $lookup: { from: "has_allergy", localField: "StuID", foreignField: "StuID", as: "allergies" } }, { $match: { "allergies": { $size: 0 } } }, { $project: { "StuID": 1, "_id": 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------36-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy AS T1 JOIN student AS T2 ON T1.StuID  =  T2.StuID WHERE T2.sex  =  "F" AND T1.allergy  =  "Milk" OR T1.allergy  =  "Eggs"]-----------------
+target_db_schema: Allergy, StuID, _idstudent: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+
+convert time:5.195857 s
+---------------------------Execute Target Query:db.has_allergy.aggregate([{"$lookup":{"from":"student","localField":"StuID","foreignField":"StuID","as":"student"}},{"$match":{"$or":[{"allergy":"Milk"},{"allergy":"Eggs"}],"student_Sex":"F"}},{"$count":"count"}])-----------------
+here we are in executor, and the query is:  db.has_allergy.aggregate([{"$lookup":{"from":"student","localField":"StuID","foreignField":"StuID","as":"student"}},{"$match":{"$or":[{"allergy":"Milk"},{"allergy":"Eggs"}],"student_Sex":"F"}},{"$count":"count"}])
+result of mongodb: []
+mysql res: ['{"count_*": 4}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------37-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM has_allergy AS T1 JOIN allergy_type AS T2 ON T1.allergy  =  T2.allergy WHERE T2.allergytype  =  "food"]-----------------
+target_db_schema: Allergy, StuID, _idallergy_type: Allergy, AllergyType, _id
+
+convert time:4.455846 s
+---------------------------Execute Target Query:db.has_allergy.aggregate([{"$lookup": {"from": "allergy_type", "localField": "has_allergy_allergy", "foreignField": "allergy_type_allergy", "as": "join_data"}}, {"$match": {"join_data.allergy_type_allergytype": "food"}}, {"$count": "count"}])-----------------
+here we are in executor, and the query is:  db.has_allergy.aggregate([{"$lookup": {"from": "allergy_type", "localField": "has_allergy_allergy", "foreignField": "allergy_type_allergy", "as": "join_data"}}, {"$match": {"join_data.allergy_type_allergytype": "food"}}, {"$count": "count"}])
+result of mongodb: []
+mysql res: ['{"count_*": 28}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------38-----------------
+schema:['Allergy']
+---------------------------Execute SQL Query:[SELECT Allergy FROM has_allergy GROUP BY Allergy ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: Allergy, StuID, _id
+convert time:4.671356 s
+---------------------------Execute Target Query:db.has_allergy.aggregate([{"$group": {"_id": "$Allergy", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Allergy": "$_id", "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.has_allergy.aggregate([{"$group": {"_id": "$Allergy", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}, {"$limit": 1}, {"$project": {"Allergy": "$_id", "_id": 0}}])
+result of mongodb: ['{"Allergy": "Tree Pollen"}']
+mysql res: ['{"Allergy": "Tree Pollen"}']
+target res: ['{"Allergy": "Tree Pollen"}']
+translate SELECT Allergy FROM has_allergy GROUP BY Allergy ORDER BY count(*) DESC LIMIT 1 success
+
+--------------------------39-----------------
+schema:['Allergy', 'count_*']
+---------------------------Execute SQL Query:[SELECT Allergy ,  count(*) FROM has_allergy GROUP BY Allergy]-----------------
+target_db_schema: Allergy, StuID, _id
+convert time:3.960028 s
+---------------------------Execute Target Query:db.has_allergy.aggregate([{"$group": {"_id": "$Allergy", "count": {"$sum": 1}}}, {"$project": {"Allergy": "$_id", "count": 1, "_id": 0}}])-----------------
+here we are in executor, and the query is:  db.has_allergy.aggregate([{"$group": {"_id": "$Allergy", "count": {"$sum": 1}}}, {"$project": {"Allergy": "$_id", "count": 1, "_id": 0}}])
+result of mongodb: ['{"count": 1, "Allergy": "Rodent"}', '{"count": 13, "Allergy": "Tree Pollen"}', '{"count": 4, "Allergy": "Cat"}', '{"count": 4, "Allergy": "Grass Pollen"}', '{"count": 4, "Allergy": "Shellfish"}', '{"count": 3, "Allergy": "Milk"}', '{"count": 3, "Allergy": "Anchovies"}', '{"count": 6, "Allergy": "Ragweed"}', '{"count": 3, "Allergy": "Dog"}', '{"count": 11, "Allergy": "Nuts"}', '{"count": 4, "Allergy": "Soy"}', '{"count": 3, "Allergy": "Eggs"}']
+mysql res: ['{"Allergy": "Anchovies", "count_*": 3}', '{"Allergy": "Cat", "count_*": 4}', '{"Allergy": "Dog", "count_*": 3}', '{"Allergy": "Eggs", "count_*": 3}', '{"Allergy": "Grass Pollen", "count_*": 4}', '{"Allergy": "Milk", "count_*": 3}', '{"Allergy": "Nuts", "count_*": 11}', '{"Allergy": "Ragweed", "count_*": 6}', '{"Allergy": "Rodent", "count_*": 1}', '{"Allergy": "Shellfish", "count_*": 4}', '{"Allergy": "Soy", "count_*": 4}', '{"Allergy": "Tree Pollen", "count_*": 13}']
+target res: ['{"Allergy": "Rodent", "count_*": null}', '{"Allergy": "Tree Pollen", "count_*": null}', '{"Allergy": "Cat", "count_*": null}', '{"Allergy": "Grass Pollen", "count_*": null}', '{"Allergy": "Shellfish", "count_*": null}', '{"Allergy": "Milk", "count_*": null}', '{"Allergy": "Anchovies", "count_*": null}', '{"Allergy": "Ragweed", "count_*": null}', '{"Allergy": "Dog", "count_*": null}', '{"Allergy": "Nuts", "count_*": null}', '{"Allergy": "Soy", "count_*": null}', '{"Allergy": "Eggs", "count_*": null}']
+mismatch between MySQL and target
+
+--------------------------40-----------------
+schema:['allergytype', 'count_*']
+---------------------------Execute SQL Query:[SELECT T2.allergytype ,  count(*) FROM has_allergy AS T1 JOIN allergy_type AS T2 ON T1.allergy  =  T2.allergy GROUP BY T2.allergytype]-----------------
+target_db_schema: Allergy, StuID, _idallergy_type: Allergy, AllergyType, _id
+
+convert time:7.33242 s
+---------------------------Execute Target Query:db.has_allergy.aggregate([{"$lookup": {"from": "allergy_type", "localField": "has_allergy_allergy", "foreignField": "allergy_type_allergy", "as": "allergy_join"}}, {"$unwind": "$allergy_join"}, {"$group": {"_id": "$allergy_join_allergytype", "count": {"$sum": 1}}}, {"$project": {"allergytype": "$_id", "_id": 0, "count": 1}}])-----------------
+here we are in executor, and the query is:  db.has_allergy.aggregate([{"$lookup": {"from": "allergy_type", "localField": "has_allergy_allergy", "foreignField": "allergy_type_allergy", "as": "allergy_join"}}, {"$unwind": "$allergy_join"}, {"$group": {"_id": "$allergy_join_allergytype", "count": {"$sum": 1}}}, {"$project": {"allergytype": "$_id", "_id": 0, "count": 1}}])
+result of mongodb: ['{"count": 826, "allergytype": null}']
+mysql res: ['{"allergytype": "food", "count_*": 28}', '{"allergytype": "animal", "count_*": 8}', '{"allergytype": "environmental", "count_*": 23}']
+target res: ['{"allergytype": null, "count_*": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------41-----------------
+schema:['lname', 'age']
+---------------------------Execute SQL Query:[SELECT lname ,  age FROM student WHERE StuID IN (SELECT StuID FROM has_allergy WHERE Allergy  =  "Milk" INTERSECT SELECT StuID FROM has_allergy WHERE Allergy  =  "Cat")]-----------------
+target_db_schema: Allergy, StuID, _idstudent: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+
+convert time:5.353978 s
+---------------------------Execute Target Query:db.student.find({ "StuID": { "$in": db.has_allergy.distinct("StuID", { "Allergy": { "$in": ["Milk", "Cat"] } }) } }, { "lname": 1, "age": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.student.find({ "StuID": { "$in": db.has_allergy.distinct("StuID", { "Allergy": { "$in": ["Milk", "Cat"] } }) } }, { "lname": 1, "age": 1, "_id": 0 })
+result of mongodb: ['{}', '{}', '{}', '{}', '{}']
+mysql res: ['{"lname": "Apap", "age": 18}', '{"lname": "Lee", "age": 17}']
+target res: ['{"lname": null, "age": null}', '{"lname": null, "age": null}', '{"lname": null, "age": null}', '{"lname": null, "age": null}', '{"lname": null, "age": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------42-----------------
+schema:['Allergy', 'AllergyType']
+---------------------------Execute SQL Query:[SELECT T1.Allergy ,  T1.AllergyType FROM allergy_type AS T1 JOIN has_allergy AS T2 ON T1.Allergy  =  T2.Allergy JOIN student AS T3 ON T3.StuID  =  T2.StuID WHERE T3.Fname  =  "Lisa" ORDER BY T1.Allergy]-----------------
+target_db_schema: Allergy, StuID, _idstudent: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+allergy_type: Allergy, AllergyType, _id
+
+convert time:7.652096 s
+---------------------------Execute Target Query:db.allergy_type.aggregate([{$lookup:{from:"has_allergy",localField:"Allergy",foreignField:"Allergy",as:"T2"}},{$unwind:"$T2"},{$lookup:{from:"student",localField:"T2.StuID",foreignField:"StuID",as:"T3"}},{$unwind:"$T3"},{$match:{"T3_Fname":"Lisa"}},{$project:{Allergy:1,AllergyType:1,_id:0}},{$sort:{Allergy:1}}])-----------------
+here we are in executor, and the query is:  db.allergy_type.aggregate([{$lookup:{from:"has_allergy",localField:"Allergy",foreignField:"Allergy",as:"T2"}},{$unwind:"$T2"},{$lookup:{from:"student",localField:"T2.StuID",foreignField:"StuID",as:"T3"}},{$unwind:"$T3"},{$match:{"T3_Fname":"Lisa"}},{$project:{Allergy:1,AllergyType:1,_id:0}},{$sort:{Allergy:1}}])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------43-----------------
+schema:['fname', 'sex']
+---------------------------Execute SQL Query:[SELECT fname ,  sex FROM student WHERE StuID IN (SELECT StuID FROM has_allergy WHERE Allergy  =  "Milk" EXCEPT SELECT StuID FROM has_allergy WHERE Allergy  =  "Cat")]-----------------
+target_db_schema: Allergy, StuID, _idstudent: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+
+convert time:5.465202 s
+---------------------------Execute Target Query:db.student.aggregate([ { $lookup: { from: "has_allergy", localField: "StuID", foreignField: "StuID", as: "allergies" } }, { $match: { "allergies.Allergy": { $in: ["Milk"], $nin: ["Cat"] } } }, { $project: { fname: 1, sex: 1, _id: 0 } } ])-----------------
+here we are in executor, and the query is:  db.student.aggregate([ { $lookup: { from: "has_allergy", localField: "StuID", foreignField: "StuID", as: "allergies" } }, { $match: { "allergies.Allergy": { $in: ["Milk"], $nin: ["Cat"] } } }, { $project: { fname: 1, sex: 1, _id: 0 } } ])
+execute target query error:invalid syntax (<string>, line 1)
+
+--------------------------44-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT avg(age) FROM student WHERE StuID IN ( SELECT T1.StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "food" INTERSECT SELECT T1.StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "animal")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Allergy_Type' doesn't exist")
+
+--------------------------45-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT fname ,  lname FROM student WHERE StuID NOT IN (SELECT T1.StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "food")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Allergy_Type' doesn't exist")
+
+--------------------------46-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE sex  =  "M" AND StuID IN (SELECT StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "food")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Allergy_Type' doesn't exist")
+
+--------------------------47-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Has_Allergy' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT DISTINCT T1.fname ,  T1.city_code FROM student AS T1 JOIN Has_Allergy AS T2 ON T1.stuid  =  T2.stuid WHERE T2.Allergy  =  "Milk" OR T2.Allergy  =  "Cat"]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Has_Allergy' doesn't exist")
+
+--------------------------48-----------------
+schema:(None, ProgrammingError(1146, "Table 'allergy_1.Allergy_Type' doesn't exist"))
+---------------------------Execute SQL Query:[SELECT count(*) FROM student WHERE age  >  18 AND StuID NOT IN ( SELECT StuID FROM has_allergy AS T1 JOIN Allergy_Type AS T2 ON T1.Allergy  =  T2.Allergy WHERE T2.allergytype  =  "food" OR T2.allergytype  =  "animal")]-----------------
+execute mysql query error:(1146, "Table 'allergy_1.Allergy_Type' doesn't exist")
+
+--------------------------49-----------------
+schema:['fname', 'major']
+---------------------------Execute SQL Query:[SELECT fname ,  major FROM student WHERE StuID NOT IN (SELECT StuID FROM has_allergy WHERE Allergy  =  "Soy")]-----------------
+target_db_schema: Allergy, StuID, _idstudent: StuID, LName, _id, Sex, city_code, Major, Advisor, Age, Fname
+
+convert time:7.165716 s
+---------------------------Execute Target Query:db.student.find({ "StuID": { "$not": { "$in": db.has_allergy.find({ "Allergy": "Soy" }, { "StuID": 1, "_id": 0 }).toArray().map(function(doc) { return doc.StuID; }) } } }, { "fname": 1, "major": 1, "_id": 0 })-----------------
+here we are in executor, and the query is:  db.student.find({ "StuID": { "$not": { "$in": db.has_allergy.find({ "Allergy": "Soy" }, { "StuID": 1, "_id": 0 }).toArray().map(function(doc) { return doc.StuID; }) } } }, { "fname": 1, "major": 1, "_id": 0 })
+execute target query error:invalid syntax (<string>, line 1)
+success_query_count: 5
+valid_count: 44
+accuracy: 0.11363636363636363

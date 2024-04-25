@@ -34,15 +34,15 @@ executor_get_func = {
 }
 
 
-def get_bench_id(input_file: str, db_name: str) -> str:
+def get_bench_id(input_file: str, db_name: str, with_memory:bool) -> str:
     current_time = datetime.now()
-    gpt_version = os.getenv('GPT_VERSION')
-    return 'benchmark-{target}-{input}-{gpt_version}-{time}'.format(gpt_version=gpt_version, target=db_name, input=input_file,
-                                                      time=current_time.strftime("%Y-%m-%d#%H:%M:%S"))
+    gpt_version = "gpt-3.5-turbo"
+    return 'benchmark-{target}-{input}-{gpt_version}-{with_memory}-{time}'.format(gpt_version=gpt_version, target=db_name, input=input_file,
+                                                      time=current_time.strftime("%Y-%m-%d#%H:%M:%S"), with_memory=with_memory)
 
 
-def get_output_file_path(input_file: str, db_name: str) -> str:
-    return './logs/{id}.log'.format(id=get_bench_id(input_file, db_name))
+def get_output_file_path(input_file: str, db_name: str, with_memory:bool) -> str:
+    return './logs/{id}.log'.format(id=get_bench_id(input_file, db_name, with_memory))
 
 
 def get_memory_text_source(db_name: str) -> str:
@@ -118,7 +118,7 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
             examples = await memorier.search_examples_memory(sql_query)
             target_db_schema = target_executor.get_schemas(database, tables)
             # print("knowledge: {}".format(knowledge))
-            print("examples: {}".format(str(examples)))
+            # print("examples: {}".format(str(examples)))
             target_query = await converter.convert_with_knowledge(sql_query, target_db.value, knowledge, examples, sql_schema, target_db_schema)
         else:
             target_query = await converter.convert(sql_query, target_db.value)
@@ -135,16 +135,15 @@ async def single_benchmark(mysql_executor: MySQLExecutor, target_executor: Query
             print('execute target query error:{}'.format(e))
             continue
 
+        print("mysql res:", mysql_result)
+        print("target res:", target_result)
+
         match, unmatched_row, e = comparator.compare(mysql_result, target_result)
         if e is not None:
             print("Exception raised during comparison: {}".format(e))
-            print("mysql res:", mysql_result)
-            print("target res:", target_result)
             continue
         if not match:
-            print("mismatch between MySQL and target")
-            print("mysql res:", mysql_result)
-            print("target res:", target_result)
+            print("mismatch between MySQL and target")      
         else:
             print('translate {q} success'.format(q=sql_query))
             success_query_count += 1
@@ -170,8 +169,13 @@ async def benchmark(input_file: str, target_db: DBName, use_memory: bool):
     comparator = HashComparator()
     memorier = Memorier()
 
-    queries = query_fetcher.fetch_query("./query", input_file)
-    output_file_path = get_output_file_path(input_file, target_db.value)
+    
+    if target_db.value == "neo4j":
+        queries = query_fetcher.fetch_query("./query-neo4j", input_file)
+    else:
+        queries = query_fetcher.fetch_query("./query", input_file)
+
+    output_file_path = get_output_file_path(input_file, target_db.value, use_memory)
     with open(output_file_path, 'w') as f:
         with redirect_stdout(f), redirect_stderr(f):
             if use_memory:

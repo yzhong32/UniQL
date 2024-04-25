@@ -1,0 +1,732 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM railway]-----------------
+target_db_schema: ['Builder', 'Built', 'Location', 'ObjectNumber', 'Railway', 'Railway_ID', 'Wheels']
+convert time:4.476867 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_railways": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["railway"],
+    "code": {
+        "total_railways": "response['aggregations']['total_railways']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_railways': {'value_count': {'field': '_index'}}}, 'code': {'total_railways': "response['aggregations']['total_railways']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_railways': {'value': 10}}}
+
+exec_result_dict: {'total_railways': 10}
+mysql res: ['{"count_*": 10}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['Builder']
+---------------------------Execute SQL Query:[SELECT Builder FROM railway ORDER BY Builder ASC]-----------------
+target_db_schema: ['Builder', 'Built', 'Location', 'ObjectNumber', 'Railway', 'Railway_ID', 'Wheels']
+convert time:2.397385 s
+---------------------------Execute Target Query:{
+    "size": 10000,
+    "sort": [
+        {"Builder": {"order": "asc"}}
+    ],
+    "_source": ["Builder"],
+    "inner_index": ["railway"]
+}-----------------
+**************************************************
+{'size': 10000, 'sort': [{'Builder': {'order': 'asc'}}], '_source': ['Builder']}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'railway_railway', '_id': 'L1eoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'SECR Ashford'}, 'sort': ['ashford']}, {'_index': 'railway_railway', '_id': 'OFeoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'Avonside'}, 'sort': ['avonside']}, {'_index': 'railway_railway', '_id': 'MFeoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'MR Derby'}, 'sort': ['derby']}, {'_index': 'railway_railway', '_id': 'MVeoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'GNR Doncaster'}, 'sort': ['doncaster']}, {'_index': 'railway_railway', '_id': 'M1eoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'GER Stratford'}, 'sort': ['ger']}, {'_index': 'railway_railway', '_id': 'NFeoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'GER Hartford'}, 'sort': ['ger']}, {'_index': 'railway_railway', '_id': 'MleoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'GWR Swindon'}, 'sort': ['gwr']}, {'_index': 'railway_railway', '_id': 'NVeoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'GWR Swindon'}, 'sort': ['gwr']}, {'_index': 'railway_railway', '_id': 'N1eoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'Stephenson'}, 'sort': ['stephenson']}, {'_index': 'railway_railway', '_id': 'NleoDo8BsHbYzo2oSXN_', '_score': None, '_source': {'Builder': 'Swindon Works'}, 'sort': ['swindon']}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Builder": "Avonside"}', '{"Builder": "GER Hartford"}', '{"Builder": "GER Stratford"}', '{"Builder": "GNR Doncaster"}', '{"Builder": "GWR Swindon"}', '{"Builder": "GWR Swindon"}', '{"Builder": "MR Derby"}', '{"Builder": "SECR Ashford"}', '{"Builder": "Stephenson"}', '{"Builder": "Swindon Works"}']
+target res: ['{"Builder": "SECR Ashford"}', '{"Builder": "Avonside"}', '{"Builder": "MR Derby"}', '{"Builder": "GNR Doncaster"}', '{"Builder": "GER Stratford"}', '{"Builder": "GER Hartford"}', '{"Builder": "GWR Swindon"}', '{"Builder": "GWR Swindon"}', '{"Builder": "Stephenson"}', '{"Builder": "Swindon Works"}']
+translate SELECT Builder FROM railway ORDER BY Builder ASC success
+
+--------------------------3-----------------
+schema:['Wheels', 'LOCATION']
+---------------------------Execute SQL Query:[SELECT Wheels ,  LOCATION FROM railway]-----------------
+target_db_schema: ['Builder', 'Built', 'Location', 'ObjectNumber', 'Railway', 'Railway_ID', 'Wheels']
+convert time:2.562518 s
+---------------------------Execute Target Query:{
+    "size": 10,
+    "_source": ["Wheels", "Location"],
+    "inner_index": ["railway"]
+}-----------------
+**************************************************
+{'size': 10, '_source': ['Wheels', 'Location']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'railway_railway', '_id': 'L1eoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '4-4-0', 'Location': 'York'}}, {'_index': 'railway_railway', '_id': 'MFeoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '4-4-0', 'Location': "Bo'ness"}}, {'_index': 'railway_railway', '_id': 'MVeoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '4-4-2', 'Location': 'Barrow Hill'}}, {'_index': 'railway_railway', '_id': 'MleoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '4-4-0', 'Location': 'Toddington'}}, {'_index': 'railway_railway', '_id': 'M1eoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '0-6-0T', 'Location': 'Bressingham'}}, {'_index': 'railway_railway', '_id': 'NFeoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '0-6-0', 'Location': 'Barrow Hill'}}, {'_index': 'railway_railway', '_id': 'NVeoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '2-8-0', 'Location': 'Shildon'}}, {'_index': 'railway_railway', '_id': 'NleoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '4-6-0', 'Location': 'Swindon'}}, {'_index': 'railway_railway', '_id': 'N1eoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '4-4-2T', 'Location': 'Bressingham'}}, {'_index': 'railway_railway', '_id': 'OFeoDo8BsHbYzo2oSXN_', '_score': 1.0, '_source': {'Wheels': '0-6-0ST', 'Location': 'Basingstoke'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Wheels": "4-4-0", "LOCATION": "York"}', '{"Wheels": "4-4-0", "LOCATION": "Bo\'ness"}', '{"Wheels": "4-4-2", "LOCATION": "Barrow Hill"}', '{"Wheels": "4-4-0", "LOCATION": "Toddington"}', '{"Wheels": "0-6-0T", "LOCATION": "Bressingham"}', '{"Wheels": "0-6-0", "LOCATION": "Barrow Hill"}', '{"Wheels": "2-8-0", "LOCATION": "Shildon"}', '{"Wheels": "4-6-0", "LOCATION": "Swindon"}', '{"Wheels": "4-4-2T", "LOCATION": "Bressingham"}', '{"Wheels": "0-6-0ST", "LOCATION": "Basingstoke"}']
+target res: ['{"Wheels": "4-4-0", "LOCATION": null}', '{"Wheels": "4-4-0", "LOCATION": null}', '{"Wheels": "4-4-2", "LOCATION": null}', '{"Wheels": "4-4-0", "LOCATION": null}', '{"Wheels": "0-6-0T", "LOCATION": null}', '{"Wheels": "0-6-0", "LOCATION": null}', '{"Wheels": "2-8-0", "LOCATION": null}', '{"Wheels": "4-6-0", "LOCATION": null}', '{"Wheels": "4-4-2T", "LOCATION": null}', '{"Wheels": "0-6-0ST", "LOCATION": null}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['max_LEVEL']
+---------------------------Execute SQL Query:[SELECT max(LEVEL) FROM manager WHERE Country != "Australia	"]-----------------
+target_db_schema: ['Age', 'Country', 'Level', 'Manager_ID', 'Name', 'Working_year_starts']
+convert time:5.019783 s
+---------------------------Execute Target Query:{
+    "inner_index": ["manager"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "term": {
+                        "Country": "Australia"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "max_level": {
+            "max": {
+                "field": "Level"
+            }
+        }
+    },
+    "code": {
+        "max_level": "response['aggregations']['max_level']['value']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must_not': [{'term': {'Country': 'Australia'}}]}}, 'aggs': {'max_level': {'max': {'field': 'Level'}}}, 'code': {'max_level': "response['aggregations']['max_level']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'max_level': {'value': 12.0}}}
+
+exec_result_dict: {'max_level': 12.0}
+mysql res: ['{"max_LEVEL": 12}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------5-----------------
+schema:['avg_Age']
+---------------------------Execute SQL Query:[SELECT avg(Age) FROM manager]-----------------
+target_db_schema: ['Age', 'Country', 'Level', 'Manager_ID', 'Name', 'Working_year_starts']
+convert time:4.845923 s
+---------------------------Execute Target Query:{
+  "inner_index": ["manager"],
+  "size": 0,
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "avg_age": {
+      "avg": {
+        "field": "Age"
+      }
+    }
+  },
+  "code": {
+    "avg_age": "response['aggregations']['avg_age']['value']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'avg_age': {'avg': {'field': 'Age'}}}, 'code': {'avg_age': "response['aggregations']['avg_age']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'avg_age': {'value': 49.142857142857146}}}
+
+exec_result_dict: {'avg_age': 49.142857142857146}
+mysql res: ['{"avg_Age": 49.1429}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------6-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT Name FROM manager ORDER BY LEVEL ASC]-----------------
+target_db_schema: ['Age', 'Country', 'Level', 'Manager_ID', 'Name', 'Working_year_starts']
+convert time:3.726209 s
+---------------------------Execute Target Query:{
+    "size": 0, #comment: should not be zero
+    "sort": [
+        {"Level": {"order": "asc"}}
+    ],
+    "_source": ["Name"],
+    "inner_index": ["manager"]
+}-----------------
+**************************************************
+{'size': 0, 'sort': [{'Level': {'order': 'asc'}}], '_source': ['Name']}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"Name": "Ben Curtis"}', '{"Name": "Todd Hamilton"}', '{"Name": "Tiger Woods"}', '{"Name": "David Duval"}', '{"Name": "Sandy Lyle"}', '{"Name": "Nick Faldo"}', '{"Name": "Greg Norman"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------7-----------------
+schema:['Name', 'Arrival']
+---------------------------Execute SQL Query:[SELECT Name ,  Arrival FROM train]-----------------
+target_db_schema: ['Arrival', 'From', 'Name', 'Railway_ID', 'Train_ID', 'Train_Num']
+convert time:1.939893 s
+---------------------------Execute Target Query:{
+    "size": 10,
+    "_source": ["Name", "Arrival"],
+    "inner_index": ["train"]
+}-----------------
+**************************************************
+{'size': 10, '_source': ['Name', 'Arrival']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'railway_train', '_id': 'PVeoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Wardha-Ballarshah Pass', 'Arrival': '08:54'}}, {'_index': 'railway_train', '_id': 'PleoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Sewagram Exp', 'Arrival': '09:08'}}, {'_index': 'railway_train', '_id': 'P1eoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Ballarshah-Mumbai Pass', 'Arrival': '09:48'}}, {'_index': 'railway_train', '_id': 'QFeoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Nagpur-Kazipet Pass', 'Arrival': '23:44'}}, {'_index': 'railway_train', '_id': 'QVeoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Kazipet-Nagpur Pass', 'Arrival': '05:09'}}, {'_index': 'railway_train', '_id': 'QleoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Lucknow-Chennai Exp', 'Arrival': '13:04'}}, {'_index': 'railway_train', '_id': 'Q1eoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Andaman Exp', 'Arrival': '13:04'}}, {'_index': 'railway_train', '_id': 'RFeoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Andaman Exp', 'Arrival': '23:39'}}, {'_index': 'railway_train', '_id': 'RVeoDo8BsHbYzo2oT3Nn', '_score': 1.0, '_source': {'Name': 'Nandigram Exp', 'Arrival': '13:28'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Name": "Wardha-Ballarshah Pass", "Arrival": "08:54"}', '{"Name": "Sewagram Exp", "Arrival": "09:08"}', '{"Name": "Ballarshah-Mumbai Pass", "Arrival": "09:48"}', '{"Name": "Nagpur-Kazipet Pass", "Arrival": "23:44"}', '{"Name": "Kazipet-Nagpur Pass", "Arrival": "05:09"}', '{"Name": "Lucknow-Chennai Exp", "Arrival": "13:04"}', '{"Name": "Andaman Exp", "Arrival": "13:04"}', '{"Name": "Andaman Exp", "Arrival": "23:39"}', '{"Name": "Nandigram Exp", "Arrival": "13:28"}']
+target res: ['{"Name": "Wardha-Ballarshah Pass", "Arrival": "08:54"}', '{"Name": "Sewagram Exp", "Arrival": "09:08"}', '{"Name": "Ballarshah-Mumbai Pass", "Arrival": "09:48"}', '{"Name": "Nagpur-Kazipet Pass", "Arrival": "23:44"}', '{"Name": "Kazipet-Nagpur Pass", "Arrival": "05:09"}', '{"Name": "Lucknow-Chennai Exp", "Arrival": "13:04"}', '{"Name": "Andaman Exp", "Arrival": "13:04"}', '{"Name": "Andaman Exp", "Arrival": "23:39"}', '{"Name": "Nandigram Exp", "Arrival": "13:28"}']
+translate SELECT Name ,  Arrival FROM train success
+
+--------------------------8-----------------
+schema:['Name']
+---------------------------Execute SQL Query:[SELECT Name FROM manager ORDER BY Age DESC LIMIT 1]-----------------
+target_db_schema: ['Age', 'Country', 'Level', 'Manager_ID', 'Name', 'Working_year_starts']
+convert time:4.571115 s
+---------------------------Execute Target Query:{
+  "size": 1,
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "Age": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": ["Name"],
+  "inner_index": ["manager"]
+}-----------------
+**************************************************
+{'size': 1, 'query': {'match_all': {}}, 'sort': [{'Age': {'order': 'desc'}}], '_source': ['Name']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'railway_manager', '_id': 'KVeoDo8BsHbYzo2oRnO3', '_score': None, '_source': {'Name': 'Todd Hamilton'}, 'sort': [55]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Name": "Todd Hamilton"}']
+target res: ['{"Name": "Todd Hamilton"}']
+translate SELECT Name FROM manager ORDER BY Age DESC LIMIT 1 success
+
+--------------------------9-----------------
+schema:['Name', 'Location']
+---------------------------Execute SQL Query:[SELECT T2.Name ,  T1.Location FROM railway AS T1 JOIN train AS T2 ON T1.Railway_ID  =  T2.Railway_ID]-----------------
+target_db_schema: ['Arrival', 'From', 'Name', 'Railway_ID', 'Train_ID', 'Train_Num', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'B', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'B', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'L', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'O', 'b', 'j', 'e', 'c', 't', 'N', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'I', 'D', "'", ',', ' ', "'", 'W', 'h', 'e', 'e', 'l', 's', "'", ']', '\n']
+convert time:8.016167 s
+---------------------------Execute Target Query:{
+    "inner_index": ["railway", "train"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match_all": {}
+                }
+            ],
+            "should": [
+                {
+                    "has_child": {
+                        "type": "train",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "_source": ["Name"]
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": {
+                            "source": "doc['Railway_ID'].value == doc['Railway_ID'].value"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Location"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match_all': {}}], 'should': [{'has_child': {'type': 'train', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['Name']}}}], 'filter': [{'script': {'script': {'source': "doc['Railway_ID'].value == doc['Railway_ID'].value"}}}]}}, '_source': ['Location'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_child] no join field has been configured')
+
+--------------------------10-----------------
+schema:['Builder']
+---------------------------Execute SQL Query:[SELECT T1.Builder FROM railway AS T1 JOIN train AS T2 ON T1.Railway_ID  =  T2.Railway_ID WHERE T2.Name  =  "Andaman Exp"]-----------------
+target_db_schema: ['Arrival', 'From', 'Name', 'Railway_ID', 'Train_ID', 'Train_Num', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'B', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'B', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'L', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'O', 'b', 'j', 'e', 'c', 't', 'N', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'I', 'D', "'", ',', ' ', "'", 'W', 'h', 'e', 'e', 'l', 's', "'", ']', '\n']
+convert time:3.939846 s
+---------------------------Execute Target Query:{
+    "inner_index": ["railway", "train"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "Name": "Andaman Exp"
+                    }
+                },
+                {
+                    "match": {
+                        "Railway_ID": "Railway_ID"
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Builder"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'Name': 'Andaman Exp'}}, {'match': {'Railway_ID': 'Railway_ID'}}]}}, '_source': ['Builder'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: For input string: "Railway_ID"')
+
+--------------------------11-----------------
+schema:['Railway_ID', 'Location']
+---------------------------Execute SQL Query:[SELECT T2.Railway_ID ,  T1.Location FROM railway AS T1 JOIN train AS T2 ON T1.Railway_ID  =  T2.Railway_ID GROUP BY T2.Railway_ID HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ['Arrival', 'From', 'Name', 'Railway_ID', 'Train_ID', 'Train_Num', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'B', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'B', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'L', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'O', 'b', 'j', 'e', 'c', 't', 'N', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'I', 'D', "'", ',', ' ', "'", 'W', 'h', 'e', 'e', 'l', 's', "'", ']', '\n']
+convert time:11.534735 s
+---------------------------Execute Target Query:{
+    "inner_index": ["railway", "train"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "railway",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['Railway_ID'].value == doc['Railway_ID'].value"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_railway": {
+            "terms": {
+                "field": "Railway_ID",
+                "size": 10
+            },
+            "aggs": {
+                "locations": {
+                    "top_hits": {
+                        "_source": {
+                            "includes": ["Location"]
+                        },
+                        "size": 1
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "Railway_ID_result": "response['aggregations']['group_by_railway']['buckets']",
+        "Location_result": "response['aggregations']['group_by_railway']['buckets'][*]['locations']['hits']['hits'][*]['_source']['Location']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'railway', 'query': {'match_all': {}}}}], 'filter': [{'script': {'script': "doc['Railway_ID'].value == doc['Railway_ID'].value"}}]}}, 'aggs': {'group_by_railway': {'terms': {'field': 'Railway_ID', 'size': 10}, 'aggs': {'locations': {'top_hits': {'_source': {'includes': ['Location']}, 'size': 1}}}}}, 'code': {'Railway_ID_result': "response['aggregations']['group_by_railway']['buckets']", 'Location_result': "response['aggregations']['group_by_railway']['buckets'][*]['locations']['hits']['hits'][*]['_source']['Location']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------12-----------------
+schema:['Railway_ID', 'Builder']
+---------------------------Execute SQL Query:[SELECT T2.Railway_ID ,  T1.Builder FROM railway AS T1 JOIN train AS T2 ON T1.Railway_ID  =  T2.Railway_ID GROUP BY T2.Railway_ID ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Arrival', 'From', 'Name', 'Railway_ID', 'Train_ID', 'Train_Num', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'B', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'B', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'L', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'O', 'b', 'j', 'e', 'c', 't', 'N', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'I', 'D', "'", ',', ' ', "'", 'W', 'h', 'e', 'e', 'l', 's', "'", ']', '\n']
+convert time:16.393782 s
+---------------------------Execute Target Query:{
+    "inner_index": ["railway", "train"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match_all": {}
+                }
+            ],
+            "should": [
+                {
+                    "has_parent": {
+                        "parent_type": "railway",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_railway": {
+            "terms": {
+                "field": "Railway_ID",
+                "size": 1,
+                "order": {
+                    "_count": "desc"
+                }
+            },
+            "aggs": {
+                "top_builders": {
+                    "top_hits": {
+                        "size": 1,
+                        "_source": {
+                            "includes": ["Builder"]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "Builder": "response['aggregations']['group_by_railway']['buckets'][0]['top_builders']['hits']['hits'][0]['_source']['Builder']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match_all': {}}], 'should': [{'has_parent': {'parent_type': 'railway', 'query': {'match_all': {}}}}]}}, 'aggs': {'group_by_railway': {'terms': {'field': 'Railway_ID', 'size': 1, 'order': {'_count': 'desc'}}, 'aggs': {'top_builders': {'top_hits': {'size': 1, '_source': {'includes': ['Builder']}}}}}}, 'code': {'Builder': "response['aggregations']['group_by_railway']['buckets'][0]['top_builders']['hits']['hits'][0]['_source']['Builder']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------13-----------------
+schema:['Builder', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT Builder ,  COUNT(*) FROM railway GROUP BY Builder]-----------------
+target_db_schema: ['Builder', 'Built', 'Location', 'ObjectNumber', 'Railway', 'Railway_ID', 'Wheels']
+convert time:10.593852 s
+---------------------------Execute Target Query:{
+    "inner_index": ["railway"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "group_by_builder": {
+            "terms": {
+                "field": "Builder.keyword",
+                "size": 10
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "_index"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "Builder_result": "response['aggregations']['group_by_builder']['buckets']",
+        "count": "bucket['count']['value'] for bucket in response['aggregations']['group_by_builder']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'group_by_builder': {'terms': {'field': 'Builder.keyword', 'size': 10}, 'aggs': {'count': {'value_count': {'field': '_index'}}}}}, 'code': {'Builder_result': "response['aggregations']['group_by_builder']['buckets']", 'count': "bucket['count']['value'] for bucket in response['aggregations']['group_by_builder']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 5, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_builder': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'GWR Swindon', 'doc_count': 2, 'count': {'value': 2}}, {'key': 'Avonside', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'GER Hartford', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'GER Stratford', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'GNR Doncaster', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'MR Derby', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'SECR Ashford', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'Stephenson', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'Swindon Works', 'doc_count': 1, 'count': {'value': 1}}]}}}
+
+exec_result_dict: {'Builder_result': [{'key': 'GWR Swindon', 'doc_count': 2, 'count': {'value': 2}}, {'key': 'Avonside', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'GER Hartford', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'GER Stratford', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'GNR Doncaster', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'MR Derby', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'SECR Ashford', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'Stephenson', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'Swindon Works', 'doc_count': 1, 'count': {'value': 1}}]}
+mysql res: ['{"Builder": "SECR Ashford", "COUNT_*": 1}', '{"Builder": "MR Derby", "COUNT_*": 1}', '{"Builder": "GNR Doncaster", "COUNT_*": 1}', '{"Builder": "GWR Swindon", "COUNT_*": 2}', '{"Builder": "GER Stratford", "COUNT_*": 1}', '{"Builder": "GER Hartford", "COUNT_*": 1}', '{"Builder": "Swindon Works", "COUNT_*": 1}', '{"Builder": "Stephenson", "COUNT_*": 1}', '{"Builder": "Avonside", "COUNT_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------14----------------- #comment: todo 
+schema:['Builder']
+---------------------------Execute SQL Query:[SELECT Builder FROM railway GROUP BY Builder ORDER BY COUNT(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Builder', 'Built', 'Location', 'ObjectNumber', 'Railway', 'Railway_ID', 'Wheels']
+convert time:8.909778 s
+---------------------------Execute Target Query:{
+  "inner_index": ["railway"],
+  "size": 0,
+  "query": {
+    "match_all": {}
+  },
+  "aggs": {
+    "group_by_builder": {
+      "terms": {
+        "field": "Builder",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "code": {
+    "Builder": "response['aggregations']['group_by_builder']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'group_by_builder': {'terms': {'field': 'Builder', 'size': 1, 'order': {'_count': 'desc'}}}}, 'code': {'Builder': "response['aggregations']['group_by_builder']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'group_by_builder': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 15, 'buckets': [{'key': 'swindon', 'doc_count': 3}]}}}
+
+exec_result_dict: {'Builder': 'swindon'}
+mysql res: ['{"Builder": "GWR Swindon"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------15-----------------
+schema:['LOCATION', 'COUNT_*']
+---------------------------Execute SQL Query:[SELECT LOCATION ,  COUNT(*) FROM railway GROUP BY LOCATION]-----------------
+target_db_schema: ['Builder', 'Built', 'Location', 'ObjectNumber', 'Railway', 'Railway_ID', 'Wheels']
+convert time:5.387285 s
+---------------------------Execute Target Query:{
+    "inner_index": ["railway"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "count_by_location": {
+            "terms": {
+                "field": "Location.keyword",
+                "size": 10
+            }
+        }
+    },
+    "code": {
+        "count_by_location_result": "response['aggregations']['count_by_location']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'count_by_location': {'terms': {'field': 'Location.keyword', 'size': 10}}}, 'code': {'count_by_location_result': "response['aggregations']['count_by_location']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'count_by_location': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'Barrow Hill', 'doc_count': 2}, {'key': 'Bressingham', 'doc_count': 2}, {'key': 'Basingstoke', 'doc_count': 1}, {'key': "Bo'ness", 'doc_count': 1}, {'key': 'Shildon', 'doc_count': 1}, {'key': 'Swindon', 'doc_count': 1}, {'key': 'Toddington', 'doc_count': 1}, {'key': 'York', 'doc_count': 1}]}}}
+
+exec_result_dict: {'count_by_location_result': [{'key': 'Barrow Hill', 'doc_count': 2}, {'key': 'Bressingham', 'doc_count': 2}, {'key': 'Basingstoke', 'doc_count': 1}, {'key': "Bo'ness", 'doc_count': 1}, {'key': 'Shildon', 'doc_count': 1}, {'key': 'Swindon', 'doc_count': 1}, {'key': 'Toddington', 'doc_count': 1}, {'key': 'York', 'doc_count': 1}]}
+mysql res: ['{"LOCATION": "York", "COUNT_*": 1}', '{"LOCATION": "Bo\'ness", "COUNT_*": 1}', '{"LOCATION": "Barrow Hill", "COUNT_*": 2}', '{"LOCATION": "Toddington", "COUNT_*": 1}', '{"LOCATION": "Bressingham", "COUNT_*": 2}', '{"LOCATION": "Shildon", "COUNT_*": 1}', '{"LOCATION": "Swindon", "COUNT_*": 1}', '{"LOCATION": "Basingstoke", "COUNT_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------16-----------------
+schema:['LOCATION']
+---------------------------Execute SQL Query:[SELECT LOCATION FROM railway GROUP BY LOCATION HAVING COUNT(*)  >  1]-----------------
+target_db_schema: ['Builder', 'Built', 'Location', 'ObjectNumber', 'Railway', 'Railway_ID', 'Wheels']
+convert time:5.963268 s
+---------------------------Execute Target Query:{
+    "inner_index": ["railway"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "LOCATION"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "locations": {
+            "terms": {
+                "field": "LOCATION",
+                "min_doc_count": 2
+            }
+        }
+    },
+    "code": {
+        "locations_result": "response['aggregations']['locations']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'exists': {'field': 'LOCATION'}}]}}, 'aggs': {'locations': {'terms': {'field': 'LOCATION', 'min_doc_count': 2}}}, 'code': {'locations_result': "response['aggregations']['locations']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'locations': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'locations_result': []}
+mysql res: ['{"LOCATION": "Barrow Hill"}', '{"LOCATION": "Bressingham"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------17-----------------
+schema:['ObjectNumber']
+---------------------------Execute SQL Query:[SELECT ObjectNumber FROM railway WHERE Railway_ID NOT IN (SELECT Railway_ID FROM train)]-----------------
+target_db_schema: ['Arrival', 'From', 'Name', 'Railway_ID', 'Train_ID', 'Train_Num', 'r', 'a', 'i', 'l', 'w', 'a', 'y', ':', ' ', '[', "'", 'B', 'u', 'i', 'l', 'd', 'e', 'r', "'", ',', ' ', "'", 'B', 'u', 'i', 'l', 't', "'", ',', ' ', "'", 'L', 'o', 'c', 'a', 't', 'i', 'o', 'n', "'", ',', ' ', "'", 'O', 'b', 'j', 'e', 'c', 't', 'N', 'u', 'm', 'b', 'e', 'r', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', "'", ',', ' ', "'", 'R', 'a', 'i', 'l', 'w', 'a', 'y', '_', 'I', 'D', "'", ',', ' ', "'", 'W', 'h', 'e', 'e', 'l', 's', "'", ']', '\n']
+convert time:3.697915 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": {
+                "terms": {
+                    "Railway_ID": {
+                        "index": "train",
+                        "path": "Railway_ID"
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["ObjectNumber"],
+    "inner_index": ["railway", "train"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'Railway_ID': {'index': 'train', 'path': 'Railway_ID'}}}}}, '_source': ['ObjectNumber'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:89] [bool] failed to parse field [must_not]')
+
+--------------------------18-----------------
+schema:['Country']
+---------------------------Execute SQL Query:[SELECT Country FROM manager WHERE Age  >  50 INTERSECT SELECT Country FROM manager WHERE Age  <  46]-----------------
+target_db_schema: ['Age', 'Country', 'Level', 'Manager_ID', 'Name', 'Working_year_starts']
+Error parsing XML of prompt: not well-formed (invalid token): line 135, column 100
+convert time:6.685425 s
+---------------------------Execute Target Query:{
+    "inner_index": ["manager"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "should": [
+                            {
+                                "range": {
+                                    "Age": {
+                                        "gt": 50
+                                    }
+                                }
+                            },
+                            {
+                                "range": {
+                                    "Age": {
+                                        "lt": 46
+                                    }
+                                }
+                            }
+                        ],
+                        "minimum_should_match": 1
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Country"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'should': [{'range': {'Age': {'gt': 50}}}, {'range': {'Age': {'lt': 46}}}], 'minimum_should_match': 1}}]}}, '_source': ['Country'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 4, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'railway_manager', '_id': 'KFeoDo8BsHbYzo2oRnO3', '_score': 1.0, '_source': {'Country': 'United States'}}, {'_index': 'railway_manager', '_id': 'KVeoDo8BsHbYzo2oRnO3', '_score': 1.0, '_source': {'Country': 'United States'}}, {'_index': 'railway_manager', '_id': 'LVeoDo8BsHbYzo2oRnO3', '_score': 1.0, '_source': {'Country': 'England'}}, {'_index': 'railway_manager', '_id': 'LleoDo8BsHbYzo2oRnO3', '_score': 1.0, '_source': {'Country': 'Australia'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Country": "United States"}']
+target res: ['{"Country": "United States"}', '{"Country": "United States"}', '{"Country": "England"}', '{"Country": "Australia"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:['Country']
+---------------------------Execute SQL Query:[SELECT DISTINCT Country FROM manager]-----------------
+target_db_schema: ['Age', 'Country', 'Level', 'Manager_ID', 'Name', 'Working_year_starts']
+convert time:6.277999 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "distinct_countries": {
+            "terms": {
+                "field": "Country.keyword"
+            }
+        }
+    },
+    "inner_index": ["manager"],
+    "code": {
+        "distinct_countries_result": "response['aggregations']['distinct_countries']['buckets']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'distinct_countries': {'terms': {'field': 'Country.keyword'}}}, 'code': {'distinct_countries_result': "response['aggregations']['distinct_countries']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'distinct_countries': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'United States', 'doc_count': 4}, {'key': 'Australia', 'doc_count': 1}, {'key': 'England', 'doc_count': 1}, {'key': 'Scotland', 'doc_count': 1}]}}}
+
+exec_result_dict: {'distinct_countries_result': [{'key': 'United States', 'doc_count': 4}, {'key': 'Australia', 'doc_count': 1}, {'key': 'England', 'doc_count': 1}, {'key': 'Scotland', 'doc_count': 1}]}
+mysql res: ['{"Country": "United States"}', '{"Country": "Scotland"}', '{"Country": "England"}', '{"Country": "Australia"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------20-----------------
+schema:['Working_year_starts']
+---------------------------Execute SQL Query:[SELECT Working_year_starts FROM manager ORDER BY LEVEL DESC]-----------------
+target_db_schema: ['Age', 'Country', 'Level', 'Manager_ID', 'Name', 'Working_year_starts']
+convert time:2.275137 s
+---------------------------Execute Target Query:{
+    "size": 0, #comment: size should not be 0
+    "sort": [
+        {"Level": {"order": "desc"}}
+    ],
+    "_source": ["Working_year_starts"],
+    "inner_index": ["manager"]
+}-----------------
+**************************************************
+{'size': 0, 'sort': [{'Level': {'order': 'desc'}}], '_source': ['Working_year_starts']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"Working_year_starts": "1993"}', '{"Working_year_starts": "1999"}', '{"Working_year_starts": "1985"}', '{"Working_year_starts": "2001"}', '{"Working_year_starts": "2003"}', '{"Working_year_starts": "2004"}', '{"Working_year_starts": "2006"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------21-----------------
+schema:['Country']
+---------------------------Execute SQL Query:[SELECT Country FROM manager WHERE Age  >  50 OR Age  <  46]-----------------
+target_db_schema: ['Age', 'Country', 'Level', 'Manager_ID', 'Name', 'Working_year_starts']
+Error parsing XML of prompt: not well-formed (invalid token): line 135, column 59
+convert time:6.072969 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "range": {
+                        "Age": {
+                            "gt": 50
+                        }
+                    }
+                },
+                {
+                    "range": {
+                        "Age": {
+                            "lt": 46
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Country"],
+    "inner_index": ["manager"]
+}-----------------
+**************************************************
+{'query': {'bool': {'should': [{'range': {'Age': {'gt': 50}}}, {'range': {'Age': {'lt': 46}}}]}}, '_source': ['Country'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 4, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'railway_manager', '_id': 'KFeoDo8BsHbYzo2oRnO3', '_score': 1.0, '_source': {'Country': 'United States'}}, {'_index': 'railway_manager', '_id': 'KVeoDo8BsHbYzo2oRnO3', '_score': 1.0, '_source': {'Country': 'United States'}}, {'_index': 'railway_manager', '_id': 'LVeoDo8BsHbYzo2oRnO3', '_score': 1.0, '_source': {'Country': 'England'}}, {'_index': 'railway_manager', '_id': 'LleoDo8BsHbYzo2oRnO3', '_score': 1.0, '_source': {'Country': 'Australia'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"Country": "United States"}', '{"Country": "United States"}', '{"Country": "England"}', '{"Country": "Australia"}']
+target res: ['{"Country": "United States"}', '{"Country": "United States"}', '{"Country": "England"}', '{"Country": "Australia"}']
+translate SELECT Country FROM manager WHERE Age  >  50 OR Age  <  46 success
+success_query_count: 4
+valid_count: 21
+accuracy: 0.19047619047619047

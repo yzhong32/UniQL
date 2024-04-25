@@ -1,0 +1,1254 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM event]-----------------
+target_db_schema: ['ID', 'Name', 'Stadium_ID', 'Year']
+convert time:5.196173 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_events": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["event"],
+    "code": {
+        "total_events": "response['aggregations']['total_events']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_events': {'value_count': {'field': '_index'}}}, 'code': {'total_events': "response['aggregations']['total_events']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_events': {'value': 6}}}
+
+exec_result_dict: {'total_events': 6}
+mysql res: ['{"count_*": 6}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------2-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM event ORDER BY YEAR DESC]-----------------
+target_db_schema: ['ID', 'Name', 'Stadium_ID', 'Year']
+convert time:3.782286 s
+---------------------------Execute Target Query:{
+    "size": 10,
+    "sort": [
+        {"Year": {"order": "desc"}}
+    ],
+    "_source": ["Name"],
+    "inner_index": ["event"]
+}-----------------
+**************************************************
+{'size': 10, 'sort': [{'Year': {'order': 'desc'}}], '_source': ['Name']}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'swimming_event', '_id': 'S1cAD48BsHbYzo2oSXMB', '_score': None, '_source': {'Name': 'European FINA'}, 'sort': ['2017']}, {'_index': 'swimming_event', '_id': 'RlcAD48BsHbYzo2oSXMB', '_score': None, '_source': {'Name': 'FINA'}, 'sort': ['2016']}, {'_index': 'swimming_event', '_id': 'SlcAD48BsHbYzo2oSXMB', '_score': None, '_source': {'Name': 'IPC'}, 'sort': ['2014']}, {'_index': 'swimming_event', '_id': 'SVcAD48BsHbYzo2oSXMB', '_score': None, '_source': {'Name': 'World Junior'}, 'sort': ['2013']}, {'_index': 'swimming_event', '_id': 'SFcAD48BsHbYzo2oSXMB', '_score': None, '_source': {'Name': 'World Master'}, 'sort': ['2012']}, {'_index': 'swimming_event', '_id': 'R1cAD48BsHbYzo2oSXMB', '_score': None, '_source': {'Name': 'Pacific'}, 'sort': ['2011']}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "European FINA"}', '{"name": "FINA"}', '{"name": "IPC"}', '{"name": "World Junior"}', '{"name": "World Master"}', '{"name": "Pacific"}']
+target res: ['{"name": null}', '{"name": null}', '{"name": null}', '{"name": null}', '{"name": null}', '{"name": null}']
+mismatch between MySQL and target
+
+--------------------------3-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM event ORDER BY YEAR DESC LIMIT 1]-----------------
+target_db_schema: ['ID', 'Name', 'Stadium_ID', 'Year']
+convert time:3.601994 s
+---------------------------Execute Target Query:{
+  "size": 1,
+  "sort": [
+    {
+      "Year": {
+        "order": "desc"
+      }
+    }
+  ],
+  "_source": ["Name"],
+  "inner_index": ["event"]
+}-----------------
+**************************************************
+{'size': 1, 'sort': [{'Year': {'order': 'desc'}}], '_source': ['Name']}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'swimming_event', '_id': 'S1cAD48BsHbYzo2oSXMB', '_score': None, '_source': {'Name': 'European FINA'}, 'sort': ['2017']}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "European FINA"}']
+target res: ['{"name": null}']
+mismatch between MySQL and target
+
+--------------------------4-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM stadium]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+convert time:4.779978 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "total_stadiums": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["stadium"],
+    "code": {
+        "total_stadiums": "response['aggregations']['total_stadiums']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'total_stadiums': {'value_count': {'field': '_index'}}}, 'code': {'total_stadiums': "response['aggregations']['total_stadiums']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_stadiums': {'value': 10}}}
+
+exec_result_dict: {'total_stadiums': 10}
+mysql res: ['{"count_*": 10}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------5-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium ORDER BY capacity DESC LIMIT 1]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+convert time:3.262497 s
+---------------------------Execute Target Query:{
+    "size": 1,
+    "sort": [
+        {"Capacity": {"order": "desc"}}
+    ],
+    "_source": ["name"],
+    "inner_index": ["stadium"]
+}-----------------
+**************************************************
+{'size': 1, 'sort': [{'Capacity': {'order': 'desc'}}], '_source': ['name']}
+**************************************************
+response of elasticsearch: {'took': 10, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'swimming_stadium', '_id': 'WVcAD48BsHbYzo2oTXOa', '_score': None, '_source': {'name': 'Nou Mestalla'}, 'sort': [75000]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "Nou Mestalla"}']
+target res: ['{"name": "Nou Mestalla"}']
+translate SELECT name FROM stadium ORDER BY capacity DESC LIMIT 1 success
+
+--------------------------6-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium WHERE capacity  <  (SELECT avg(capacity) FROM stadium)]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+Error parsing XML of prompt: not well-formed (invalid token): line 149, column 47
+convert time:10.095154 s
+---------------------------Execute Target Query:{
+  "inner_index": ["stadium"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "Capacity": {
+              "lt": {
+                "script": {
+                  "source": "params.avg_capacity",
+                  "params": {
+                    "avg_capacity": "response['aggregations']['avg_capacity']['value']"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "avg_capacity": {
+      "avg": {
+        "field": "Capacity"
+      }
+    }
+  },
+  "code": {
+    "name_result": "response['hits']['hits']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'range': {'Capacity': {'lt': {'script': {'source': 'params.avg_capacity', 'params': {'avg_capacity': "response['aggregations']['avg_capacity']['value']"}}}}}}]}}, 'aggs': {'avg_capacity': {'avg': {'field': 'Capacity'}}}, 'code': {'name_result': "response['hits']['hits']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[range] query does not support [script]')
+
+--------------------------7-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium GROUP BY country ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+convert time:5.148751 s
+---------------------------Execute Target Query:{
+  "size": 0,
+  "aggs": {
+    "countries": {
+      "terms": {
+        "field": "Country.keyword",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      }
+    }
+  },
+  "inner_index": ["stadium"],
+  "code": {
+    "country": "response['aggregations']['countries']['buckets'][0]['key']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'aggs': {'countries': {'terms': {'field': 'Country.keyword', 'size': 1, 'order': {'_count': 'desc'}}}}, 'code': {'country': "response['aggregations']['countries']['buckets'][0]['key']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'countries': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 6, 'buckets': [{'key': 'Russia', 'doc_count': 4}]}}}
+
+exec_result_dict: {'country': 'Russia'}
+mysql res: ['{"country": "Russia"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------8-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium GROUP BY country HAVING count(*)  <=  3]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+Error parsing XML of prompt: not well-formed (invalid token): line 126, column 68
+convert time:7.9327 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stadium"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "exists": {
+                        "field": "country"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "countries": {
+            "terms": {
+                "field": "country",
+                "size": 10
+            },
+            "aggs": {
+                "country_count": {
+                    "value_count": {
+                        "field": "country"
+                    }
+                },
+                "country_filter": {
+                    "bucket_selector": {
+                        "buckets_path": {
+                            "count": "country_count"
+                        },
+                        "script": "params.count <= 3"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "countries_result": "response['aggregations']['countries']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'exists': {'field': 'country'}}]}}, 'aggs': {'countries': {'terms': {'field': 'country', 'size': 10}, 'aggs': {'country_count': {'value_count': {'field': 'country'}}, 'country_filter': {'bucket_selector': {'buckets_path': {'count': 'country_count'}, 'script': 'params.count <= 3'}}}}}, 'code': {'countries_result': "response['aggregations']['countries']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'countries': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'countries_result': []}
+mysql res: ['{"country": "Spain"}', '{"country": "Azerbaijan"}', '{"country": "Hungary"}', '{"country": "France"}', '{"country": "England"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------9-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium WHERE capacity  >  60000 INTERSECT SELECT country FROM stadium WHERE capacity  <  50000]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+Error parsing XML of prompt: not well-formed (invalid token): line 126, column 113
+convert time:5.969756 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stadium"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "Capacity": {
+                            "gt": 60000
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": {
+                            "source": "doc['Capacity'].value < 50000"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Country"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'range': {'Capacity': {'gt': 60000}}}], 'filter': [{'script': {'script': {'source': "doc['Capacity'].value < 50000"}}}]}}, '_source': ['Country'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 13, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"country": "Russia"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------10----------------- 
+schema:['count_DISTINCT city']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT city) FROM stadium WHERE opening_year  <  2006]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+Error parsing XML of prompt: not well-formed (invalid token): line 143, column 67
+convert time:6.224667 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "Opening_year": {
+                            "lt": 2006
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "unique_cities": {
+            "cardinality": {
+                "field": "City"
+            }
+        }
+    },
+    "inner_index": ["stadium"],
+    "code": {
+        "unique_cities": "response['aggregations']['unique_cities']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'range': {'Opening_year': {'lt': 2006}}}]}}, 'size': 0, 'aggs': {'unique_cities': {'cardinality': {'field': 'City'}}}, 'code': {'unique_cities': "response['aggregations']['unique_cities']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 9, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 7, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_cities': {'value': 8}}}
+
+exec_result_dict: {'unique_cities': 8}
+mysql res: ['{"count_DISTINCT city": 7}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------11-----------------
+schema:['country', 'count_*']
+---------------------------Execute SQL Query:[SELECT country ,  count(*) FROM stadium GROUP BY country]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+convert time:6.070142 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stadium"],
+    "size": 0,
+    "query": {
+        "match_all": {}
+    },
+    "aggs": {
+        "country_count": {
+            "terms": {
+                "field": "Country.keyword"
+            },
+            "aggs": {
+                "count": {
+                    "value_count": {
+                        "field": "Country"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "country_result": "response['aggregations']['country_count']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'match_all': {}}, 'aggs': {'country_count': {'terms': {'field': 'Country.keyword'}, 'aggs': {'count': {'value_count': {'field': 'Country'}}}}}, 'code': {'country_result': "response['aggregations']['country_count']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 4, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 10, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'country_count': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'Russia', 'doc_count': 4, 'count': {'value': 4}}, {'key': 'Spain', 'doc_count': 2, 'count': {'value': 2}}, {'key': 'Azerbaijan', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'England', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'France', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'Hungary', 'doc_count': 1, 'count': {'value': 1}}]}}}
+
+exec_result_dict: {'country_result': [{'key': 'Russia', 'doc_count': 4, 'count': {'value': 4}}, {'key': 'Spain', 'doc_count': 2, 'count': {'value': 2}}, {'key': 'Azerbaijan', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'England', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'France', 'doc_count': 1, 'count': {'value': 1}}, {'key': 'Hungary', 'doc_count': 1, 'count': {'value': 1}}]}
+mysql res: ['{"country": "Spain", "count_*": 2}', '{"country": "Russia", "count_*": 4}', '{"country": "Azerbaijan", "count_*": 1}', '{"country": "Hungary", "count_*": 1}', '{"country": "France", "count_*": 1}', '{"country": "England", "count_*": 1}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM stadium EXCEPT SELECT country FROM stadium WHERE opening_year  >  2006]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+convert time:6.013462 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stadium"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must_not": {
+                "range": {
+                    "Opening_year": {
+                        "gt": 2006
+                    }
+                }
+            }
+        }
+    },
+    "aggs": {
+        "unique_countries": {
+            "terms": {
+                "field": "Country",
+                "size": 1000
+            }
+        }
+    },
+    "code": {
+        "countries_result": "response['aggregations']['unique_countries']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must_not': {'range': {'Opening_year': {'gt': 2006}}}}}, 'aggs': {'unique_countries': {'terms': {'field': 'Country', 'size': 1000}}}, 'code': {'countries_result': "response['aggregations']['unique_countries']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 9, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 9, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_countries': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': [{'key': 'russia', 'doc_count': 3}, {'key': 'spain', 'doc_count': 2}, {'key': 'azerbaijan', 'doc_count': 1}, {'key': 'england', 'doc_count': 1}, {'key': 'france', 'doc_count': 1}, {'key': 'hungary', 'doc_count': 1}]}}}
+
+exec_result_dict: {'countries_result': [{'key': 'russia', 'doc_count': 3}, {'key': 'spain', 'doc_count': 2}, {'key': 'azerbaijan', 'doc_count': 1}, {'key': 'england', 'doc_count': 1}, {'key': 'france', 'doc_count': 1}, {'key': 'hungary', 'doc_count': 1}]}
+mysql res: ['{"country": "Spain"}', '{"country": "Azerbaijan"}', '{"country": "Hungary"}', '{"country": "France"}', '{"country": "England"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM stadium WHERE country != 'Russia']-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+convert time:6.329247 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "match": {
+                        "Country": "Russia"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "total_stadiums": {
+            "value_count": {
+                "field": "_index"
+            }
+        }
+    },
+    "inner_index": ["stadium"],
+    "code": {
+        "total_stadiums": "response['aggregations']['total_stadiums']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': [{'match': {'Country': 'Russia'}}]}}, 'size': 0, 'aggs': {'total_stadiums': {'value_count': {'field': '_index'}}}, 'code': {'total_stadiums': "response['aggregations']['total_stadiums']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 6, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'total_stadiums': {'value': 6}}}
+
+exec_result_dict: {'total_stadiums': 6}
+mysql res: ['{"count_*": 6}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM swimmer ORDER BY meter_100]-----------------
+target_db_schema: ['ID', 'Nationality', 'Time', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'name']
+convert time:3.070504 s
+---------------------------Execute Target Query:{
+  "sort": [
+    {
+      "meter_100": {
+        "order": "asc"
+      }
+    }
+  ],
+  "query": {
+    "match_all": {}
+  },
+  "inner_index": ["swimmer"]
+}-----------------
+**************************************************
+{'sort': [{'meter_100': {'order': 'asc'}}], 'query': {'match_all': {}}, 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 15, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': None, 'hits': [{'_index': 'swimming_swimmer', '_id': 'alcAD48BsHbYzo2oUHM0', '_score': None, '_source': {'ID': 8, 'name': 'Sébastien Rouault', 'Nationality': 'France', 'meter_100': 55.67, 'meter_200': '1:54.40', 'meter_300': '2:53.46', 'meter_400': '3:52.93', 'meter_500': '4:52.85', 'meter_600': '5:53.03', 'meter_700': '6:53.34', 'Time': '7:52.04'}, 'sort': [55.67]}, {'_index': 'swimming_swimmer', '_id': 'ZVcAD48BsHbYzo2oUHM0', '_score': None, '_source': {'ID': 3, 'name': 'Oussama Mellouli', 'Nationality': 'Tunisia', 'meter_100': 57.31, 'meter_200': '1:56.44', 'meter_300': '2:55.94', 'meter_400': '3:55.49', 'meter_500': '4:54.19', 'meter_600': '5:52.92', 'meter_700': '6:50.80', 'Time': '7:46.95'}, 'sort': [57.31]}, {'_index': 'swimming_swimmer', '_id': 'aVcAD48BsHbYzo2oUHM0', '_score': None, '_source': {'ID': 7, 'name': 'Przemysław Stańczyk', 'Nationality': 'Poland', 'meter_100': 57.31, 'meter_200': '1:57.10', 'meter_300': '2:56.02', 'meter_400': '3:55.36', 'meter_500': '4:54.21', 'meter_600': '5:52.59', 'meter_700': '6:50.91', 'Time': '7:47.91'}, 'sort': [57.31]}, {'_index': 'swimming_swimmer', '_id': 'Y1cAD48BsHbYzo2oUHM0', '_score': None, '_source': {'ID': 1, 'name': 'Sergiy Fesenko', 'Nationality': 'Ukraine', 'meter_100': 57.34, 'meter_200': '1:57.26', 'meter_300': '2:57.10', 'meter_400': '3:57.12', 'meter_500': '4:57.03', 'meter_600': '5:56.31', 'meter_700': '6:55.07', 'Time': '7:53.43'}, 'sort': [57.34]}, {'_index': 'swimming_swimmer', '_id': 'ZFcAD48BsHbYzo2oUHM0', '_score': None, '_source': {'ID': 2, 'name': 'Grant Hackett', 'Nationality': 'Australia', 'meter_100': 57.34, 'meter_200': '1:57.21', 'meter_300': '2:56.95', 'meter_400': '3:57.00', 'meter_500': '4:56.96', 'meter_600': '5:57.10', 'meter_700': '6:57.44', 'Time': '7:55.39'}, 'sort': [57.34]}, {'_index': 'swimming_swimmer', '_id': 'ZlcAD48BsHbYzo2oUHM0', '_score': None, '_source': {'ID': 4, 'name': 'Craig Stevens', 'Nationality': 'Australia', 'meter_100': 57.35, 'meter_200': '1:56.34', 'meter_300': '2:55.90', 'meter_400': '3:55.72', 'meter_500': '4:55.08', 'meter_600': '5:54.45', 'meter_700': '6:52.69', 'Time': '7:48.67'}, 'sort': [57.35]}, {'_index': 'swimming_swimmer', '_id': 'Z1cAD48BsHbYzo2oUHM0', '_score': None, '_source': {'ID': 5, 'name': 'Federico Colbertaldo', 'Nationality': 'Italy', 'meter_100': 57.66, 'meter_200': '1:56.77', 'meter_300': '2:56.04', 'meter_400': '3:55.37', 'meter_500': '4:54.48', 'meter_600': '5:53.53', 'meter_700': '6:52.58', 'Time': '7:49.98'}, 'sort': [57.66]}, {'_index': 'swimming_swimmer', '_id': 'aFcAD48BsHbYzo2oUHM0', '_score': None, '_source': {'ID': 6, 'name': 'Ryan Cochrane', 'Nationality': 'Canada', 'meter_100': 57.84, 'meter_200': '1:57.26', 'meter_300': '2:56.64', 'meter_400': '3:56.34', 'meter_500': '4:56.15', 'meter_600': '5:56.99', 'meter_700': '6:57.69', 'Time': '7:56.56'}, 'sort': [57.84]}]}}
+
+exec_result_dict: {}
+mysql res: ['{"name": "S\\u00e9bastien Rouault"}', '{"name": "Oussama Mellouli"}', '{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+target res: ['{"name": "S\\u00e9bastien Rouault"}', '{"name": "Oussama Mellouli"}', '{"name": "Przemys\\u0142aw Sta\\u0144czyk"}', '{"name": "Sergiy Fesenko"}', '{"name": "Grant Hackett"}', '{"name": "Craig Stevens"}', '{"name": "Federico Colbertaldo"}', '{"name": "Ryan Cochrane"}']
+translate SELECT name FROM swimmer ORDER BY meter_100 success
+
+--------------------------15-----------------
+schema:['count_DISTINCT nationality']
+---------------------------Execute SQL Query:[SELECT count(DISTINCT nationality) FROM swimmer]-----------------
+target_db_schema: ['ID', 'Nationality', 'Time', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'name']
+convert time:4.173803 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "size": 0,
+    "aggs": {
+        "unique_nationalities": {
+            "cardinality": {
+                "field": "Nationality"
+            }
+        }
+    },
+    "inner_index": ["swimmer"],
+    "code": {
+        "count_distinct_nationality": "response['aggregations']['unique_nationalities']['value']"
+    }
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, 'size': 0, 'aggs': {'unique_nationalities': {'cardinality': {'field': 'Nationality'}}}, 'code': {'count_distinct_nationality': "response['aggregations']['unique_nationalities']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'unique_nationalities': {'value': 7}}}
+
+exec_result_dict: {'count_distinct_nationality': 7}
+mysql res: ['{"count_DISTINCT nationality": 7}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------16-----------------
+schema:['nationality', 'count_*']
+---------------------------Execute SQL Query:[SELECT nationality ,  count(*) FROM swimmer GROUP BY nationality HAVING count(*)  >  1]-----------------
+target_db_schema: ['ID', 'Nationality', 'Time', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'name']
+convert time:9.471952 s
+---------------------------Execute Target Query:{
+    "inner_index": ["swimmer"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "_count": {
+                            "gt": 1
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "nationality_groups": {
+            "terms": {
+                "field": "Nationality",
+                "size": 10
+            },
+            "aggs": {
+                "count_swimmers": {
+                    "value_count": {
+                        "field": "_index"
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "nationality_result": "response['aggregations']['nationality_groups']['buckets']",
+        "count_swimmers": "bucket['count_swimmers']['value'] for bucket in response['aggregations']['nationality_groups']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'range': {'_count': {'gt': 1}}}]}}, 'aggs': {'nationality_groups': {'terms': {'field': 'Nationality', 'size': 10}, 'aggs': {'count_swimmers': {'value_count': {'field': '_index'}}}}}, 'code': {'nationality_result': "response['aggregations']['nationality_groups']['buckets']", 'count_swimmers': "bucket['count_swimmers']['value'] for bucket in response['aggregations']['nationality_groups']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'nationality_groups': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'nationality_result': []}
+mysql res: ['{"nationality": "Australia", "count_*": 2}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------17-----------------
+schema:['meter_200', 'meter_300']
+---------------------------Execute SQL Query:[SELECT meter_200 ,  meter_300 FROM swimmer WHERE nationality  =  'Australia']-----------------
+target_db_schema: ['ID', 'Nationality', 'Time', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'name']
+convert time:2.7121 s
+---------------------------Execute Target Query:{
+  "query": {
+    "term": {
+      "Nationality": "Australia"
+    }
+  },
+  "inner_index": ["swimmer"],
+  "_source": ["meter_200", "meter_300"]
+}-----------------
+**************************************************
+{'query': {'term': {'Nationality': 'Australia'}}, '_source': ['meter_200', 'meter_300'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 2, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}}
+
+exec_result_dict: {}
+mysql res: ['{"meter_200": "1:57.21", "meter_300": "2:56.95"}', '{"meter_200": "1:56.34", "meter_300": "2:55.90"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win']-----------------
+target_db_schema: ['Event_ID', 'ID', 'Result', 'Swimmer_ID', 's', 'w', 'i', 'm', 'm', 'e', 'r', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 't', 'i', 'o', 'n', 'a', 'l', 'i', 't', 'y', "'", ',', ' ', "'", 'T', 'i', 'm', 'e', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '1', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '2', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '3', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '4', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '5', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '6', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '7', '0', '0', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:5.824057 s
+---------------------------Execute Target Query:{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "Result": "Win"
+          }
+        },
+        {
+          "nested": {
+            "path": "record",
+            "query": {
+              "term": {
+                "record.swimmer_id": {
+                  "path": "swimmer.ID"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "_source": ["name"],
+  "inner_index": ["swimmer", "record"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'term': {'Result': 'Win'}}, {'nested': {'path': 'record', 'query': {'term': {'record.swimmer_id': {'path': 'swimmer.ID'}}}}}]}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[term] query does not support [path]')
+
+--------------------------19-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM stadium AS t1 JOIN event AS t2 ON t1.id  =  t2.stadium_id GROUP BY t2.stadium_id ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name', 'e', 'v', 'e', 'n', 't', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 'm', 'e', "'", ',', ' ', "'", 'S', 't', 'a', 'd', 'i', 'u', 'm', '_', 'I', 'D', "'", ',', ' ', "'", 'Y', 'e', 'a', 'r', "'", ']', '\n']
+convert time:10.029468 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stadium", "event"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "stadium",
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_stadium": {
+            "terms": {
+                "field": "stadium_id",
+                "size": 1,
+                "order": {
+                    "_count": "desc"
+                }
+            },
+            "aggs": {
+                "top_stadium_names": {
+                    "top_hits": {
+                        "size": 1,
+                        "_source": {
+                            "includes": ["name"]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "top_stadium_name": "response['aggregations']['group_by_stadium']['buckets'][0]['top_stadium_names']['hits']['hits'][0]['_source']['name']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'stadium', 'query': {'match_all': {}}}}]}}, 'aggs': {'group_by_stadium': {'terms': {'field': 'stadium_id', 'size': 1, 'order': {'_count': 'desc'}}, 'aggs': {'top_stadium_names': {'top_hits': {'size': 1, '_source': {'includes': ['name']}}}}}}, 'code': {'top_stadium_name': "response['aggregations']['group_by_stadium']['buckets'][0]['top_stadium_names']['hits']['hits'][0]['_source']['name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------20-----------------
+schema:['name', 'capacity']
+---------------------------Execute SQL Query:[SELECT t1.name ,  t1.capacity FROM stadium AS t1 JOIN event AS t2 ON t1.id  =  t2.stadium_id WHERE t2.name  =  'World Junior']-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name', 'e', 'v', 'e', 'n', 't', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 'm', 'e', "'", ',', ' ', "'", 'S', 't', 'a', 'd', 'i', 'u', 'm', '_', 'I', 'D', "'", ',', ' ', "'", 'Y', 'e', 'a', 'r', "'", ']', '\n']
+convert time:10.536257 s
+---------------------------Execute Target Query:{
+    "inner_index": ["stadium", "event"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "event.name": "World Junior"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "event",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "event.stadium_id": {
+                                                "query": "stadium.ID"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["stadium.name", "stadium.capacity"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'event.name': 'World Junior'}}, {'nested': {'path': 'event', 'query': {'bool': {'must': [{'match': {'event.stadium_id': {'query': 'stadium.ID'}}}]}}}}]}}, '_source': ['stadium.name', 'stadium.capacity'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', 'failed to create query: [nested] failed to find nested object under path [event]')
+
+--------------------------21-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM stadium WHERE id NOT IN (SELECT stadium_id FROM event)]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name', 'e', 'v', 'e', 'n', 't', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 'm', 'e', "'", ',', ' ', "'", 'S', 't', 'a', 'd', 'i', 'u', 'm', '_', 'I', 'D', "'", ',', ' ', "'", 'Y', 'e', 'a', 'r', "'", ']', '\n']
+convert time:4.92347 s
+---------------------------Execute Target Query:{
+    "size": 0,
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "terms": {
+                        "ID": {
+                            "index": "event",
+                            "path": "stadium_ID",
+                            "id": "stadium_ids"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["Name"],
+    "inner_index": ["stadium", "event"]
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must_not': [{'terms': {'ID': {'index': 'event', 'path': 'stadium_ID', 'id': 'stadium_ids'}}}]}}, '_source': ['Name']}
+**************************************************
+execute target query error:NotFoundError(404, 'index_not_found_exception', 'no such index [event]', event, index_or_alias)
+
+--------------------------22-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id GROUP BY t2.swimmer_id ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Event_ID', 'ID', 'Result', 'Swimmer_ID', 's', 'w', 'i', 'm', 'm', 'e', 'r', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 't', 'i', 'o', 'n', 'a', 'l', 'i', 't', 'y', "'", ',', ' ', "'", 'T', 'i', 'm', 'e', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '1', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '2', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '3', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '4', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '5', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '6', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '7', '0', '0', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:10.035371 s
+---------------------------Execute Target Query:{
+  "inner_index": ["swimmer", "record"],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "has_parent": {
+            "parent_type": "swimmer",
+            "query": {
+              "match_all": {}
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "group_by_swimmer": {
+      "terms": {
+        "field": "swimmer_id",
+        "size": 1,
+        "order": {
+          "_count": "desc"
+        }
+      },
+      "aggs": {
+        "top_swimmer_names": {
+          "top_hits": {
+            "_source": {
+              "includes": ["name"]
+            },
+            "size": 1
+          }
+        }
+      }
+    }
+  },
+  "size": 0,
+  "code": {
+    "name": "response['aggregations']['group_by_swimmer']['buckets'][0]['top_swimmer_names']['hits']['hits'][0]['_source']['name']"
+  }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_parent': {'parent_type': 'swimmer', 'query': {'match_all': {}}}}]}}, 'aggs': {'group_by_swimmer': {'terms': {'field': 'swimmer_id', 'size': 1, 'order': {'_count': 'desc'}}, 'aggs': {'top_swimmer_names': {'top_hits': {'_source': {'includes': ['name']}, 'size': 1}}}}}, 'size': 0, 'code': {'name': "response['aggregations']['group_by_swimmer']['buckets'][0]['top_swimmer_names']['hits']['hits'][0]['_source']['name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------23-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id GROUP BY t2.swimmer_id HAVING count(*)  >=  2]-----------------
+target_db_schema: ['Event_ID', 'ID', 'Result', 'Swimmer_ID', 's', 'w', 'i', 'm', 'm', 'e', 'r', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 't', 'i', 'o', 'n', 'a', 'l', 'i', 't', 'y', "'", ',', ' ', "'", 'T', 'i', 'm', 'e', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '1', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '2', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '3', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '4', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '5', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '6', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '7', '0', '0', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:13.906131 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_child": {
+                        "type": "record",
+                        "query": {
+                            "match_all": {}
+                        },
+                        "inner_hits": {
+                            "size": 0,
+                            "aggs": {
+                                "swimmer_count": {
+                                    "value_count": {
+                                        "field": "swimmer_id"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['swimmer_count'].value >= 2"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "aggs": {
+        "group_by_swimmer": {
+            "terms": {
+                "field": "swimmer_id",
+                "size": 10
+            },
+            "aggs": {
+                "top_names": {
+                    "top_hits": {
+                        "size": 1,
+                        "_source": {
+                            "includes": ["name"]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "inner_index": ["swimmer", "record"],
+    "code": {
+        "name_result": "response['aggregations']['group_by_swimmer']['buckets'][*]['top_names']['hits']['hits'][*]['_source']['name']"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'has_child': {'type': 'record', 'query': {'match_all': {}}, 'inner_hits': {'size': 0, 'aggs': {'swimmer_count': {'value_count': {'field': 'swimmer_id'}}}}}}], 'filter': [{'script': {'script': "doc['swimmer_count'].value >= 2"}}]}}, 'size': 0, 'aggs': {'group_by_swimmer': {'terms': {'field': 'swimmer_id', 'size': 10}, 'aggs': {'top_names': {'top_hits': {'size': 1, '_source': {'includes': ['name']}}}}}}, 'code': {'name_result': "response['aggregations']['group_by_swimmer']['buckets'][*]['top_names']['hits']['hits'][*]['_source']['name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:105] [inner_hits] unknown field [aggs]')
+
+--------------------------24-----------------
+schema:['name', 'nationality']
+---------------------------Execute SQL Query:[SELECT t1.name ,  t1.nationality FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win' GROUP BY t2.swimmer_id HAVING count(*)  >  1]-----------------
+target_db_schema: ['Event_ID', 'ID', 'Result', 'Swimmer_ID', 's', 'w', 'i', 'm', 'm', 'e', 'r', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 't', 'i', 'o', 'n', 'a', 'l', 'i', 't', 'y', "'", ',', ' ', "'", 'T', 'i', 'm', 'e', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '1', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '2', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '3', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '4', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '5', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '6', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '7', '0', '0', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:12.730018 s
+---------------------------Execute Target Query:{
+    "inner_index": ["swimmer", "record"],
+    "size": 0,
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "Result": "Win"
+                    }
+                }
+            ],
+            "filter": [
+                {
+                    "script": {
+                        "script": "doc['swimmer_id'].value == doc['ID'].value"
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "swimmers": {
+            "terms": {
+                "field": "swimmer_id",
+                "min_doc_count": 2
+            },
+            "aggs": {
+                "top_names": {
+                    "top_hits": {
+                        "size": 1,
+                        "_source": {
+                            "includes": ["name", "nationality"]
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "code": {
+        "swimmer_results": "response['aggregations']['swimmers']['buckets']"
+    }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'Result': 'Win'}}], 'filter': [{'script': {'script': "doc['swimmer_id'].value == doc['ID'].value"}}]}}, 'aggs': {'swimmers': {'terms': {'field': 'swimmer_id', 'min_doc_count': 2}, 'aggs': {'top_names': {'top_hits': {'size': 1, '_source': {'includes': ['name', 'nationality']}}}}}}, 'code': {'swimmer_results': "response['aggregations']['swimmers']['buckets']"}}
+**************************************************
+response of elasticsearch: {'took': 8, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 0, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'swimmers': {'doc_count_error_upper_bound': 0, 'sum_other_doc_count': 0, 'buckets': []}}}
+
+exec_result_dict: {'swimmer_results': []}
+mysql res: ['{"name": "Oussama Mellouli", "nationality": "Tunisia"}', '{"name": "Craig Stevens", "nationality": "Australia"}']
+target res: []
+Exception raised during comparison: Row number mismatch
+
+--------------------------25-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM swimmer WHERE id NOT IN (SELECT swimmer_id FROM record)]-----------------
+target_db_schema: ['Event_ID', 'ID', 'Result', 'Swimmer_ID', 's', 'w', 'i', 'm', 'm', 'e', 'r', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 't', 'i', 'o', 'n', 'a', 'l', 'i', 't', 'y', "'", ',', ' ', "'", 'T', 'i', 'm', 'e', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '1', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '2', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '3', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '4', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '5', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '6', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '7', '0', '0', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:3.499538 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must_not": {
+                "terms": {
+                    "ID": {
+                        "index": "record",
+                        "path": "swimmer_ID"
+                    }
+                }
+            }
+        }
+    },
+    "_source": ["name"],
+    "inner_index": ["swimmer", "record"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must_not': {'terms': {'ID': {'index': 'record', 'path': 'swimmer_ID'}}}}}, '_source': ['name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[1:82] [bool] failed to parse field [must_not]')
+
+--------------------------26-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Win' INTERSECT SELECT t1.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id WHERE RESULT  =  'Loss']-----------------
+target_db_schema: ['Event_ID', 'ID', 'Result', 'Swimmer_ID', 's', 'w', 'i', 'm', 'm', 'e', 'r', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 't', 'i', 'o', 'n', 'a', 'l', 'i', 't', 'y', "'", ',', ' ', "'", 'T', 'i', 'm', 'e', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '1', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '2', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '3', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '4', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '5', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '6', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '7', '0', '0', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:13.827585 s
+---------------------------Execute Target Query:{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "bool": {
+                        "must": [
+                            {
+                                "term": {
+                                    "Result": "Win"
+                                }
+                            }
+                        ],
+                        "filter": [
+                            {
+                                "term": {
+                                    "Swimmer_ID": {
+                                        "path": "swimmer_id",
+                                        "query": {
+                                            "match_all": {}
+                                        },
+                                        "inner_hits": {
+                                            "_source": ["name"]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "bool": {
+                        "must": [
+                            {
+                                "term": {
+                                    "Result": "Loss"
+                                }
+                            }
+                        ],
+                        "filter": [
+                            {
+                                "term": {
+                                    "Swimmer_ID": {
+                                        "path": "swimmer_id",
+                                        "query": {
+                                            "match_all": {}
+                                        },
+                                        "inner_hits": {
+                                            "_source": ["name"]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "size": 0,
+    "inner_index": ["swimmer", "record"],
+    "code": {
+        "name_result": "response['hits']['hits'][0]['inner_hits']['Swimmer_ID']['hits']['hits'].map(hit => hit['_source']['name'])"
+    }
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'bool': {'must': [{'term': {'Result': 'Win'}}], 'filter': [{'term': {'Swimmer_ID': {'path': 'swimmer_id', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['name']}}}}]}}, {'bool': {'must': [{'term': {'Result': 'Loss'}}], 'filter': [{'term': {'Swimmer_ID': {'path': 'swimmer_id', 'query': {'match_all': {}}, 'inner_hits': {'_source': ['name']}}}}]}}]}}, 'size': 0, 'code': {'name_result': "response['hits']['hits'][0]['inner_hits']['Swimmer_ID']['hits']['hits'].map(hit => hit['_source']['name'])"}}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[term] query does not support [path]')
+
+--------------------------27-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t4.name FROM swimmer AS t1 JOIN record AS t2 ON t1.id  =  t2.swimmer_id JOIN event AS t3 ON t2.event_id  =  t3.id JOIN stadium AS t4 ON t4.id  =  t3.stadium_id WHERE t1.nationality  =  'Australia']-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name', 'e', 'v', 'e', 'n', 't', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 'm', 'e', "'", ',', ' ', "'", 'S', 't', 'a', 'd', 'i', 'u', 'm', '_', 'I', 'D', "'", ',', ' ', "'", 'Y', 'e', 'a', 'r', "'", ']', '\n', 'r', 'e', 'c', 'o', 'r', 'd', ':', ' ', '[', "'", 'E', 'v', 'e', 'n', 't', '_', 'I', 'D', "'", ',', ' ', "'", 'I', 'D', "'", ',', ' ', "'", 'R', 'e', 's', 'u', 'l', 't', "'", ',', ' ', "'", 'S', 'w', 'i', 'm', 'm', 'e', 'r', '_', 'I', 'D', "'", ']', '\n', 's', 'w', 'i', 'm', 'm', 'e', 'r', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 't', 'i', 'o', 'n', 'a', 'l', 'i', 't', 'y', "'", ',', ' ', "'", 'T', 'i', 'm', 'e', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '1', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '2', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '3', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '4', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '5', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '6', '0', '0', "'", ',', ' ', "'", 'm', 'e', 't', 'e', 'r', '_', '7', '0', '0', "'", ',', ' ', "'", 'n', 'a', 'm', 'e', "'", ']', '\n']
+convert time:19.665736 s
+---------------------------Execute Target Query:{
+    "inner_index": ["swimmer", "record", "event", "stadium"],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "match": {
+                        "swimmer.Nationality": "Australia"
+                    }
+                },
+                {
+                    "nested": {
+                        "path": "record",
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "record.Swimmer_ID": {
+                                                "query": "swimmer.ID",
+                                                "type": "phrase"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "nested": {
+                                            "path": "event",
+                                            "query": {
+                                                "bool": {
+                                                    "must": [
+                                                        {
+                                                            "match": {
+                                                                "event.ID": {
+                                                                    "query": "record.Event_ID",
+                                                                    "type": "phrase"
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "nested": {
+                                                                "path": "stadium",
+                                                                "query": {
+                                                                    "match": {
+                                                                        "stadium.ID": {
+                                                                            "query": "event.Stadium_ID",
+                                                                            "type": "phrase"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "_source": ["stadium.Name"]
+}-----------------
+**************************************************
+{'query': {'bool': {'must': [{'match': {'swimmer.Nationality': 'Australia'}}, {'nested': {'path': 'record', 'query': {'bool': {'must': [{'match': {'record.Swimmer_ID': {'query': 'swimmer.ID', 'type': 'phrase'}}}, {'nested': {'path': 'event', 'query': {'bool': {'must': [{'match': {'event.ID': {'query': 'record.Event_ID', 'type': 'phrase'}}}, {'nested': {'path': 'stadium', 'query': {'match': {'stadium.ID': {'query': 'event.Stadium_ID', 'type': 'phrase'}}}}}]}}}}]}}}}]}}, '_source': ['stadium.Name'], 'size': 10000}
+**************************************************
+execute target query error:BadRequestError(400, 'x_content_parse_exception', '[match] query does not support [type]')
+
+--------------------------28-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT t3.name FROM record AS t1 JOIN event AS t2 ON t1.event_id  =  t2.id JOIN stadium AS t3 ON t3.id  =  t2.stadium_id GROUP BY t2.stadium_id ORDER BY count(*) DESC LIMIT 1]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name', 'e', 'v', 'e', 'n', 't', ':', ' ', '[', "'", 'I', 'D', "'", ',', ' ', "'", 'N', 'a', 'm', 'e', "'", ',', ' ', "'", 'S', 't', 'a', 'd', 'i', 'u', 'm', '_', 'I', 'D', "'", ',', ' ', "'", 'Y', 'e', 'a', 'r', "'", ']', '\n', 'r', 'e', 'c', 'o', 'r', 'd', ':', ' ', '[', "'", 'E', 'v', 'e', 'n', 't', '_', 'I', 'D', "'", ',', ' ', "'", 'I', 'D', "'", ',', ' ', "'", 'R', 'e', 's', 'u', 'l', 't', "'", ',', ' ', "'", 'S', 'w', 'i', 'm', 'm', 'e', 'r', '_', 'I', 'D', "'", ']', '\n']
+convert time:13.29633 s
+---------------------------Execute Target Query:{
+    "size": 1,
+    "sort": [
+        {
+            "_count": {
+                "order": "desc"
+            }
+        }
+    ],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "has_parent": {
+                        "parent_type": "event",
+                        "query": {
+                            "has_parent": {
+                                "parent_type": "stadium",
+                                "query": {
+                                    "match_all": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "aggs": {
+        "group_by_stadium": {
+            "terms": {
+                "field": "event.Stadium_ID",
+                "size": 1
+            },
+            "aggs": {
+                "top_stadium_names": {
+                    "top_hits": {
+                        "_source": {
+                            "includes": ["name"]
+                        },
+                        "size": 1
+                    }
+                }
+            }
+        }
+    },
+    "inner_index": ["record", "event", "stadium"],
+    "code": {
+        "top_stadium_name": "response['aggregations']['group_by_stadium']['buckets'][0]['top_stadium_names']['hits']['hits'][0]['_source']['name']"
+    }
+}-----------------
+**************************************************
+{'size': 1, 'sort': [{'_count': {'order': 'desc'}}], 'query': {'bool': {'must': [{'has_parent': {'parent_type': 'event', 'query': {'has_parent': {'parent_type': 'stadium', 'query': {'match_all': {}}}}}}]}}, 'aggs': {'group_by_stadium': {'terms': {'field': 'event.Stadium_ID', 'size': 1}, 'aggs': {'top_stadium_names': {'top_hits': {'_source': {'includes': ['name']}, 'size': 1}}}}}, 'code': {'top_stadium_name': "response['aggregations']['group_by_stadium']['buckets'][0]['top_stadium_names']['hits']['hits'][0]['_source']['name']"}}
+**************************************************
+execute target query error:BadRequestError(400, 'search_phase_execution_exception', '[has_parent] no join field has been configured')
+
+--------------------------29-----------------
+schema:['ID', 'name', 'Nationality', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'Time']
+---------------------------Execute SQL Query:[SELECT * FROM swimmer]-----------------
+target_db_schema: ['ID', 'Nationality', 'Time', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'name']
+convert time:6.596524 s
+---------------------------Execute Target Query:{
+    "query": {
+        "match_all": {}
+    },
+    "_source": ["ID", "Nationality", "Time", "meter_100", "meter_200", "meter_300", "meter_400", "meter_500", "meter_600", "meter_700", "name"],
+    "inner_index": ["swimmer"]
+}-----------------
+**************************************************
+{'query': {'match_all': {}}, '_source': ['ID', 'Nationality', 'Time', 'meter_100', 'meter_200', 'meter_300', 'meter_400', 'meter_500', 'meter_600', 'meter_700', 'name'], 'size': 10000}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 8, 'relation': 'eq'}, 'max_score': 1.0, 'hits': [{'_index': 'swimming_swimmer', '_id': 'Y1cAD48BsHbYzo2oUHM0', '_score': 1.0, '_source': {'ID': 1, 'name': 'Sergiy Fesenko', 'Nationality': 'Ukraine', 'meter_100': 57.34, 'meter_200': '1:57.26', 'meter_300': '2:57.10', 'meter_400': '3:57.12', 'meter_500': '4:57.03', 'meter_600': '5:56.31', 'meter_700': '6:55.07', 'Time': '7:53.43'}}, {'_index': 'swimming_swimmer', '_id': 'ZFcAD48BsHbYzo2oUHM0', '_score': 1.0, '_source': {'ID': 2, 'name': 'Grant Hackett', 'Nationality': 'Australia', 'meter_100': 57.34, 'meter_200': '1:57.21', 'meter_300': '2:56.95', 'meter_400': '3:57.00', 'meter_500': '4:56.96', 'meter_600': '5:57.10', 'meter_700': '6:57.44', 'Time': '7:55.39'}}, {'_index': 'swimming_swimmer', '_id': 'ZVcAD48BsHbYzo2oUHM0', '_score': 1.0, '_source': {'ID': 3, 'name': 'Oussama Mellouli', 'Nationality': 'Tunisia', 'meter_100': 57.31, 'meter_200': '1:56.44', 'meter_300': '2:55.94', 'meter_400': '3:55.49', 'meter_500': '4:54.19', 'meter_600': '5:52.92', 'meter_700': '6:50.80', 'Time': '7:46.95'}}, {'_index': 'swimming_swimmer', '_id': 'ZlcAD48BsHbYzo2oUHM0', '_score': 1.0, '_source': {'ID': 4, 'name': 'Craig Stevens', 'Nationality': 'Australia', 'meter_100': 57.35, 'meter_200': '1:56.34', 'meter_300': '2:55.90', 'meter_400': '3:55.72', 'meter_500': '4:55.08', 'meter_600': '5:54.45', 'meter_700': '6:52.69', 'Time': '7:48.67'}}, {'_index': 'swimming_swimmer', '_id': 'Z1cAD48BsHbYzo2oUHM0', '_score': 1.0, '_source': {'ID': 5, 'name': 'Federico Colbertaldo', 'Nationality': 'Italy', 'meter_100': 57.66, 'meter_200': '1:56.77', 'meter_300': '2:56.04', 'meter_400': '3:55.37', 'meter_500': '4:54.48', 'meter_600': '5:53.53', 'meter_700': '6:52.58', 'Time': '7:49.98'}}, {'_index': 'swimming_swimmer', '_id': 'aFcAD48BsHbYzo2oUHM0', '_score': 1.0, '_source': {'ID': 6, 'name': 'Ryan Cochrane', 'Nationality': 'Canada', 'meter_100': 57.84, 'meter_200': '1:57.26', 'meter_300': '2:56.64', 'meter_400': '3:56.34', 'meter_500': '4:56.15', 'meter_600': '5:56.99', 'meter_700': '6:57.69', 'Time': '7:56.56'}}, {'_index': 'swimming_swimmer', '_id': 'aVcAD48BsHbYzo2oUHM0', '_score': 1.0, '_source': {'ID': 7, 'name': 'Przemysław Stańczyk', 'Nationality': 'Poland', 'meter_100': 57.31, 'meter_200': '1:57.10', 'meter_300': '2:56.02', 'meter_400': '3:55.36', 'meter_500': '4:54.21', 'meter_600': '5:52.59', 'meter_700': '6:50.91', 'Time': '7:47.91'}}, {'_index': 'swimming_swimmer', '_id': 'alcAD48BsHbYzo2oUHM0', '_score': 1.0, '_source': {'ID': 8, 'name': 'Sébastien Rouault', 'Nationality': 'France', 'meter_100': 55.67, 'meter_200': '1:54.40', 'meter_300': '2:53.46', 'meter_400': '3:52.93', 'meter_500': '4:52.85', 'meter_600': '5:53.03', 'meter_700': '6:53.34', 'Time': '7:52.04'}}]}}
+
+exec_result_dict: {}
+mysql res: ['{"ID": 1, "name": "Sergiy Fesenko", "Nationality": "Ukraine", "meter_100": 57.34, "meter_200": "1:57.26", "meter_300": "2:57.10", "meter_400": "3:57.12", "meter_500": "4:57.03", "meter_600": "5:56.31", "meter_700": "6:55.07", "Time": "7:53.43"}', '{"ID": 2, "name": "Grant Hackett", "Nationality": "Australia", "meter_100": 57.34, "meter_200": "1:57.21", "meter_300": "2:56.95", "meter_400": "3:57.00", "meter_500": "4:56.96", "meter_600": "5:57.10", "meter_700": "6:57.44", "Time": "7:55.39"}', '{"ID": 3, "name": "Oussama Mellouli", "Nationality": "Tunisia", "meter_100": 57.31, "meter_200": "1:56.44", "meter_300": "2:55.94", "meter_400": "3:55.49", "meter_500": "4:54.19", "meter_600": "5:52.92", "meter_700": "6:50.80", "Time": "7:46.95"}', '{"ID": 4, "name": "Craig Stevens", "Nationality": "Australia", "meter_100": 57.35, "meter_200": "1:56.34", "meter_300": "2:55.90", "meter_400": "3:55.72", "meter_500": "4:55.08", "meter_600": "5:54.45", "meter_700": "6:52.69", "Time": "7:48.67"}', '{"ID": 5, "name": "Federico Colbertaldo", "Nationality": "Italy", "meter_100": 57.66, "meter_200": "1:56.77", "meter_300": "2:56.04", "meter_400": "3:55.37", "meter_500": "4:54.48", "meter_600": "5:53.53", "meter_700": "6:52.58", "Time": "7:49.98"}', '{"ID": 6, "name": "Ryan Cochrane", "Nationality": "Canada", "meter_100": 57.84, "meter_200": "1:57.26", "meter_300": "2:56.64", "meter_400": "3:56.34", "meter_500": "4:56.15", "meter_600": "5:56.99", "meter_700": "6:57.69", "Time": "7:56.56"}', '{"ID": 7, "name": "Przemys\\u0142aw Sta\\u0144czyk", "Nationality": "Poland", "meter_100": 57.31, "meter_200": "1:57.10", "meter_300": "2:56.02", "meter_400": "3:55.36", "meter_500": "4:54.21", "meter_600": "5:52.59", "meter_700": "6:50.91", "Time": "7:47.91"}', '{"ID": 8, "name": "S\\u00e9bastien Rouault", "Nationality": "France", "meter_100": 55.67, "meter_200": "1:54.40", "meter_300": "2:53.46", "meter_400": "3:52.93", "meter_500": "4:52.85", "meter_600": "5:53.03", "meter_700": "6:53.34", "Time": "7:52.04"}']
+target res: ['{"ID": 1, "name": "Sergiy Fesenko", "Nationality": "Ukraine", "meter_100": 57.34, "meter_200": "1:57.26", "meter_300": "2:57.10", "meter_400": "3:57.12", "meter_500": "4:57.03", "meter_600": "5:56.31", "meter_700": "6:55.07", "Time": "7:53.43"}', '{"ID": 2, "name": "Grant Hackett", "Nationality": "Australia", "meter_100": 57.34, "meter_200": "1:57.21", "meter_300": "2:56.95", "meter_400": "3:57.00", "meter_500": "4:56.96", "meter_600": "5:57.10", "meter_700": "6:57.44", "Time": "7:55.39"}', '{"ID": 3, "name": "Oussama Mellouli", "Nationality": "Tunisia", "meter_100": 57.31, "meter_200": "1:56.44", "meter_300": "2:55.94", "meter_400": "3:55.49", "meter_500": "4:54.19", "meter_600": "5:52.92", "meter_700": "6:50.80", "Time": "7:46.95"}', '{"ID": 4, "name": "Craig Stevens", "Nationality": "Australia", "meter_100": 57.35, "meter_200": "1:56.34", "meter_300": "2:55.90", "meter_400": "3:55.72", "meter_500": "4:55.08", "meter_600": "5:54.45", "meter_700": "6:52.69", "Time": "7:48.67"}', '{"ID": 5, "name": "Federico Colbertaldo", "Nationality": "Italy", "meter_100": 57.66, "meter_200": "1:56.77", "meter_300": "2:56.04", "meter_400": "3:55.37", "meter_500": "4:54.48", "meter_600": "5:53.53", "meter_700": "6:52.58", "Time": "7:49.98"}', '{"ID": 6, "name": "Ryan Cochrane", "Nationality": "Canada", "meter_100": 57.84, "meter_200": "1:57.26", "meter_300": "2:56.64", "meter_400": "3:56.34", "meter_500": "4:56.15", "meter_600": "5:56.99", "meter_700": "6:57.69", "Time": "7:56.56"}', '{"ID": 7, "name": "Przemys\\u0142aw Sta\\u0144czyk", "Nationality": "Poland", "meter_100": 57.31, "meter_200": "1:57.10", "meter_300": "2:56.02", "meter_400": "3:55.36", "meter_500": "4:54.21", "meter_600": "5:52.59", "meter_700": "6:50.91", "Time": "7:47.91"}', '{"ID": 8, "name": "S\\u00e9bastien Rouault", "Nationality": "France", "meter_100": 55.67, "meter_200": "1:54.40", "meter_300": "2:53.46", "meter_400": "3:52.93", "meter_500": "4:52.85", "meter_600": "5:53.03", "meter_700": "6:53.34", "Time": "7:52.04"}']
+translate SELECT * FROM swimmer success
+
+--------------------------30-----------------
+schema:['avg_capacity']
+---------------------------Execute SQL Query:[SELECT avg(capacity) FROM stadium WHERE opening_year  =  2005]-----------------
+target_db_schema: ['Capacity', 'City', 'Country', 'ID', 'Opening_year', 'name']
+convert time:6.334056 s
+---------------------------Execute Target Query:{
+  "inner_index": ["stadium"],
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "Opening_year": 2005
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "avg_capacity": {
+      "avg": {
+        "field": "Capacity"
+      }
+    }
+  },
+  "code": {
+    "avg_capacity": "response['aggregations']['avg_capacity']['value']"
+  }
+}-----------------
+**************************************************
+{'size': 0, 'query': {'bool': {'must': [{'match': {'Opening_year': 2005}}]}}, 'aggs': {'avg_capacity': {'avg': {'field': 'Capacity'}}}, 'code': {'avg_capacity': "response['aggregations']['avg_capacity']['value']"}}
+**************************************************
+response of elasticsearch: {'took': 3, 'timed_out': False, '_shards': {'total': 1, 'successful': 1, 'skipped': 0, 'failed': 0}, 'hits': {'total': {'value': 4, 'relation': 'eq'}, 'max_score': None, 'hits': []}, 'aggregations': {'avg_capacity': {'value': 62504.0}}}
+
+exec_result_dict: {'avg_capacity': 62504.0}
+mysql res: ['{"avg_capacity": 62504.0000}']
+target res: []
+Exception raised during comparison: Row number mismatch
+success_query_count: 3
+valid_count: 30
+accuracy: 0.1

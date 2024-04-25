@@ -1,0 +1,299 @@
+--------
+
+--------------------------1-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM church WHERE open_date  <  1850]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 19, column 51
+convert time:1.582071 s
+---------------------------Execute Target Query:MATCH (c:church) WHERE c.open_date < 1850 RETURN count(*) as count_-----------------
+MATCH (c:church) WHERE c.open_date < 1850 RETURN count(*) as count_
+mysql res: ['{"count_*": 9}']
+target res: ['{"count_": 9}']
+mismatch between MySQL and target
+
+--------------------------2-----------------
+schema:['name', 'open_date', 'organized_by']
+---------------------------Execute SQL Query:[SELECT name ,  open_date ,  organized_by FROM church]-----------------
+convert time:1.552552 s
+---------------------------Execute Target Query:MATCH (c:church) RETURN c.name AS name, c.open_date AS open_date, c.organized_by AS organized_by-----------------
+MATCH (c:church) RETURN c.name AS name, c.open_date AS open_date, c.organized_by AS organized_by
+mysql res: ['{"name": "Pure Church of Christ", "open_date": 1831, "organized_by": "Wycam Clark"}', '{"name": "Independent Church", "open_date": 1832, "organized_by": "\\u2013 Hoton"}', '{"name": "Church of Christ", "open_date": 1836, "organized_by": "Ezra Booth"}', '{"name": "Church of Christ (Parrishite)", "open_date": 1837, "organized_by": "Warren Parrish"}', '{"name": "Alston Church", "open_date": 1839, "organized_by": "Isaac Russell"}', '{"name": "Church of Christ", "open_date": 1830, "organized_by": "William Chubby"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840, "organized_by": "George M. Hinkle"}', '{"name": "Church of Christ", "open_date": 1842, "organized_by": "Hiram Page"}', '{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844, "organized_by": "William Law"}']
+target res: ['{"name": "Pure Church of Christ", "open_date": 1831, "organized_by": "Wycam Clark"}', '{"name": "Independent Church", "open_date": 1832, "organized_by": "\\u2013 Hoton"}', '{"name": "Church of Christ", "open_date": 1836, "organized_by": "Ezra Booth"}', '{"name": "Church of Christ (Parrishite)", "open_date": 1837, "organized_by": "Warren Parrish"}', '{"name": "Alston Church", "open_date": 1839, "organized_by": "Isaac Russell"}', '{"name": "Church of Christ", "open_date": 1830, "organized_by": "William Chubby"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840, "organized_by": "George M. Hinkle"}', '{"name": "Church of Christ", "open_date": 1842, "organized_by": "Hiram Page"}', '{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844, "organized_by": "William Law"}']
+translate SELECT name ,  open_date ,  organized_by FROM church success
+
+--------------------------3-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM church ORDER BY open_date DESC]-----------------
+convert time:1.291539 s
+---------------------------Execute Target Query:MATCH (c:church) RETURN c.name as name ORDER BY c.open_date DESC-----------------
+MATCH (c:church) RETURN c.name as name ORDER BY c.open_date DESC
+mysql res: ['{"name": "True Church of Jesus Christ of Latter Day Saints"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}']
+target res: ['{"name": "True Church of Jesus Christ of Latter Day Saints"}', '{"name": "Church of Christ"}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ"}', '{"name": "Independent Church"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}']
+translate SELECT name FROM church ORDER BY open_date DESC success
+
+--------------------------4-----------------
+schema:['open_date']
+---------------------------Execute SQL Query:[SELECT open_date FROM church GROUP BY open_date HAVING count(*)  >=  2]-----------------
+convert time:2.119795 s
+---------------------------Execute Target Query:MATCH (c:church)
+RETURN c.open_date as open_date, count(*) as count_star
+HAVING count_star >= 2
+GROUP BY c.open_date-----------------
+MATCH (c:church)
+RETURN c.open_date as open_date, count(*) as count_star
+HAVING count_star >= 2
+GROUP BY c.open_date
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'HAVING': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WITH"
+  <EOF> (line 3, column 1 (offset: 73))
+"HAVING count_star >= 2"
+ ^}
+
+--------------------------5-----------------
+schema:['organized_by', 'name']
+---------------------------Execute SQL Query:[SELECT organized_by ,  name FROM church WHERE open_date BETWEEN 1830 AND 1840]-----------------
+convert time:2.966674 s
+---------------------------Execute Target Query:MATCH (c:church) WHERE c.open_date >= 1830 AND c.open_date <= 1840 RETURN c.organized_by AS organized_by, c.name AS name-----------------
+MATCH (c:church) WHERE c.open_date >= 1830 AND c.open_date <= 1840 RETURN c.organized_by AS organized_by, c.name AS name
+mysql res: ['{"organized_by": "Wycam Clark", "name": "Pure Church of Christ"}', '{"organized_by": "\\u2013 Hoton", "name": "Independent Church"}', '{"organized_by": "Ezra Booth", "name": "Church of Christ"}', '{"organized_by": "Warren Parrish", "name": "Church of Christ (Parrishite)"}', '{"organized_by": "Isaac Russell", "name": "Alston Church"}', '{"organized_by": "William Chubby", "name": "Church of Christ"}', '{"organized_by": "George M. Hinkle", "name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}']
+target res: ['{"organized_by": "Wycam Clark", "name": "Pure Church of Christ"}', '{"organized_by": "\\u2013 Hoton", "name": "Independent Church"}', '{"organized_by": "Ezra Booth", "name": "Church of Christ"}', '{"organized_by": "Warren Parrish", "name": "Church of Christ (Parrishite)"}', '{"organized_by": "Isaac Russell", "name": "Alston Church"}', '{"organized_by": "William Chubby", "name": "Church of Christ"}', '{"organized_by": "George M. Hinkle", "name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife"}']
+translate SELECT organized_by ,  name FROM church WHERE open_date BETWEEN 1830 AND 1840 success
+
+--------------------------6-----------------
+schema:['open_date', 'count_*']
+---------------------------Execute SQL Query:[SELECT open_date ,  count(*) FROM church GROUP BY open_date]-----------------
+convert time:1.770633 s
+---------------------------Execute Target Query:MATCH (c:church)
+RETURN c.open_date AS open_date, count(*) AS count_-----------------
+MATCH (c:church)
+RETURN c.open_date AS open_date, count(*) AS count_
+mysql res: ['{"open_date": 1831, "count_*": 1}', '{"open_date": 1832, "count_*": 1}', '{"open_date": 1836, "count_*": 1}', '{"open_date": 1837, "count_*": 1}', '{"open_date": 1839, "count_*": 1}', '{"open_date": 1830, "count_*": 1}', '{"open_date": 1840, "count_*": 1}', '{"open_date": 1842, "count_*": 1}', '{"open_date": 1844, "count_*": 1}']
+target res: ['{"open_date": 1831, "count_": 1}', '{"open_date": 1832, "count_": 1}', '{"open_date": 1836, "count_": 1}', '{"open_date": 1837, "count_": 1}', '{"open_date": 1839, "count_": 1}', '{"open_date": 1830, "count_": 1}', '{"open_date": 1840, "count_": 1}', '{"open_date": 1842, "count_": 1}', '{"open_date": 1844, "count_": 1}']
+mismatch between MySQL and target
+
+--------------------------7-----------------
+schema:['name', 'open_date']
+---------------------------Execute SQL Query:[SELECT name ,  open_date FROM church ORDER BY open_date DESC LIMIT 3]-----------------
+convert time:1.822242 s
+---------------------------Execute Target Query:MATCH (c:church)
+RETURN c.name AS name, c.open_date AS open_date
+ORDER BY c.open_date DESC
+LIMIT 3-----------------
+MATCH (c:church)
+RETURN c.name AS name, c.open_date AS open_date
+ORDER BY c.open_date DESC
+LIMIT 3
+mysql res: ['{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844}', '{"name": "Church of Christ", "open_date": 1842}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840}']
+target res: ['{"name": "True Church of Jesus Christ of Latter Day Saints", "open_date": 1844}', '{"name": "Church of Christ", "open_date": 1842}', '{"name": "Church of Jesus Christ, the Bride, the Lamb\'s Wife", "open_date": 1840}']
+translate SELECT name ,  open_date FROM church ORDER BY open_date DESC LIMIT 3 success
+
+--------------------------8-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM people WHERE is_male  =  'F' AND age  >  30]-----------------
+convert time:1.631427 s
+---------------------------Execute Target Query:MATCH (p:people) WHERE p.is_male = 'F' AND p.age > 30 RETURN count(p) as count-----------------
+MATCH (p:people) WHERE p.is_male = 'F' AND p.age > 30 RETURN count(p) as count
+mysql res: ['{"count_*": 3}']
+target res: ['{"count": 3}']
+mismatch between MySQL and target
+
+--------------------------9-----------------
+schema:['country']
+---------------------------Execute SQL Query:[SELECT country FROM people WHERE age  <  25 INTERSECT SELECT country FROM people WHERE age  >  30]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 19, column 44
+convert time:2.377614 s
+---------------------------Execute Target Query:MATCH (p1:people) WHERE p1.age < 25
+WITH p1.country AS country
+MATCH (p2:people) WHERE p2.age > 30 AND p2.country = country
+RETURN DISTINCT p2.country AS country-----------------
+MATCH (p1:people) WHERE p1.age < 25
+WITH p1.country AS country
+MATCH (p2:people) WHERE p2.age > 30 AND p2.country = country
+RETURN DISTINCT p2.country AS country
+mysql res: []
+target res: []
+translate SELECT country FROM people WHERE age  <  25 INTERSECT SELECT country FROM people WHERE age  >  30 success
+
+--------------------------10-----------------
+schema:['min_age', 'max_age', 'avg_age']
+---------------------------Execute SQL Query:[SELECT min(age) ,  max(age) ,  avg(age) FROM people]-----------------
+convert time:2.166051 s
+---------------------------Execute Target Query:MATCH (p:people)
+RETURN min(p.age) AS min_age, max(p.age) AS max_age, avg(p.age) AS avg_age-----------------
+MATCH (p:people)
+RETURN min(p.age) AS min_age, max(p.age) AS max_age, avg(p.age) AS avg_age
+mysql res: ['{"min_age": 25, "max_age": 36, "avg_age": 30.1667}']
+target res: ['{"min_age": 25, "max_age": 48, "avg_age": 35.31818181818182}']
+mismatch between MySQL and target
+
+--------------------------11-----------------
+schema:['name', 'country']
+---------------------------Execute SQL Query:[SELECT name ,  country FROM people WHERE age  <  (SELECT avg(age) FROM people)]-----------------
+Error parsing XML of prompt: not well-formed (invalid token): line 19, column 52
+convert time:2.753867 s
+---------------------------Execute Target Query:MATCH (p:people)
+WITH avg(p.age) AS avg_age
+MATCH (p2:people)
+WHERE p2.age < avg_age
+RETURN p2.name AS name, p2.country AS country-----------------
+MATCH (p:people)
+WITH avg(p.age) AS avg_age
+MATCH (p2:people)
+WHERE p2.age < avg_age
+RETURN p2.name AS name, p2.country AS country
+mysql res: ['{"name": "Ricky Barnes", "country": "United States"}', '{"name": "Summer Duval", "country": "United States"}', '{"name": "Todd Hamilton", "country": "United States"}', '{"name": "Annie Mediate", "country": "United States"}', '{"name": "Adam Scott", "country": "Australia"}', '{"name": "Danny Toms", "country": "United States"}']
+target res: ['{"name": "Mike Weir", "country": "Canada"}', '{"name": "Juli Hanson", "country": "Sweden"}', '{"name": "Ricky Barnes", "country": "United States"}', '{"name": "Summer Duval", "country": "United States"}', '{"name": "Todd Hamilton", "country": "United States"}', '{"name": "Annie Mediate", "country": "United States"}', '{"name": "Lucas Glover", "country": "United States"}', '{"name": "Joe O\'Hair", "country": "United States"}', '{"name": "Graeme McDowell", "country": "Northern Ireland"}', '{"name": "Adam Scott", "country": "Australia"}', '{"name": "Danny Toms", "country": "United States"}', '{"name": "Luther C. Carter", "country": null}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------12-----------------
+schema:['name', 'name']
+---------------------------Execute SQL Query:[SELECT T2.name ,  T3.name FROM wedding AS T1 JOIN people AS T2 ON T1.male_id  =  T2.people_id JOIN people AS T3 ON T1.female_id  =  T3.people_id WHERE T1.year  >  2014]-----------------
+convert time:3.249462 s
+---------------------------Execute Target Query:MATCH (p1:people), (p2:people), (w:wedding)
+WHERE w.male_id = p1.people_id AND w.female_id = p2.people_id AND w.year > 2014
+RETURN p1.name AS name1, p2.name AS name2-----------------
+MATCH (p1:people), (p2:people), (w:wedding)
+WHERE w.male_id = p1.people_id AND w.female_id = p2.people_id AND w.year > 2014
+RETURN p1.name AS name1, p2.name AS name2
+mysql res: ['{"name": "Ricky Barnes"}', '{"name": "Lucas Glover"}', '{"name": "Todd Hamilton"}']
+target res: ['{"name1": "Ricky Barnes", "name2": "Summer Duval"}', '{"name1": "Ricky Barnes", "name2": "Thomas J. Barr"}', '{"name1": "Todd Hamilton", "name2": "Annie Mediate"}', '{"name1": "Todd Hamilton", "name2": "John Cochrane"}', '{"name1": "Lucas Glover", "name2": "Joe O\'Hair"}', '{"name1": "Lucas Glover", "name2": "Horace F. Clark"}', '{"name1": "Daniel Sickles", "name2": "Summer Duval"}', '{"name1": "Daniel Sickles", "name2": "Thomas J. Barr"}', '{"name1": "William B. Maclay", "name2": "Annie Mediate"}', '{"name1": "William B. Maclay", "name2": "John Cochrane"}', '{"name1": "George Briggs", "name2": "Joe O\'Hair"}', '{"name1": "George Briggs", "name2": "Horace F. Clark"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------13-----------------
+schema:['name', 'age']
+---------------------------Execute SQL Query:[SELECT name ,  age FROM people WHERE is_male  =  'T' AND people_id NOT IN (SELECT male_id FROM wedding)]-----------------
+convert time:3.270013 s
+---------------------------Execute Target Query:MATCH (p:people) WHERE p.is_male = 'T' AND NOT EXISTS ((p)-[:wedding]->()) RETURN p.name as name, p.age as age-----------------
+MATCH (p:people) WHERE p.is_male = 'T' AND NOT EXISTS ((p)-[:wedding]->()) RETURN p.name as name, p.age as age
+mysql res: ['{"name": "Graeme McDowell", "age": 34}', '{"name": "Adam Scott", "age": 26}']
+target res: ['{"name": "Mike Weir", "age": 34}', '{"name": "Ricky Barnes", "age": 30}', '{"name": "Todd Hamilton", "age": 27}', '{"name": "Lucas Glover", "age": 31}', '{"name": "Graeme McDowell", "age": 34}', '{"name": "Adam Scott", "age": 26}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------14-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT name FROM church EXCEPT SELECT T1.name FROM church AS T1 JOIN wedding AS T2 ON T1.church_id  =  T2.church_id WHERE T2.year  =  2015]-----------------
+convert time:3.825027 s
+---------------------------Execute Target Query:MATCH (c:church)
+WHERE NOT EXISTS (
+    MATCH (c1:church)-[:r]->(w:wedding)
+    WHERE c1.church_id = w.church_id AND w.year = 2015 AND c1.name = c.name
+)
+RETURN c.name as name-----------------
+MATCH (c:church)
+WHERE NOT EXISTS (
+    MATCH (c1:church)-[:r]->(w:wedding)
+    WHERE c1.church_id = w.church_id AND w.year = 2015 AND c1.name = c.name
+)
+RETURN c.name as name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input '[': expected "+" or "-" (line 3, column 23 (offset: 58))
+"    MATCH (c1:church)-[:r]->(w:wedding)"
+                       ^}
+
+--------------------------15-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T1.name FROM church AS T1 JOIN wedding AS T2 ON T1.church_id  =  T2.church_id GROUP BY T1.church_id HAVING count(*)  >=  2]-----------------
+convert time:2.532424 s
+---------------------------Execute Target Query:MATCH (c:church), (w:wedding) WHERE c.church_id = w.church_id WITH c.church_id AS church_id, c.name AS name, count(*) AS count_star GROUP BY church_id HAVING count_star >= 2 RETURN name-----------------
+MATCH (c:church), (w:wedding) WHERE c.church_id = w.church_id WITH c.church_id AS church_id, c.name AS name, count(*) AS count_star GROUP BY church_id HAVING count_star >= 2 RETURN name
+execute target query error:{code: Neo.ClientError.Statement.SyntaxError} {message: Invalid input 'GROUP': expected
+  ","
+  "CALL"
+  "CREATE"
+  "DELETE"
+  "DETACH"
+  "FOREACH"
+  "INSERT"
+  "LIMIT"
+  "LOAD"
+  "MATCH"
+  "MERGE"
+  "NODETACH"
+  "OPTIONAL"
+  "ORDER"
+  "REMOVE"
+  "RETURN"
+  "SET"
+  "SKIP"
+  "UNION"
+  "UNWIND"
+  "USE"
+  "WHERE"
+  "WITH"
+  <EOF> (line 1, column 133 (offset: 132))
+"MATCH (c:church), (w:wedding) WHERE c.church_id = w.church_id WITH c.church_id AS church_id, c.name AS name, count(*) AS count_star GROUP BY church_id HAVING count_star >= 2 RETURN name"
+                                                                                                                                     ^}
+
+--------------------------16-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T2.name FROM wedding AS T1 JOIN people AS T2 ON T1.female_id  =  T2.people_id WHERE T1.year  =  2016 AND T2.is_male  =  'F' AND T2.country  =  'Canada']-----------------
+convert time:2.701421 s
+---------------------------Execute Target Query:MATCH (w:wedding), (p:people) WHERE w.female_id = p.people_id AND w.year = 2016 AND p.is_male = 'F' AND p.country = 'Canada' RETURN p.name as name-----------------
+MATCH (w:wedding), (p:people) WHERE w.female_id = p.people_id AND w.year = 2016 AND p.is_male = 'F' AND p.country = 'Canada' RETURN p.name as name
+mysql res: []
+target res: []
+translate SELECT T2.name FROM wedding AS T1 JOIN people AS T2 ON T1.female_id  =  T2.people_id WHERE T1.year  =  2016 AND T2.is_male  =  'F' AND T2.country  =  'Canada' success
+
+--------------------------17-----------------
+schema:['count_*']
+---------------------------Execute SQL Query:[SELECT count(*) FROM wedding WHERE YEAR  =  2016]-----------------
+convert time:1.0778 s
+---------------------------Execute Target Query:MATCH (w:wedding) WHERE w.YEAR = 2016 RETURN count(*) as count-----------------
+MATCH (w:wedding) WHERE w.YEAR = 2016 RETURN count(*) as count
+mysql res: ['{"count_*": 2}']
+target res: ['{"count": 0}']
+mismatch between MySQL and target
+
+--------------------------18-----------------
+schema:['name']
+---------------------------Execute SQL Query:[SELECT T4.name FROM wedding AS T1 JOIN people AS T2 ON T1.male_id  =  T2.people_id JOIN people AS T3 ON T1.female_id  =  T3.people_id JOIN church AS T4 ON T4.church_id  =  T1.church_id WHERE T2.age  >  30 OR T3.age  >  30]-----------------
+convert time:4.113895 s
+---------------------------Execute Target Query:MATCH (w:wedding), (m:people), (f:people), (c:church)
+WHERE w.male_id = m.people_id AND w.female_id = f.people_id AND w.church_id = c.church_id AND (m.age > 30 OR f.age > 30)
+RETURN c.name as name-----------------
+MATCH (w:wedding), (m:people), (f:people), (c:church)
+WHERE w.male_id = m.people_id AND w.female_id = f.people_id AND w.church_id = c.church_id AND (m.age > 30 OR f.age > 30)
+RETURN c.name as name
+mysql res: ['{"name": "Pure Church of Christ"}', '{"name": "Church of Christ (Parrishite)"}']
+target res: ['{"name": "Pure Church of Christ"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Pure Church of Christ"}', '{"name": "Pure Church of Christ"}', '{"name": "Church of Christ"}', '{"name": "Church of Christ"}', '{"name": "Alston Church"}', '{"name": "Alston Church"}', '{"name": "Church of Christ (Parrishite)"}', '{"name": "Church of Christ (Parrishite)"}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------19-----------------
+schema:['country', 'count_*']
+---------------------------Execute SQL Query:[SELECT country ,  count(*) FROM people GROUP BY country]-----------------
+convert time:1.506897 s
+---------------------------Execute Target Query:MATCH (p:people)
+RETURN p.country as country, count(p) as count_-----------------
+MATCH (p:people)
+RETURN p.country as country, count(p) as count_
+mysql res: ['{"country": "Canada", "count_*": 1}', '{"country": "Sweden", "count_*": 1}', '{"country": "United States", "count_*": 8}', '{"country": "Northern Ireland", "count_*": 1}', '{"country": "Australia", "count_*": 1}']
+target res: ['{"country": "Canada", "count_": 1}', '{"country": "Sweden", "count_": 1}', '{"country": "United States", "count_": 8}', '{"country": "Northern Ireland", "count_": 1}', '{"country": "Australia", "count_": 1}', '{"country": null, "count_": 10}']
+Exception raised during comparison: Row number mismatch
+
+--------------------------20-----------------
+schema:(None, ProgrammingError(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DISTINCT church_id) FROM wedding WHERE YEAR  =  2016' at line 1"))
+---------------------------Execute SQL Query:[SELECT COUNT (DISTINCT church_id) FROM wedding WHERE YEAR  =  2016]-----------------
+execute mysql query error:(1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DISTINCT church_id) FROM wedding WHERE YEAR  =  2016' at line 1")
+success_query_count: 6
+valid_count: 19
+accuracy: 0.3157894736842105

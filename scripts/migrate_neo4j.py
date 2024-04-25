@@ -3,14 +3,14 @@ from neo4j import GraphDatabase
 
 # Database credentials
 mysql_config = {
-    'host': '34.42.2.54',
+    'host': '127.0.0.1',
     'user': 'cs511',
     'password': 'cs511password',
-    'database': 'bike_1'
+    'database': 'device'
 }
 
 neo4j_config = {
-    'uri': 'bolt://34.42.2.54:7687',
+    'uri': 'bolt://127.0.0.1:7687',
     'user': 'neo4j',
     'password': 'cs511password'
 }
@@ -69,6 +69,8 @@ def main():
         for table_name in tables:
             print(f"Processing table: {table_name}")
             for columns, rows in fetch_data_in_batches(mysql_conn, table_name):
+                columns = [c.lower() for c in columns]
+                # print(columns)
                 batch_insert_nodes(neo4j_driver, table_name, columns, rows)
         print("Migration completed successfully.")
     except Exception as e:
